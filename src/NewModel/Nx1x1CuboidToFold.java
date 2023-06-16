@@ -32,7 +32,7 @@ public class Nx1x1CuboidToFold {
 	
 	public static boolean levelOptionsBool[][] = null;
 	
-	public static void init() {
+	public static void initStaticConstants() {
 		fillLevelOptionsBool();
 	}
 	
@@ -58,18 +58,30 @@ public class Nx1x1CuboidToFold {
 	
 	//This is relevant because some cells on level n might not be connected to the bottom directly
 	// and need the cells on level n+1 to eventually connect them to bottom.
-	private boolean cellsJoinedToPrevLevel[][]; 
+	private boolean cellsJoinedToPrevOrNextLevel[][];
+	private boolean cellsJoinedToOnlyNextLevel[][];
+	
 	private int numCellsJoinedPrevLevel[];
 	
+	private int height;
+	
 	public Nx1x1CuboidToFold(int n) {
+		
+		initStaticConstants();
 		
 		this.numLevelsUsed = 0;
 		
 		this.sideBump = new int[n + 1];
-		this.optionUsedPerLevel = new int[n];
-		this.cellsJoinedToPrevLevel = new boolean[n + 1][levelOptions[0].length];
+		this.optionUsedPerLevel = new int[n + 1];
+		this.cellsJoinedToPrevOrNextLevel = new boolean[n + 1][levelOptions[0].length];
+		this.cellsJoinedToOnlyNextLevel = new boolean[n + 1][levelOptions[0].length];
+		
 		numCellsJoinedPrevLevel = new int[n + 1];
 		
+		//TODO: just have a variable for n...
+		
+		
+		this.height = n;
 	}
 
 	//TODO
@@ -81,7 +93,6 @@ public class Nx1x1CuboidToFold {
 	public final static int NUM_SIDE_BUMP_OPTIONS = 2 * levelOptions[0].length - 1;
 	public final static int TOP_SHIFT_LEFT_1ST_IT = levelOptions[0].length - 1;
 
-	public final static int NUM_SIDE_BUMP_BOTTOM_LEVEL = levelOptions[0].length;
 	
 	//TODO: Maybe valid inputs to this function could be memeorized based on last 2 layers, or whatever...
 	
@@ -104,21 +115,46 @@ public class Nx1x1CuboidToFold {
 
 			int cellIndexOnLevelTouchingBottomCell = TOP_SHIFT_LEFT_1ST_IT - newLevelDesc.j;
 			
-			if(levelOptionsBool[newLevelDesc.i][cellIndexOnLevelTouchingBottomCell]) {
+			if(cellIndexOnLevelTouchingBottomCell >= 0
+					&& levelOptionsBool[newLevelDesc.i][cellIndexOnLevelTouchingBottomCell]) {
 				
-				cellsJoinedToPrevLevel[this.numLevelsUsed][cellIndexOnLevelTouchingBottomCell] = true;
+				cellsJoinedToPrevOrNextLevel[this.numLevelsUsed][cellIndexOnLevelTouchingBottomCell] = true;
 				this.numCellsJoinedPrevLevel[this.numLevelsUsed]++;
 				touchCellsBesideCell(cellIndexOnLevelTouchingBottomCell, newLevelDesc.i);
 			}
 			
 
 			if(this.numCellsJoinedPrevLevel[this.numLevelsUsed] == 0) {
-				System.out.println("WARNING: 1st level/layer isn't touching bottom cell.");
+				//System.out.println("WARNING: 1st level/layer isn't touching bottom cell.");
 				isMoveLegal = false;
 				//return false;
 			}
 		
 		//TODO: add code for adding the last layer or the top.
+		} else if(this.numLevelsUsed == this.height) {
+			
+			if(this.numCellsJoinedPrevLevel[this.numLevelsUsed - 1] != 4) {
+				//System.out.println("WARNING: previous level isn't touching all 4 cells at the top (" + this.numCellsJoinedPrevLevel[this.numLevelsUsed - 1] + ")");
+
+				isMoveLegal = false;
+				//return false;
+			}
+			
+			int shiftTopToRight = sideBump[this.numLevelsUsed] - TOP_SHIFT_LEFT_1ST_IT;
+			
+			if(shiftTopToRight >= 0
+					&& cellsJoinedToPrevOrNextLevel[this.numLevelsUsed - 1][shiftTopToRight]) {
+				
+				cellsJoinedToPrevOrNextLevel[this.numLevelsUsed][shiftTopToRight] = true;
+				
+				this.numCellsJoinedPrevLevel[this.numLevelsUsed]++;
+				
+				optionUsedPerLevel[this.numLevelsUsed] = -2;
+				
+			} else {
+				isMoveLegal = false;
+			}
+			
 			
 		} else {
 			
@@ -136,11 +172,11 @@ public class Nx1x1CuboidToFold {
 				//Find out what cells in new layer is "grounded" to bottom cell
 				for(int prevLevelIndex=Math.max(0, 0 - shiftTopToLeft); prevLevelIndex<jLimit; prevLevelIndex++) {
 					
-					if(this.cellsJoinedToPrevLevel[this.numLevelsUsed - 1][prevLevelIndex]
+					if(this.cellsJoinedToPrevOrNextLevel[this.numLevelsUsed - 1][prevLevelIndex]
 							&& levelOptionsBool[optionUsedPerLevel[this.numLevelsUsed]][prevLevelIndex + shiftTopToLeft]
-							&& ! cellsJoinedToPrevLevel[this.numLevelsUsed][prevLevelIndex + shiftTopToLeft]) {
+							&& ! cellsJoinedToPrevOrNextLevel[this.numLevelsUsed][prevLevelIndex + shiftTopToLeft]) {
 			
-						cellsJoinedToPrevLevel[this.numLevelsUsed][prevLevelIndex + shiftTopToLeft] = true;
+						cellsJoinedToPrevOrNextLevel[this.numLevelsUsed][prevLevelIndex + shiftTopToLeft] = true;
 						
 						this.numCellsJoinedPrevLevel[this.numLevelsUsed]++;
 	
@@ -153,33 +189,36 @@ public class Nx1x1CuboidToFold {
 				//Find out if some cells in the previous layer could now be "grounded" to the bottom cell.
 				for(int prevLevelIndex=Math.max(0, 0 - shiftTopToLeft); prevLevelIndex<jLimit; prevLevelIndex++) {
 					
-					if(cellsJoinedToPrevLevel[this.numLevelsUsed][prevLevelIndex + shiftTopToLeft]
+					if(cellsJoinedToPrevOrNextLevel[this.numLevelsUsed][prevLevelIndex + shiftTopToLeft]
 							&& levelOptionsBool[optionUsedPerLevel[this.numLevelsUsed - 1]][prevLevelIndex]
-							&& ! this.cellsJoinedToPrevLevel[this.numLevelsUsed - 1][prevLevelIndex]) {
+							&& ! this.cellsJoinedToPrevOrNextLevel[this.numLevelsUsed - 1][prevLevelIndex]) {
 			
-						this.cellsJoinedToPrevLevel[this.numLevelsUsed - 1][prevLevelIndex] = true;
+						this.cellsJoinedToPrevOrNextLevel[this.numLevelsUsed - 1][prevLevelIndex] = true;
 						
 						this.numCellsJoinedPrevLevel[this.numLevelsUsed - 1]++;
 						
+						this.cellsJoinedToOnlyNextLevel[this.numLevelsUsed - 1][prevLevelIndex] = true;
+						
 						//Inefficient loop, but whatever
 						progressBeingMade = true;
-						touchCellsBesideCell(prevLevelIndex, optionUsedPerLevel[this.numLevelsUsed - 1]);
+						touchCellsBesideCell(prevLevelIndex, optionUsedPerLevel[this.numLevelsUsed - 1], true);
 						
 					}
 					
 				}
+				
 			} while(progressBeingMade);
 			
 			
 			
 			if(this.numCellsJoinedPrevLevel[this.numLevelsUsed - 1] != 4) {
-				System.out.println("WARNING: previous level isn't touching all 4 cells. (" + this.numCellsJoinedPrevLevel[this.numLevelsUsed - 1] + ")");
+				//System.out.println("WARNING: previous level isn't touching all 4 cells. (" + this.numCellsJoinedPrevLevel[this.numLevelsUsed - 1] + ")");
 
 				isMoveLegal = false;
 				//return false;
 			}
 			if(this.numCellsJoinedPrevLevel[this.numLevelsUsed] == 0) {
-				System.out.println("WARNING: current level isn't touching all previous level.");
+				//System.out.println("WARNING: current level isn't touching all previous level.");
 				isMoveLegal = false;
 				//return false;
 				
@@ -190,31 +229,61 @@ public class Nx1x1CuboidToFold {
 		this.numLevelsUsed++;
 		
 		if(isMoveLegal == false) {
-			System.out.println("Move not legal");
+			//System.out.println("Move not legal");
 		}
 		return isMoveLegal;
 	}
 	
 	public void removeTopLevel() {
 		//In the name of efficiency, I'll be a bit dirty and not clean up everything:
-		for(int i=0; i<cellsJoinedToPrevLevel[0].length; i++) {
-			cellsJoinedToPrevLevel[this.numLevelsUsed][i] = false;
-		}
+
 		this.numLevelsUsed--;
+		
+		for(int i=0; i<cellsJoinedToPrevOrNextLevel[0].length; i++) {
+			cellsJoinedToPrevOrNextLevel[this.numLevelsUsed][i] = false;
+			
+		
+		}
+		
+		if(this.numLevelsUsed > 0) {
+			for(int i=0; i<cellsJoinedToPrevOrNextLevel[0].length; i++) {
+				if(this.cellsJoinedToOnlyNextLevel[this.numLevelsUsed - 1][i]) {
+					this.cellsJoinedToOnlyNextLevel[this.numLevelsUsed - 1][i] = false;
+					this.cellsJoinedToPrevOrNextLevel[this.numLevelsUsed - 1][i] = false;
+					
+					this.numCellsJoinedPrevLevel[this.numLevelsUsed - 1]--;
+				}
+			}
+		}
+		
+		this.numCellsJoinedPrevLevel[this.numLevelsUsed] = 0;
+		
+		//Probably not needed:
+		this.sideBump[this.numLevelsUsed] = -10;
+		
 	}
 	
 	
 	private void touchCellsBesideCell(int cellIndexOnLevel, int levelDescIndex) {
-		for(int k=cellIndexOnLevel + 1; k<cellsJoinedToPrevLevel[this.numLevelsUsed].length; k++) {
+		touchCellsBesideCell(cellIndexOnLevel, levelDescIndex, false);
+	}
+	
+	private void touchCellsBesideCell(int cellIndexOnLevel, int levelDescIndex, boolean fromTheTop) {
+		for(int k=cellIndexOnLevel + 1; k<cellsJoinedToPrevOrNextLevel[this.numLevelsUsed].length; k++) {
 			
-			if(levelDescIndex == -1) {
-				System.out.println("Debug");
+			if(levelDescIndex < 0) {
+				System.out.println("ERROR: level description index doesn't make sense");
+				System.exit(1);
 			}
 			if(levelOptionsBool[levelDescIndex][k]) {
 				
-				if( ! cellsJoinedToPrevLevel[this.numLevelsUsed][k]) {
-					cellsJoinedToPrevLevel[this.numLevelsUsed][k] = true;
+				if( ! cellsJoinedToPrevOrNextLevel[this.numLevelsUsed][k]) {
+					cellsJoinedToPrevOrNextLevel[this.numLevelsUsed][k] = true;
 					this.numCellsJoinedPrevLevel[this.numLevelsUsed]++;
+					
+					if(fromTheTop) {
+						this.cellsJoinedToOnlyNextLevel[this.numLevelsUsed][k] = true;
+					}
 				}
 			} else {
 				break;
@@ -223,9 +292,14 @@ public class Nx1x1CuboidToFold {
 		
 		for(int k=cellIndexOnLevel - 1; k>=0; k--) {
 			if(levelOptionsBool[levelDescIndex][k]) {
-				if( ! cellsJoinedToPrevLevel[this.numLevelsUsed][k]) {
-					cellsJoinedToPrevLevel[this.numLevelsUsed][k] = true;
+				if( ! cellsJoinedToPrevOrNextLevel[this.numLevelsUsed][k]) {
+					cellsJoinedToPrevOrNextLevel[this.numLevelsUsed][k] = true;
 					this.numCellsJoinedPrevLevel[this.numLevelsUsed]++;
+					
+					if(fromTheTop) {
+						this.cellsJoinedToOnlyNextLevel[this.numLevelsUsed][k] = true;
+					}
+					
 				}
 			} else {
 				break;
@@ -242,7 +316,7 @@ public class Nx1x1CuboidToFold {
 
 		ret += "Net:\n";
 		
-		boolean net[][] = setupArray();
+		boolean net[][] = setupBoolArrayNet();
 		
 		for(int i=0; i<net.length; i++) {
 			for(int j=0; j<net[0].length; j++) {
@@ -292,7 +366,7 @@ public class Nx1x1CuboidToFold {
 		return ret;
 	}
 	
-	public boolean[][] setupArray() {
+	public boolean[][] setupBoolArrayNet() {
 		int leftOfBottom = getAmountSpaceLeftOfBottom();
 		int rightOfBottom = getAmountSpaceRightOfBottom();
 		int width = leftOfBottom + 1+ rightOfBottom;
@@ -305,7 +379,7 @@ public class Nx1x1CuboidToFold {
 		
 		
 		int curXCoordStart = bottomXCoord;
-		for(int i=0; i<this.numLevelsUsed; i++) {
+		for(int i=0; i<Math.min(this.numLevelsUsed, this.height); i++) {
 			curXCoordStart += sideBump[i] - TOP_SHIFT_LEFT_1ST_IT;
 			
 			for(int j=0; j<levelOptions[0].length; j++) {
@@ -315,19 +389,19 @@ public class Nx1x1CuboidToFold {
 			//TODO: You will have to do something different for the top level
 		}
 		
+		if(this.numLevelsUsed > this.height) {
+			//Insert last layer:
+			curXCoordStart += sideBump[this.numLevelsUsed - 1] - TOP_SHIFT_LEFT_1ST_IT;
+			
+			ret[0][curXCoordStart] = true;
+		}
+		
 		return ret;
 	}
 	
 	
 	
-	
-	public static void main(String args[]) {
-		
-		init();
-		
-		CuboidToFoldOn testCuboid = new CuboidToFoldOn(7, 1, 1);
-		
-		
+	public static void origTest(CuboidToFoldOn testCuboid) {
 		Nx1x1CuboidToFold tmp = new Nx1x1CuboidToFold(25);
 		
 		System.out.println(tmp);
@@ -384,23 +458,70 @@ public class Nx1x1CuboidToFold {
 
 		tmp.addNextLevel(new Coord2D(0, 9), testCuboid);
 		System.out.println(tmp);
-		
-		/*
-		 * 
-//It's a start:
- * # It at least indicate that it's going left
-####...  (0)
-####...  (0)
-####...  (0)
-#   (0)
-
-I made a small improvement where I draw it out:
-# I'm a bit wasteful for the right border, but I don't care enough about that.
-2nd net:
-####......
-.####.....
-...####...
-......#...
-		 */
 	}
+	
+	public static void secondTest() {
+		
+		CuboidToFoldOn testCuboid = new CuboidToFoldOn(3, 1, 1);
+		
+
+		Nx1x1CuboidToFold tmp = new Nx1x1CuboidToFold(3);
+		
+		//Test 2: Change the amount of bump:
+		tmp.addNextLevel(new Coord2D(0, 3), testCuboid);
+		System.out.println(tmp);
+		
+		tmp.addNextLevel(new Coord2D(0, 4), testCuboid);
+		System.out.println(tmp);
+		
+		tmp.addNextLevel(new Coord2D(0, 5), testCuboid);
+		System.out.println(tmp);
+		
+		tmp.addNextLevel(new Coord2D(0, 10), testCuboid);
+		System.out.println(tmp);
+	}
+	
+	/*
+	 *
+
+
+Net:
+##.#..#  (sideBump: 3) (numTouches 1)
+...#...
+
+
+
+---
+Net:
+...####...  (sideBump: 9) (numTouches 4)
+##.#..#...  (sideBump: 3) (numTouches 4)
+...#......
+
+
+
+---
+Found solution:
+Net:
+...#......  (sideBump: 6) (numTouches 1)
+...####...  (sideBump: 9) (numTouches 4)
+##.#..#...  (sideBump: 3) (numTouches 4)
+...#......
+
+	 */
+	public static void main(String args[]) {
+		
+
+		Nx1x1CuboidToFold tmp = new Nx1x1CuboidToFold(2);
+		
+		//Test 2: Change the amount of bump:
+		tmp.addNextLevel(new Coord2D(1, 3), null);
+		System.out.println(tmp);
+		
+		tmp.addNextLevel(new Coord2D(0, 9), null);
+		System.out.println(tmp);
+		
+		
+	}
+	
+	
 }
