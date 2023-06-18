@@ -1,11 +1,15 @@
 package NewModel;
 
+
+import java.math.BigInteger;
+import java.util.Iterator;
+
 import Coord.Coord2D;
 import DupRemover.BasicUniqueCheckImproved;
 
 public class SimplePhaseNx1x1SolutionsCounter {
 
-	public static int N = 4;
+	public static int N = 7;
 	
 	
 	public static void main(String args[]) {
@@ -18,6 +22,38 @@ public class SimplePhaseNx1x1SolutionsCounter {
 		
 
 		System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
+		
+		//debugPrintSolutions();
+		
+	}
+	
+	public static void debugPrintSolutions() {
+		Iterator<BigInteger> it = BasicUniqueCheckImproved.uniqList.iterator();
+		
+		BigInteger array[] = new BigInteger[BasicUniqueCheckImproved.uniqList.size()];
+		
+		for(int i=0; i<array.length; i++) {
+			array[i] = it.next();
+		}
+		
+		for(int i=0; i<array.length; i++) {
+			
+			for(int j=i+1; j<array.length; j++) {
+				
+				if(array[i].compareTo(array[j]) > 0) {
+					BigInteger tmp = array[i];
+					array[i] = array[j];
+					array[j] = tmp;
+					
+				}
+				
+			}
+		}
+		
+		System.out.println("---");
+		for(int i=0; i<array.length; i++) {
+			System.out.println(array[i]);
+		}
 	}
 	
 	
@@ -33,7 +69,7 @@ public class SimplePhaseNx1x1SolutionsCounter {
 			numSolutions++;
 			System.out.println("Num solutions so far: " + numSolutions);
 			
-			if(BasicUniqueCheckImproved.isUnique(getCornersOfNet(curSimpleNet.setupBoolArrayNet()), curSimpleNet.setupBoolArrayNet()) ){
+			if(BasicUniqueCheckImproved.isUnique(getOppositeCornersOfNet(curSimpleNet.setupBoolArrayNet()), curSimpleNet.setupBoolArrayNet()) ){
 				System.out.println("Unique solution found");
 				System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 				System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
