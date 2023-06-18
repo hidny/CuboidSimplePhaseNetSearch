@@ -81,9 +81,9 @@ public class SimplePhaseNx1x1SolutionsCounter {
 		
 	}
 	
-	public static Coord2D[] getCornersOfNet(boolean array[][]) {
+	public static Coord2D[] getOppositeCornersOfNet(boolean array[][]) {
 		
-		Coord2D borders[] = new Coord2D[4];
+		Coord2D corners[] = new Coord2D[2];
 		
 		int firsti = array.length;
 		int lasti = 0;
@@ -112,13 +112,11 @@ public class SimplePhaseNx1x1SolutionsCounter {
 			}
 		}
 		
-		borders[0] = new Coord2D(firsti, firstj);
-		borders[1] = new Coord2D(firsti, lastj);
-		borders[2] = new Coord2D(lasti, lastj);
-		borders[3] = new Coord2D(lasti, firstj);
+		corners[0] = new Coord2D(firsti, firstj);
+		corners[1] = new Coord2D(lasti, lastj);
 		
 		
 		
-		return borders;
+		return corners;
 	}
 }
