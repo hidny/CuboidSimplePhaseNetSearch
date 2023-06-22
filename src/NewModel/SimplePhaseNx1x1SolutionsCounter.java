@@ -9,7 +9,7 @@ import DupRemover.BasicUniqueCheckImproved;
 
 public class SimplePhaseNx1x1SolutionsCounter {
 
-	public static int N = 7;
+	public static int N = 2;
 	
 	
 	public static void main(String args[]) {
