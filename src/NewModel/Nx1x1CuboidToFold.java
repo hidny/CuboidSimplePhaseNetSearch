@@ -52,18 +52,18 @@ public class Nx1x1CuboidToFold {
 	}
 	
 	
-	private int numLevelsUsed;
-	private int sideBump[];
-	private int optionUsedPerLevel[];
+	public int numLevelsUsed;
+	public int sideBump[];
+	public int optionUsedPerLevel[];
 	
 	//This is relevant because some cells on level n might not be connected to the bottom directly
 	// and need the cells on level n+1 to eventually connect them to bottom.
-	private boolean cellsGrounded[][];
+	public boolean cellsGrounded[][];
 	private boolean cellsGroundedByLevelAbove[][];
 	
 	private int numCellsGroundedPrevLevel[];
 	
-	private int height;
+	public int heightOfCuboid;
 	
 	public Nx1x1CuboidToFold(int n) {
 		
@@ -81,7 +81,7 @@ public class Nx1x1CuboidToFold {
 		//TODO: just have a variable for n...
 		
 		
-		this.height = n;
+		this.heightOfCuboid = n;
 	}
 
 	//TODO
@@ -131,7 +131,7 @@ public class Nx1x1CuboidToFold {
 			}
 		
 		//TODO: add code for adding the last layer or the top.
-		} else if(this.numLevelsUsed == this.height) {
+		} else if(this.numLevelsUsed == this.heightOfCuboid) {
 			
 			if(this.numCellsGroundedPrevLevel[this.numLevelsUsed - 1] != 4) {
 				//System.out.println("WARNING: previous level isn't touching all 4 cells at the top (" + this.numCellsJoinedPrevLevel[this.numLevelsUsed - 1] + ")");
@@ -451,7 +451,7 @@ public class Nx1x1CuboidToFold {
 		
 		
 		int curXCoordStart = bottomXCoord;
-		for(int i=0; i<Math.min(this.numLevelsUsed, this.height); i++) {
+		for(int i=0; i<Math.min(this.numLevelsUsed, this.heightOfCuboid); i++) {
 			curXCoordStart += sideBump[i] - TOP_SHIFT_LEFT_1ST_IT;
 			
 			for(int j=0; j<WIDTH_LEVEL_OPTION; j++) {
@@ -461,7 +461,7 @@ public class Nx1x1CuboidToFold {
 			//TODO: You will have to do something different for the top level
 		}
 		
-		if(this.numLevelsUsed > this.height) {
+		if(this.numLevelsUsed > this.heightOfCuboid) {
 			//Insert last layer:
 			curXCoordStart += sideBump[this.numLevelsUsed - 1] - TOP_SHIFT_LEFT_1ST_IT;
 			

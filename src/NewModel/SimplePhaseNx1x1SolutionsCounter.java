@@ -63,6 +63,9 @@ public class SimplePhaseNx1x1SolutionsCounter {
 	public static void buildNet(Nx1x1CuboidToFold curSimpleNet, int numLevels) {
 		
 		if(numLevels > N) {
+			
+			//TODO: put all of this in a solution resolver (see Cuboid repo for example)
+			
 			System.out.println("Found solution:");
 			System.out.println(curSimpleNet);
 			
@@ -74,6 +77,12 @@ public class SimplePhaseNx1x1SolutionsCounter {
 				System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 				System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
 			}
+			
+			//TODO: This should actually work and be put in a cuboid resolver
+			Nx1x1StackTransitionTracker.setAllowedTransitions(curSimpleNet);
+
+			//END TODO: put all of this in a solution resolver (see Cuboid repo for example)
+			
 			return;
 		}
 		
