@@ -63,7 +63,7 @@ public class SimplePhaseNx1x1SolutionsCounter {
 	
 	public static void buildNet(Nx1x1CuboidToFold curSimpleNet, int numLevels) {
 		
-		if(numLevels > N) {
+		if(numLevels > curSimpleNet.heightOfCuboid) {
 			
 			//TODO: put all of this in a solution resolver (see Cuboid repo for example)
 			
@@ -111,7 +111,7 @@ public class SimplePhaseNx1x1SolutionsCounter {
 				
 			}
 			
-			if(numLevels == N) {
+			if(numLevels == curSimpleNet.heightOfCuboid) {
 				//Top level only has 1 way to place top cell...
 				//Maybe I'll do copy/paste code to make this faster in future...
 				break;
