@@ -9,10 +9,13 @@ import DupRemover.BasicUniqueCheckImproved;
 
 public class SimplePhaseNx1x1SolutionsCounter {
 
-	public static int N = 2;
+	public static int N = 4;
 	
 	
 	public static void main(String args[]) {
+		
+		
+		
 		
 		Nx1x1CuboidToFold curSimpleNet = new Nx1x1CuboidToFold(N);
 		
@@ -22,8 +25,6 @@ public class SimplePhaseNx1x1SolutionsCounter {
 		
 
 		System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
-		
-		//debugPrintSolutions();
 		
 	}
 	
