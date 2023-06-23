@@ -104,11 +104,15 @@ public class Nx1x1StackTransitionTracker {
 	}
 	
 	private static void setAllowedTransition(int levelOptionPrev, boolean prevGround[], int levelOptionCur, int sideBumpIndex) {
+		
+		if(/*convertPrevGroundToIndex(prevGround) == 7 && */levelOptionPrev == 2 && levelOptionCur == 0) {
+			System.out.println("Found one: " + convertPrevGroundToIndex(prevGround));
+			//System.exit(1);
+		}
 		allowedTransitions[levelOptionPrev][convertPrevGroundToIndex(prevGround)][levelOptionCur][sideBumpIndex] = true;
 	}
 
 	public static boolean isAllowedTransition(int levelOptionPrev, boolean prevGround[], int levelOptionCur, int sideBumpIndex) {
-		
 		return allowedTransitions[levelOptionPrev][convertPrevGroundToIndex(prevGround)][levelOptionCur][sideBumpIndex];
 	}
 	

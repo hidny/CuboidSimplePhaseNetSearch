@@ -170,6 +170,57 @@ public class SimplePhaseNx1x1SolutionCounterWithTransitions {
 
 		int transitionList[][] = Nx1x1StackTransitionTracker.getTransitionListToLookup(curSimpleNet.optionUsedPerLevel[curLevelIndexToFill - 1], curSimpleNet.cellsGrounded[curLevelIndexToFill - 1]);
 		
+		if(curLevelIndexToFill == 1) {
+			for(int i=0; i<transitionList[0].length; i++) {
+
+				int coordI = transitionList[0][i];
+				int coordJ = transitionList[1][i];
+				
+				if(coordI == 2 && coordJ == 3) {
+					System.out.println("good " + curLevelIndexToFill);
+				}
+			}
+			transitionList = new int[][] {{2}, {3}};
+			
+		} else if(curLevelIndexToFill == 2) {
+			for(int i=0; i<transitionList[0].length; i++) {
+
+				int coordI = transitionList[0][i];
+				int coordJ = transitionList[1][i];
+				
+				if(coordI == 0 && coordJ == 5) {
+					System.out.println("good " + curLevelIndexToFill);
+				}
+			}
+			System.out.println(curSimpleNet);
+			transitionList = new int[][] {{0}, {5}};
+			
+		} else if(curLevelIndexToFill == 3) {
+			
+			for(int i=0; i<transitionList[0].length; i++) {
+
+				int coordI = transitionList[0][i];
+				int coordJ = transitionList[1][i];
+				
+				if(coordI == 2 && coordJ == 7) {
+					System.out.println("good " + curLevelIndexToFill);
+				}
+			}
+			transitionList = new int[][] {{2}, {7}};
+			
+		} else if(curLevelIndexToFill == 4) {
+			
+			for(int i=0; i<transitionList[0].length; i++) {
+
+				int coordI = transitionList[0][i];
+				int coordJ = transitionList[1][i];
+				
+				if(coordI == 0 && coordJ == 9) {
+					System.out.println("good " + curLevelIndexToFill);
+				}
+			}
+			transitionList = new int[][] {{0}, {9}};
+		}
 		
 		for(int i=0; i<transitionList[0].length; i++) {
 			

@@ -581,10 +581,8 @@ Net:
 
 	 */
 	
-	public static void main(String args[]) {
-		
-
-		Nx1x1CuboidToFold tmp = new Nx1x1CuboidToFold(4);
+	public static void thirdTest() {
+Nx1x1CuboidToFold tmp = new Nx1x1CuboidToFold(4);
 		
 		boolean valid = false;
 		//Test solution not counted:
@@ -612,6 +610,47 @@ Net:
 		
 
 		valid = tmp.addNextLevel(new Coord2D(0, 9), null);
+		System.out.println(tmp);
+		System.out.println("Valid: " + valid);
+		System.out.println("---");
+		
+	}
+	public static void main(String args[]) {
+		
+
+		Nx1x1CuboidToFold tmp = new Nx1x1CuboidToFold(5);
+		
+		boolean valid = false;
+		//Test solution not counted:
+		valid = tmp.addNextLevel(new Coord2D(0, 4), null);
+		System.out.println(tmp);
+		System.out.println("Valid: " + valid);
+		System.out.println("---");
+		
+		valid = tmp.addNextLevel(new Coord2D(2, 3), null);
+		System.out.println(tmp);
+		System.out.println("Valid: " + valid);
+		System.out.println("---");
+
+		valid = tmp.addNextLevel(new Coord2D(0, 5), null);
+		System.out.println(tmp);
+		System.out.println("Valid: " + valid);
+		System.out.println("---");
+
+		System.out.println("Now");
+		
+		valid = tmp.addNextLevel(new Coord2D(2, 7), null);
+		System.out.println(tmp);
+		System.out.println("Valid: " + valid);
+		System.out.println("---");
+		
+
+		valid = tmp.addNextLevel(new Coord2D(0, 9), null);
+		System.out.println(tmp);
+		System.out.println("Valid: " + valid);
+		System.out.println("---");
+
+		valid = tmp.addNextLevel(new Coord2D(0, 8), null);
 		System.out.println(tmp);
 		System.out.println("Valid: " + valid);
 		System.out.println("---");
