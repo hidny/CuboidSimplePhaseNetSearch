@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import Coord.Coord2D;
 import DupRemover.BasicUniqueCheckImproved;
+import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
 
 public class SimplePhaseNx1x1SolutionCounterWithTransitions {
@@ -13,6 +14,9 @@ public class SimplePhaseNx1x1SolutionCounterWithTransitions {
 	
 	
 	public static void main(String args[]) {
+		
+		//Utils.printFromSolutionCode(new BigInteger("111693216346316918536"));
+		//System.exit(1);
 		
 		System.out.println("Creating transition table:");
 		Nx1x1StackTransitionTracker.initAllowedTransitions();
@@ -28,7 +32,21 @@ public class SimplePhaseNx1x1SolutionCounterWithTransitions {
 
 		System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 		
+		Iterator<BigInteger> iter = BasicUniqueCheckImproved.debugUniqList.iterator();
+		
+		System.out.println("Missing solutions:");
+		while(iter.hasNext()) {
+			BigInteger next = iter.next();
+			
+			if(! BasicUniqueCheckImproved.uniqList.contains(next)) {
+				System.out.println(next);
+				Utils.printFromSolutionCode(next);
+			}
+		}
+		
+		
 	}
+	
 	
 	public static void debugPrintSolutions() {
 		Iterator<BigInteger> it = BasicUniqueCheckImproved.uniqList.iterator();
@@ -56,6 +74,8 @@ public class SimplePhaseNx1x1SolutionCounterWithTransitions {
 		System.out.println("---");
 		for(int i=0; i<array.length; i++) {
 			System.out.println(array[i]);
+			
+			Utils.printFromSolutionCode(array[i]);
 		}
 	}
 	

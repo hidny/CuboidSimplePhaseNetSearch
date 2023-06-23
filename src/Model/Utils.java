@@ -1,6 +1,8 @@
 package Model;
 
 
+import java.math.BigInteger;
+
 import Coord.Coord;
 import Coord.Coord2D;
 
@@ -283,5 +285,77 @@ public class Utils {
 			return cuboid1.getDimensions()[0] == cuboid2.getDimensions()[0]
 					&& cuboid1.getDimensions()[1] == cuboid2.getDimensions()[1]
 							&& cuboid1.getDimensions()[2] == cuboid2.getDimensions()[2];
+		}
+		
+		
+
+		public static void printFromSolutionCode(BigInteger solutionCode) {
+			boolean array[] = convertToBoolArray(solutionCode);
+			
+			int height = convertBoolArraySegmentToNumber(array, 2, 10);
+			int width = convertBoolArraySegmentToNumber(array, 10, 18);
+			
+			boolean table[][] = new boolean[height][width];
+			
+			int currentIndex = 18;
+			
+			for(int i=0; i<table.length; i++) {
+				for(int j=0; j<table[0].length; j++) {
+					
+					table[i][j] = array[currentIndex];
+					currentIndex++;
+				}
+			}
+			
+			Utils.printFold(table);
+			
+		}
+		
+		public static int convertBoolArraySegmentToNumber(boolean array[], int startIndex, int endIndex) {
+			
+			int ret = 0;
+			
+			for(int i=startIndex; i<endIndex; i++) {
+				if(array[i]) {
+					ret = 2*ret + 1;
+				} else {
+					ret = 2*ret;
+				}
+			}
+			
+			return ret;
+		}
+		
+		public static boolean[] convertToBoolArray(BigInteger solutionCode) {
+			int sizeArray = 0;
+			
+			BigInteger tmp = solutionCode;
+			
+			BigInteger TWO = new BigInteger("2");
+			
+			while(tmp.compareTo(BigInteger.ZERO) > 0) {
+				
+				tmp = tmp.divide(TWO);
+				sizeArray++;
+			}
+			
+			boolean ret[] = new boolean[sizeArray];
+			int currentIndex = sizeArray - 1;
+		
+			tmp = solutionCode;
+			
+			for(int i=0; i<ret.length; i++, currentIndex--) {
+				
+				if(tmp.divideAndRemainder(TWO)[1].compareTo(BigInteger.ONE) == 0) {
+					ret[currentIndex] = true;
+				} else {
+					ret[currentIndex] = false;
+				}
+				
+				tmp = tmp.divide(TWO);
+			}
+			
+			
+			return ret;
 		}
 }

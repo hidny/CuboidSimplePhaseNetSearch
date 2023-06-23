@@ -68,16 +68,16 @@ public class SimplePhaseNx1x1SolutionsCounter {
 			
 			//TODO: put all of this in a solution resolver (see Cuboid repo for example)
 			
-			//System.out.println("Found solution:");
-			//System.out.println(curSimpleNet);
+			System.out.println("Found solution:");
+			System.out.println(curSimpleNet);
 			
 			numSolutions++;
 			//System.out.println("Num solutions so far: " + numSolutions);
 			
 			if(BasicUniqueCheckImproved.isUnique(getOppositeCornersOfNet(curSimpleNet.setupBoolArrayNet()), curSimpleNet.setupBoolArrayNet()) ){
-				//System.out.println("Unique solution found");
-				//System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
-				//System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
+				System.out.println("Unique solution found");
+				System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
+				System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
 			}
 			
 			//TODO: This should actually work and be put in a cuboid resolver

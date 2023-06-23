@@ -21,12 +21,13 @@ public class Nx1x1StackTransitionTracker {
 	//Start with recording allowed transition for the middle layers (ignore top and bottom layer for now)
 	//This transition table will hopefully make the search slightly faster by eliminating some bad stacks.
 	public static final int MIN_NUMBER_THAT_WORKS = 4;
+	public static final int DEBUG_NUMBER_THAT_WORKS = 5;
 	
 	public static void initAllowedTransitions() {
 		
 		//Once N >= 4, the magic number is 45. It reminds me of Trump. That's depressing.
 
-		Nx1x1CuboidToFold curSimpleNet = new Nx1x1CuboidToFold(MIN_NUMBER_THAT_WORKS);
+		Nx1x1CuboidToFold curSimpleNet = new Nx1x1CuboidToFold(DEBUG_NUMBER_THAT_WORKS);
 		
 		SimplePhaseNx1x1SolutionsCounter.buildNet(curSimpleNet, 0);
 		
@@ -64,7 +65,8 @@ public class Nx1x1StackTransitionTracker {
 		}
 		
 		System.out.println("Counting using the 2nd structure: " + count2);
-		
+
+		BasicUniqueCheckImproved.debugUniqList = BasicUniqueCheckImproved.uniqList;
 
 		BasicUniqueCheckImproved.resetUniqList();
 		

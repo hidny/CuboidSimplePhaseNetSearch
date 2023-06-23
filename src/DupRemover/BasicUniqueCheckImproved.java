@@ -14,6 +14,8 @@ public class BasicUniqueCheckImproved {
 	public static int CHECK_SYMMETRIES_ONE_DIM_FACTOR = 2;
 
 	public static int MAX_WIDTH_PLUS_ONE = 256;
+
+	public static HashSet<BigInteger> debugUniqList = new HashSet<BigInteger>();
 	
 	public static HashSet<BigInteger> uniqList = new HashSet<BigInteger>();
 	public static BigInteger debugLastScore = null;
