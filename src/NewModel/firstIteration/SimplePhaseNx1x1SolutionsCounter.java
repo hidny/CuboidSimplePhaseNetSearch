@@ -1,4 +1,4 @@
-package NewModel;
+package NewModel.firstIteration;
 
 
 import java.math.BigInteger;
@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import Coord.Coord2D;
 import DupRemover.BasicUniqueCheckImproved;
+import NewModel.secondIteration.Nx1x1StackTransitionTracker;
 
 public class SimplePhaseNx1x1SolutionsCounter {
 
@@ -13,8 +14,6 @@ public class SimplePhaseNx1x1SolutionsCounter {
 	
 	
 	public static void main(String args[]) {
-		
-		
 		
 		
 		Nx1x1CuboidToFold curSimpleNet = new Nx1x1CuboidToFold(N);
@@ -62,6 +61,8 @@ public class SimplePhaseNx1x1SolutionsCounter {
 	public static int iterator = 0;
 	
 	public static void buildNet(Nx1x1CuboidToFold curSimpleNet, int numLevels) {
+
+		iterator++;
 		
 		if(numLevels > curSimpleNet.heightOfCuboid) {
 			
@@ -87,7 +88,6 @@ public class SimplePhaseNx1x1SolutionsCounter {
 			return;
 		}
 		
-		iterator++;
 		
 		
 		for(int i=0; i<Nx1x1CuboidToFold.levelOptions.length; i++) {

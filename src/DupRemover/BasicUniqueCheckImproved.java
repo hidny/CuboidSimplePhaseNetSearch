@@ -18,6 +18,10 @@ public class BasicUniqueCheckImproved {
 	public static HashSet<BigInteger> uniqList = new HashSet<BigInteger>();
 	public static BigInteger debugLastScore = null;
 	
+	public static void resetUniqList() {
+		uniqList = new HashSet<BigInteger>();
+	}
+	
 	public static boolean isUnique(Coord2D paperToDevelop[], boolean array[][]) {
 
 		int borders[] = Utils.getBorders(paperToDevelop);

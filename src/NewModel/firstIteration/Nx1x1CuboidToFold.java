@@ -1,4 +1,4 @@
-package NewModel;
+package NewModel.firstIteration;
 
 import Coord.Coord2D;
 import Model.CuboidToFoldOn;

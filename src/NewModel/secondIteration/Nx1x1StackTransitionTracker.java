@@ -1,6 +1,8 @@
-package NewModel;
+package NewModel.secondIteration;
 
 import DupRemover.BasicUniqueCheckImproved;
+import NewModel.firstIteration.Nx1x1CuboidToFold;
+import NewModel.firstIteration.SimplePhaseNx1x1SolutionsCounter;
 
 public class Nx1x1StackTransitionTracker {
 
@@ -18,7 +20,6 @@ public class Nx1x1StackTransitionTracker {
 	
 	//Start with recording allowed transition for the middle layers (ignore top and bottom layer for now)
 	//This transition table will hopefully make the search slightly faster by eliminating some bad stacks.
-	
 	public static final int MIN_NUMBER_THAT_WORKS = 4;
 	
 	public static void initAllowedTransitions() {
@@ -58,11 +59,14 @@ public class Nx1x1StackTransitionTracker {
 		
 		for(int i=0; i<Nx1x1StackTransitionTracker.allowedTransitions.length; i++) {
 			for(int j=0; j<Nx1x1StackTransitionTracker.allowedTransitions[i].length; j++) {
-				count2 += Nx1x1StackTransitionTracker.geTransitionListToLookup(i, j)[0].length;
+				count2 += Nx1x1StackTransitionTracker.getTransitionListToLookup(i, j)[0].length;
 			}
 		}
 		
 		System.out.println("Counting using the 2nd structure: " + count2);
+		
+
+		BasicUniqueCheckImproved.resetUniqList();
 		
 	}
 	
@@ -154,14 +158,14 @@ public class Nx1x1StackTransitionTracker {
 		
 	}
 	
-	public static int[][] geTransitionListToLookup(int levelOptionPrev, boolean prevGround[]) {
+	public static int[][] getTransitionListToLookup(int levelOptionPrev, boolean prevGround[]) {
 		
 		return listTransitionToGoBy[levelOptionPrev * NUM_GROUNDED_COMBOS + convertPrevGroundToIndex(prevGround)];
 		
 		
 	}
 	
-	public static int[][] geTransitionListToLookup(int levelOptionPrev,int prevGroundIndex) {
+	public static int[][] getTransitionListToLookup(int levelOptionPrev,int prevGroundIndex) {
 		
 		return listTransitionToGoBy[levelOptionPrev * NUM_GROUNDED_COMBOS + prevGroundIndex];
 		
