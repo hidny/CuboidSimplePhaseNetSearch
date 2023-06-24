@@ -6,7 +6,7 @@ import NewModel.firstIteration.Nx1x1CuboidToFold;
 
 public class SimplePhaseNx1x1SolutionCounterOnlyTransitions {
 
-	public static int N = 12;
+	public static int N = 10;
 	
 	//F(N) (but non-uniq)
 	// 16
@@ -24,10 +24,39 @@ public class SimplePhaseNx1x1SolutionCounterOnlyTransitions {
 	
 	//The sequence seems to be increasing exponentially by a factor of 9.4956227...
 	
-	// I think I could solve this with matrices (i.e. turn this into an eigenvector problem)
+	// I solved this with matrices (i.e. turn this into an eigenvector problem)
 	
-	// Note that I might've had a transcription error.
-	// I might recalc later.
+	/*
+	 * Entries for the matrics were found in the prints of Nx1x1StackTransitionTracker2:
+"(0, 15, 0, 15): 7
+(...)
+(3, 12, 3, 12): 1"
+
+Resultant Matrix M =
+7  2  1  2  2  1  2
+1  1  0  1  0  1  0
+2  0  1  0  1  0  1
+2  1  0  1  0  1  0
+2  0  1  0  1  0  1
+2  1  0  1  0  1  0
+1  0  1  0  1  0  1
+
+Formula derived by hand:
+F(n) = 16 * (1  0  0  .. 0) M (1)
+                              (0)
+                              (0)
+                              (0)
+                              (...)
+                              
+I googled for the eigenvectors and eigenvalues...
+// https://matrixcalc.org/ gives this:
+//		9.4956226893
+//So the sequence grows exponentially by a factor of about 9.4956226893
+ * or: 9.49562268930808697738316414143286398511459028140825...
+ * 
+ * I also took pictures and got the exact form from wolframalpha.
+	 */
+	
 	
 	
 	public static void main(String args[]) {

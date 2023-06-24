@@ -1,5 +1,9 @@
 package NewModel.thirdIteration;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import Coord.Coord2D;
 import DupRemover.BasicUniqueCheckImproved;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
 import NewModel.firstIteration.SimplePhaseNx1x1SolutionsCounter;
@@ -91,7 +95,63 @@ public class Nx1x1StackTransitionTracker2 {
 		System.out.println("Counting using the 2nd structure: " + count2);
 
 		BasicUniqueCheckImproved.debugUniqList = BasicUniqueCheckImproved.uniqList;
+		
+		
 
+		System.out.println("Trying to get matrix:");
+		
+		HashSet<String> stateWithTransitions = new HashSet<String>();
+		int count3 = 0;
+		
+		for(int i=0; i<Nx1x1StackTransitionTracker2.transitionTable.length; i++) {
+			for(int j=0; j<Nx1x1StackTransitionTracker2.transitionTable[i].length; j++) {
+				for(int k=0; k<Nx1x1StackTransitionTracker2.transitionTable[i][j].length; k++) {
+					for(int m=0; m<Nx1x1StackTransitionTracker2.transitionTable[i][j][k].length; m++) {
+						
+						if(Nx1x1StackTransitionTracker2.transitionTable[i][j][k][m] >= 0) {
+							stateWithTransitions.add(i + "," + j);
+						}
+					}
+				}
+			}
+		}
+		
+		//Debug get matrix:
+		for(int i=0; i<Nx1x1StackTransitionTracker2.transitionTable.length; i++) {
+			for(int j=0; j<Nx1x1StackTransitionTracker2.transitionTable[i].length; j++) {
+				
+				if(! stateWithTransitions.contains(i + "," + j)) {
+					continue;
+				}
+				
+				int sum[][] = new int[NUM_LEVEL_OPTIONS][NUM_GROUNDED_COMBOS];
+				for(int k=0; k<Nx1x1StackTransitionTracker2.transitionTable[i][j].length; k++) {
+					for(int m=0; m<Nx1x1StackTransitionTracker2.transitionTable[i][j][k].length; m++) {
+						
+						if(Nx1x1StackTransitionTracker2.transitionTable[i][j][k][m] >= 0) {
+							//System.out.println("(" + i + ", " + j + ", " + k + ", " + m+ "): " + Nx1x1StackTransitionTracker2.transitionTable[i][j][k][m]);
+							sum[k][Nx1x1StackTransitionTracker2.transitionTable[i][j][k][m]]++;
+							count3++;
+						}
+						
+					}
+					
+					
+				}
+				
+				for(int k=0; k<sum.length; k++) {
+					for(int n=0; n<sum[0].length; n++) {
+						if(stateWithTransitions.contains(k + "," + n)) {
+							System.out.println("(" + i + ", " + j + ", " + k + ", " + n + "): " + sum[k][n]);
+						}
+					}
+				}
+				System.out.println();
+			}
+		}
+		
+		System.out.println("count3: " + count3);
+		
 		BasicUniqueCheckImproved.resetUniqList();
 		
 	}
