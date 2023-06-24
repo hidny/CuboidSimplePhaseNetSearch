@@ -20,14 +20,15 @@ public class Nx1x1StackTransitionTracker {
 	
 	//Start with recording allowed transition for the middle layers (ignore top and bottom layer for now)
 	//This transition table will hopefully make the search slightly faster by eliminating some bad stacks.
+	
 	public static final int MIN_NUMBER_THAT_WORKS = 4;
-	public static final int DEBUG_NUMBER_THAT_WORKS = 5;
+	//public static final int DEBUG_NUMBER_THAT_WORKS = 5;
 	
 	public static void initAllowedTransitions() {
 		
 		//Once N >= 4, the magic number is 45. It reminds me of Trump. That's depressing.
 
-		Nx1x1CuboidToFold curSimpleNet = new Nx1x1CuboidToFold(DEBUG_NUMBER_THAT_WORKS);
+		Nx1x1CuboidToFold curSimpleNet = new Nx1x1CuboidToFold(MIN_NUMBER_THAT_WORKS);
 		
 		SimplePhaseNx1x1SolutionsCounter.buildNet(curSimpleNet, 0);
 		
@@ -76,40 +77,38 @@ public class Nx1x1StackTransitionTracker {
 		
 		
 		for(int prevLevel=0; prevLevel < solution.heightOfCuboid - 1; prevLevel++) {
-			setAllowedTransition(solution.optionUsedPerLevel[prevLevel], solution.cellsGrounded[prevLevel], solution.optionUsedPerLevel[prevLevel + 1], solution.sideBump[prevLevel + 1]);
+			setAllowedTransition(solution.optionUsedPerLevel[prevLevel], solution.cellsGrounded[prevLevel], solution.cellsGroundedByLevelAbove[prevLevel], solution.optionUsedPerLevel[prevLevel + 1], solution.sideBump[prevLevel + 1]);
 		}
 	}
 	
 	//convert boolean array to number in a naive way for speed.
-	public static int convertPrevGroundToIndex(boolean prevGround[]) {
+	public static int convertPrevGroundToIndex(int levelOptionPrev, boolean prevGround[], boolean cellsGroundedByLevelAbove[]) {
 		int ret = 0;
 		
-		if(prevGround[0]) {
-			ret += 8;
-		}
-
-		if(prevGround[1]) {
-			ret += 4;
-		}
+		boolean levelOption[] = Nx1x1CuboidToFold.LEVEL_OPTIONS_BOOL[levelOptionPrev];
 		
-		if(prevGround[2]) {
-			ret += 2;
-		}
-		
-		if(prevGround[3]) {
-			ret += 1;
+		for(int i=0; i<levelOption.length; i++) {
+			if(levelOption[i]) {
+				
+				if(prevGround[i] && ! cellsGroundedByLevelAbove[i]) {
+					ret = 2*ret + 1;
+				} else {
+					ret = 2*ret;
+				}
+				
+			}
 		}
 
 		return ret;
 	}
 	
-	private static void setAllowedTransition(int levelOptionPrev, boolean prevGround[], int levelOptionCur, int sideBumpIndex) {
-		allowedTransitions[levelOptionPrev][convertPrevGroundToIndex(prevGround)][levelOptionCur][sideBumpIndex] = true;
+	private static void setAllowedTransition(int levelOptionPrev, boolean prevGround[], boolean cellsGroundedByLevelAbove[], int levelOptionCur, int sideBumpIndex) {
+		allowedTransitions[levelOptionPrev][convertPrevGroundToIndex(levelOptionPrev, prevGround, cellsGroundedByLevelAbove)][levelOptionCur][sideBumpIndex] = true;
 	}
 
-	public static boolean isAllowedTransition(int levelOptionPrev, boolean prevGround[], int levelOptionCur, int sideBumpIndex) {
+	public static boolean isAllowedTransition(int levelOptionPrev, boolean prevGround[], boolean cellsGroundedByLevelAbove[], int levelOptionCur, int sideBumpIndex) {
 		
-		return allowedTransitions[levelOptionPrev][convertPrevGroundToIndex(prevGround)][levelOptionCur][sideBumpIndex];
+		return allowedTransitions[levelOptionPrev][convertPrevGroundToIndex(levelOptionPrev, prevGround, cellsGroundedByLevelAbove)][levelOptionCur][sideBumpIndex];
 	}
 	
 	
@@ -160,9 +159,9 @@ public class Nx1x1StackTransitionTracker {
 		
 	}
 	
-	public static int[][] getTransitionListToLookup(int levelOptionPrev, boolean prevGround[]) {
+	public static int[][] getTransitionListToLookup(int levelOptionPrev, boolean prevGround[], boolean cellsGroundedByLevelAbove[]) {
 		
-		return listTransitionToGoBy[levelOptionPrev * NUM_GROUNDED_COMBOS + convertPrevGroundToIndex(prevGround)];
+		return listTransitionToGoBy[levelOptionPrev * NUM_GROUNDED_COMBOS + convertPrevGroundToIndex(levelOptionPrev, prevGround, cellsGroundedByLevelAbove)];
 		
 		
 	}

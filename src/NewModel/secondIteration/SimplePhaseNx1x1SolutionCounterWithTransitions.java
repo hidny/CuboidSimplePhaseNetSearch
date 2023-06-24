@@ -10,7 +10,7 @@ import NewModel.firstIteration.Nx1x1CuboidToFold;
 
 public class SimplePhaseNx1x1SolutionCounterWithTransitions {
 
-	public static int N = 5;
+	public static int N = 7;
 	
 	
 	public static void main(String args[]) {
@@ -32,6 +32,7 @@ public class SimplePhaseNx1x1SolutionCounterWithTransitions {
 
 		System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 		
+		/*
 		Iterator<BigInteger> iter = BasicUniqueCheckImproved.debugUniqList.iterator();
 		
 		System.out.println("Missing solutions:");
@@ -42,7 +43,7 @@ public class SimplePhaseNx1x1SolutionCounterWithTransitions {
 				System.out.println(next);
 				Utils.printFromSolutionCode(next);
 			}
-		}
+		}*/
 		
 		
 	}
@@ -119,16 +120,16 @@ public class SimplePhaseNx1x1SolutionCounterWithTransitions {
 			
 				//TODO: put all of this in a solution resolver (see Cuboid repo for example)
 				
-				System.out.println("Found solution:");
-				System.out.println(curSimpleNet);
+				//System.out.println("Found solution:");
+				//System.out.println(curSimpleNet);
 				
 				numSolutions++;
-				System.out.println("Num solutions so far: " + numSolutions);
+				//System.out.println("Num solutions so far: " + numSolutions);
 				
 				if(BasicUniqueCheckImproved.isUnique(getOppositeCornersOfNet(curSimpleNet.setupBoolArrayNet()), curSimpleNet.setupBoolArrayNet()) ){
-					System.out.println("Unique solution found");
-					System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
-					System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
+					//System.out.println("Unique solution found");
+					//System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
+					//System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
 				}
 				
 				//TODO: This should actually work and be put in a cuboid resolver
@@ -168,7 +169,7 @@ public class SimplePhaseNx1x1SolutionCounterWithTransitions {
 		
 		//TODO: this is redundant info:
 
-		int transitionList[][] = Nx1x1StackTransitionTracker.getTransitionListToLookup(curSimpleNet.optionUsedPerLevel[curLevelIndexToFill - 1], curSimpleNet.cellsGrounded[curLevelIndexToFill - 1]);
+		int transitionList[][] = Nx1x1StackTransitionTracker.getTransitionListToLookup(curSimpleNet.optionUsedPerLevel[curLevelIndexToFill - 1], curSimpleNet.cellsGrounded[curLevelIndexToFill - 1], curSimpleNet.cellsGroundedByLevelAbove[curLevelIndexToFill - 1]);
 		
 		
 		for(int i=0; i<transitionList[0].length; i++) {
