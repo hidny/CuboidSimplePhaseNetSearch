@@ -20,6 +20,7 @@ public class SimplePhaseNx1x1SolutionCounterOnlyTransitions {
 	// 762146480
 	// 7237055408
 	// 68720347536
+	// 652542491280
 	
 	//The sequence seems to be increasing exponentially by a factor of 9.4956227...
 	
