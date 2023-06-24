@@ -30,6 +30,7 @@ public class SimplePhaseNx1x1SolutionCounterWithTransitions {
 		buildNetStartingFromBottom(curSimpleNet);
 		
 
+		System.out.println("Num non-unique solutions found: " + numSolutions);
 		System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 		
 		/*
@@ -132,31 +133,27 @@ public class SimplePhaseNx1x1SolutionCounterWithTransitions {
 					//System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
 				}
 				
-				//TODO: This should actually work and be put in a cuboid resolver
-				Nx1x1StackTransitionTracker.setAllowedTransitions(curSimpleNet);
 	
 				//END TODO: put all of this in a solution resolver (see Cuboid repo for example)
 				
 			} else {
 				
-				//Adding the tippy-top level
-				for(int i=0; i<Nx1x1CuboidToFold.levelOptions.length; i++) {
+
+				//No need for levelOptions because we're just adding the top cell:
+				for(int j=0; j<Nx1x1CuboidToFold.NUM_SIDE_BUMP_OPTIONS; j++) {
 					
-					for(int j=0; j<Nx1x1CuboidToFold.NUM_SIDE_BUMP_OPTIONS; j++) {
-						
-						
-						//System.out.println( i + ", " + j);
-						Coord2D coord = new Coord2D(i, j);
-						
-						boolean legal = curSimpleNet.addNextLevel(coord, null);
-						
-						if(legal) {
-							buildNetNextLevel(curSimpleNet, curLevelIndexToFill + 1);
-						}
-						
-						curSimpleNet.removeTopLevel();
-						
+					
+					//System.out.println( i + ", " + j);
+					Coord2D coord = new Coord2D(0, j);
+					
+					boolean legal = curSimpleNet.addNextLevel(coord, null);
+					
+					if(legal) {
+						buildNetNextLevel(curSimpleNet, curLevelIndexToFill + 1);
 					}
+					
+					curSimpleNet.removeTopLevel();
+					
 				}
 				
 			}

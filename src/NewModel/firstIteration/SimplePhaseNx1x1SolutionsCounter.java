@@ -7,10 +7,20 @@ import java.util.Iterator;
 import Coord.Coord2D;
 import DupRemover.BasicUniqueCheckImproved;
 import NewModel.secondIteration.Nx1x1StackTransitionTracker;
+import NewModel.thirdIteration.Nx1x1StackTransitionTracker2;
 
 public class SimplePhaseNx1x1SolutionsCounter {
 
-	public static int N = 7;
+	public static int N = 4;
+	
+	//F(N):
+	// 6
+	// 36
+	// 278
+	// 2534
+	// 23604
+	// 223160
+	// 2114750
 	
 	
 	public static void main(String args[]) {
@@ -23,6 +33,8 @@ public class SimplePhaseNx1x1SolutionsCounter {
 		buildNet(curSimpleNet, 0);
 		
 
+
+		System.out.println("Num non-unique solutions found: " + numSolutions);
 		System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 		
 	}
@@ -82,6 +94,8 @@ public class SimplePhaseNx1x1SolutionsCounter {
 			
 			//TODO: This should actually work and be put in a cuboid resolver
 			Nx1x1StackTransitionTracker.setAllowedTransitions(curSimpleNet);
+			
+			Nx1x1StackTransitionTracker2.setAllowedTransitions(curSimpleNet);
 
 			//END TODO: put all of this in a solution resolver (see Cuboid repo for example)
 			

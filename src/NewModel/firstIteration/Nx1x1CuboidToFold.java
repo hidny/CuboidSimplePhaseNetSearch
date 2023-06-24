@@ -270,26 +270,12 @@ public class Nx1x1CuboidToFold {
 				
 				
 				if(this.numCellsGroundedPrevLevel[this.numLevelsUsed - 1] + numCellsTouchingAboveAndUngrounded < 4) {
-	              //System.out.println("WARNING: previous level isn't touching all 4 cells. (" + this.numCellsJoinedPrevLevel[this.numLevelsUsed - 1] + ")");
 					isMoveLegal = false;
 					
-					//System.out.println("FALSE");
-					//this.numLevelsUsed++;
-					//System.out.print(this);
-					//this.numLevelsUsed--;
-					
-					//System.exit(1);
 					
 				} else if(this.numCellsGroundedPrevLevel[this.numLevelsUsed - 1] + numCellsTouchingAboveAndUngrounded > 4) {
 					System.out.println("AAH! More than 4 cells in a row.");
 					System.exit(1);
-				} else {
-					
-					//System.out.println("Hello");
-					//this.numLevelsUsed++;
-					//System.out.print(this);
-					//this.numLevelsUsed--;
-					//System.exit(1);
 				}
 				
 			}
@@ -298,9 +284,6 @@ public class Nx1x1CuboidToFold {
 		
 		this.numLevelsUsed++;
 		
-		if(isMoveLegal == false) {
-			//System.out.println("Move not legal");
-		}
 		return isMoveLegal;
 	}
 	
