@@ -41,12 +41,15 @@ Resultant Matrix M =
 2  1  0  1  0  1  0
 1  0  1  0  1  0  1
 
+
 Formula derived by hand:
-F(n) = 16 * (1  0  0  .. 0) M (1)
-                              (0)
-                              (0)
-                              (0)
-                              (...)
+F(n) = 16 * (1  0  0  .. 0) M^(n) (1)
+                                  (0)
+                                  (0)
+                                  (0)
+                                  (...)
+                                  
+// Where n is the number of layers.
                               
 I googled for the eigenvectors and eigenvalues...
 // https://matrixcalc.org/ gives this:
@@ -131,22 +134,6 @@ I googled for the eigenvectors and eigenvalues...
 		iterator++;
 		
 		if(curLevelIndexToFill > dimensionN - 1) {
-			
-			/*
-			//Adding the tippy-top level
-			//Get Next grounded in transition list:
-			int transitionList[][] = Nx1x1StackTransitionTracker2.getTransitionListToLookup(optionUsedPrevLevel, prevGroundedIndex);
-			
-			
-			for(int i=0; i<transitionList[0].length; i++) {
-
-				//TODO: if top layer is grounded, 4 more solutions.
-				// I didn't bother with removing symmetry because it's not important yet.
-				if(transitionList[2][i] == LAYER_IS_GROUNDED_INDEX) {
-					numSolutions += 4;
-				}
-			
-			}*/
 			
 			if(prevGroundedIndex == LAYER_IS_GROUNDED_INDEX) {
 				numSolutions += 4;

@@ -9,6 +9,8 @@ public class Nx1x1CuboidToFold {
 	// 1) Only do legal stacks (if cells are isolated, then that's not ok)
 	// 2) Make a search to find simple phase solutions to Nx1x1 cuboids
 	// 3) Optimize the logic. (Make it memorize the output given a previous level, the number of isolated cells prev level, and whether or not it's the top level or the one before.)
+	
+	// UP TO:
 	// 4) Add another cuboid along
 	// 5) Find the # of simple phase solution to (5x1x1 and 3x2x1), and (7x1x1 and 3x3x1).
 	// 6) Add filters based on the way the 2nd cuboid is setup.

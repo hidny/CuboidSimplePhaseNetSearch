@@ -1,9 +1,7 @@
 package NewModel.thirdIteration;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
-import Coord.Coord2D;
 import DupRemover.BasicUniqueCheckImproved;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
 import NewModel.firstIteration.SimplePhaseNx1x1SolutionsCounter;
