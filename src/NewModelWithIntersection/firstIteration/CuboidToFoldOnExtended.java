@@ -27,6 +27,16 @@ public class CuboidToFoldOnExtended {
 	private int topLeftGroundedIndex = 0;
 	private int topLeftGroundRotationRelativeFlatMap = 0;
 	
+	//TODO: put into constructor
+	public void startBottomTODOConstructor(int bottomIndex, int bottomRotationRelativeFlatMap) {
+		this.topLeftGroundedIndex = bottomIndex;
+		this.topLeftGroundRotationRelativeFlatMap = bottomRotationRelativeFlatMap;
+		
+		cellsUsed[bottomIndex] = true;
+		rotationPaperRelativeToCuboidFlatMap[bottomIndex] = bottomRotationRelativeFlatMap;
+		
+	}
+	
 	//TODO
 	//Tmp array to avoid reinitiating it all the time:
 	private boolean tmpArray[];
@@ -122,19 +132,97 @@ public class CuboidToFoldOnExtended {
 	}
 	
 	
+	public void addNewLayer(int sideBump) {
+		
+		//TODO: memorize tmpArray and new grounded index + rot from here
+		int leftMostRelativeTopLeftGrounded = sideBump - 6;
+		
+		if( leftMostRelativeTopLeftGrounded < -3 || leftMostRelativeTopLeftGrounded > 3) {
+			System.out.println("ERROR: invalid move (1)");
+			System.exit(1);
+		}
+		
+
+		Coord2D nextGounded = null;
+		
+		if(leftMostRelativeTopLeftGrounded<=0) {
+			
+			Coord2D aboveGroundedTopLeft = tryAttachCellInDir(topLeftGroundedIndex, topLeftGroundRotationRelativeFlatMap, ABOVE);
+
+			cellsUsed[aboveGroundedTopLeft.i] = true;
+			rotationPaperRelativeToCuboidFlatMap[aboveGroundedTopLeft.i] = aboveGroundedTopLeft.j;
+			
+			Coord2D cur = aboveGroundedTopLeft;
+			//Go to left:
+			for(int i=0; i>leftMostRelativeTopLeftGrounded; i--) {
+				cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+				cellsUsed[cur.i] = true;
+				rotationPaperRelativeToCuboidFlatMap[cur.i] = cur.j;
+			}
+			
+			//TODO: put on non-is valid version
+			nextGounded = cur;
+			
+			cur = aboveGroundedTopLeft;
+			//Go to right:
+			for(int i=0; i<leftMostRelativeTopLeftGrounded + 3; i++) {
+				
+				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+				cellsUsed[cur.i] = true;
+				rotationPaperRelativeToCuboidFlatMap[cur.i] = cur.j;
+			}
+			
+		} else {
+			
+			Coord2D cur = new Coord2D(topLeftGroundedIndex, topLeftGroundRotationRelativeFlatMap);
+			//Go to right until there's a cell above:
+			
+			for(int i=0; i<leftMostRelativeTopLeftGrounded; i++) {
+
+				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+			}
+			
+			
+			Coord2D cellAbove = tryAttachCellInDir(cur.i, cur.j, ABOVE);
+
+			//TODO: put on non-is valid version
+			nextGounded = cellAbove;
+			
+			cellsUsed[cellAbove.i] = true;
+			rotationPaperRelativeToCuboidFlatMap[cellAbove.i] = cellAbove.j;
+			
+			cur = cellAbove;
+			//Go to right:
+			for(int i=0; i<3; i++) {
+				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+				cellsUsed[cur.i] = true;
+				rotationPaperRelativeToCuboidFlatMap[cur.i] = cur.j;
+			}
+			
+		}
+		//END TODO: memorize from here
+		
+		
+		this.topLeftGroundedIndex = nextGounded.i;
+		this.topLeftGroundRotationRelativeFlatMap = nextGounded.j;
+		
+	}
+	
+	
 
 	public static final int ABOVE = 0;
 	public static final int RIGHT = 1;
 	public static final int BELOW = 2;
 	public static final int LEFT = 3;
 	
-	public Coord2D tryAttachCellInDir(int curIndex, int rotationRelativeFlatMap, int dir) {
+	private Coord2D tryAttachCellInDir(int curIndex, int rotationRelativeFlatMap, int dir) {
 		CoordWithRotationAndIndex neighbours[] = this.getNeighbours(curIndex);
 		
-		System.out.println("Second neighbours:");
+		/*System.out.println("Second neighbours:");
 		for(int i=0; i<neighbours.length; i++) {
 			System.out.println(neighbours[i].getIndex() + ", " + neighbours[i].getRot());
 		}
+		*/
 		
 		int neighbourIndex = (rotationRelativeFlatMap + dir) % NUM_NEIGHBOURS;
 		curIndex = neighbours[neighbourIndex].getIndex();
@@ -145,7 +233,7 @@ public class CuboidToFoldOnExtended {
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
 	}
 	
-	public boolean addCells(Nx1x1CuboidToFold nx1x1Cuboid) {
+	public boolean addCellsPlanningComments(Nx1x1CuboidToFold nx1x1Cuboid) {
 		
 		//internal: topLeftGrounded index
 		//param: new layer's option and side bump
@@ -294,11 +382,199 @@ public class CuboidToFoldOnExtended {
 		}
 	}
 
+	
+	//TODO:
+	//Doesn't work because we don't have info about where cells are...
+	
+	public void debugPrintCuboidOnFlatPaperAndValidateIt(Nx1x1CuboidToFold reference, int startIndex) {
+		
+		int GRID_SIZE = 2*Utils.getTotalArea(this.getDimensions());
+		
+		boolean paperUsed[][] = new boolean[GRID_SIZE][GRID_SIZE];
+		int indexCuboidOnPaper[][] = new int[GRID_SIZE][GRID_SIZE];
+		
+		for(int i=0; i<paperUsed.length; i++) {
+			for(int j=0; j<paperUsed[0].length; j++) {
+				paperUsed[i][j] = false;
+				indexCuboidOnPaper[i][j] = -1;
+			}
+		}
+		
+		int START_I = GRID_SIZE/2;
+		int START_J = GRID_SIZE/2;
+
+		//Add first cell:
+		int curIndex = startIndex;
+		int curI = START_I;
+		int curJ = START_J;
+
+		paperUsed[curI][curJ] = true;
+		indexCuboidOnPaper[curI][curJ] = curIndex;
+		
+		//TODO: rework this later:
+		for(int i=0; i<reference.numLevelsUsed; i++) {
+			
+			System.out.println("Print layer: i = " + i);
+			int firstindexPrevLayer = indexCuboidOnPaper[curI][curJ];
+			
+			curI--;
+			
+			for(int j=0; j<4; j++) {
+				paperUsed[curI][curJ + j - 6 + reference.sideBump[i]] = true;
+				indexCuboidOnPaper[curI][curJ + j - 6 + reference.sideBump[i]] = getIndexOnLayerForJthCell(j, firstindexPrevLayer, reference.sideBump[i]);
+			}
+			
+			curJ += reference.sideBump[i] - 6;
+
+			System.out.println("---");
+			Utils.printFold(paperUsed);
+			Utils.printFoldWithIndex(indexCuboidOnPaper);
+			System.out.println("---");
+		}
+		
+		//End insert cell
+		
+		
+		System.out.println("Last print:");
+		Utils.printFold(paperUsed);
+		Utils.printFoldWithIndex(indexCuboidOnPaper);
+	}
+	
+	//tODO: this will need to be reworked if we want to add different types of layers...
+	public int getIndexOnLayerForJthCell(int j, int firstindexPrevLayer, int sideBump) {
+		
+		int output[] = new int[4];
+
+		int leftMostRelativeTopLeftGrounded = sideBump - 6;
+		
+		if( leftMostRelativeTopLeftGrounded < -3 || leftMostRelativeTopLeftGrounded > 3) {
+			System.out.println("ERROR 1: side bump is obviously impossible");
+			System.exit(1);
+			return -1;
+		}
+		
+		//Coord2D nextGounded = null;
+		
+		if(leftMostRelativeTopLeftGrounded<=0) {
+			
+			Coord2D aboveGroundedTopLeft = tryAttachCellInDir(firstindexPrevLayer, this.getRotationPaperRelativeToMap(firstindexPrevLayer), ABOVE);
+
+			if( ! this.isCellIndexUsed(aboveGroundedTopLeft.i) ) {
+				System.out.println("ERROR 2: cell should be used");
+				System.exit(1);
+			}
+			output[0 - leftMostRelativeTopLeftGrounded] = aboveGroundedTopLeft.i;
+			
+			Coord2D cur = aboveGroundedTopLeft;
+			//Go to left:
+			for(int i=0; i>leftMostRelativeTopLeftGrounded; i--) {
+				cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+				
+				if( ! this.isCellIndexUsed(cur.i) ) {
+					System.out.println("ERROR 3: cell should be used");
+					System.exit(1);
+				}
+				output[(0 - leftMostRelativeTopLeftGrounded) - 1 - i] = cur.i;
+			}
+			
+			//TODO: put on non-is valid version
+			//nextGounded = cur;
+			
+			cur = aboveGroundedTopLeft;
+			//Go to right:
+			for(int i=0; i<leftMostRelativeTopLeftGrounded + 3; i++) {
+				
+				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+
+				if( ! this.isCellIndexUsed(cur.i) ) {
+					System.out.println("ERROR 4: cell should be used");
+					System.exit(1);
+				}
+
+				output[(0 - leftMostRelativeTopLeftGrounded) + 1 + i] = cur.i;
+			}
+			
+		} else {
+			
+			Coord2D cur = new Coord2D(topLeftGroundedIndex, topLeftGroundRotationRelativeFlatMap);
+			//Go to right until there's a cell above:
+			
+			for(int i=0; i<leftMostRelativeTopLeftGrounded; i++) {
+
+				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+			}
+			
+			
+			Coord2D cellAbove = tryAttachCellInDir(cur.i, cur.j, ABOVE);
+
+			//TODO: put on non-is valid version
+			//nextGounded = cellAbove;
+			
+
+			if( ! this.isCellIndexUsed(cellAbove.i) ) {
+				System.out.println("ERROR 5: cell should be used");
+				System.exit(1);
+			}
+			output[0] = cellAbove.i;
+			
+			cur = cellAbove;
+			//Go to right:
+			for(int i=0; i<3; i++) {
+				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+				
+				if( ! this.isCellIndexUsed(cur.i) ) {
+					System.out.println("ERROR 6: cell should be used");
+					System.exit(1);
+				}
+				
+				output[i + 1] = cur.i;
+			}
+			
+		}
+		
+		return output[j];
+	}
+	
+	
 
 	//TODO: play around and test it!
 	public static void main(String args[]) {
 		
+		CuboidToFoldOnExtended cuboidToBuild = new CuboidToFoldOnExtended(3, 2, 1);
+		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(5);
 		
+		int otherCuboidStartIndex = 0;
+		
+		reference.addNextLevel(new Coord2D(0, 6), null);
+		reference.addNextLevel(new Coord2D(0, 6), null);
+		reference.addNextLevel(new Coord2D(0, 6), null);
+		int bottomIndex = 0;
+		int bottomRotationRelativeFlatMap = 0;
+		
+		cuboidToBuild.startBottomTODOConstructor(bottomIndex, bottomRotationRelativeFlatMap);
+		if(cuboidToBuild.isNewLayerValidSimple(6)){
+			System.out.println("Valid 1");
+		}
+		cuboidToBuild.addNewLayer(6);
+		
+		if(cuboidToBuild.isNewLayerValidSimple(6)){
+			System.out.println("Valid 2");
+		}
+		cuboidToBuild.addNewLayer(6);
+		
+		if(cuboidToBuild.isNewLayerValidSimple(6)){
+			System.out.println("Valid 3");
+		}
+		cuboidToBuild.addNewLayer(6);
+		
+		if(cuboidToBuild.isNewLayerValidSimple(6)){
+			System.out.println("Error: Valid when it should not be...");
+		} else {
+			System.out.println("4th time is correctly invalid...");
+		}
+		
+		System.out.println("HELLO");
+		cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference, otherCuboidStartIndex);
 	}
 	
 	
@@ -359,11 +635,12 @@ public class CuboidToFoldOnExtended {
 		//Add Above cell/layer:
 		neighbours = cuboidToBuild.getNeighbours(curIndex);
 		
+		/*
 		System.out.println("Second neighbours:");
 		for(int i=0; i<neighbours.length; i++) {
 			System.out.println(neighbours[i].getIndex() + ", " + neighbours[i].getRot());
 		}
-		
+		*/
 		
 		curIndex = neighbours[curRotation].getIndex();
 		curRotation = (curRotation + neighbours[curRotation].getRot() + NUM_NEIGHBOURS) % NUM_NEIGHBOURS;
