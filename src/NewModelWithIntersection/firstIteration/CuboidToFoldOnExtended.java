@@ -496,7 +496,7 @@ public class CuboidToFoldOnExtended {
 			
 		} else {
 			
-			Coord2D cur = new Coord2D(topLeftGroundedIndex, topLeftGroundRotationRelativeFlatMap);
+			Coord2D cur = new Coord2D(firstindexPrevLayer, this.getRotationPaperRelativeToMap(firstindexPrevLayer));
 			//Go to right until there's a cell above:
 			
 			for(int i=0; i<leftMostRelativeTopLeftGrounded; i++) {
@@ -539,7 +539,50 @@ public class CuboidToFoldOnExtended {
 
 	//TODO: play around and test it!
 	public static void main(String args[]) {
+
+	}
+	
+	public static void testStackSkew() {
+
+		CuboidToFoldOnExtended cuboidToBuild = new CuboidToFoldOnExtended(3, 2, 1);
+		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(5);
 		
+		int otherCuboidStartIndex = 0;
+		
+		reference.addNextLevel(new Coord2D(0, 5), null);
+		reference.addNextLevel(new Coord2D(0, 7), null);
+		reference.addNextLevel(new Coord2D(0, 5), null);
+		int bottomIndex = 0;
+		int bottomRotationRelativeFlatMap = 0;
+		
+		cuboidToBuild.startBottomTODOConstructor(bottomIndex, bottomRotationRelativeFlatMap);
+		if(cuboidToBuild.isNewLayerValidSimple(5)){
+			System.out.println("Valid 1");
+		}
+		cuboidToBuild.addNewLayer(5);
+		
+		if(cuboidToBuild.isNewLayerValidSimple(7)){
+			System.out.println("Valid 2");
+		}
+		cuboidToBuild.addNewLayer(7);
+		
+		if(cuboidToBuild.isNewLayerValidSimple(5)){
+			System.out.println("Valid 3");
+		}
+		cuboidToBuild.addNewLayer(5);
+		
+		if(cuboidToBuild.isNewLayerValidSimple(6)){
+			System.out.println("Error: Valid when it should not be...");
+		} else {
+			System.out.println("4th time is correctly invalid...");
+		}
+		
+		System.out.println("HELLO");
+		cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference, otherCuboidStartIndex);
+	}
+	
+	public static void testStackOnTop() {
+
 		CuboidToFoldOnExtended cuboidToBuild = new CuboidToFoldOnExtended(3, 2, 1);
 		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(5);
 		
