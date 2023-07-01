@@ -1,38 +1,36 @@
 package NewModelWithIntersection.firstIteration;
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;
+import Model.CuboidToFoldOn;
 import Model.NeighbourGraphCreator;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
 import NewModel.thirdIteration.Nx1x1StackTransitionTracker2;
 
-public class CuboidToFoldOnExtended {
+public class CuboidToFoldOnExtended extends CuboidToFoldOn {
 
 	public static final int SIDES_CUBOID = 6;
 
 	public static final int NUM_NEIGHBOURS = 4;
-	
-	private boolean cellsUsed[];
-	private int rotationPaperRelativeToCuboidFlatMap[];
-	
-
-	
-	
-	private CoordWithRotationAndIndex[][] neighbours;
-	
-	private int dimensions[] = new int[3];
 	
 	// ######################
 	
 	private int topLeftGroundedIndex = 0;
 	private int topLeftGroundRotationRelativeFlatMap = 0;
 	
+	private int origBottomIndex;
+	private int origBottomRotation;
+	
 	//TODO: put into constructor
-	public void startBottomTODOConstructor(int bottomIndex, int bottomRotationRelativeFlatMap) {
+	public void initializeNewBottomIndexAndRotation(int bottomIndex, int bottomRotationRelativeFlatMap) {
+		
+		this.origBottomIndex = bottomIndex;
+		this.origBottomRotation = bottomRotationRelativeFlatMap;
+		
 		this.topLeftGroundedIndex = bottomIndex;
 		this.topLeftGroundRotationRelativeFlatMap = bottomRotationRelativeFlatMap;
 		
-		cellsUsed[bottomIndex] = true;
+		super.cellsUsed[bottomIndex] = true;
 		rotationPaperRelativeToCuboidFlatMap[bottomIndex] = bottomRotationRelativeFlatMap;
 		
 	}
@@ -302,17 +300,10 @@ public class CuboidToFoldOnExtended {
 	private Coord2D tryAttachCellInDir(int curIndex, int rotationRelativeFlatMap, int dir) {
 		CoordWithRotationAndIndex neighbours[] = this.getNeighbours(curIndex);
 		
-		/*System.out.println("Second neighbours:");
-		for(int i=0; i<neighbours.length; i++) {
-			System.out.println(neighbours[i].getIndex() + ", " + neighbours[i].getRot());
-		}
-		*/
-		
 		int neighbourIndex = (rotationRelativeFlatMap + dir) % NUM_NEIGHBOURS;
 		curIndex = neighbours[neighbourIndex].getIndex();
 		rotationRelativeFlatMap = (rotationRelativeFlatMap + neighbours[neighbourIndex].getRot() + NUM_NEIGHBOURS) % NUM_NEIGHBOURS;
 		
-
 		//TODO: don't allocate new mem for this! just have all possible coords in an array.
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
 	}
@@ -379,6 +370,8 @@ public class CuboidToFoldOnExtended {
 	
 	public CuboidToFoldOnExtended(int a, int b, int c) {
 
+		super(a, b, c);
+		
 		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c);
 		
 		cellsUsed = new boolean[Utils.getTotalArea(a, b, c)];
@@ -397,14 +390,12 @@ public class CuboidToFoldOnExtended {
 		tmpArray = new boolean[Utils.getTotalArea(a, b, c)];
 	}
 
-	//For debug:
-	public boolean[] getCellsUsed() {
-		return cellsUsed;
-	}
 
 	//Create same cuboid, but remove state info:
 	public CuboidToFoldOnExtended(CuboidToFoldOnExtended orig) {
 
+		super(orig);
+		
 		neighbours = orig.neighbours;
 		
 		cellsUsed = new boolean[orig.cellsUsed.length];
@@ -418,60 +409,11 @@ public class CuboidToFoldOnExtended {
 		dimensions = orig.dimensions;
 	}
 	
-	//Get dimensions for symmetry-resolver functions:
-	public int[] getDimensions() {
-		return dimensions;
-	}
-
-	public void setCell(int index, int rotation) {
-		if(cellsUsed[index]) {
-			System.out.println("Error: Setting cell when a cell is already activated!");
-			System.exit(1);
-		}
-		
-
-		cellsUsed[index] = true;
-		rotationPaperRelativeToCuboidFlatMap[index] = rotation;
-	}
-	
-	public void removeCell(int index) {
-		if(!cellsUsed[index]) {
-			System.out.println("Error: removing cell when a cell is not activated!");
-			System.exit(1);
-		}
-		
-		cellsUsed[index] = false;
-		rotationPaperRelativeToCuboidFlatMap[index] = -1;
-	}
-	
-	public int getNumCellsToFill() {
-		return cellsUsed.length;
-	}
-	
-	public CoordWithRotationAndIndex[] getNeighbours(int cellIndex) {
-		return neighbours[cellIndex];
-	}
-	
-	public int getRotationPaperRelativeToMap(int cellIndex) {
-		return rotationPaperRelativeToCuboidFlatMap[cellIndex];
-	}
-	
-	public boolean isCellIndexUsed(int cellIndex) {
-		return cellsUsed[cellIndex];
-	}
-	
-	public void resetState() {
-		for(int i=0; i<cellsUsed.length; i++) {
-			cellsUsed[i] = false;
-		}
-	}
-
-	
 	//TODO:
 	//Doesn't work because we don't have info about where cells are...
 	
 	//TODO: What about the start rotation dude?
-	public void debugPrintCuboidOnFlatPaperAndValidateIt(Nx1x1CuboidToFold reference, int startIndex) {
+	public void debugPrintCuboidOnFlatPaperAndValidateIt(Nx1x1CuboidToFold reference) {
 		
 		int GRID_SIZE = 2*Utils.getTotalArea(this.getDimensions());
 		
@@ -489,7 +431,7 @@ public class CuboidToFoldOnExtended {
 		int START_J = GRID_SIZE/2;
 
 		//Add first cell:
-		int curIndex = startIndex;
+		int curIndex = this.origBottomIndex;
 		int curI = START_I;
 		int curJ = START_J;
 
@@ -636,7 +578,7 @@ public class CuboidToFoldOnExtended {
 		int bottomIndex = 0;
 		int bottomRotationRelativeFlatMap = 0;
 		
-		cuboidToBuild.startBottomTODOConstructor(bottomIndex, bottomRotationRelativeFlatMap);
+		cuboidToBuild.initializeNewBottomIndexAndRotation(bottomIndex, bottomRotationRelativeFlatMap);
 		if(cuboidToBuild.isNewLayerValidSimple(5)){
 			System.out.println("Valid 1");
 		}
@@ -652,7 +594,7 @@ public class CuboidToFoldOnExtended {
 		}
 		cuboidToBuild.addNewLayer(5);
 		
-		cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference, otherCuboidStartIndex);
+		cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference);
 		
 		System.out.println("Num possible solutions: " + cuboidToBuild.getNumPossibleTopCellPositions());
 		
@@ -677,7 +619,7 @@ public class CuboidToFoldOnExtended {
 		int bottomIndex = 0;
 		int bottomRotationRelativeFlatMap = 0;
 		
-		cuboidToBuild.startBottomTODOConstructor(bottomIndex, bottomRotationRelativeFlatMap);
+		cuboidToBuild.initializeNewBottomIndexAndRotation(bottomIndex, bottomRotationRelativeFlatMap);
 		if(cuboidToBuild.isNewLayerValidSimple(5)){
 			System.out.println("Valid 1");
 		}
@@ -700,7 +642,7 @@ public class CuboidToFoldOnExtended {
 		}
 		
 		System.out.println("HELLO");
-		cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference, otherCuboidStartIndex);
+		cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference);
 		
 		
 	}
@@ -718,7 +660,7 @@ public class CuboidToFoldOnExtended {
 		int bottomIndex = 0;
 		int bottomRotationRelativeFlatMap = 0;
 		
-		cuboidToBuild.startBottomTODOConstructor(bottomIndex, bottomRotationRelativeFlatMap);
+		cuboidToBuild.initializeNewBottomIndexAndRotation(bottomIndex, bottomRotationRelativeFlatMap);
 		if(cuboidToBuild.isNewLayerValidSimple(6)){
 			System.out.println("Valid 1");
 		}
@@ -741,7 +683,7 @@ public class CuboidToFoldOnExtended {
 		}
 		
 		System.out.println("HELLO");
-		cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference, otherCuboidStartIndex);
+		cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference);
 		
 	}
 	

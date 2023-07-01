@@ -7,15 +7,15 @@ public class CuboidToFoldOn {
 
 	public static final int NUM_NEIGHBOURS = 4;
 	
-	private boolean cellsUsed[];
-	private int rotationPaperRelativeToCuboidFlatMap[];
+	protected boolean cellsUsed[];
+	protected int rotationPaperRelativeToCuboidFlatMap[];
 	
 
 	
 	
-	private CoordWithRotationAndIndex[][] neighbours;
+	protected CoordWithRotationAndIndex[][] neighbours;
 	
-	private int dimensions[] = new int[3];
+	protected int dimensions[] = new int[3];
 
 	
 	public CuboidToFoldOn(int a, int b, int c) {

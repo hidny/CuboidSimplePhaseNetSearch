@@ -1,13 +1,71 @@
 package NewModelWithIntersection.firstIteration;
 
+import java.util.ArrayList;
+
 import Coord.Coord2D;
+import GraphUtils.PivotCellDescription;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
 
 public class ReallySimpleIntersectFinder {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		reallySimpleSearch(6, 1, 1);
+		
+		//N: 5
+		//38460 solutions (Makes sense because it's Nx1x1)
+		//reallySimpleSearch(5, 1, 1);
+		
+		//26 solutions:
+		//reallySimpleSearch(3, 2, 1);
+
+		//N: 7
+		//6 solutions:
+		//reallySimpleSearch(3, 3, 1);
+		
+
+		//N: 8
+		//404 solutions:
+		//reallySimpleSearch(5, 2, 1);
+		
+
+		//N: 9
+		//42 solutions:
+		//reallySimpleSearch(4, 3, 1);
+		
+
+		//N: 10
+		//498 solutions:
+		//reallySimpleSearch(3, 3, 2);
+		
+		
+		//N: 11
+		//2364 solutions:
+		//reallySimpleSearch(5, 3, 1);
+		
+		//74 solutions
+		//reallySimpleSearch(7, 2, 1);
+		
+		
+		//N: 13
+		//680 solutions:
+		//reallySimpleSearch(3, 3, 3);
+		
+		//20 solutions:
+		//reallySimpleSearch(6, 3, 1);
+		
+		//N: 14
+		//16504 solutions (That's promising!)
+		//reallySimpleSearch(5, 4, 1);
+		//564 solutions
+		//reallySimpleSearch(9, 2, 1);
+		
+		//N:15
+		//reallySimpleSearch(5, 3, 2);
+		//reallySimpleSearch(7, 3, 1);
+		
+		//N: 17
+		//reallySimpleSearch(5, 5, 1);
+		//reallySimpleSearch(8, 3, 1);
+		reallySimpleSearch(11, 2, 1);
 	}
 
 	public static void reallySimpleSearch(int a, int b, int c) {
@@ -23,18 +81,32 @@ public class ReallySimpleIntersectFinder {
 		
 		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(NofNx1x1Cuboid);
 
-		//TODO: be able to vary other cuboid start index and rotation
-		//TODO: reuse PivotCell Description
-		int otherCuboidStartIndex = 0;
-		int otherCuboidStartRotation = 0;
 		
-		System.out.println("Start recursion:");
-		cuboidToBuild.startBottomTODOConstructor(otherCuboidStartIndex, otherCuboidStartRotation);
+		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescription.getUniqueRotationListsWithCellInfo(cuboidToBuild);
 		
-		long ret = findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
+		long ret = 0;
 		
+		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
+			
+			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
+			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
+			
+			System.out.println("Start recursion for other cuboid start index and rotation: (" + otherCuboidStartIndex + ", " + otherCuboidStartRotation + ")");
+			
+			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
+			
+			cuboidToBuild = new CuboidToFoldOnExtended(a, b, c);
+			cuboidToBuild.initializeNewBottomIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation);
+			
+			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
+			
+			System.out.println("Done with trying to intersect 2nd cuboid that has a start index of " + otherCuboidStartIndex + " and a rotation index of " + otherCuboidStartRotation +".");
+			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
+			
+		}
 		System.out.println("Done");
 		System.out.println("Found " + ret + " different solutions if we ignore symmetric solutions");
+		System.out.println();
 		
 	}
 	
@@ -48,7 +120,6 @@ public class ReallySimpleIntersectFinder {
 	
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtended cuboidToBuild, int layerIndex, int numLayers) {
 
-		System.out.println("Layer Index: " + layerIndex);
 		long ret = 0;
 		
 		if(layerIndex == numLayers) {
@@ -63,9 +134,7 @@ public class ReallySimpleIntersectFinder {
 				
 				if(ret > 0) {
 					System.out.println("Found " + ret + " places for top from this net:");
-					//TODO: 2nd argument is the 2nd cubuoid start index. (take it from cuboidToBuild)
-					//TODO: There should be a 3rd arg for 2nd cuboid rotation index.
-					cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference, 0);
+					cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference);
 					System.out.println("----");
 				}
 			}
@@ -83,11 +152,9 @@ public class ReallySimpleIntersectFinder {
 			if(cuboidToBuild.isNewLayerValidSimple(sideBump)) {
 				cuboidToBuild.addNewLayer(sideBump);
 				reference.addNextLevel(new Coord2D(0, sideBump), null);
-				
-				//TODO: recursion
+
 				ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndex + 1, numLayers);
-				
-				//TODO: remove new layer (TEST)
+	
 				cuboidToBuild.removePrevLayer(reference, layerIndex);
 				reference.removeCurrentTopLevel();
 			}
