@@ -131,6 +131,41 @@ public class CuboidToFoldOnExtended {
 		return true;
 	}
 	
+	public void removePrevLayer(Nx1x1CuboidToFold reference, int layerIndexToRemove) {
+		
+		Coord2D origGrounded = new Coord2D(topLeftGroundedIndex, topLeftGroundRotationRelativeFlatMap);
+		
+		Coord2D cur = origGrounded;
+		
+		for(int i=0; i<4; i++) {
+			cellsUsed[cur.i] = false;
+			cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+		}
+		
+		cur = origGrounded;
+		
+		if(reference.sideBump[layerIndexToRemove] <= 6) {
+
+			cur = tryAttachCellInDir(cur.i, cur.j, BELOW);
+			
+			for(int i=0; i<6 - reference.sideBump[layerIndexToRemove]; i++) {
+				cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+			}
+			
+			topLeftGroundedIndex = cur.i;
+			topLeftGroundRotationRelativeFlatMap = cur.j;
+		} else {
+			
+			for(int i=0; i<reference.sideBump[layerIndexToRemove] - 6; i++) {
+				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+			}
+			cur = tryAttachCellInDir(cur.i, cur.j, BELOW);
+			
+			topLeftGroundedIndex = cur.i;
+			topLeftGroundRotationRelativeFlatMap = cur.j;
+		}
+	}
+	
 	
 	public void addNewLayer(int sideBump) {
 		

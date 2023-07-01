@@ -120,7 +120,7 @@ I googled for the eigenvectors and eigenvalues...
 					buildNetNextLevel(1, i, groundedIndex, dimensionN);
 				}
 				
-				curSimpleNet.removeTopLevel();
+				curSimpleNet.removeCurrentTopLevel();
 				
 				
 			}

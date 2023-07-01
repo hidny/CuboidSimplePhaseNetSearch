@@ -104,7 +104,7 @@ public class SimplePhaseNx1x1SolutionCounterWithTransitions {
 					buildNetNextLevel(curSimpleNet, 1);
 				}
 				
-				curSimpleNet.removeTopLevel();
+				curSimpleNet.removeCurrentTopLevel();
 				
 			}
 		}
@@ -152,7 +152,7 @@ public class SimplePhaseNx1x1SolutionCounterWithTransitions {
 						buildNetNextLevel(curSimpleNet, curLevelIndexToFill + 1);
 					}
 					
-					curSimpleNet.removeTopLevel();
+					curSimpleNet.removeCurrentTopLevel();
 					
 				}
 				
@@ -183,7 +183,7 @@ public class SimplePhaseNx1x1SolutionCounterWithTransitions {
 				buildNetNextLevel(curSimpleNet, curLevelIndexToFill + 1);
 			}
 			
-			curSimpleNet.removeTopLevel();
+			curSimpleNet.removeCurrentTopLevel();
 			
 			
 		}

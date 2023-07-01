@@ -120,7 +120,7 @@ public class SimplePhaseNx1x1SolutionsCounter {
 					buildNet(curSimpleNet, numLevels + 1);
 				}
 				
-				curSimpleNet.removeTopLevel();
+				curSimpleNet.removeCurrentTopLevel();
 				
 				
 			}

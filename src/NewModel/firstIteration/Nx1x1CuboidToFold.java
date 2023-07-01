@@ -289,7 +289,7 @@ public class Nx1x1CuboidToFold {
 		return isMoveLegal;
 	}
 	
-	public void removeTopLevel() {
+	public void removeCurrentTopLevel() {
 		//In the name of efficiency, I'll be a bit dirty and not clean up everything:
 
 		this.numLevelsUsed--;
@@ -469,11 +469,11 @@ public class Nx1x1CuboidToFold {
 		tmp.addNextLevel(new Coord2D(0, 0), testCuboid);
 		System.out.println(tmp);
 		
-		tmp.removeTopLevel();
+		tmp.removeCurrentTopLevel();
 		System.out.println(tmp);
-		tmp.removeTopLevel();
+		tmp.removeCurrentTopLevel();
 		System.out.println(tmp);
-		tmp.removeTopLevel();
+		tmp.removeCurrentTopLevel();
 		System.out.println(tmp);
 		
 
@@ -486,11 +486,11 @@ public class Nx1x1CuboidToFold {
 		System.out.println(tmp);
 		
 
-		tmp.removeTopLevel();
+		tmp.removeCurrentTopLevel();
 		System.out.println(tmp);
-		tmp.removeTopLevel();
+		tmp.removeCurrentTopLevel();
 		System.out.println(tmp);
-		tmp.removeTopLevel();
+		tmp.removeCurrentTopLevel();
 		System.out.println(tmp);
 		
 		//Test 3: test multiple different level options.
