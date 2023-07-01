@@ -59,13 +59,15 @@ public class ReallySimpleIntersectFinder {
 		//reallySimpleSearch(9, 2, 1);
 		
 		//N:15
+		//722 solutions
 		//reallySimpleSearch(5, 3, 2);
+		//36 solutions
 		//reallySimpleSearch(7, 3, 1);
 		
 		//N: 17
-		//reallySimpleSearch(5, 5, 1);
+		reallySimpleSearch(5, 5, 1);
 		//reallySimpleSearch(8, 3, 1);
-		reallySimpleSearch(11, 2, 1);
+		//reallySimpleSearch(11, 2, 1);
 	}
 
 	public static void reallySimpleSearch(int a, int b, int c) {
