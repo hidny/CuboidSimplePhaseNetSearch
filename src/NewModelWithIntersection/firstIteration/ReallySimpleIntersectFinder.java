@@ -66,13 +66,14 @@ public class ReallySimpleIntersectFinder {
 					//TODO: 2nd argument is the 2nd cubuoid start index. (take it from cuboidToBuild)
 					//TODO: There should be a 3rd arg for 2nd cuboid rotation index.
 					cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference, 0);
+					System.out.println("----");
 				}
 			}
 			
 			return ret;
 		}
 		
-		for(int sideBump=6; sideBump <10; sideBump++) {
+		for(int sideBump=3; sideBump <10; sideBump++) {
 			
 			if(cuboidToBuild.isNewLayerValidSimple(sideBump)) {
 				cuboidToBuild.addNewLayer(sideBump);

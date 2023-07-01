@@ -144,11 +144,12 @@ public class CuboidToFoldOnExtended {
 		
 		cur = origGrounded;
 		
-		if(reference.sideBump[layerIndexToRemove] <= 6) {
+		if(reference.sideBump[layerIndexToRemove] > 6) {
+
 
 			cur = tryAttachCellInDir(cur.i, cur.j, BELOW);
 			
-			for(int i=0; i<6 - reference.sideBump[layerIndexToRemove]; i++) {
+			for(int i=0; i<reference.sideBump[layerIndexToRemove] - 6; i++) {
 				cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
 			}
 			
@@ -156,7 +157,7 @@ public class CuboidToFoldOnExtended {
 			topLeftGroundRotationRelativeFlatMap = cur.j;
 		} else {
 			
-			for(int i=0; i<reference.sideBump[layerIndexToRemove] - 6; i++) {
+			for(int i=0; i<6 - reference.sideBump[layerIndexToRemove]; i++) {
 				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
 			}
 			cur = tryAttachCellInDir(cur.i, cur.j, BELOW);
@@ -498,8 +499,9 @@ public class CuboidToFoldOnExtended {
 		//TODO: rework this later:
 		for(int i=0; i<reference.numLevelsUsed; i++) {
 			
-			System.out.println("Print layer: i = " + i);
+			//System.out.println("Print layer: i = " + i);
 			int firstindexPrevLayer = indexCuboidOnPaper[curI][curJ];
+			//System.out.println("firstindexPrevLayer: " + firstindexPrevLayer);
 			
 			curI--;
 			
@@ -510,10 +512,10 @@ public class CuboidToFoldOnExtended {
 			
 			curJ += reference.sideBump[i] - 6;
 
-			System.out.println("---");
-			Utils.printFold(paperUsed);
-			Utils.printFoldWithIndex(indexCuboidOnPaper);
-			System.out.println("---");
+			//System.out.println("---");
+			//Utils.printFold(paperUsed);
+			//Utils.printFoldWithIndex(indexCuboidOnPaper);
+			//System.out.println("---");
 		}
 		
 		//End insert cell
@@ -558,7 +560,7 @@ public class CuboidToFoldOnExtended {
 					System.out.println("ERROR 3: cell should be used");
 					System.exit(1);
 				}
-				output[(0 - leftMostRelativeTopLeftGrounded) - 1 - i] = cur.i;
+				output[(i - 1) - leftMostRelativeTopLeftGrounded] = cur.i;
 			}
 			
 			//TODO: put on non-is valid version
