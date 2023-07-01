@@ -7,7 +7,7 @@ public class ReallySimpleIntersectFinder {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		reallySimpleSearch(3, 1, 1);
+		reallySimpleSearch(6, 1, 1);
 	}
 
 	public static void reallySimpleSearch(int a, int b, int c) {
@@ -48,7 +48,7 @@ public class ReallySimpleIntersectFinder {
 	
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtended cuboidToBuild, int layerIndex, int numLayers) {
 
-		//System.out.println("Layer Index: " + layerIndex);
+		System.out.println("Layer Index: " + layerIndex);
 		long ret = 0;
 		
 		if(layerIndex == numLayers) {
@@ -74,6 +74,11 @@ public class ReallySimpleIntersectFinder {
 		}
 		
 		for(int sideBump=3; sideBump <10; sideBump++) {
+			if(layerIndex == 0 && sideBump > 6) {
+				//TODO: make it faster by only starting recursion on the next layer...
+				// I'm too lazy to do that for now.
+				break;
+			}
 			
 			if(cuboidToBuild.isNewLayerValidSimple(sideBump)) {
 				cuboidToBuild.addNewLayer(sideBump);
