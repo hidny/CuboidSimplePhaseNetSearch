@@ -36,7 +36,7 @@ public class CuboidToFoldOnExtended {
 		rotationPaperRelativeToCuboidFlatMap[bottomIndex] = bottomRotationRelativeFlatMap;
 		
 	}
-	
+
 	//TODO
 	//Tmp array to avoid reinitiating it all the time:
 	private boolean tmpArray[];
@@ -208,6 +208,54 @@ public class CuboidToFoldOnExtended {
 		
 	}
 	
+
+	//Pre: assuming it's the last layer and the final layer is the 4-in-a-row horizontal:
+	public int getNumPossibleTopCellPositions() {
+		
+		int ret = 0;
+		Coord2D cur = new Coord2D(topLeftGroundedIndex, topLeftGroundRotationRelativeFlatMap);
+		//Go to right until there's a cell above:
+
+		//TODO: add 4 in a row constant
+		for(int i=0; i<4; i++) {
+			
+			Coord2D cellAbove = tryAttachCellInDir(cur.i, cur.j, ABOVE);
+			
+			if( ! this.cellsUsed[cellAbove.i]) {
+				ret++;
+			}
+			
+			cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+		}
+		
+		
+		return ret;
+	}
+
+	public boolean tryToAddTopCell(int sideBump) {
+		
+		Coord2D cur = new Coord2D(topLeftGroundedIndex, topLeftGroundRotationRelativeFlatMap);
+		//Go to right until there's a cell above:
+
+		int leftMostRelativeTopLeftGrounded = sideBump - 6;
+		
+		if(leftMostRelativeTopLeftGrounded >= 0 && leftMostRelativeTopLeftGrounded < 4) {
+		
+			for(int i=0; i<leftMostRelativeTopLeftGrounded; i++) {
+	
+				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+			}
+			
+			Coord2D cellAbove = tryAttachCellInDir(cur.i, cur.j, ABOVE);
+			
+			
+			return ! this.cellsUsed[cellAbove.i];
+
+		} else {
+			return false;
+		}
+		
+	}
 	
 
 	public static final int ABOVE = 0;
@@ -386,6 +434,7 @@ public class CuboidToFoldOnExtended {
 	//TODO:
 	//Doesn't work because we don't have info about where cells are...
 	
+	//TODO: What about the start rotation dude?
 	public void debugPrintCuboidOnFlatPaperAndValidateIt(Nx1x1CuboidToFold reference, int startIndex) {
 		
 		int GRID_SIZE = 2*Utils.getTotalArea(this.getDimensions());
@@ -535,11 +584,47 @@ public class CuboidToFoldOnExtended {
 		return output[j];
 	}
 	
-	
+
 
 	//TODO: play around and test it!
 	public static void main(String args[]) {
+		CuboidToFoldOnExtended cuboidToBuild = new CuboidToFoldOnExtended(3, 2, 1);
+		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(5);
+		
+		int otherCuboidStartIndex = 0;
+		
+		reference.addNextLevel(new Coord2D(0, 5), null);
+		reference.addNextLevel(new Coord2D(0, 7), null);
+		reference.addNextLevel(new Coord2D(0, 5), null);
+		int bottomIndex = 0;
+		int bottomRotationRelativeFlatMap = 0;
+		
+		cuboidToBuild.startBottomTODOConstructor(bottomIndex, bottomRotationRelativeFlatMap);
+		if(cuboidToBuild.isNewLayerValidSimple(5)){
+			System.out.println("Valid 1");
+		}
+		cuboidToBuild.addNewLayer(5);
+		
+		if(cuboidToBuild.isNewLayerValidSimple(7)){
+			System.out.println("Valid 2");
+		}
+		cuboidToBuild.addNewLayer(7);
+		
+		if(cuboidToBuild.isNewLayerValidSimple(5)){
+			System.out.println("Valid 3");
+		}
+		cuboidToBuild.addNewLayer(5);
+		
+		cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference, otherCuboidStartIndex);
+		
+		System.out.println("Num possible solutions: " + cuboidToBuild.getNumPossibleTopCellPositions());
+		
 
+		for(int i=0; i<20; i++) {
+			if(cuboidToBuild.tryToAddTopCell(i)) {
+				System.out.println("Side bump " + i + " works for adding top cell");
+			}
+		}
 	}
 	
 	public static void testStackSkew() {
@@ -579,6 +664,8 @@ public class CuboidToFoldOnExtended {
 		
 		System.out.println("HELLO");
 		cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference, otherCuboidStartIndex);
+		
+		
 	}
 	
 	public static void testStackOnTop() {
@@ -618,6 +705,7 @@ public class CuboidToFoldOnExtended {
 		
 		System.out.println("HELLO");
 		cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference, otherCuboidStartIndex);
+		
 	}
 	
 	
