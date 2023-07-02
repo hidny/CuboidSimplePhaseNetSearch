@@ -3,8 +3,12 @@ package NewModelWithIntersection.firstIteration;
 import java.util.ArrayList;
 
 import Coord.Coord2D;
+import DupRemover.BasicUniqueCheckImproved;
 import GraphUtils.PivotCellDescription;
+import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
+import SolutionResolver.SolutionResolverInterface;
+import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
 public class ReallySimpleIntersectFinder {
 
@@ -65,10 +69,15 @@ public class ReallySimpleIntersectFinder {
 		//reallySimpleSearch(7, 3, 1);
 		
 		//N: 17
-		reallySimpleSearch(5, 5, 1);
+		// 115268 solutions
+		//reallySimpleSearch(5, 5, 1);
+		// 60 solutions
 		//reallySimpleSearch(8, 3, 1);
+		
 		//reallySimpleSearch(11, 2, 1);
 	}
+	
+	public static SolutionResolverInterface solutionResolver = new StandardResolverForSmallIntersectSolutions();
 
 	public static void reallySimpleSearch(int a, int b, int c) {
 		
@@ -109,6 +118,7 @@ public class ReallySimpleIntersectFinder {
 		System.out.println("Done");
 		System.out.println("Found " + ret + " different solutions if we ignore symmetric solutions");
 		System.out.println();
+		System.out.println("Found " + BasicUniqueCheckImproved.uniqList.size() + " unique solution.");
 		
 	}
 	
@@ -131,6 +141,16 @@ public class ReallySimpleIntersectFinder {
 				for(int sideBump=6; sideBump <10; sideBump++) {
 					if(cuboidToBuild.tryToAddTopCell(sideBump)) {
 						ret++;
+						
+						reference.addNextLevel(new Coord2D(0, sideBump), null);
+						if(BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
+							System.out.println("Unique solution found");
+							System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
+							
+							System.out.println(reference.toString());
+							System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
+						}
+						reference.removeCurrentTopLevel();
 					}
 				}
 				

@@ -358,4 +358,44 @@ public class Utils {
 			
 			return ret;
 		}
+		
+
+		public static Coord2D[] getOppositeCornersOfNet(boolean array[][]) {
+			
+			Coord2D corners[] = new Coord2D[2];
+			
+			int firsti = array.length;
+			int lasti = 0;
+			int firstj = array[0].length;
+			int lastj = 0;
+			
+			
+			for(int i = 0; i<array.length; i++) {
+				for(int j=0; j<array[0].length; j++) {
+					
+					if(array[i][j]) {
+						if(i > lasti) {
+							lasti = i;
+						}
+						if(i < firsti) {
+							firsti = i;
+						}
+						
+						if(j > lastj) {
+							lastj = j;
+						}
+						if(j < firstj) {
+							firstj = j;
+						}
+					}
+				}
+			}
+			
+			corners[0] = new Coord2D(firsti, firstj);
+			corners[1] = new Coord2D(lasti, lastj);
+			
+			
+			
+			return corners;
+		}
 }

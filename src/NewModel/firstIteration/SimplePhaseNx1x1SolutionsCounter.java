@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import Coord.Coord2D;
 import DupRemover.BasicUniqueCheckImproved;
+import Model.Utils;
 import NewModel.secondIteration.Nx1x1StackTransitionTracker;
 import NewModel.thirdIteration.Nx1x1StackTransitionTracker2;
 
@@ -86,7 +87,7 @@ public class SimplePhaseNx1x1SolutionsCounter {
 			numSolutions++;
 			//System.out.println("Num solutions so far: " + numSolutions);
 			
-			if(BasicUniqueCheckImproved.isUnique(getOppositeCornersOfNet(curSimpleNet.setupBoolArrayNet()), curSimpleNet.setupBoolArrayNet()) ){
+			if(BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(curSimpleNet.setupBoolArrayNet()), curSimpleNet.setupBoolArrayNet()) ){
 				//System.out.println("Unique solution found");
 				//System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 				//System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
@@ -136,42 +137,4 @@ public class SimplePhaseNx1x1SolutionsCounter {
 		
 	}
 	
-	public static Coord2D[] getOppositeCornersOfNet(boolean array[][]) {
-		
-		Coord2D corners[] = new Coord2D[2];
-		
-		int firsti = array.length;
-		int lasti = 0;
-		int firstj = array[0].length;
-		int lastj = 0;
-		
-		
-		for(int i = 0; i<array.length; i++) {
-			for(int j=0; j<array[0].length; j++) {
-				
-				if(array[i][j]) {
-					if(i > lasti) {
-						lasti = i;
-					}
-					if(i < firsti) {
-						firsti = i;
-					}
-					
-					if(j > lastj) {
-						lastj = j;
-					}
-					if(j < firstj) {
-						firstj = j;
-					}
-				}
-			}
-		}
-		
-		corners[0] = new Coord2D(firsti, firstj);
-		corners[1] = new Coord2D(lasti, lastj);
-		
-		
-		
-		return corners;
-	}
 }
