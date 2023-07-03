@@ -104,6 +104,20 @@ public class CuboidToFoldOnExtendedFaster extends CuboidToFoldOn {
 		curState[2] = curState[2] ^ tmp[2];
 	}
 	
+	
+	//TODO:
+	//pre: The only cell left is top cell:
+	public boolean isTopCellAbleToBeAddedFast() {
+		return false;
+	}
+
+	//TODO:
+	//pre: The only cell left is top cell:
+	public boolean isTopCellAbleToBeAddedForSideBumpFast(int sideBump) {
+		return false;
+	}
+	
+	
 	private boolean isNewLayerValidSimpleSlow(int sideBump) {
 		
 		boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
