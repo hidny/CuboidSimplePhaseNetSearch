@@ -71,7 +71,7 @@ public class ReallySimpleIntersectFinder {
 		//N: 17
 		// 115268 solutions
 		//reallySimpleSearch(5, 5, 1);
-		// 60 solutions
+		// 60 solutions (17 unique)
 		//reallySimpleSearch(8, 3, 1);
 		
 		//reallySimpleSearch(11, 2, 1);

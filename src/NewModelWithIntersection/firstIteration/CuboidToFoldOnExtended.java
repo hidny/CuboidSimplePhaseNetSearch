@@ -19,13 +19,10 @@ public class CuboidToFoldOnExtended extends CuboidToFoldOn {
 	private int topLeftGroundRotationRelativeFlatMap = 0;
 	
 	private int origBottomIndex;
-	private int origBottomRotation;
 	
-	//TODO: put into constructor
 	public void initializeNewBottomIndexAndRotation(int bottomIndex, int bottomRotationRelativeFlatMap) {
 		
 		this.origBottomIndex = bottomIndex;
-		this.origBottomRotation = bottomRotationRelativeFlatMap;
 		
 		this.topLeftGroundedIndex = bottomIndex;
 		this.topLeftGroundRotationRelativeFlatMap = bottomRotationRelativeFlatMap;
@@ -52,8 +49,6 @@ public class CuboidToFoldOnExtended extends CuboidToFoldOn {
 		for(int i=0; i<tmpArray.length; i++) {
 			tmpArray[i] = false;
 		}
-		
-		//Coord2D nextGounded = null;
 		
 		if(leftMostRelativeTopLeftGrounded<=0) {
 			
@@ -409,10 +404,6 @@ public class CuboidToFoldOnExtended extends CuboidToFoldOn {
 		dimensions = orig.dimensions;
 	}
 	
-	//TODO:
-	//Doesn't work because we don't have info about where cells are...
-	
-	//TODO: What about the start rotation dude?
 	public void debugPrintCuboidOnFlatPaperAndValidateIt(Nx1x1CuboidToFold reference) {
 		
 		int GRID_SIZE = 2*Utils.getTotalArea(this.getDimensions());
@@ -570,7 +561,6 @@ public class CuboidToFoldOnExtended extends CuboidToFoldOn {
 		CuboidToFoldOnExtended cuboidToBuild = new CuboidToFoldOnExtended(3, 2, 1);
 		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(5);
 		
-		int otherCuboidStartIndex = 0;
 		
 		reference.addNextLevel(new Coord2D(0, 5), null);
 		reference.addNextLevel(new Coord2D(0, 7), null);
@@ -611,7 +601,6 @@ public class CuboidToFoldOnExtended extends CuboidToFoldOn {
 		CuboidToFoldOnExtended cuboidToBuild = new CuboidToFoldOnExtended(3, 2, 1);
 		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(5);
 		
-		int otherCuboidStartIndex = 0;
 		
 		reference.addNextLevel(new Coord2D(0, 5), null);
 		reference.addNextLevel(new Coord2D(0, 7), null);
@@ -652,7 +641,6 @@ public class CuboidToFoldOnExtended extends CuboidToFoldOn {
 		CuboidToFoldOnExtended cuboidToBuild = new CuboidToFoldOnExtended(3, 2, 1);
 		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(5);
 		
-		int otherCuboidStartIndex = 0;
 		
 		reference.addNextLevel(new Coord2D(0, 6), null);
 		reference.addNextLevel(new Coord2D(0, 6), null);
@@ -754,7 +742,6 @@ public class CuboidToFoldOnExtended extends CuboidToFoldOn {
 		
 		curIndex = neighbours[curRotation].getIndex();
 		curRotation = (curRotation + neighbours[curRotation].getRot() + NUM_NEIGHBOURS) % NUM_NEIGHBOURS;
-		//TODO: is it + or -?
 		
 		cuboidToBuild.setCell(curIndex, curRotation);
 		
