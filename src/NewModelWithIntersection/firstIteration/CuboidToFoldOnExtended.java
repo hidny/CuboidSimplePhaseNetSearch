@@ -189,7 +189,7 @@ public class CuboidToFoldOnExtended extends CuboidToFoldOn {
 				rotationPaperRelativeToCuboidFlatMap[cur.i] = cur.j;
 			}
 			
-			//TODO: put on non-is valid version
+
 			nextGounded = cur;
 			
 			cur = aboveGroundedTopLeft;
@@ -214,7 +214,6 @@ public class CuboidToFoldOnExtended extends CuboidToFoldOn {
 			
 			Coord2D cellAbove = tryAttachCellInDir(cur.i, cur.j, ABOVE);
 
-			//TODO: put on non-is valid version
 			nextGounded = cellAbove;
 			
 			cellsUsed[cellAbove.i] = true;

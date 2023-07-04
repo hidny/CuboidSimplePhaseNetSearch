@@ -9,30 +9,25 @@ import NewModel.thirdIteration.Nx1x1StackTransitionTracker2;
 
 public class CuboidToFoldOnExtendedFaster extends CuboidToFoldOn {
 
-	public static final int SIDES_CUBOID = 6;
-
-	public static final int NUM_NEIGHBOURS = 4;
 	
 	// ######################
 	
-	private int topLeftGroundedIndex = 0;
-	private int topLeftGroundRotationRelativeFlatMap = 0;
-	
-	
+
+	public CuboidToFoldOnExtendedFaster(int a, int b, int c) {
+		super(a, b, c);
+		
+		DIM_N_OF_Nx1x1 = (Utils.getTotalArea(this.dimensions)-2) / 4;
+		
+		setupAnswerSheetInBetweenLayers();
+		setupAnswerSheetForTopCell();
+	}
+
 	public void initializeNewBottomIndexAndRotation(int bottomIndex, int bottomRotationRelativeFlatMap) {
 		
 		
 		this.topLeftGroundedIndex = bottomIndex;
 		this.topLeftGroundRotationRelativeFlatMap = bottomRotationRelativeFlatMap;
-		
-		answerSheet = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][NUM_LONGS_TO_USE];
-		
-		newGroundedRotationAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
-		
-		newGroundedIndexAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 
-		
-		DIM_N_OF_Nx1x1 = (Utils.getTotalArea(this.dimensions)-2) / 4;
 		prevSideBumps = new int[DIM_N_OF_Nx1x1];
 		prevGroundedIndexes = new int[DIM_N_OF_Nx1x1];
 		prevGroundedRotations = new int[DIM_N_OF_Nx1x1];
@@ -41,24 +36,41 @@ public class CuboidToFoldOnExtendedFaster extends CuboidToFoldOn {
 	}
 
 
+	//Constants:
+
+	//7 *2 -1
+	public static final int NUM_POSSIBLE_SIDE_BUMPS = 13;
+	
+	public static final int NUM_NEIGHBOURS = 4;
+	public static final int NUM_ROTATIONS = 4;
+	
+
+	public static final int BAD_ROTATION = -10;
+	public static final int BAD_INDEX = -20;
+	
 	private static final int NUM_BYTES_IN_LONG = 64;
 	private static final int NUM_LONGS_TO_USE = 3;
 	
-	private long curState[] = new long[NUM_LONGS_TO_USE];
-	
 	public static int NUM_SIDE_BUMP_OPTIONS = 15;
 	
-	private long answerSheet[][][][];
-	
-	private int newGroundedRotationAbove[][][];
-	
-	private int newGroundedIndexAbove[][][];
-	
-
-	private long answerSheetForTopCell[][][][];
-
+	//Variables to compute at construction time:
 	
 	private int DIM_N_OF_Nx1x1;
+	
+	private long answerSheet[][][][];
+	private int newGroundedIndexAbove[][][];
+	private int newGroundedRotationAbove[][][];
+	
+	private long answerSheetForTopCell[][][][];
+	private long answerSheetForTopCellAnySideBump[][][];
+
+
+	//State variables:
+	private long curState[] = new long[NUM_LONGS_TO_USE];
+
+	private int topLeftGroundedIndex = 0;
+	private int topLeftGroundRotationRelativeFlatMap = 0;
+	
 	private int prevSideBumps[];
 	private int prevGroundedIndexes[];
 	private int prevGroundedRotations[];
@@ -108,7 +120,10 @@ public class CuboidToFoldOnExtendedFaster extends CuboidToFoldOn {
 	//TODO:
 	//pre: The only cell left is top cell:
 	public boolean isTopCellAbleToBeAddedFast() {
-		return false;
+		
+		long tmp[] = answerSheetForTopCellAnySideBump[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap];
+		
+		return ((~curState[0] & tmp[0]) | (~curState[1] & tmp[1]) | (~curState[2] & tmp[2])) != 0;
 	}
 
 	//TODO:
@@ -118,110 +133,184 @@ public class CuboidToFoldOnExtendedFaster extends CuboidToFoldOn {
 	}
 	
 	
-	private boolean isNewLayerValidSimpleSlow(int sideBump) {
+	private void setupAnswerSheetInBetweenLayers() {
 		
-		boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
-		
-		//TODO: memorize tmpArray and new grounded index + rot from here
-		int leftMostRelativeTopLeftGrounded = sideBump - 6;
-		
-		if( leftMostRelativeTopLeftGrounded < -3 || leftMostRelativeTopLeftGrounded > 3) {
-			return false;
-		}
-		
+		answerSheet = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][NUM_LONGS_TO_USE];
+		newGroundedRotationAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
+		newGroundedIndexAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 
-		for(int i=0; i<tmpArray.length; i++) {
-			tmpArray[i] = false;
-		}
-		
-		if(leftMostRelativeTopLeftGrounded<=0) {
-			
-			Coord2D aboveGroundedTopLeft = tryAttachCellInDir(topLeftGroundedIndex, topLeftGroundRotationRelativeFlatMap, ABOVE);
-
-			tmpArray[aboveGroundedTopLeft.i] = true;
-			
-			Coord2D cur = aboveGroundedTopLeft;
-			//Go to left:
-			for(int i=0; i>leftMostRelativeTopLeftGrounded; i--) {
-				cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
-				tmpArray[cur.i] = true;
-			}
-			
-			//TODO: put on non-is valid version
-			//nextGounded = cur;
-			
-			cur = aboveGroundedTopLeft;
-			//Go to right:
-			for(int i=0; i<leftMostRelativeTopLeftGrounded + 3; i++) {
+		for(int index=0; index<Utils.getTotalArea(this.dimensions); index++) {
+			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 				
-				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
-				tmpArray[cur.i] = true;
+				for(int sideBump=0; sideBump<NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
+				
+					boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
+					
+					int leftMostRelativeTopLeftGrounded = sideBump - 6;
+					
+					if( leftMostRelativeTopLeftGrounded < -3 || leftMostRelativeTopLeftGrounded > 3) {
+						
+						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
+						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
+						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;						
+						continue;
+					}
+					
+			
+					for(int i=0; i<tmpArray.length; i++) {
+						tmpArray[i] = false;
+					}
+	
+					Coord2D nextGounded = null;
+					
+					if(leftMostRelativeTopLeftGrounded<=0) {
+						
+						Coord2D aboveGroundedTopLeft = tryAttachCellInDir(index, rotation, ABOVE);
+			
+						tmpArray[aboveGroundedTopLeft.i] = true;
+						
+						Coord2D cur = aboveGroundedTopLeft;
+						//Go to left:
+						for(int i=0; i>leftMostRelativeTopLeftGrounded; i--) {
+							cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+							tmpArray[cur.i] = true;
+						}
+						
+						nextGounded = cur;
+						
+						cur = aboveGroundedTopLeft;
+						//Go to right:
+						for(int i=0; i<leftMostRelativeTopLeftGrounded + 3; i++) {
+							
+							cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+							tmpArray[cur.i] = true;
+						}
+						
+					} else {
+						
+						Coord2D cur = new Coord2D(index, rotation);
+						//Go to right until there's a cell above:
+						
+						for(int i=0; i<leftMostRelativeTopLeftGrounded; i++) {
+							cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+						}
+						
+						
+						Coord2D cellAbove = tryAttachCellInDir(cur.i, cur.j, ABOVE);
+						
+						nextGounded = cellAbove;
+						
+						tmpArray[cellAbove.i] = true;
+						
+						cur = cellAbove;
+						//Go to right:
+						for(int i=0; i<3; i++) {
+							cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+							tmpArray[cur.i] = true;
+						}
+						
+					}
+					
+					answerSheet[index][rotation][sideBump] = convertBoolArrayToLongs(tmpArray);
+					newGroundedIndexAbove[index][rotation][sideBump] = nextGounded.i;
+					newGroundedRotationAbove[index][rotation][sideBump] = nextGounded.j;
+				}
 			}
-			
-		} else {
-			
-			Coord2D cur = new Coord2D(topLeftGroundedIndex, topLeftGroundRotationRelativeFlatMap);
-			//Go to right until there's a cell above:
-			
-			for(int i=0; i<leftMostRelativeTopLeftGrounded; i++) {
-
-				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
-			}
-			
-			
-			Coord2D cellAbove = tryAttachCellInDir(cur.i, cur.j, ABOVE);
-
-			//TODO: put on non-is valid version
-			//nextGounded = cellAbove;
-			
-			tmpArray[cellAbove.i] = true;
-			
-			cur = cellAbove;
-			//Go to right:
-			for(int i=0; i<3; i++) {
-				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
-				tmpArray[cur.i] = true;
-			}
-			
 		}
-		//END TODO: memorize from here
 		
-		
-		//this.topLeftGroundedIndex = nextGounded.i;
-		//this.topLeftGroundRotationRelativeFlatMap = nextGounded.j;
-		
-		return true;
 	}
 	
-	
 
-	//TODO: also memorize this...
-	public void tryToAddTopCellSlow(int sideBump) {
+	public void setupAnswerSheetForTopCell() {
 		
-		Coord2D cur = new Coord2D(topLeftGroundedIndex, topLeftGroundRotationRelativeFlatMap);
-		//Go to right until there's a cell above:
+		answerSheetForTopCell = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][NUM_LONGS_TO_USE];
+		answerSheetForTopCellAnySideBump = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_LONGS_TO_USE];
+		
+		for(int index=0; index<Utils.getTotalArea(this.dimensions); index++) {
+			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
+				
+				boolean tmpArrayForAnySideBump[] = new boolean[Utils.getTotalArea(this.dimensions)];
+				
+				for(int sideBump=0; sideBump<NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
+					
+					
+					Coord2D cur = new Coord2D(index, rotation);
+					//Go to right until there's a cell above:
+			
+					int leftMostRelativeTopLeftGrounded = sideBump - 6;
+					
+					if(leftMostRelativeTopLeftGrounded >= 0 && leftMostRelativeTopLeftGrounded < 4) {
+					
 
-		int leftMostRelativeTopLeftGrounded = sideBump - 6;
-		
-		if(leftMostRelativeTopLeftGrounded >= 0 && leftMostRelativeTopLeftGrounded < 4) {
-		
-			for(int i=0; i<leftMostRelativeTopLeftGrounded; i++) {
-	
-				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+						boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
+						
+						for(int i=0; i<leftMostRelativeTopLeftGrounded; i++) {
+				
+							cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+						}
+						
+						Coord2D cellAbove = tryAttachCellInDir(cur.i, cur.j, ABOVE);
+						
+						
+						tmpArray[cellAbove.i] = true;
+						tmpArrayForAnySideBump[cellAbove.i] = true;
+						
+						answerSheetForTopCell[index][rotation][sideBump] = convertBoolArrayToLongs(tmpArray);
+						//return ! this.cellsUsed[cellAbove.i];
+			
+					} else {
+						answerSheetForTopCell[index][rotation][sideBump] = setImpossibleForTopAnswerSheet();
+					}
+				}
+				
+				answerSheetForTopCellAnySideBump[index][rotation] = convertBoolArrayToLongs(tmpArrayForAnySideBump);
 			}
-			
-			Coord2D cellAbove = tryAttachCellInDir(cur.i, cur.j, ABOVE);
-			
-			
-			
-			//return ! this.cellsUsed[cellAbove.i];
-
-		} else {
-			//return false;
 		}
 		
 	}
+
 	
+	private long[] convertBoolArrayToLongs(boolean tmpArray[]) {
+		
+		//1st entry:
+		long ret[] = new long[NUM_LONGS_TO_USE];
+		
+		for(int i=0; i<ret.length; i++) {
+			ret[i] = 0;
+		}
+		
+		for(int i=0; i<tmpArray.length; i++) {
+			int indexArray = i / NUM_BYTES_IN_LONG;
+			int bitShift = (NUM_BYTES_IN_LONG - 1) - i - indexArray * NUM_BYTES_IN_LONG;
+			
+			ret[indexArray] = 1L << bitShift;
+		}
+		
+		
+		return ret;
+	}
+	
+	private static long[] setImpossibleForAnswerSheet() {
+		
+		long ret[] = new long[NUM_LONGS_TO_USE];
+		
+		for(int i=0; i<ret.length; i++) {
+			ret[i] = -1L;
+		}
+		
+		return ret;
+	}
+	
+	private static long[] setImpossibleForTopAnswerSheet() {
+		
+		long ret[] = new long[NUM_LONGS_TO_USE];
+		
+		for(int i=0; i<ret.length; i++) {
+			ret[i] = 0L;
+		}
+		
+		return ret;
+	}
 
 	public static final int ABOVE = 0;
 	public static final int RIGHT = 1;
@@ -239,14 +328,5 @@ public class CuboidToFoldOnExtendedFaster extends CuboidToFoldOn {
 	}
 	
 	
-	public CuboidToFoldOnExtendedFaster(int a, int b, int c) {
-		super(a, b, c);
-	}
 
-
-	//Create same cuboid, but remove state info:
-	public CuboidToFoldOnExtendedFaster(CuboidToFoldOnExtendedFaster orig) {
-		super(orig);
-		
-	}
 }
