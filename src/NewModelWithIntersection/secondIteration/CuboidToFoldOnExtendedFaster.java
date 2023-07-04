@@ -33,6 +33,9 @@ public class CuboidToFoldOnExtendedFaster extends CuboidToFoldOn {
 		prevGroundedRotations = new int[DIM_N_OF_Nx1x1];
 		currentLayerIndex = 0;
 		
+		boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
+		tmpArray[bottomIndex] = true;
+		this.curState = convertBoolArrayToLongs(tmpArray);
 	}
 
 
@@ -116,8 +119,6 @@ public class CuboidToFoldOnExtendedFaster extends CuboidToFoldOn {
 		curState[2] = curState[2] ^ tmp[2];
 	}
 	
-	
-	//TODO:
 	//pre: The only cell left is top cell:
 	public boolean isTopCellAbleToBeAddedFast() {
 		
@@ -126,10 +127,11 @@ public class CuboidToFoldOnExtendedFaster extends CuboidToFoldOn {
 		return ((~curState[0] & tmp[0]) | (~curState[1] & tmp[1]) | (~curState[2] & tmp[2])) != 0;
 	}
 
-	//TODO:
 	//pre: The only cell left is top cell:
 	public boolean isTopCellAbleToBeAddedForSideBumpFast(int sideBump) {
-		return false;
+		long tmp[] = answerSheetForTopCell[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
+		
+		return ((~curState[0] & tmp[0]) | (~curState[1] & tmp[1]) | (~curState[2] & tmp[2])) != 0;
 	}
 	
 	
@@ -280,10 +282,13 @@ public class CuboidToFoldOnExtendedFaster extends CuboidToFoldOn {
 		}
 		
 		for(int i=0; i<tmpArray.length; i++) {
-			int indexArray = i / NUM_BYTES_IN_LONG;
-			int bitShift = (NUM_BYTES_IN_LONG - 1) - i - indexArray * NUM_BYTES_IN_LONG;
 			
-			ret[indexArray] = 1L << bitShift;
+			if(tmpArray[i]) {
+				int indexArray = i / NUM_BYTES_IN_LONG;
+				int bitShift = (NUM_BYTES_IN_LONG - 1) - i - indexArray * NUM_BYTES_IN_LONG;
+				
+				ret[indexArray] += 1L << bitShift;
+			}
 		}
 		
 		
