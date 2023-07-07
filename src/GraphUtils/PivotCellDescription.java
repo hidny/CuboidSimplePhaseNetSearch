@@ -21,12 +21,12 @@ public class PivotCellDescription {
 	private int cellsBelow;
 	private int cellsLeft;
 	*/
-	private int lengthsAroundCell[] = new int[4];
+	protected int lengthsAroundCell[] = new int[4];
 	
 
 	//Maybe not needed, but I'll keep it just in case:
-	private int cellIndex;
-	private int rotationRelativeToCuboidMap;
+	protected int cellIndex;
+	protected int rotationRelativeToCuboidMap;
 	
 	public static final int NUM_ROTATIONS = 4;
 	

@@ -1,4 +1,4 @@
-package NewModelWithIntersection.secondIteration;
+package NewModelWithIntersection.thirdIterationBasicRegionSplitCheck;
 
 import java.math.BigInteger;
 import java.util.HashSet;
@@ -7,7 +7,7 @@ import java.util.Iterator;
 import DupRemover.BasicUniqueCheckImproved;
 import Model.Utils;
 
-public class GoForBrokeV2 {
+public class GoForBrokeV3 {
 
 	public static void main(String[] args) {
 		
@@ -26,19 +26,31 @@ public class GoForBrokeV2 {
 		//int check62[][] = new int[][]{{5, 3, 2}, {7, 3, 1}};
 		//goForBroke(check62);
 
-		
-		int check70[][] = new int[][]{{5, 5, 1}, {8, 3, 1}, {11, 2, 1}};
-		goForBroke(check70);
+
+		//Nothing found
+		//int check70[][] = new int[][]{{5, 5, 1}, {8, 3, 1}, {11, 2, 1}};
+		//goForBroke(check70);
 		
 		
 
-		int check78[][] = new int[][]{{5, 3, 3}, {7, 4, 1}, {9, 3, 1}};
-		goForBroke(check78);
+		//Nothing found
+		//int check78[][] = new int[][]{{5, 3, 3}, {7, 4, 1}, {9, 3, 1}};
+		//goForBroke(check78);
 		
 
-		int check82[][] = new int[][]{{6, 5, 1}, {7, 3, 2}, {13, 2, 1}};
-		goForBroke(check82);
+		//Nothing found
+		//int check82[][] = new int[][]{{6, 5, 1}, {7, 3, 2}, {13, 2, 1}};
+		//goForBroke(check82);
 		
+		// 6,3,3: Found 58891 unique solution.
+		//No triple :(
+		//int check90[][] = new int[][]{{5, 5, 2}, {6, 3, 3}};
+		//goForBroke(check90);
+		
+		
+		//15,2,1 112 diff solutions and 28 unique solutions.
+		int check94[][] = new int[][]{{15, 2, 1}, {11, 3, 1}, {7, 5, 1}, {5, 4, 3}};
+		goForBroke(check94);
 	}
 	
 	public static void goForBroke(int cuboids[][]) {
@@ -50,14 +62,15 @@ public class GoForBrokeV2 {
 		}
 
 		BasicUniqueCheckImproved.resetUniqList();
-		ReallySimpleIntersectFinder.reallySimpleSearch(cuboids[0][0], cuboids[0][1], cuboids[0][2]);
+		
+		ReallySimpleIntersectFinder2.reallySimpleSearch(cuboids[0][0], cuboids[0][1], cuboids[0][2]);
 		//ReallySimpleIntersectFinder.reallySimpleSearch(2, 1, 1);
 		HashSet<BigInteger> origList = BasicUniqueCheckImproved.uniqList;
 		
 		for(int i=1; i<cuboids.length; i++) {
 			BasicUniqueCheckImproved.resetUniqList();
 			
-			ReallySimpleIntersectFinder.reallySimpleSearch(cuboids[i][0], cuboids[i][1], cuboids[i][2]);
+			ReallySimpleIntersectFinder2.reallySimpleSearch(cuboids[i][0], cuboids[i][1], cuboids[i][2]);
 			//ReallySimpleIntersectFinder.reallySimpleSearch(2, 1, 1);
 			
 			Iterator<BigInteger> it = BasicUniqueCheckImproved.uniqList.iterator();

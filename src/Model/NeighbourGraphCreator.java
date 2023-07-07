@@ -52,7 +52,7 @@ public class NeighbourGraphCreator {
 				neighbours[i][j]  = neighboursTranspose[j][i];
 			}
 		}
-		
+		/*
 		for(int i=0; i<neighbours.length; i++) {
 			
 			System.out.println("Neighbours for " + i + ":");
@@ -78,7 +78,7 @@ public class NeighbourGraphCreator {
 			}
 			System.out.println();
 		}
-		
+		*/
 		return neighbours;
 	}
 	
