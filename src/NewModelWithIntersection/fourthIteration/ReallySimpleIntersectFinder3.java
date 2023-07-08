@@ -1,4 +1,4 @@
-package NewModelWithIntersection.thirdIterationBasicRegionSplitCheck;
+package NewModelWithIntersection.fourthIteration;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ import NewModel.firstIteration.Nx1x1CuboidToFold;
 import SolutionResolver.SolutionResolverInterface;
 import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
-public class ReallySimpleIntersectFinder2 {
+public class ReallySimpleIntersectFinder3 {
 
 	public static void main(String[] args) {
 		
@@ -96,24 +96,24 @@ public class ReallySimpleIntersectFinder2 {
 		//
 		
 		// N = 22
-		//{5, 5, 2}, {6, 3, 3}
+		//{5, 5, 2}, {6, 3, 3
 		//reallySimpleSearch(5, 5, 2);
 		
 		//reallySimpleSearch(6, 3, 3);
 		
 		// N = 23 (4 other ones...)
+		/*
+		 * 5 x 4 x 3: 94
+7 x 5 x 1: 94
+11 x 3 x 1: 94
+15 x 2 x 1: 94
+		 */
 		
 		 //11,3,1: (took about 20 hours)51 different solutions and  15 unique solution. 
 		//reallySimpleSearch(11, 3, 1);
 		
 		//5, 4, 3 118 different solutions and 61 unique solution.
 		//reallySimpleSearch(5, 4, 3);
-		
-			/*
-			7 x 5 x 1: 94
-			15 x 2 x 1: 94
-			 */
-		
 		// N = 25
 		/*
 		 * 7 x 3 x 3: 102
@@ -135,7 +135,7 @@ public class ReallySimpleIntersectFinder2 {
 		solutionResolver = new StandardResolverForSmallIntersectSolutions();
 		
 		
-		CuboidToFoldOnExtendedFaster2 cuboidToBuild = new CuboidToFoldOnExtendedFaster2(a, b, c);
+		CuboidToFoldOnExtendedFaster3 cuboidToBuild = new CuboidToFoldOnExtendedFaster3(a, b, c);
 		
 		if(cuboidToBuild.getNumCellsToFill() % 4 != 2) {
 			System.out.println("ERROR: trying to find intersect between Nx1x1 solution and a cuboid solution that doesn't have a surface area that matches any Nx1x1 cuboid.");
@@ -159,7 +159,7 @@ public class ReallySimpleIntersectFinder2 {
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
-			cuboidToBuild = new CuboidToFoldOnExtendedFaster2(a, b, c);
+			cuboidToBuild = new CuboidToFoldOnExtendedFaster3(a, b, c);
 			cuboidToBuild.initializeNewBottomIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation);
 			
 			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
@@ -176,15 +176,15 @@ public class ReallySimpleIntersectFinder2 {
 
 	}
 	
-	public static int getNumLayers(CuboidToFoldOnExtendedFaster2 cuboidToBuild) {
+	public static int getNumLayers(CuboidToFoldOnExtendedFaster3 cuboidToBuild) {
 		return (cuboidToBuild.getNumCellsToFill() - 2) / 4;
 	}
 	
-	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster2 cuboidToBuild) {
+	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster3 cuboidToBuild) {
 		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild));
 	}
 	
-	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster2 cuboidToBuild, int layerIndex, int numLayers) {
+	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster3 cuboidToBuild, int layerIndex, int numLayers) {
 
 		long ret = 0;
 		
