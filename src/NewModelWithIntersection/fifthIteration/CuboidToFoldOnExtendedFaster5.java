@@ -399,6 +399,22 @@ public class CuboidToFoldOnExtendedFaster5 extends CuboidToFoldOn {
 						//debugNum++;
 					}
 					
+					//cells touching corner to corner are also around new layer:
+					for(int dir2=0; dir2<NUM_ROTATIONS; dir2++) {
+						
+						if(dir2 % 2 == dir % 2) {
+							continue;
+						}
+						Coord2D cur2 = tryAttachCellInDir(cur.i, cur.j, dir2);
+						
+						if(tmpArray[cur2.i] == false) {
+							output[cur2.i] = true;
+							//debugNum++;
+						}
+						
+						
+					}
+					
 				}
 			}
 		}
