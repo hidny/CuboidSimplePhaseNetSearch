@@ -1,4 +1,4 @@
-package NewModelWithIntersection.fourthIteration;
+package NewModelWithIntersection.fifthIteration;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ import NewModel.firstIteration.Nx1x1CuboidToFold;
 import SolutionResolver.SolutionResolverInterface;
 import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
-public class ReallySimpleIntersectFinder3 {
+public class ReallySimpleIntersectFinder5 {
 
 	public static void main(String[] args) {
 		
@@ -135,7 +135,7 @@ public class ReallySimpleIntersectFinder3 {
 		solutionResolver = new StandardResolverForSmallIntersectSolutions();
 		
 		
-		CuboidToFoldOnExtendedFaster3 cuboidToBuild = new CuboidToFoldOnExtendedFaster3(a, b, c);
+		CuboidToFoldOnExtendedFaster5 cuboidToBuild = new CuboidToFoldOnExtendedFaster5(a, b, c);
 		
 		if(cuboidToBuild.getNumCellsToFill() % 4 != 2) {
 			System.out.println("ERROR: trying to find intersect between Nx1x1 solution and a cuboid solution that doesn't have a surface area that matches any Nx1x1 cuboid.");
@@ -159,7 +159,7 @@ public class ReallySimpleIntersectFinder3 {
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
-			cuboidToBuild = new CuboidToFoldOnExtendedFaster3(a, b, c);
+			cuboidToBuild = new CuboidToFoldOnExtendedFaster5(a, b, c);
 			cuboidToBuild.initializeNewBottomIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation);
 			
 			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
@@ -176,15 +176,15 @@ public class ReallySimpleIntersectFinder3 {
 
 	}
 	
-	public static int getNumLayers(CuboidToFoldOnExtendedFaster3 cuboidToBuild) {
+	public static int getNumLayers(CuboidToFoldOnExtendedFaster5 cuboidToBuild) {
 		return (cuboidToBuild.getNumCellsToFill() - 2) / 4;
 	}
 	
-	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster3 cuboidToBuild) {
+	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster5 cuboidToBuild) {
 		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild));
 	}
 	
-	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster3 cuboidToBuild, int layerIndex, int numLayers) {
+	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster5 cuboidToBuild, int layerIndex, int numLayers) {
 
 		long ret = 0;
 		
