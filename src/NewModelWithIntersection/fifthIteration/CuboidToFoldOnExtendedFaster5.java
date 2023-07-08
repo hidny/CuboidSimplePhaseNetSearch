@@ -105,27 +105,14 @@ public class CuboidToFoldOnExtendedFaster5 extends CuboidToFoldOn {
 
 		long checkAroundNewLayer[] = preComputedPossiblyEmptyCellsAroundNewLayer[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
 		
-		boolean debugShouldBeFalse = false;
 		if(((curState[0] & checkAroundNewLayer[0]) | (curState[1] & checkAroundNewLayer[1]) | (curState[2] & checkAroundNewLayer[2])) == 0L) {
-			
-			//if(this.currentLayerIndex == DEBUG_LAYER_INDEX) {
-				debugStop++;
-				
-				//if(debugStop % 1000L == 0L) {
-					//System.out.println(debugThru + " goes thru while " + debugStop + " get stopped.");
-					//System.out.println((100.0 * debugThru) / (1.0 * (debugThru + debugStop)) + "% thru rate");
-				//}
-				
-			//}
-			
-			debugShouldBeFalse = true;
-			//return false;
+			debugStop++;
+			return false;
 		}
-		//if(this.currentLayerIndex == DEBUG_LAYER_INDEX) {
-			debugThru++;
-		//}
 		
-		if(debugThru % 10000000L == 0L && debugThru > 0) {
+		debugThru++;
+		
+		if(debugThru % 1000000000L == 0L) {
 			System.out.println(debugThru + " goes thru while " + debugStop + " get stopped.");
 			System.out.println((100.0 * debugThru) / (1.0 * (debugThru + debugStop)) + "% thru rate");
 		}
@@ -187,11 +174,6 @@ public class CuboidToFoldOnExtendedFaster5 extends CuboidToFoldOn {
 		for(int i=0; i<tmpArray.length; i++) {
 			if( ! tmpArray[i] && ! explored[i]) {
 				
-				if(debugShouldBeFalse) {
-					System.out.println("DOH!");
-					//TODO: it's broken!
-					//TODO: print the state on the screen to see what's going on.
-				}
 				return true;
 			}
 		}
@@ -386,7 +368,6 @@ public class CuboidToFoldOnExtendedFaster5 extends CuboidToFoldOn {
 			output[i] = false;
 		}
 		
-		//int debugNum = 0;
 		for(int i=0; i<newLayerArray.length; i++) {
 			if(newLayerArray[i]) {
 				
@@ -396,7 +377,6 @@ public class CuboidToFoldOnExtendedFaster5 extends CuboidToFoldOn {
 					
 					if(tmpArray[cur.i] == false) {
 						output[cur.i] = true;
-						//debugNum++;
 					}
 					
 					//cells touching corner to corner are also around new layer:
@@ -409,7 +389,6 @@ public class CuboidToFoldOnExtendedFaster5 extends CuboidToFoldOn {
 						
 						if(tmpArray[cur2.i] == false) {
 							output[cur2.i] = true;
-							//debugNum++;
 						}
 						
 						
@@ -419,7 +398,6 @@ public class CuboidToFoldOnExtendedFaster5 extends CuboidToFoldOn {
 			}
 		}
 		
-		//System.out.println("DEBUG NUM: " + debugNum);
 		
 		return convertBoolArrayToLongs(output);
 	}

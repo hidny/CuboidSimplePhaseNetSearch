@@ -49,8 +49,8 @@ public class GoForBrokeV4 {
 		
 		
 		//15,2,1 112 diff solutions and 28 unique solutions.
-		//int check94[][] = new int[][]{{15, 2, 1}, {11, 3, 1}, {7, 5, 1}, {5, 4, 3}};
-		//goForBroke(check94);
+		int check94[][] = new int[][]{{5, 4, 3}, {11, 3, 1}, {15, 2, 1}, {7, 5, 1}};
+		goForBroke(check94);
 	}
 	
 	public static void goForBroke(int cuboids[][]) {
