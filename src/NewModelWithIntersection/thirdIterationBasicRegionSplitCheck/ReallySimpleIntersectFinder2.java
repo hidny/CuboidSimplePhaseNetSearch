@@ -102,10 +102,24 @@ public class ReallySimpleIntersectFinder2 {
 		//reallySimpleSearch(6, 3, 3);
 		
 		// N = 23 (4 other ones...)
+		/*
+		 * 5 x 4 x 3: 94
+7 x 5 x 1: 94
+11 x 3 x 1: 94
+15 x 2 x 1: 94
+		 */
 		
-		reallySimpleSearch(11, 3, 1);
+		 //11,3,1: (took about 20 hours)51 different solutions and  15 unique solution. 
+		//reallySimpleSearch(11, 3, 1);
+		
+		//5, 4, 3 118 different solutions and 61 unique solution.
+		reallySimpleSearch(5, 4, 3);
 		// N = 25
-		
+		/*
+		 * 7 x 3 x 3: 102
+9 x 3 x 2: 102
+12 x 3 x 1: 102
+		 */
 		// N = 26
 		
 		// N = 27
