@@ -3,32 +3,15 @@ package GraphUtils;
 import java.util.ArrayList;
 
 import Model.CuboidToFoldOn;
+import Model.CuboidToFoldOnInterface;
 
-public class PivotCellDescriptionForNx1x1 extends PivotCellDescription {
+public class PivotCellDescriptionForNx1x1 {
 
-	public PivotCellDescriptionForNx1x1(CuboidToFoldOn exampleCuboid, int cellNumber, int rotation) {
-		super(exampleCuboid, cellNumber, rotation);
-		// TODO Auto-generated constructor stub
-	}
 	
-	public static ArrayList<PivotCellDescription> getUniqueRotationListsWithCellInfo(CuboidToFoldOn exampleCuboid) {
+	public static ArrayList<PivotCellDescription> getUniqueRotationListsWithCellInfo(CuboidToFoldOnInterface exampleCuboid) {
 
+		ArrayList<PivotCellDescription> listPivots = PivotCellDescription.getUniqueRotationListsWithCellInfo(exampleCuboid, false);
 		ArrayList<PivotCellDescription> ret = new ArrayList<PivotCellDescription>();
-		
-		
-		ArrayList<PivotCellDescriptionForNx1x1> listPivots = new ArrayList<PivotCellDescriptionForNx1x1>();
-		
-		for(int i=0; i<Model.Utils.getTotalArea(exampleCuboid.getDimensions()); i++) {
-			
-			for(int j=0; j<NUM_ROTATIONS; j++) {
-				PivotCellDescriptionForNx1x1 tmp = new PivotCellDescriptionForNx1x1(exampleCuboid, i, j);
-			
-				listPivots.add(tmp);
-			
-			}
-			
-		}
-		
 		
 		//It could be made faster, but meh.
 		for(int i=0; i<listPivots.size(); i++) {
@@ -36,7 +19,7 @@ public class PivotCellDescriptionForNx1x1 extends PivotCellDescription {
 			boolean noMatchYet = true;
 			
 			for(int j=i-1; j>=0; j--) {
-				if(listPivots.get(i).rotationArrayMatches(listPivots.get(j))) {
+				if(rotationArrayMatchesForNx1x1(listPivots.get(i), listPivots.get(j))) {
 					noMatchYet = false;
 					break;
 				}
@@ -68,11 +51,11 @@ public class PivotCellDescriptionForNx1x1 extends PivotCellDescription {
 		return ret;
 	}
 
-	public boolean rotationArrayMatches(PivotCellDescription other) {
+	private static boolean rotationArrayMatchesForNx1x1(PivotCellDescription desc1, PivotCellDescription desc2) {
 		
 		boolean unreflectedMatchesSoFar = true;
-		for(int i=0; i<this.lengthsAroundCell.length; i++) {
-			if(this.lengthsAroundCell[i] != other.lengthsAroundCell[i]) {
+		for(int i=0; i<desc1.lengthsAroundCell.length; i++) {
+			if(desc1.lengthsAroundCell[i] != desc2.lengthsAroundCell[i]) {
 				unreflectedMatchesSoFar = false;
 				break;
 			}
@@ -83,10 +66,10 @@ public class PivotCellDescriptionForNx1x1 extends PivotCellDescription {
 		}
 		
 		//Accept side-by-side relections as the same
-		for(int i=0; i<this.lengthsAroundCell.length; i++) {
-			if( i % 2 == 1 && this.lengthsAroundCell[i] != other.lengthsAroundCell[this.lengthsAroundCell.length - i]) {
+		for(int i=0; i<desc1.lengthsAroundCell.length; i++) {
+			if( i % 2 == 1 && desc1.lengthsAroundCell[i] != desc2.lengthsAroundCell[desc1.lengthsAroundCell.length - i]) {
 				return false;
-			} else if(i % 2 == 0 && this.lengthsAroundCell[i] != other.lengthsAroundCell[i]) {
+			} else if(i % 2 == 0 && desc1.lengthsAroundCell[i] != desc2.lengthsAroundCell[i]) {
 				return false;
 			}
 		}

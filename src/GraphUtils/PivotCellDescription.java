@@ -3,6 +3,7 @@ package GraphUtils;
 import java.util.ArrayList;
 
 import Model.CuboidToFoldOn;
+import Model.CuboidToFoldOnInterface;
 
 public class PivotCellDescription {
 
@@ -30,7 +31,7 @@ public class PivotCellDescription {
 	
 	public static final int NUM_ROTATIONS = 4;
 	
-	public PivotCellDescription(CuboidToFoldOn exampleCuboid, int cellNumber, int rotation) {
+	public PivotCellDescription(CuboidToFoldOnInterface exampleCuboid, int cellNumber, int rotation) {
 		
 		
 		this.cellIndex = cellNumber;
@@ -118,7 +119,11 @@ Cell and rotation: 4 and 1
 		return true;
 	}
 
-	public static ArrayList<PivotCellDescription> getUniqueRotationListsWithCellInfo(CuboidToFoldOn exampleCuboid) {
+	public static ArrayList<PivotCellDescription> getUniqueRotationListsWithCellInfo(CuboidToFoldOnInterface exampleCuboid) {
+		return getUniqueRotationListsWithCellInfo(exampleCuboid, true);
+	}
+
+	public static ArrayList<PivotCellDescription> getUniqueRotationListsWithCellInfo(CuboidToFoldOnInterface exampleCuboid, boolean verbose) {
 		
 		ArrayList<PivotCellDescription> ret = new ArrayList<PivotCellDescription>();
 		
@@ -163,20 +168,22 @@ Cell and rotation: 4 and 1
 			}
 		}
 
-		System.out.println("Num unique pivot locations: " + ret.size());
-		System.out.println("Total area multiplied by 4 rotations: " + (4 * Model.Utils.getTotalArea(exampleCuboid.getDimensions())));
-		System.out.println();
-		
-
-		System.out.println("Unique rotation lists:");
-		for(int i=0; i<ret.size(); i++) {
-			
-			PivotCellDescription tmp = ret.get(i);
-			System.out.println("Cell and rotation: " + tmp.cellIndex + " and " + tmp.rotationRelativeToCuboidMap);
-			for(int k=0; k<tmp.lengthsAroundCell.length; k++) {
-				System.out.print(tmp.lengthsAroundCell[k] + ", ");
-			}
+		if(verbose) {
+			System.out.println("Num unique pivot locations: " + ret.size());
+			System.out.println("Total area multiplied by 4 rotations: " + (4 * Model.Utils.getTotalArea(exampleCuboid.getDimensions())));
 			System.out.println();
+			
+	
+			System.out.println("Unique rotation lists:");
+			for(int i=0; i<ret.size(); i++) {
+				
+				PivotCellDescription tmp = ret.get(i);
+				System.out.println("Cell and rotation: " + tmp.cellIndex + " and " + tmp.rotationRelativeToCuboidMap);
+				for(int k=0; k<tmp.lengthsAroundCell.length; k++) {
+					System.out.print(tmp.lengthsAroundCell[k] + ", ");
+				}
+				System.out.println();
+			}
 		}
 
 		return ret;

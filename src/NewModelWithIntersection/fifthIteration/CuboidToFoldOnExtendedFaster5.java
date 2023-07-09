@@ -4,26 +4,49 @@ import java.util.Queue;
 
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;
-import Model.CuboidToFoldOn;
+import Model.CuboidToFoldOnInterface;
 import Model.NeighbourGraphCreator;
 import Model.Utils;
-import NewModel.firstIteration.Nx1x1CuboidToFold;
-import NewModel.thirdIteration.Nx1x1StackTransitionTracker2;
 
-public class CuboidToFoldOnExtendedFaster5 extends CuboidToFoldOn {
+public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 
 	
-	// ######################
+	private CoordWithRotationAndIndex[][] neighbours;
 	
+	private int dimensions[] = new int[3];
 
+	
 	public CuboidToFoldOnExtendedFaster5(int a, int b, int c) {
-		super(a, b, c);
+
+		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c);
 		
+		
+		dimensions[0] = a;
+		dimensions[1] = b;
+		dimensions[2] = c;
+
 		DIM_N_OF_Nx1x1 = (Utils.getTotalArea(this.dimensions)-2) / 4;
 		
 		setupAnswerSheetInBetweenLayers();
 		setupAnswerSheetForTopCell();
 	}
+	
+	public int getNumCellsToFill() {
+		return Utils.getTotalArea(this.dimensions);
+	}
+	
+	public CoordWithRotationAndIndex[] getNeighbours(int cellIndex) {
+		return neighbours[cellIndex];
+	}
+	
+
+	@Override
+	public int[] getDimensions() {
+		// TODO Auto-generated method stub
+		return dimensions;
+	}
+	
+	
 
 	public void initializeNewBottomIndexAndRotation(int bottomIndex, int bottomRotationRelativeFlatMap) {
 		
@@ -503,7 +526,7 @@ public class CuboidToFoldOnExtendedFaster5 extends CuboidToFoldOn {
 	public static final int LEFT = 3;
 	
 	private Coord2D tryAttachCellInDir(int curIndex, int rotationRelativeFlatMap, int dir) {
-		CoordWithRotationAndIndex neighbours[] = this.getNeighbours(curIndex);
+		CoordWithRotationAndIndex neighbours[] = this.neighbours[curIndex];
 		
 		int neighbourIndex = (rotationRelativeFlatMap + dir) % NUM_NEIGHBOURS;
 		curIndex = neighbours[neighbourIndex].getIndex();
@@ -511,7 +534,7 @@ public class CuboidToFoldOnExtendedFaster5 extends CuboidToFoldOn {
 		
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
 	}
-	
+
 	
 
 }

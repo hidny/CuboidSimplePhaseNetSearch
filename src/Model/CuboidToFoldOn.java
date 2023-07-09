@@ -1,7 +1,7 @@
 package Model;
 import Coord.CoordWithRotationAndIndex;
 
-public class CuboidToFoldOn {
+public class CuboidToFoldOn implements CuboidToFoldOnInterface {
 
 	public static final int SIDES_CUBOID = 6;
 

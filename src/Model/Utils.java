@@ -65,7 +65,7 @@ public class Utils {
 	}
 	
 
-	public static int getSideCell(CuboidToFoldOn inputCuboid, int cellIndex) {
+	public static int getSideCell(CuboidToFoldOnInterface inputCuboid, int cellIndex) {
 		
 		int answer = getFlatInverseNumberingOfCuboid(
 				getFlatNumberingOfCuboid(inputCuboid.getDimensions()), 
@@ -280,7 +280,7 @@ public class Utils {
 			return false;
 		}
 		
-		public static boolean cuboidDimensionsMatch(CuboidToFoldOn cuboid1, CuboidToFoldOn cuboid2) {
+		public static boolean cuboidDimensionsMatch(CuboidToFoldOnInterface cuboid1, CuboidToFoldOnInterface cuboid2) {
 
 			return cuboid1.getDimensions()[0] == cuboid2.getDimensions()[0]
 					&& cuboid1.getDimensions()[1] == cuboid2.getDimensions()[1]

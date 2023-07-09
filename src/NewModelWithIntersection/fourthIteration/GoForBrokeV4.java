@@ -11,36 +11,36 @@ public class GoForBrokeV4 {
 
 	public static void main(String[] args) {
 		
-		//int check46[][] = new int[][]{{5, 3, 1}, {7, 2, 1}};
-		//goForBroke(check46);
+		int check46[][] = new int[][]{{5, 3, 1}, {7, 2, 1}};
+		goForBroke(check46);
 		
 
-		//int check54[][] = new int[][]{{3, 3, 3}, {6, 3, 1}};
-		//goForBroke(check54);
+		int check54[][] = new int[][]{{3, 3, 3}, {6, 3, 1}};
+		goForBroke(check54);
 		
-		//int check58[][] = new int[][]{{5, 4, 1}, {9, 2, 1}};
-		//goForBroke(check58);
-		
-
-		//Nothing found
-		//int check62[][] = new int[][]{{5, 3, 2}, {7, 3, 1}};
-		//goForBroke(check62);
-
-
-		//Nothing found
-		//int check70[][] = new int[][]{{5, 5, 1}, {8, 3, 1}, {11, 2, 1}};
-		//goForBroke(check70);
-		
+		int check58[][] = new int[][]{{5, 4, 1}, {9, 2, 1}};
+		goForBroke(check58);
 		
 
 		//Nothing found
-		//int check78[][] = new int[][]{{5, 3, 3}, {7, 4, 1}, {9, 3, 1}};
-		//goForBroke(check78);
+		int check62[][] = new int[][]{{5, 3, 2}, {7, 3, 1}};
+		goForBroke(check62);
+
+
+		//Nothing found
+		int check70[][] = new int[][]{{5, 5, 1}, {8, 3, 1}, {11, 2, 1}};
+		goForBroke(check70);
+		
 		
 
 		//Nothing found
-		//int check82[][] = new int[][]{{6, 5, 1}, {7, 3, 2}, {13, 2, 1}};
-		//goForBroke(check82);
+		int check78[][] = new int[][]{{5, 3, 3}, {7, 4, 1}, {9, 3, 1}};
+		goForBroke(check78);
+		
+
+		//Nothing found
+		int check82[][] = new int[][]{{6, 5, 1}, {7, 3, 2}, {13, 2, 1}};
+		goForBroke(check82);
 		
 		// 6,3,3: Found 58891 unique solution.
 		//No triple :(
@@ -49,8 +49,8 @@ public class GoForBrokeV4 {
 		
 		
 		//15,2,1 112 diff solutions and 28 unique solutions.
-		int check94[][] = new int[][]{{5, 4, 3}, {11, 3, 1}, {15, 2, 1}, {7, 5, 1}};
-		goForBroke(check94);
+		//int check94[][] = new int[][]{{5, 4, 3}, {11, 3, 1}, {15, 2, 1}, {7, 5, 1}};
+		//goForBroke(check94);
 	}
 	
 	public static void goForBroke(int cuboids[][]) {
