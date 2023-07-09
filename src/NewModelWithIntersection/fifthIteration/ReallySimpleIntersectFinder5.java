@@ -19,7 +19,7 @@ public class ReallySimpleIntersectFinder5 {
 		//38460 solutions (Makes sense because it's Nx1x1) (9702 unique solutions)
 		//reallySimpleSearch(5, 1, 1);
 		
-		//26 solutions: (7 unique solutions)
+		//15 solutions: (7 unique solutions)
 		//reallySimpleSearch(3, 2, 1);
 
 		//N: 7
@@ -38,12 +38,12 @@ public class ReallySimpleIntersectFinder5 {
 		
 
 		//N: 10
-		//498 solutions: (113 unique solutions)
+		//498 solutions: (133 unique solutions)
 		//reallySimpleSearch(3, 3, 2);
 		
 		
 		//N: 11
-		//2364 solutions: (591 unique solutions)
+		//1579 solutions: (591 unique solutions)
 		//reallySimpleSearch(5, 3, 1);
 		
 		//74 solutions (19 unique solutions)
@@ -79,7 +79,7 @@ public class ReallySimpleIntersectFinder5 {
 		
 		//N: 19 (No luck)
 		// 8418 unique solution.
-		reallySimpleSearch(5, 3, 3);
+		//reallySimpleSearch(5, 3, 3);
 		// 102 different solutions and 27 uniq solutions
 		//reallySimpleSearch(7, 4, 1);
 		//
@@ -148,6 +148,8 @@ public class ReallySimpleIntersectFinder5 {
 
 		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForNx1x1.getUniqueRotationListsWithCellInfo(cuboidToBuild);
 		
+		startingPointsAndRotationsToCheck = PivotCellDescriptionForNx1x1.filterOutInconvinientRotationListsWithCellInfo(startingPointsAndRotationsToCheck, cuboidToBuild);
+
 		long ret = 0;
 		
 		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {

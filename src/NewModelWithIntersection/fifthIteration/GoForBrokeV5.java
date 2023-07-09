@@ -10,7 +10,7 @@ import Model.Utils;
 public class GoForBrokeV5 {
 
 	public static void main(String[] args) {
-		
+		/*
 		int check46[][] = new int[][]{{5, 3, 1}, {7, 2, 1}};
 		goForBroke(check46);
 		
@@ -41,17 +41,21 @@ public class GoForBrokeV5 {
 		//Nothing found
 		int check82[][] = new int[][]{{6, 5, 1}, {7, 3, 2}, {13, 2, 1}};
 		goForBroke(check82);
+		*/
 		
 		// 6,3,3: Found 58891 unique solution.
 		//No triple :(
 		//int check90[][] = new int[][]{{5, 5, 2}, {6, 3, 3}};
 		//goForBroke(check90);
-		
+
 		
 		//15,2,1 112 diff solutions and 28 unique solutions.
 		// 11, 3, 1: 15 unique solutions
 		//int check94[][] = new int[][]{{5, 4, 3}, {11, 3, 1}, {15, 2, 1}, {7, 5, 1}};
 		//goForBroke(check94);
+		
+		int check94exp[][] = new int[][]{{15, 2, 1}, {7, 5, 1}};
+		goForBroke(check94exp);
 	}
 	
 	public static void goForBroke(int cuboids[][]) {
