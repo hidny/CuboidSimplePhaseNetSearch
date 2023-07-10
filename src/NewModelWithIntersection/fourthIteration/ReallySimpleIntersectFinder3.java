@@ -79,7 +79,7 @@ public class ReallySimpleIntersectFinder3 {
 		
 		//N: 19 (No luck)
 		// 8418 unique solution.
-		reallySimpleSearch(5, 3, 3);
+		//reallySimpleSearch(5, 3, 3);
 		// 102 different solutions and 27 uniq solutions
 		//reallySimpleSearch(7, 4, 1);
 		//
@@ -114,6 +114,9 @@ public class ReallySimpleIntersectFinder3 {
 		
 		//5, 4, 3 118 different solutions and 61 unique solution.
 		//reallySimpleSearch(5, 4, 3);
+		
+		reallySimpleSearch(15, 2, 1);
+		
 		// N = 25
 		/*
 		 * 7 x 3 x 3: 102

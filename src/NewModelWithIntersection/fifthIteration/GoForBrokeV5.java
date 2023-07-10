@@ -11,6 +11,7 @@ public class GoForBrokeV5 {
 
 	public static void main(String[] args) {
 		
+		/*
 		int check46[][] = new int[][]{{5, 3, 1}, {7, 2, 1}};
 		goForBroke(check46);
 		
@@ -46,12 +47,17 @@ public class GoForBrokeV5 {
 		//No triple :(
 		//int check90[][] = new int[][]{{5, 5, 2}, {6, 3, 3}};
 		//goForBroke(check90);
-		
+		*/
 		
 		//15,2,1 112 diff solutions and 28 unique solutions.
 		// 11, 3, 1: 15 unique solutions
 		//int check94[][] = new int[][]{{5, 4, 3}, {11, 3, 1}, {15, 2, 1}, {7, 5, 1}};
 		//goForBroke(check94);
+		
+		//15,2,1: <100 uniq
+		//7,5,1: = 1411798 uniq (hopefully, there weren't any bugs)
+		int check94part2[][] = new int[][]{{15, 2, 1}, {7, 5, 1}};
+		goForBroke(check94part2);
 	}
 	
 	public static void goForBroke(int cuboids[][]) {

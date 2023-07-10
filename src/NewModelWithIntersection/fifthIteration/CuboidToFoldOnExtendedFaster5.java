@@ -95,6 +95,7 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 	private long answerSheetForTopCellAnySideBump[][][];
 
 	private long preComputedPossiblyEmptyCellsAroundNewLayer[][][][];
+	private boolean preComputedForceRegionSplitIfEmptyAroundNewLayer[][][];
 
 
 	//State variables:
@@ -110,6 +111,7 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 	
 	private long debugThru = 0L;
 	private long debugStop = 0L;
+	private long debugBugFix = 0L;
 	//private long DEBUG_LAYER_INDEX = 14;
 	
 	//BFS to just get it done badly:
@@ -129,15 +131,30 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 		long checkAroundNewLayer[] = preComputedPossiblyEmptyCellsAroundNewLayer[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
 		
 		if(((curState[0] & checkAroundNewLayer[0]) | (curState[1] & checkAroundNewLayer[1]) | (curState[2] & checkAroundNewLayer[2])) == 0L) {
+			
 			debugStop++;
-			return false;
+			
+			if(preComputedForceRegionSplitIfEmptyAroundNewLayer[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump]) {
+				//System.out.println(topLeftGroundRotationRelativeFlatMap);
+				//System.out.println(sideBump);
+				debugBugFix++;
+			} else {
+			
+				return false;
+			}
 		}
 		
 		debugThru++;
 		
-		if(debugThru % 1000000000L == 0L) {
+		if(debugThru % 100000000L == 0L) {
 			System.out.println(debugThru + " goes thru while " + debugStop + " get stopped.");
 			System.out.println((100.0 * debugThru) / (1.0 * (debugThru + debugStop)) + "% thru rate");
+			System.out.println((100.0 * debugBugFix) / (1.0 * (debugThru + debugStop)) + "% debugBugFix rate");
+			System.out.println("Side bumps used:");
+			for(int i=0; i<currentLayerIndex; i++) {
+				System.out.println(prevSideBumps[i]);
+			}
+			System.out.println("END side bumps used");
 		}
 		
 		//TODO: 2nd shortcut:
@@ -279,6 +296,7 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 		newGroundedIndexAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 		
 		preComputedPossiblyEmptyCellsAroundNewLayer = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][NUM_LONGS_TO_USE];
+		preComputedForceRegionSplitIfEmptyAroundNewLayer = new boolean[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 
 		for(int index=0; index<Utils.getTotalArea(this.dimensions); index++) {
 			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
@@ -354,12 +372,82 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 					
 					answerSheet[index][rotation][sideBump] = convertBoolArrayToLongs(tmpArray);
 					preComputedPossiblyEmptyCellsAroundNewLayer[index][rotation][sideBump]  = getPossiblyEmptyCellsAroundNewLayer(tmpArray, index, rotation);
+					preComputedForceRegionSplitIfEmptyAroundNewLayer[index][rotation][sideBump]  = checkPreComputedForceRegionSplitIfEmptyAroundNewLayer(tmpArray, index, rotation);
 					
 					newGroundedIndexAbove[index][rotation][sideBump] = nextGounded.i;
 					newGroundedRotationAbove[index][rotation][sideBump] = nextGounded.j;
 				}
 			}
 		}
+		
+	}
+	
+	boolean checkPreComputedForceRegionSplitIfEmptyAroundNewLayer(boolean newLayerArray[], int prevGroundIndex, int prevGroundRotation) {
+		
+		//TODO: copy/paste code (1)
+		//preComputedForceRegionSplitIfEmptyAroundNewLayer
+		boolean tmpArray[] = new boolean[newLayerArray.length];
+		
+		//Get the bool array with the new layer indexes true:
+		for(int i=0; i<tmpArray.length; i++) {
+			tmpArray[i] = newLayerArray[i];
+		}
+		
+		
+		//Set the prev layer's indexes to true:
+		Coord2D cur = new Coord2D(prevGroundIndex, prevGroundRotation);
+		
+		for(int i=0; i<NUM_ROTATIONS; i++) {
+			tmpArray[cur.i] = true;
+			cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);	
+		}
+		//END TODO: copy/paste code
+		
+		
+		//TODO: copy/paste code (2)
+		int firstUnoccupiedIndex = -1;
+		for(int i=0; i<tmpArray.length; i++) {
+			if(tmpArray[i] == false) {
+				firstUnoccupiedIndex = i;
+				break;
+			}
+		}
+
+		Queue<Integer> visited = new LinkedList<Integer>();
+		
+		boolean explored[] = new boolean[Utils.getTotalArea(this.dimensions)];
+		
+		explored[firstUnoccupiedIndex] = true;
+		visited.add(firstUnoccupiedIndex);
+		
+		Integer v;
+		
+		while( ! visited.isEmpty()) {
+			
+			v = visited.poll();
+			
+			for(int i=0; i<NUM_NEIGHBOURS; i++) {
+				
+				int neighbourIndex = this.neighbours[v.intValue()][i].getIndex();
+				
+				if( ! tmpArray[neighbourIndex] && ! explored[neighbourIndex]) {
+					explored[neighbourIndex] = true;
+					visited.add(neighbourIndex);
+				}
+				
+			}
+			
+		}
+
+		for(int i=0; i<tmpArray.length; i++) {
+			if( ! tmpArray[i] && ! explored[i]) {
+				
+				return true;
+			}
+		}
+
+		return false;
+		//END TODO copy/paste code
 		
 	}
 	
@@ -420,7 +508,6 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 				}
 			}
 		}
-		
 		
 		return convertBoolArrayToLongs(output);
 	}
