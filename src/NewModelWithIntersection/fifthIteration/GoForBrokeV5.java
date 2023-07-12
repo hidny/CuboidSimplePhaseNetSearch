@@ -11,11 +11,11 @@ public class GoForBrokeV5 {
 
 	public static void main(String[] args) {
 		
-		/*
+		
 		int check46[][] = new int[][]{{5, 3, 1}, {7, 2, 1}};
 		goForBroke(check46);
 		
-
+		/*
 		int check54[][] = new int[][]{{3, 3, 3}, {6, 3, 1}};
 		goForBroke(check54);
 		
@@ -51,13 +51,26 @@ public class GoForBrokeV5 {
 		
 		//15,2,1 112 diff solutions and 28 unique solutions.
 		// 11, 3, 1: 15 unique solutions
+		//No solutions
 		//int check94[][] = new int[][]{{5, 4, 3}, {11, 3, 1}, {15, 2, 1}, {7, 5, 1}};
 		//goForBroke(check94);
 		
 		//15,2,1: <100 uniq
 		//7,5,1: = 1411798 uniq (hopefully, there weren't any bugs)
-		int check94part2[][] = new int[][]{{15, 2, 1}, {7, 5, 1}};
-		goForBroke(check94part2);
+		//int check94part2[][] = new int[][]{{15, 2, 1}, {7, 5, 1}};
+		//goForBroke(check94part2);
+		
+		//98 only has 1 other cuboid for it, so skip it...
+		//int check102[][] = new int[][]{{7, 3, 3}, {9, 3, 2}, {12, 3, 1}};
+		//goForBroke(check102);
+		
+		//Plan for 106:
+		// just get 17x2x1 solutions and then compare...
+		/*
+		 * 8 x 5 x 1: 106
+17 x 2 x 1: 106
+26 x 1 x 1: 106
+		 */
 	}
 	
 	public static void goForBroke(int cuboids[][]) {
