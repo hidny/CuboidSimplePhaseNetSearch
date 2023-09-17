@@ -20,7 +20,8 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int dimensionsCuboidToCheck[] = new int[]{8, 5, 1};
 			
 			//Alt: {17, 2, 1}
-			//int dimensionsCuboidToCheck[] = new int[]{17, 2, 1};
+			int otherDimensions1[] = new int[] {17, 2, 1};
+			int otherDimensions2[] = new int[] {26, 1, 1};
 			
 			int areaOfCuboidToCheck = Utils.getTotalArea(dimensionsCuboidToCheck);
 			
@@ -69,13 +70,47 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 
 					//TODO: Check array against other dimensions! I'll do it later
 					
-					if(ValidNetSolutionChecker.hasSolution(dimensionsCuboidToCheck, netToReplicate)) {
+					if(ValidNetSolutionChecker.hasSolution(dimensionsCuboidToCheck, netToReplicate, false)) {
 						
 						numSoutionsFound++;
 						
-						System.out.println("Found solution!");
+						System.out.println("Found 3-way solution!");
 
+						System.out.println("Printing just the fold without indexes:");
 						Utils.printFold(table);
+						
+						boolean VERBOSE = true;
+						System.out.println("Solution for: " + getDimensionsString(dimensionsCuboidToCheck));
+						
+						ValidNetSolutionChecker.hasSolution(dimensionsCuboidToCheck, netToReplicate, VERBOSE);
+						
+						System.out.println();
+						
+						if(Utils.getTotalArea(otherDimensions1) == getNumCellsUsed(table) ) {
+							
+							System.out.println("Solution for: " + getDimensionsString(otherDimensions1));
+							
+							if( ! ValidNetSolutionChecker.hasSolution(otherDimensions1, netToReplicate, VERBOSE)) {
+								System.out.println("oops! otherDimensions1 doesn't work");
+							}
+							
+						} else {
+							System.out.println("WARNING: dimensions set for otherDimensions1 don't match the area of the dimensionsCuboidToCheck variable.");
+						}
+						System.out.println();
+						
+						if(Utils.getTotalArea(otherDimensions2) == getNumCellsUsed(table) ) {
+							System.out.println("Solution for: " + getDimensionsString(otherDimensions2));
+							
+							if( ! ValidNetSolutionChecker.hasSolution(otherDimensions2, netToReplicate, VERBOSE)) {
+								System.out.println("oops! otherDimensions1 doesn't work");
+							}
+							
+						} else {
+							System.out.println("WARNING: dimensions set for otherDimensions1 don't match the area of the dimensionsCuboidToCheck variable.");
+						}
+						System.out.println();
+						
 						
 						//TODO: Actually print the solution with the cell indexes.
 						System.out.println();
@@ -101,6 +136,10 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 		}
 	}
 
+	public static String getDimensionsString(int dimensions[]) {
+		return "("+ dimensions[0] +"," + dimensions[1] + "," + dimensions[2] +")";
+	}
+	
 	public static String getSolutionCode(String line) {
 		return line.split(" ")[line.split(" ").length - 1];
 	}

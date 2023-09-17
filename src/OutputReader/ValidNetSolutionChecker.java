@@ -29,6 +29,9 @@ public class ValidNetSolutionChecker {
 	// is how fast the file with the solutions can be read.
 	
 	public static boolean hasSolution(int dimensionsCuboid[], boolean netToReplicate[][]) {
+		return hasSolution(dimensionsCuboid, netToReplicate, false);
+	}
+	public static boolean hasSolution(int dimensionsCuboid[], boolean netToReplicate[][], boolean verbose) {
 
 		int startI = -1;
 		int startJ = -1;
@@ -45,10 +48,10 @@ public class ValidNetSolutionChecker {
 			}
 		}
 		
-		return hasSolution(dimensionsCuboid, startI, startJ, netToReplicate);
+		return hasSolution(dimensionsCuboid, startI, startJ, netToReplicate, verbose);
 	}
 	
-	private static boolean hasSolution(int dimensionsCuboid[], int startI, int startJ, boolean netToReplicate[][]) {
+	private static boolean hasSolution(int dimensionsCuboid[], int startI, int startJ, boolean netToReplicate[][], boolean verbose) {
 		
 		int areaToFill = Utils.getTotalArea(dimensionsCuboid);
 		
@@ -62,7 +65,8 @@ public class ValidNetSolutionChecker {
 						startJ,
 						netToReplicate,
 						startIndex,
-						startRotation)
+						startRotation,
+						verbose)
 				) {
 					return true;
 				}
@@ -83,7 +87,8 @@ public class ValidNetSolutionChecker {
 			int startJ,
 			boolean netToReplicate[][],
 			int cuboidStartIndex,
-			int rotation
+			int rotation,
+			boolean verbose
 		) {
 	
 		
@@ -103,6 +108,13 @@ public class ValidNetSolutionChecker {
 		
 		boolean paperUsed[][] = new boolean[2 * totalArea][2 * totalArea];
 		int indexCuboidOnPaper[][] = new int[2 * totalArea][2 * totalArea];
+		
+		for(int i=0; i<indexCuboidOnPaper.length; i++) {
+			for(int j=0; j<indexCuboidOnPaper[0].length; j++) {
+				indexCuboidOnPaper[i][j] = -1;
+			}
+		}
+		
 		Coord2D newPaperToDevelop[] = new Coord2D[totalArea];
 
 		//TODO: We don't really need to redeclare this every time, but whatever:
@@ -135,8 +147,10 @@ public class ValidNetSolutionChecker {
 				paperUsed,
 				cuboidToUse, 
 				numCellsUsedDepth,
-				coord2DTable);
+				coord2DTable,
+				verbose);
 	}
+	
 	
 	public static boolean isValid(boolean netToReplicate[][],
 			Coord2D paperToDevelop[],
@@ -144,7 +158,8 @@ public class ValidNetSolutionChecker {
 			boolean paperUsed[][],
 			CuboidToFoldOn cuboid, 
 			int numCellsUsedDepth,
-			Coord2D coord2DTable[][]) {
+			Coord2D coord2DTable[][],
+			boolean verbose) {
 
 		
 		int curOrderedIndexToUse = 0;
@@ -212,6 +227,11 @@ public class ValidNetSolutionChecker {
 			
 			//At this point, we can't go any further because we used up all the indexes and all regions:
 			return false;
+		}
+		
+		if(verbose) {
+			
+			Utils.printFoldWithIndex(indexCuboidOnPaper);
 		}
 
 		return true;
