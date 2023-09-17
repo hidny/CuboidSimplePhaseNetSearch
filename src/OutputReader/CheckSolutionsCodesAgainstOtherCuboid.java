@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Scanner;
 
 import DupRemover.BasicUniqueCheckImproved;
+import Model.Utils;
 import Coord.Coord2D;
 
 public class CheckSolutionsCodesAgainstOtherCuboid {
@@ -16,9 +17,19 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 		try {
 			String file1 = "D:\\CheckA106with17x2x1.txt";
 			
+			int dimensionsCuboidToCheck[] = new int[]{8, 5, 1};
+			
+			//Alt: {17, 2, 1}
+			//int dimensionsCuboidToCheck[] = new int[]{17, 2, 1};
+			
+			int areaOfCuboidToCheck = Utils.getTotalArea(dimensionsCuboidToCheck);
+			
 			Scanner in = new Scanner(new File(file1));
 			
 			HashSet<String> file1Solutions = new HashSet<String>();
+			
+			int numSoutionsFound = 0;
+			int numSolutionsInFile = 0;
 			
 			while(in.hasNextLine()) {
 				String tmp = in.nextLine();
@@ -26,11 +37,21 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 				//System.out.println(tmp);
 				if(tmp.toLowerCase().contains("solution code:")) {
 					
+					numSolutionsInFile++;
+					
 					String solutionCodeString = getSolutionCode(tmp);
 					file1Solutions.add(solutionCodeString);
 					//System.out.println(solutionCodeString);
 					
 					boolean table[][] = convertSolutionCodeToTable(solutionCodeString);
+					
+					if(areaOfCuboidToCheck != getNumCellsUsed(table) ) {
+						System.out.println("The area of the solution in the file doesn't match the area of the dimensions to check!");
+						System.out.println("area in file: " + getNumCellsUsed(table));
+						System.out.println("Area to check: " + areaOfCuboidToCheck);
+						System.out.println("Dimension set to check: ("+ dimensionsCuboidToCheck[0] +"," + dimensionsCuboidToCheck[1] + "," + dimensionsCuboidToCheck[2] +")");
+						System.exit(1);
+					}
 					
 					BasicUniqueCheckImproved.isUnique(makeCoordList(table), table);
 					
@@ -43,14 +64,36 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 						System.exit(1);
 					}
 					
+					boolean netToReplicate[][] = padBordersOfBoolTable(table);
+					
 
 					//TODO: Check array against other dimensions! I'll do it later
+					
+					if(ValidNetSolutionChecker.hasSolution(dimensionsCuboidToCheck, netToReplicate)) {
+						
+						numSoutionsFound++;
+						
+						System.out.println("Found solution!");
+
+						Utils.printFold(table);
+						
+						//TODO: Actually print the solution with the cell indexes.
+						System.out.println();
+						
+						
+					}
+					
 				}
 			}
 			
 			in.close();
 			
+			System.out.println("Number of solutions in file: " + numSolutionsInFile);
+			System.out.println();
+			System.out.println();
+			System.out.println();
 			
+			System.out.println("Final number of solutions found: " + numSoutionsFound);
 			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -161,6 +204,41 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			}
 		}
 		
+		return ret;
+	}
+	
+	public static final int DEFAULT_BORDER_PADDING = 1;
+	public static boolean[][] padBordersOfBoolTable(boolean table[][]) {
+		
+		boolean ret[][] = new boolean[table.length + 2 * DEFAULT_BORDER_PADDING][table[0].length + 2 * DEFAULT_BORDER_PADDING];
+		
+		for(int i=0; i<ret.length; i++) {
+			for(int j=0; j<ret[0].length; j++) {
+				ret[i][j] = false;
+				
+				if(i>=DEFAULT_BORDER_PADDING
+						&& j>=DEFAULT_BORDER_PADDING
+						&& i-DEFAULT_BORDER_PADDING < table.length
+						&& j-DEFAULT_BORDER_PADDING<table[0].length
+				) {
+					ret[i][j] = table[i-1][j-1];
+				}
+			}
+		}
+		
+		
+		return ret;
+	}
+	
+	public static int getNumCellsUsed(boolean table[][]) {
+		int ret=0;
+		for(int i=0; i<table.length; i++) {
+			for(int j=0; j<table[0].length; j++) {
+				if(table[i][j]) {
+					ret++;
+				}
+			}
+		}
 		return ret;
 	}
 	

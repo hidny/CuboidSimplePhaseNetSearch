@@ -12,8 +12,8 @@ public class GoForBrokeV5 {
 	public static void main(String[] args) {
 		
 		
-		int check46[][] = new int[][]{{5, 3, 1}, {7, 2, 1}};
-		goForBroke(check46);
+		//int check46[][] = new int[][]{{5, 3, 1}, {7, 2, 1}};
+		//goForBroke(check46);
 		
 		/*
 		int check54[][] = new int[][]{{3, 3, 3}, {6, 3, 1}};
@@ -66,11 +66,14 @@ public class GoForBrokeV5 {
 		
 		//Plan for 106:
 		// just get 17x2x1 solutions and then compare...
+		int check102[][] = new int[][]{{17, 2, 1}, {8, 5, 1}};
+		goForBroke(check102);
 		/*
 		 * 8 x 5 x 1: 106
 17 x 2 x 1: 106
 26 x 1 x 1: 106
 		 */
+		
 	}
 	
 	public static void goForBroke(int cuboids[][]) {
