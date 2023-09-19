@@ -65,7 +65,7 @@ I'll try to clean it up a bit.
 
 ## State of README
 
-This current iteration of the README is still incomplete and needs a few more revisions.
+This current iteration of the README is still needs a few more revisions and edits.
 
   
 
@@ -147,7 +147,7 @@ See Appendix A for the theory behind the shortcuts I'm planning on using.
 
   
 
-This is just 'simple phase nets', but every in-between layer has to just be
+This is just 'simple phase nets', but every in-between layer has have 4 horizontal 
 
 4 cells in a row... (Just like example 1 of the 'simple phase nets' examples)
 
@@ -237,7 +237,7 @@ because I can hold all the cuboid cells in 2 64-integers, that becomes only 2 AN
 
   
 
-### reintroduce regions
+### Check for region splits
 
   
 
@@ -333,37 +333,37 @@ There's only 4 ways for an in-between row to be configured:
 
   
 
-{1, 1, 1, 1, 0, 0, 0}, or
+{1, 1, 1, 1, 0, 0, 0}, or<br>
 
-{1, 1, 0, 1, 0, 0, 1}, or
+{1, 1, 0, 1, 0, 0, 1}, or<br>
 
-{1, 0, 1, 1, 0, 1, 0}, or
+{1, 0, 1, 1, 0, 1, 0}, or<br>
 
-{1, 0, 0, 1, 0, 1, 1}
+{1, 0, 0, 1, 0, 1, 1}<br>
 
   
 
 Example option 1:
 
-|24|21|10|27|
+|24|21|10|27|<br>
 
   
 
 Example option 2:
 
-|25|22|##|28|##|##|11|
+|25|22|##|28|##|##|11|<br>
 
   
 
 Example option 3:
 
-|25|##|28|22|##|11|
+|25|##|28|22|##|11|<br>
 
   
 
 Example option 4:
 
-|25|##|##|28|##|22|11|
+|25|##|##|28|##|22|11|<br>
 
   
 
@@ -391,19 +391,19 @@ or the right 2 are 'grounded' to the bottom cell without the need of the above l
 
 This formula gets us the number of ways to have a 'simple phase nets' with dimensions 1x1xn:
 
-F(n) = 16 * (1 0 0 0 0 0 0) M^(n) (1)
+F(n) = 16 * (1 0 0 0 0 0 0) M^(n) (1)<br>
 
-                              (0)
+                              (0)<br>
 
-                              (0)
+                              (0)<br>
 
-                              (0)
+                              (0)<br>
 
-                              (0)
+                              (0)<br>
 
-                              (0)
+                              (0)<br>
 
-                              (0)
+                              (0)<br>
 
   
 
@@ -445,29 +445,18 @@ M=
 1 0 0 0 1 1 1<br>
 
 The reason it's 7x7 is because there's only 7 different possible states an in-between layer could be in and this matrix
-
 describes how many ways state i could go to state j by adding a new layer.
 
 I googled for the eigenvectors and eigenvalues...
 
-// https://matrixcalc.org/ gives this:
+and found 9.49562268930808697738316414143286398511459028140825...
 
-// 9.4956226893
+https://matrixcalc.org/ gives this:
+9.4956226893 
+I also took pictures and got the exact form from wolframalpha. (See the pics folder)
 
-//So the sequence grows exponentially by a factor of about 9.4956226893
-
-* or: 9.49562268930808697738316414143286398511459028140825...
-
-*
-
-* I also took pictures and got the exact form from wolframalpha. (See the pics folder)
-
-*/
-
-  
 
 That means that for every layer you add to the 1x1xN cuboid, you get around 9.5 times more possible configurations.
 
-  
 
 I'm currently hoping to find something similar for all 1x1xN nets. I'll look into this later.
