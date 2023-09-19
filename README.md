@@ -10,14 +10,14 @@ I created this repo because I figured that I might find success faster if I focu
 Once done with searching the easy to find nets, I plan to find clever ways of expanding my search to include more and more types of nets until the search becomes exhaustive.
 
 ## Latest update(s):
-On September 17th, I finally managed to find 15 'easy' nets that fold 3 into cuboids, but the area of the nets are a bit too big for my liking.
+On September 17th, I finally managed to find 15 'easy' nets that fold into 3 cuboids, but the area of the nets are a bit too big for my liking.
 
 
 ## The Nets that Fold 3 cuboids
 
-As I found 15 nets that fold into 3 cuboids. They are what I consider the easiest type of net. (i.e. The 'simply stacked nets')
+I managed to find 15 nets that fold into 3 cuboids. They are what I consider the easiest type of net. (i.e. The 'simply stacked nets')
 
-Feel free to look at them in the 'interestingOutput\outputArea106SimpleStackingSolutions.txt' file.
+Feel free to look at them in the file named: 'interestingOutput\outputArea106SimpleStackingSolutions.txt'.
 
 The nets I found are of area 106 and Landon Kryger was able to quickly verify that the 1st net works after I shared it with him.
 I searched for the 'simply stacked nets' of area 106 because I already searched for this type of net using smaller areas and didn't find anything.
@@ -31,12 +31,12 @@ This repo is currently very messy because I didn't delete files I stopped using,
 I'll try to clean it up a bit.
 
 ## State of README
-I haven't had the time to write a thorough readme. This current iteration of it is still incomplete and needs a few more revisions.
+This current iteration of the README is still incomplete and needs a few more revisions.
 
 
 ## Easy Net Targets
 
-Here's a list of the different types of nets I'm currently thinking of searching. So far, I only searched the 'simply stacked nets'.
+Here's a list of the different types of nets I'm currently thinking of searching for. So far, I only searched the 'simply stacked nets'.
 They are all based around the 1x1xN cuboid because I believe that's the easiest type of cuboid to deal with.
 
 
@@ -67,7 +67,7 @@ Example 3:
 | 4| 1|10| 7|##|##|##|<br>
 |##|##| 0|##|##|##|##|<br>
 
-See Appendix A for a the theory behind the shortcuts I'm planning on using.
+See Appendix A for the theory behind the shortcuts I'm planning on using.
 
 
 ###  The 'simply stacked nets'
@@ -83,13 +83,12 @@ only searching this type of net allowed me to find the 15 nets of area 106 that 
 
 ### The 'flower'
 
-Let the bottom of the 1x1xN cuboid have multiple neighbours.
+Let the bottom of the 1x1xN cuboid have multiple neighbours. I like to think of it as the bottom cell 'blooming' like a flower.
 
 ### The 'double flower'
 
-
-Let the both the bottom and the top of the 1x1xN cuboid have multiple neighbours,
-but maybe don't allow for layes that have empty spaces in between
+Let the both the bottom and the top cells of the 1x1xN cuboid have multiple neighbours,
+but maybe don't allow layers to have empty spaces in between unless they are connected to the top or bottom cell in different ways.
 
 ### The whole 1x1xN space
 
@@ -100,7 +99,7 @@ Just cover the whole space. I'm hoping to pull this off while pre-computing the 
 ### Reset but for 1x2xN
 
 Once 1x1xN is done and optimized, I might move on to doing the same thing for the 1x2xN cuboids...
-This might not happen anytime soon.
+This might not happen any time soon.
 
 ....
 
