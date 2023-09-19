@@ -391,19 +391,19 @@ or the right 2 are 'grounded' to the bottom cell without the need of the above l
 
 This formula gets us the number of ways to have a 'simple phase nets' with dimensions 1x1xn:
 
-F(n) = 16 * (1 0 0 0 0 0 0) M^(n) (1)<br>
+F(n) = 16 * (1 0 0 0 0 0 0) M^(n) (1)
 
-                              (0)<br>
+                              (0)
 
-                              (0)<br>
+                              (0)
 
-                              (0)<br>
+                              (0)
 
-                              (0)<br>
+                              (0)
 
-                              (0)<br>
+                              (0)
 
-                              (0)<br>
+                              (0)
 
   
 
