@@ -149,7 +149,7 @@ See Appendix A for the theory behind the shortcuts I'm planning on using.
 
 This is just 'simple phase nets', but every in-between layer has have 4 horizontal 
 
-4 cells in a row... (Just like example 1 of the 'simple phase nets' examples)
+cells in a row... (Just like example 1 of the 'simple phase nets' examples)
 
   
 
@@ -225,9 +225,9 @@ For example:
 
 The question: 'if the reference cell is 13 with rotation 1, can I add layer 0 on top of it?'
 
-becomes a question of ANDING the long states:
+becomes a question of ANDing the long states:
 
-state_of_cells AND bit_mask_cells_to_add_in_kayer
+state_of_cells AND bit_mask_cells_to_add_in_layer
 
   
 
@@ -309,17 +309,14 @@ TODO
 
 ## Appendix A: 'simple phase nets' conjectures
 
-  
-
-(Note that in these examples, cell 0 is the bottom and cell 13 is the top)
 
   
 
 I currently have three conjectures that, (if true), would the search a lot easier.
 
-I'm a bit embarrassed about how even though I haven't proved any of these conjectures, I complete believe them and
+I'm a bit embarrassed about the fact that I haven't proved any of these conjectures, but I completely believe them and
 
-I'm willing to work on this problem as if these conjectures are simply facts.
+I'm willing to work on this problem as if these conjectures are simply true.
 
 The three conjectures build on each other, and I don't technically depend on the third one being true.
 
@@ -377,9 +374,9 @@ Example option 4:
 
 Every layer can be described by one of 7 states. One state for {1, 1, 1, 1, 0, 0, 0}
 
-and 2 states for the rest.
+and 2 states for the other configurations.
 
-There's 2 states for the rest because either the left 2 connected square islands are 'grounded' to the bottom cell without the need of the above layer's help,
+There's 2 states for the rest because either the left 2 connected square 'islands' are 'grounded' to the bottom cell without the need of the above layer's help,
 
 or the right 2 are 'grounded' to the bottom cell without the need of the above layer's help.
 
@@ -453,7 +450,7 @@ and found 9.49562268930808697738316414143286398511459028140825...
 
 https://matrixcalc.org/ gives this:
 9.4956226893 
-I also took pictures and got the exact form from wolframalpha. (See the pics folder)
+I also took screenshots of the exact form of the solution from wolframalpha. (See the pics folder)
 
 
 That means that for every layer you add to the 1x1xN cuboid, you get around 9.5 times more possible configurations.
