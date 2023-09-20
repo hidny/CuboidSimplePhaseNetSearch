@@ -24,7 +24,7 @@ public class SimplePhaseNx1x1SolutionCounterOnlyTransitions {
 	
 	//The sequence seems to be increasing exponentially by a factor of 9.4956227...
 	
-	// I solved this with matrices (i.e. turn this into an eigenvector problem)
+	// I solved this with matrices (i.e. turned this into an eigenvector problem and solved it)
 	
 	/*
 	 * Entries for the matrics were found in the prints of Nx1x1StackTransitionTracker2:

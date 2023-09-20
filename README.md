@@ -9,13 +9,11 @@
 
 ## Goal:
 
-  
 
 Find a net that folds into 3 cuboids by being strategic about what to search.
 
 I created this repo because I figured that I might find success faster if I focus on some easy to find nets instead of continuing with doing an exhaustive search.
 
-  
 
 Once done with searching the easy to find nets, I plan to find clever ways of expanding my search to include more and more types of nets until the search becomes exhaustive.
 
@@ -31,11 +29,9 @@ On September 17th, I finally managed to find 15 'easy' nets that fold into 3 cub
 
 ## The Nets that Fold 3 cuboids
 
-  
 
 I managed to find 15 nets that fold into 3 cuboids. They are what I consider the easiest type of net. (i.e. The 'simply stacked nets')
 
-  
 
 Feel free to look at them in the file named: 'interestingOutput\outputArea106SimpleStackingSolutions.txt'.
 
@@ -50,6 +46,8 @@ In the future, I plan to find smaller nets by changing the category of net that 
   
 
 An interesting fact about the 15 nets I found is that, in all cases, cell index #0 of the (8x5x1) cuboid matches up with the index #0 of the 26x1x1 cuboid.
+I also found that there was a lot of ways to have a net that covers both the 26x1x1 cuboid and the 8x5x1 cuboid ( more than 9 million simply stacked nets!). I don't know why
+they paired up so well, but I have the feeling there's an answer to that question.
 
 I don't think it's a coincidence, but I still can't confidently explain why it's not a coincidence.
 
@@ -192,7 +190,10 @@ Just cover the whole space. I'm hoping to pull this off while pre-computing the 
   
 
   
+### Rotationally symmetric solutions only
 
+After noticing that 2 of the 15 nets that fold into 3 cuboids are rotationally symmetric, I figured that this might be a good avenue of attack.
+I read about this strategy in section 3.5.1 of "Introduction to Computational Origani" by Ryuhei Uehara, but I forgot about it until now.
   
 
 ### Reset but for 1x2xN
@@ -277,31 +278,26 @@ TODO: (As of this writing, I actually just got back to working on this repo afte
 
 ## Algo:
 
-  
 
-  
-
-### Basic exponential search
+### Basic DSF search
 
   
 
 TODO
-
-  
 
 ### Pre-compute based on top-left grounded cell...
 
-  
 
-TODO
-
-  
 
 ### Explanation of 'Grounded cells'
 
-  
+Cells that are currently connected to the bottom cell
 
-TODO
+Example:
+15 is grounded because it's connected to the 0 cell, but 34 is not:
+
+|15|##|34|
+|00|##|##|
 
   
 
@@ -387,6 +383,8 @@ or the right 2 are 'grounded' to the bottom cell without the need of the above l
   
 
 This formula gets us the number of ways to have a 'simple phase nets' with dimensions 1x1xn:
+
+(note that this only counts the number of fixed solutions)
 
 F(n) = 16 * (1 0 0 0 0 0 0) M^(n) (1)
 

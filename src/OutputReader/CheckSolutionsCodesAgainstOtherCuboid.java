@@ -76,6 +76,10 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 						
 						System.out.println("Found 3-way solution!");
 
+						if(isRotationallySymmetric(table)) {
+							System.out.println("This net is rotationally symmetric!");
+						}
+
 						System.out.println("Printing just the fold without indexes:");
 						Utils.printFold(table);
 						
@@ -112,7 +116,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 						System.out.println();
 						
 						
-						//TODO: Actually print the solution with the cell indexes.
+						
 						System.out.println();
 						
 						
@@ -278,6 +282,22 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 				}
 			}
 		}
+		return ret;
+	}
+	
+	//Pre: the borders of the input table are hitting the net, or are at least evenly padded:
+	public static boolean isRotationallySymmetric(boolean table[][]) {
+		
+		boolean ret = true;
+		
+		for(int i=0; i<table.length; i++) {
+			for(int j=0; j<table[0].length; j++) {
+				if(table[i][j] != table[table.length - 1- i][table[0].length - 1 - j]) {
+					return false;
+				}
+			}
+		}
+		
 		return ret;
 	}
 	

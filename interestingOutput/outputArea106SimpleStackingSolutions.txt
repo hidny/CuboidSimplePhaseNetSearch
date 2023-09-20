@@ -1753,6 +1753,7 @@ Solution for: (26,1,1)
 
 
 Found 3-way solution!
+This net is rotationally symmetric!
 Printing just the fold without indexes:
 .............................................#.|
 ...........................................####|
@@ -1878,6 +1879,7 @@ Solution for: (26,1,1)
 
 
 Found 3-way solution!
+This net is rotationally symmetric!
 Printing just the fold without indexes:
 ............................................#|
 .........................................####|
