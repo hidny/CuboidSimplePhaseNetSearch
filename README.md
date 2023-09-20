@@ -386,7 +386,7 @@ This formula gets us the number of ways to have a 'simple phase nets' with dimen
 
 (note that this only counts the number of fixed solutions)
 
-F(n) = 16 * (1 0 0 0 0 0 0) M^(n) (1)
+F(n) = 16 * (1 0 0 0 0 0 0) M^(n-1) (1)
 
                               (0)
 
