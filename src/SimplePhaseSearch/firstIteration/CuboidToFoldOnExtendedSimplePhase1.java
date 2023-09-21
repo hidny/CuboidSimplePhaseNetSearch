@@ -1,5 +1,7 @@
 package SimplePhaseSearch.firstIteration;
 
+//TODO: this is very incomplete!
+
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;
 import Model.CuboidToFoldOnInterface;
@@ -12,7 +14,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	private CoordWithRotationAndIndex[][] neighbours;
 	
 	public static final int NUM_DIMENSIONS_CUBOID = 3;
-	private int dimensions[] = new int[3];
+	private int dimensions[] = new int[NUM_DIMENSIONS_CUBOID];
 
 	public CuboidToFoldOnExtendedSimplePhase1(int a, int b, int c) {
 
@@ -24,8 +26,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 
 		DIM_N_OF_Nx1x1 = (Utils.getTotalArea(this.dimensions)-2) / 4;
 		
-		setupAnswerSheetInBetweenLayersGoingBottomToTop();
-		setupAnswerSheetInBetweenLayersGoingTopToBottom();
+		setupAnswerSheetInBetweenLayers();
 		setupAnswerSheetForTopCell();
 	}
 	
@@ -60,13 +61,50 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 
 
 	//Constants:
+	public final static int LEVEL_OPTIONS[][] = {
+			{1, 1, 1, 1, 0, 0, 0},
+			{1, 1, 0, 1, 0, 0, 1},
+			{1, 0, 1, 1, 0, 1, 0},
+			{1, 0, 0, 1, 0, 1, 1}
+	};
+	
+	//public static final int NUM_POSSIBLE_SIDE_BUMPS = 13;
+	public static final int NUM_POSSIBLE_SIDE_BUMPS = 2 * LEVEL_OPTIONS[0].length - 1;
+	
+	//TODO: compute these vars instead of declaring them:
+	// (I appended 'SANITY' to these variables because I feel like this would be a good sanity check.)
 
-	//7 *2 -1:
-	public static final int NUM_POSSIBLE_SIDE_BUMPS = 13;
+	//TODO: use this in the pre-compute functions:
+	public final static int CELLS_TO_ADD_BY_STATE_GOING_UP_SANITY[][] = {
+			{1, 1, 1, 1, 0, 0, 0},
+			//Hug left:
+			{1, 1, 0, 1, 0, 0, 0},
+			{1, 0, 1, 1, 0, 0, 0},
+			{1, 0, 0, 1, 0, 0, 0},
+			//Hug right:
+			{0, 0, 0, 1, 0, 0, 1},
+			{0, 0, 1, 1, 0, 1, 0},
+			{0, 0, 0, 1, 0, 1, 1}
+	};
+
+	//TODO: use this in the pre-compute functions:
+	public final static int CELLS_TO_ADD_BY_STATE_GOING_DOWN_SANITY[][] = {
+			{1, 1, 1, 1, 0, 0, 0},
+			
+			//Ground right:
+			{0, 0, 0, 0, 0, 0, 1},
+			{0, 0, 0, 0, 0, 1, 0},
+			{0, 0, 0, 0, 0, 1, 1},
+			
+			//Ground left:
+			{1, 1, 0, 0, 0, 0, 0},
+			{1, 0, 0, 0, 0, 0, 0},
+			{1, 0, 0, 0, 0, 0, 0},
+	};
+	
 	
 	public static final int NUM_LAYER_STATES = 7;
 	
-	public static final int NUM_NEIGHBOURS = 4;
 	public static final int NUM_ROTATIONS = 4;
 	
 
@@ -76,7 +114,6 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	private static final int NUM_BYTES_IN_LONG = 64;
 	private static final int NUM_LONGS_TO_USE = 3;
 	
-	public static int NUM_SIDE_BUMP_OPTIONS = 15;
 	
 	//Variables to compute at construction time:
 	
@@ -109,7 +146,6 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	
 	public boolean isNewLayerValidSimpleFast(int layerIndex, int sideBump) {
 	
-		//TODO: Should prevLayerIndex index be layerIndex - 1?
 		long tmp[] = answerSheet[prevLayerIndex[layerIndex - 1]][layerIndex][topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
 		
 		return ((curState[0] & tmp[0]) | (curState[1] & tmp[1]) | (curState[2] & tmp[2])) == 0L;
@@ -134,6 +170,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		this.topLeftGroundedIndex = tmp1;
 		this.topLeftGroundRotationRelativeFlatMap = tmp2;
 		
+		//TODO: connect newly grounded lower layers
 		
 	}
 	
@@ -144,14 +181,16 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		this.topLeftGroundRotationRelativeFlatMap = prevGroundedRotations[currentLayerIndex];
 		int sideBumpToCancel  = prevSideBumps[currentLayerIndex];
 		
-		int layerbefore = prevLayerIndex[currentLayerIndex - 1];
+		int layerBelow = prevLayerIndex[currentLayerIndex - 1];
 		int layerIndexUsed = prevLayerIndex[currentLayerIndex];
 		
 		
-		long tmp[] = answerSheet[layerbefore][layerIndexUsed][topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBumpToCancel];
+		long tmp[] = answerSheet[layerBelow][layerIndexUsed][topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBumpToCancel];
 		curState[0] = curState[0] ^ tmp[0];
 		curState[1] = curState[1] ^ tmp[1];
 		curState[2] = curState[2] ^ tmp[2];
+		
+		//TODO: disconnect newly grounded lower layers
 	}
 	
 	//pre: The only cell left is top cell:
@@ -176,11 +215,16 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	// ***********************************************************
 	//Pre-compute functions that make the program faster:
 	
-	private void setupAnswerSheetInBetweenLayersGoingBottomToTop() {
+	private void setupAnswerSheetInBetweenLayers() {
 		
-		answerSheet = new long[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][NUM_LONGS_TO_USE];
-		newGroundedRotationAbove = new int[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
-		newGroundedIndexAbove = new int[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
+		answerSheet = new long[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS][NUM_LONGS_TO_USE];
+		newGroundedRotationAbove = new int[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS];
+		newGroundedIndexAbove = new int[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS];
+		
+
+		answerSheetGoingDown = new long[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS][NUM_LONGS_TO_USE];
+		newGroundedIndexBelow = new int[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS];
+		newGroundedRotationBelow = new int[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS];
 		
 		for(int layerStateBefore=0; layerStateBefore<NUM_LAYER_STATES; layerStateBefore++) {
 			for(int layerStateAfter=0; layerStateAfter<NUM_LAYER_STATES; layerStateAfter++) {
@@ -189,77 +233,10 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 						
 						for(int sideBump=0; sideBump<NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
 						
-							boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
 							
-							int leftMostRelativeTopLeftGrounded = sideBump - 6;
-							
-							if( leftMostRelativeTopLeftGrounded < -3 || leftMostRelativeTopLeftGrounded > 3) {
-								
-								answerSheet[0][0][index][rotation][sideBump] = setImpossibleForAnswerSheet();
-								newGroundedIndexAbove[0][0][index][rotation][sideBump] = BAD_INDEX;
-								newGroundedRotationAbove[0][0][index][rotation][sideBump] = BAD_ROTATION;						
-								continue;
+							if(layerStateBefore == 0 && layerStateAfter == 0) {
+								handleSimpleLayerOverSimpleLayer(index, rotation, sideBump);
 							}
-							
-					
-							for(int i=0; i<tmpArray.length; i++) {
-								tmpArray[i] = false;
-							}
-			
-							Coord2D nextGounded = null;
-							
-							if(leftMostRelativeTopLeftGrounded<=0) {
-								
-								Coord2D aboveGroundedTopLeft = tryAttachCellInDir(index, rotation, ABOVE);
-					
-								tmpArray[aboveGroundedTopLeft.i] = true;
-								
-								Coord2D cur = aboveGroundedTopLeft;
-								//Go to left:
-								for(int i=0; i>leftMostRelativeTopLeftGrounded; i--) {
-									cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
-									tmpArray[cur.i] = true;
-								}
-								
-								nextGounded = cur;
-								
-								cur = aboveGroundedTopLeft;
-								//Go to right:
-								for(int i=0; i<leftMostRelativeTopLeftGrounded + 3; i++) {
-									
-									cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
-									tmpArray[cur.i] = true;
-								}
-								
-							} else {
-								
-								Coord2D cur = new Coord2D(index, rotation);
-								//Go to right until there's a cell above:
-								
-								for(int i=0; i<leftMostRelativeTopLeftGrounded; i++) {
-									cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
-								}
-								
-								
-								Coord2D cellAbove = tryAttachCellInDir(cur.i, cur.j, ABOVE);
-								
-								nextGounded = cellAbove;
-								
-								tmpArray[cellAbove.i] = true;
-								
-								cur = cellAbove;
-								//Go to right:
-								for(int i=0; i<3; i++) {
-									cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
-									tmpArray[cur.i] = true;
-								}
-								
-							}
-							
-							answerSheet[0][0][index][rotation][sideBump] = convertBoolArrayToLongs(tmpArray);
-							
-							newGroundedIndexAbove[0][0][index][rotation][sideBump] = nextGounded.i;
-							newGroundedRotationAbove[0][0][index][rotation][sideBump] = nextGounded.j;
 						}
 					}
 				}
@@ -267,15 +244,108 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		}
 		
 	}
-	private void setupAnswerSheetInBetweenLayersGoingTopToBottom() {
 	
+	private void getSideBumpAndStateIdArrayToIterateOver() {
+		
+		//TODO:
+		//this should just find cases when:
+		// newGroundedIndexAbove[layerBelow][layerAbove][index][rotation][sideBump] >= 0 (not N/A) for all (layerBelow, layerAbove, and sideBump)
+		
+	}
+	
+	private void handleLayerStateOverLayerStatePreComputeBottomToTop(int layerStateBefore, int layerStateAfter, int index, int rotation, int sideBump) {
 		//TODO!
 	}
+	
 
+	private void handleLayerStateOverLayerStatePreComputeTopToBottom(int layerStateBefore, int layerStateAfter, int index, int rotation, int sideBump) {
+
+		//TODO!
+	}
+	
+	
+
+	//TODO: I might decide to throw this away later.
+	private void handleSimpleLayerOverSimpleLayer(int index, int rotation, int sideBump) {
+		
+
+		boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
+		
+		int leftMostRelativeTopLeftGrounded = sideBump - 6;
+		
+		if( leftMostRelativeTopLeftGrounded < -3 || leftMostRelativeTopLeftGrounded > 3) {
+			
+			answerSheet[0][0][index][rotation][sideBump] = setImpossibleForAnswerSheet();
+			newGroundedIndexAbove[0][0][index][rotation][sideBump] = BAD_INDEX;
+			newGroundedRotationAbove[0][0][index][rotation][sideBump] = BAD_ROTATION;						
+			return;
+		}
+		
+
+		for(int i=0; i<tmpArray.length; i++) {
+			tmpArray[i] = false;
+		}
+
+		Coord2D nextGounded = null;
+		
+		if(leftMostRelativeTopLeftGrounded<=0) {
+			
+			Coord2D aboveGroundedTopLeft = tryAttachCellInDir(index, rotation, ABOVE);
+
+			tmpArray[aboveGroundedTopLeft.i] = true;
+			
+			Coord2D cur = aboveGroundedTopLeft;
+			//Go to left:
+			for(int i=0; i>leftMostRelativeTopLeftGrounded; i--) {
+				cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+				tmpArray[cur.i] = true;
+			}
+			
+			nextGounded = cur;
+			
+			cur = aboveGroundedTopLeft;
+			//Go to right:
+			for(int i=0; i<leftMostRelativeTopLeftGrounded + 3; i++) {
+				
+				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+				tmpArray[cur.i] = true;
+			}
+			
+		} else {
+			
+			Coord2D cur = new Coord2D(index, rotation);
+			//Go to right until there's a cell above:
+			
+			for(int i=0; i<leftMostRelativeTopLeftGrounded; i++) {
+				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+			}
+			
+			
+			Coord2D cellAbove = tryAttachCellInDir(cur.i, cur.j, ABOVE);
+			
+			nextGounded = cellAbove;
+			
+			tmpArray[cellAbove.i] = true;
+			
+			cur = cellAbove;
+			//Go to right:
+			for(int i=0; i<3; i++) {
+				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+				tmpArray[cur.i] = true;
+			}
+			
+		}
+		
+		answerSheet[0][0][index][rotation][sideBump] = convertBoolArrayToLongs(tmpArray);
+		
+		newGroundedIndexAbove[0][0][index][rotation][sideBump] = nextGounded.i;
+		newGroundedRotationAbove[0][0][index][rotation][sideBump] = nextGounded.j;
+	}
+	
 	public void setupAnswerSheetForTopCell() {
 		
-		answerSheetForTopCell = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][NUM_LONGS_TO_USE];
-		answerSheetForTopCellAnySideBump = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_LONGS_TO_USE];
+		answerSheetForTopCell = new long[Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS][NUM_LONGS_TO_USE];
+		answerSheetForTopCellAnySideBump = new long[Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_LONGS_TO_USE];
 		
 		for(int index=0; index<Utils.getTotalArea(this.dimensions); index++) {
 			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
@@ -373,9 +443,9 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	private Coord2D tryAttachCellInDir(int curIndex, int rotationRelativeFlatMap, int dir) {
 		CoordWithRotationAndIndex neighbours[] = this.neighbours[curIndex];
 		
-		int neighbourIndex = (rotationRelativeFlatMap + dir) % NUM_NEIGHBOURS;
+		int neighbourIndex = (rotationRelativeFlatMap + dir) % NUM_ROTATIONS;
 		curIndex = neighbours[neighbourIndex].getIndex();
-		rotationRelativeFlatMap = (rotationRelativeFlatMap + neighbours[neighbourIndex].getRot() + NUM_NEIGHBOURS) % NUM_NEIGHBOURS;
+		rotationRelativeFlatMap = (rotationRelativeFlatMap + neighbours[neighbourIndex].getRot() + NUM_ROTATIONS) % NUM_ROTATIONS;
 		
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
 	}

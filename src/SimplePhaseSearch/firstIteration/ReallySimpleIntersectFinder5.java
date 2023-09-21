@@ -11,6 +11,8 @@ import NewModel.firstIteration.Nx1x1CuboidToFold;
 import SolutionResolver.SolutionResolverInterface;
 import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
+//TODO: I made small changes to this. Please test new findReallySimpleSolutionsRecursionFirstLayer
+// function.
 public class ReallySimpleIntersectFinder5 {
 
 	public static void main(String[] args) {
