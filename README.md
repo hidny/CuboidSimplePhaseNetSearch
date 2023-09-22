@@ -46,10 +46,10 @@ In the future, I plan to find smaller nets by changing the category of net that 
   
 
 An interesting fact about the 15 nets I found is that, in all cases, cell index #0 of the (8x5x1) cuboid matches up with the index #0 of the 26x1x1 cuboid.
+I don't think it's a coincidence, but I still can't confidently explain why it's not a coincidence.
 I also found that there was a lot of ways to have a net that covers both the 26x1x1 cuboid and the 8x5x1 cuboid ( more than 9 million simply stacked nets!). I don't know why
 they paired up so well, but I have the feeling there's an answer to that question.
 
-I don't think it's a coincidence, but I still can't confidently explain why it's not a coincidence.
 
   
 
@@ -95,43 +95,43 @@ Example 1:
 
   
 
-|##|##|##|##|##|##|##|##|13|##|<br>
+|__|__|__|__|__|__|__|__|13|__|<br>
 
-|##|##|##|##|##|##|12|#9|#6|#3|<br>
+|__|__|__|__|__|__|12|#9|#6|#3|<br>
 
-|##|##|##|#8|#5|#2|11|##|##|##|<br>
+|__|__|__|#8|#5|#2|11|__|__|__|<br>
 
-|#4|#1|10|#7|##|##|##|##|##|##|<br>
+|#4|#1|10|#7|__|__|__|__|__|__|<br>
 
-|##|##|#0|##|##|##|##|##|##|##|<br>
+|__|__|#0|__|__|__|__|__|__|__|<br>
 
   
 
 Example 2:
 
-|##|##|13|##|##|##|##|<br>
+|__|__|13|__|__|__|__|<br>
 
-|##|##|12|#9|#6|#3|##|<br>
+|__|__|12|#9|#6|#3|__|<br>
 
-|#5|##|##|#8|##|#2|11|<br>
+|#5|__|__|#8|__|#2|11|<br>
 
-|#4|#1|10|#7|##|##|##|<br>
+|#4|#1|10|#7|__|__|__|<br>
 
-|##|##|#0|##|##|##|##|<br>
+|__|__|#0|__|__|__|__|<br>
 
   
 
 Example 3:
 
-|##|##|13|##|##|##|##|<br>
+|__|__|13|__|__|__|__|<br>
 
-|##|##|12|29|26|23|##|<br>
+|__|__|12|29|26|23|__|<br>
 
-|#5|##|11|28|##|22|##|<br>
+|#5|__|11|28|__|22|__|<br>
 
-|#4|#1|10|27|##|##|##|<br>
+|#4|#1|10|27|__|__|__|<br>
 
-|##|##|#0|##|##|##|##|<br>
+|__|__|#0|__|__|__|__|<br>
 
   
 
@@ -216,7 +216,7 @@ This might not happen any time soon.
 
   
 
-### put state in 64-bit longs
+### put state in 64-bit integers
 
 I decided to hold the state of which cuboid cells are used or not used in 64-integers.
 
@@ -296,8 +296,8 @@ Cells that are currently connected to the bottom cell
 Example:
 15 is grounded because it's connected to the 0 cell, but 34 is not:
 
-|15|##|34|
-|00|##|##|
+|15|__|34|<br>
+|00|__|__|
 
   
 
@@ -344,19 +344,19 @@ Example option 1:
 
 Example option 2:
 
-|25|22|##|28|##|##|11|<br>
+|25|22|__|28|__|__|11|<br>
 
   
 
 Example option 3:
 
-|25|##|28|22|##|11|<br>
+|25|__|28|22|__|11|<br>
 
   
 
 Example option 4:
 
-|25|##|##|28|##|22|11|<br>
+|25|__|__|28|__|22|11|<br>
 
   
 
@@ -425,6 +425,7 @@ Where the matrix M =
 or more simply:
 
 M=
+
 7 2 2 1 1 2 2<br>
 
 1 1 1 1 0 0 0<br>
@@ -444,7 +445,7 @@ describes how many ways state i could go to state j by adding a new layer.
 
 I googled for the eigenvectors and eigenvalues...
 
-and found 9.49562268930808697738316414143286398511459028140825...
+and found 9.4956...
 
 https://matrixcalc.org/ gives this:
 9.4956226893 
