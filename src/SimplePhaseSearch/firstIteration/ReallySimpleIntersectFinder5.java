@@ -233,7 +233,9 @@ public class ReallySimpleIntersectFinder5 {
 			return ret;
 		}
 		
+		//TODO: iterate through the possible moves (precompute the possible moves ahead of time)
 		for(int nextLayerState = 0; nextLayerState<CuboidToFoldOnExtendedSimplePhase1.NUM_LAYER_STATES; nextLayerState++) {
+			
 			for(int sideBump=3; sideBump <10; sideBump++) {
 				
 				if(cuboidToBuild.isNewLayerValidSimpleFast(nextLayerState, sideBump)) {
