@@ -285,7 +285,6 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			//TODO: no need to connect from top to bottom because
 			// below state connects the left part while above state connects the right part.
 			//TODO: put in sentinel values?
-			
 			return;
 		}
 		
@@ -303,23 +302,53 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		
 		boolean connected = false;
 		
+
+		Coord2D curGroundAbove = null;
+		
 		BIG_LOOP:
 		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_DOWN.length; i++) {
 			
+			
 			for(int j=Math.max(0, leftMostRelativeBottomLayer); j<Math.min(LENGTH_LAYER_STATES, LENGTH_LAYER_STATES + leftMostRelativeBottomLayer); j++) {
 				
-				if(CELLS_TO_ADD_BY_STATE_GOING_DOWN[layerStateBelow][j] == 1
-						//TODO: LEVEL_OPTIONS doesn't work with states...
-						&& groundingFromAbove[leftMostRelativeBottomLayer] == 1) {
-					connected = true;
+				if(groundingFromAbove[leftMostRelativeBottomLayer] == 1) {
 					
-					//TODO
-
-					//private long answerSheetGoingDown[][][][][][];
-					//private int newGroundedIndexBelow[][][][][];
-					//private int newGroundedRotationBelow[][][][][];
+					if(curGroundAbove == null) {
+						curGroundAbove = new Coord2D(indexGroundedAbove, rotationGroundedAbove);
+					} else {
+						if(groundingFromAbove[leftMostRelativeBottomLayer - 1] != 1) {
+							System.out.println("ERROR: unexpected result in handleLayerStateOverLayerStatePreComputeTopToBottom");
+							System.exit(1);
+						}
+						curGroundAbove = tryAttachCellInDir(curGroundAbove.i, curGroundAbove.j, RIGHT);
+					}
 					
-					break BIG_LOOP;
+					if(CELLS_TO_ADD_BY_STATE_GOING_DOWN[layerStateBelow][j] == 1) {
+						connected = true;
+						
+						//TODO
+	
+						//private long answerSheetGoingDown[][][][][][];
+						//private int newGroundedIndexBelow[][][][][];
+						//private int newGroundedRotationBelow[][][][][];
+						
+						//answerSheetGoingDown = new long[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS][NUM_LONGS_TO_USE];
+						//newGroundedIndexBelow = new int[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS];
+						//newGroundedRotationBelow = new int[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS];
+						
+						//tryAttachCellInDir(int curIndex, int rotationRelativeFlatMap, int dir)
+						/*
+						 * Coord2D cur = new Coord2D(index, rotation);
+							//Go to right until there's a cell above:
+							
+							for(int i=0; i<leftMostRelativeTopLeftGrounded; i++) {
+								cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+							}
+						 */
+						//TODO: you will need to make drawings...
+						
+						break BIG_LOOP;
+					}
 				}
 			}
 		}
