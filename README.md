@@ -47,7 +47,7 @@ In the future, I plan to find smaller nets by changing the category of net that 
 
 An interesting fact about the 15 nets I found is that, in all cases, cell index #0 of the (8x5x1) cuboid matches up with the index #0 of the 26x1x1 cuboid.
 I don't think it's a coincidence, but I still can't confidently explain why it's not a coincidence.
-I also found that there was a lot of ways to have a net that covers both the 26x1x1 cuboid and the 8x5x1 cuboid ( more than 9 million simply stacked nets!). I don't know why
+I also found that there was a lot of ways to have a net that covers both the 26x1x1 cuboid and the 8x5x1 cuboid (more than 9 million simply stacked nets!). I don't know why
 they paired up so well, but I have the feeling there's an answer to that question.
 
 
@@ -157,12 +157,6 @@ only searching this type of net allowed me to find the 15 nets of area 106 that 
 
   
 
-  
-
-## Possible extensions
-
-  
-
 ### The 'flower'
 
   
@@ -198,7 +192,6 @@ I read about this strategy in section 3.5.1 of "Introduction to Computational Or
 
 ### Reset but for 1x2xN
 
-  
 
 Once 1x1xN is done and optimized, I might move on to doing the same thing for the 1x2xN cuboids...
 
@@ -206,35 +199,25 @@ This might not happen any time soon.
 
   
 
-....
+## Tricks to get the computation done faster:
 
   
 
-  
+### Put state in 64-bit integers
 
-## Tricks:
-
-  
-
-### put state in 64-bit integers
-
-I decided to hold the state of which cuboid cells are used or not used in 64-integers.
+I decided to hold the state of which cuboid cells are used or not used in 64-bit integers.
 
 This allows me to quickly do basic checks with some bit manipulation.
 
 For example:
 
-The question: 'if the reference cell is 13 with rotation 1, can I add layer 0 on top of it?'
+The question: 'if the reference index cell is 13 with rotation 1, can I add layer 0 on top of it?'
 
-becomes a question of ANDing the long states:
+becomes a question of ANDing 2 or 3 64-bit integers states.
 
-state_of_cells AND bit_mask_cells_to_add_in_layer
-
-  
+(i.e: state_of_cells AND bit_mask_cells_to_add_in_layer)
 
 because I can hold all the cuboid cells in 2 64-integers, that becomes only 2 AND operations.
-
-  
 
   
 
@@ -248,21 +231,6 @@ If the split happens for 'simply stacked nets', that means that it just doesn't 
 
 I used bit-masking to make this check even faster.
 
-  
-
-  
-
-### Pre-compute allowed extensions to the 1x1xN cuboid, so we could go faster...
-
-  
-
-TODO:
-
-maybe show pseudo-code for this...
-
-  
-
-  
 
   
 
@@ -287,7 +255,7 @@ TODO
 
 ### Pre-compute based on top-left grounded cell...
 
-
+TODO
 
 ### Explanation of 'Grounded cells'
 
@@ -308,7 +276,7 @@ Example:
 
   
 
-I currently have three conjectures that, (if true), would the search a lot easier.
+I currently have three conjectures that, (if true), would make the search a lot easier.
 
 I'm a bit embarrassed about the fact that I haven't proved any of these conjectures, but I completely believe them and
 
@@ -368,7 +336,7 @@ Example option 4:
 
 'simple phase nets' conjecture 2:
 
-Every layer can be described by one of 7 states. One state for {1, 1, 1, 1, 0, 0, 0}
+Every layer/row can be described by one of 7 states. One state for {1, 1, 1, 1, 0, 0, 0}
 
 and 2 states for the other configurations.
 
@@ -445,14 +413,14 @@ describes how many ways state i could go to state j by adding a new layer.
 
 I googled for the eigenvectors and eigenvalues...
 
-and found 9.4956...
+and found that the biggeset eigenvalue is 9.4956...
 
 https://matrixcalc.org/ gives this:
-9.4956226893 
+9.4956226893 ...
 I also took screenshots of the exact form of the solution from wolframalpha. (See the pics folder)
+I believe that it's the solution to a cubic polynomial, but I'm not 100% sure.
 
-
-That means that for every layer you add to the 1x1xN cuboid, you get around 9.5 times more possible configurations.
+The eigenvalue found means that for every layer you add to the 1x1xN cuboid, you get around 9.5 times more possible configurations.
 
 
 I'm currently hoping to find something similar for all 1x1xN nets. I'll look into this later.
