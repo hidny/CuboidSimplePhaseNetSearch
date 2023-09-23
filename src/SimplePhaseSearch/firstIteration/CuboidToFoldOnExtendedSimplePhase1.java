@@ -238,6 +238,14 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 							
 							if(layerStateBelow == 0 && layerStateAbove == 0) {
 								handleSimpleLayerOverSimpleLayer(index, rotation, sideBump);
+							} else {
+								
+								//TODO: also bottom to top
+								
+								//TODO: also isolated line bottom to top.
+								
+								//Top to bottom:
+								handleLayerStateOverLayerStatePreComputeTopToBottom(layerStateBelow, layerStateAbove, index, rotation, sideBump);
 							}
 						}
 					}
@@ -268,8 +276,8 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	
 	//TODO: test this!
 	private void handleLayerStateOverLayerStatePreComputeTopToBottom(int layerStateBelow, int layerStateAbove, int indexGroundedAbove, int rotationGroundedAbove, int sideBump) {
-		if(layerStateBelow == 0) {
-			
+		
+		if(layerStateBelow == 0) {	
 			// No need to connect from top to bottom because
 			// below layer is fully connected
 			// I set it to impossible, but it's more like "Not applicable"...
@@ -308,13 +316,12 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		
 
 		Coord2D curGroundAbove = null;
-		
-		BIG_LOOP:
+
 		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_DOWN.length; i++) {
 			
 			int topLayerIndex = i - leftMostRelativeBottomLayer;
 			
-			if( topLayerIndex < 0 || topLayerIndex > CELLS_TO_ADD_BY_STATE_GOING_DOWN.length) {
+			if( topLayerIndex < 0 || topLayerIndex >= CELLS_TO_ADD_BY_STATE_GOING_DOWN.length) {
 				continue;
 			}
 
@@ -361,18 +368,29 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 						newGroundedIndexBelow[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = nextGounded.i;
 						newGroundedRotationBelow[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = nextGounded.j;
 					
+						tmpArray = new boolean[Utils.getTotalArea(this.dimensions)];
 						wentThroughLoopAlready = true;
 						
 					} else {
-						//TODO: take away big loop and test that the results are the same here!
+						
+						//If the answer isn't consistent, then it doesn't work:
+						
+						if(convertBoolArrayToLongs(tmpArray) !=
+								answerSheetGoingDown[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump]
+							|| nextGounded.i !=
+								newGroundedIndexBelow[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump]
+							|| nextGounded.j !=
+									newGroundedRotationBelow[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump]
+							) {
+
+							answerSheetGoingUp[0][0][indexGroundedAbove][rotationGroundedAbove][sideBump] = setImpossibleForAnswerSheet();
+							newGroundedIndexAbove[0][0][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_INDEX;
+							newGroundedRotationAbove[0][0][indexGroundedAbove][rotationGroundedAbove][rotationGroundedAbove] = BAD_ROTATION;						
+							return;
+
+						}
 						
 					}
-					//TODO: 
-					// Bonus feature: make sure it works (i.e: cells of tmpArray doesn't conflict with cells of top layer.)
-					// I'll do that in a future iteration...
-					
-					//TODO: take away the break for testing purposes...
-					break BIG_LOOP;
 				}
 			}
 		
@@ -380,6 +398,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		
 		if(connected == false) {
 			System.out.println("ERROR: something went wrong in handleLayerStateOverLayerStatePreComputeTopToBottom");
+			System.out.println("DEBUG");
 			System.exit(1);
 		}
 		
@@ -580,6 +599,12 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	public static void main(String args[]) {
 
 		sanityTestGetCellsToAddGoingUpAndDown();
+		
+		CuboidToFoldOnExtendedSimplePhase1 test1 = new CuboidToFoldOnExtendedSimplePhase1(5, 1, 1);
+		
+
+		//CuboidToFoldOnExtendedSimplePhase1 test2 = new CuboidToFoldOnExtendedSimplePhase1(3, 2, 1);
+		
 	}
 
 	public static void sanityTestGetCellsToAddGoingUpAndDown() {
