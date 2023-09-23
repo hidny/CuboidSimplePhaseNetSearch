@@ -251,13 +251,10 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		
 		//TODO:
 		//this should just find cases when:
-		// newGroundedIndexAbove[layerBelow][layerAbove][index][rotation][sideBump] >= 0 (not N/A) for all (layerBelow, layerAbove, and sideBump)
+		// newGroundedIndexAbove[layerBelow][layerAbove][index][rotation][sideBump] >= 0 (not N/A) exist for at least one of (layerBelow, layerAbove, and sideBump)
 		
 	}
 	
-	private void handleLayerStateOverLayerStatePreComputeBottomToTop(int layerStateBelow, int layerStateAbove, int index, int rotation, int sideBump) {
-		//TODO!
-	}
 	
 	private boolean connectToTopToBottomFromLeft(int layerState) {
 		
@@ -268,24 +265,30 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		}
 	}
 
+	
+	//TODO: test this!
 	private void handleLayerStateOverLayerStatePreComputeTopToBottom(int layerStateBelow, int layerStateAbove, int indexGroundedAbove, int rotationGroundedAbove, int sideBump) {
-
-		
-		//TODO!
-
 		if(layerStateBelow == 0) {
-			//TODO: no need to connect from top to bottom because
+			
+			// No need to connect from top to bottom because
 			// below layer is fully connected
-			//TODO: put in sentinel values?
+			// I set it to impossible, but it's more like "Not applicable"...
 			
+			answerSheetGoingUp[0][0][indexGroundedAbove][rotationGroundedAbove][sideBump] = setImpossibleForAnswerSheet();
+			newGroundedIndexAbove[0][0][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_INDEX;
+			newGroundedRotationAbove[0][0][indexGroundedAbove][rotationGroundedAbove][rotationGroundedAbove] = BAD_ROTATION;						
 			return;
-			
+
 		} else if(layerStateAbove != 0 && connectToTopToBottomFromLeft(layerStateBelow) != connectToTopToBottomFromLeft(layerStateAbove)) {
 
-			//TODO: no need to connect from top to bottom because
+			// No need to connect from top to bottom because
 			// below state connects the left part while above state connects the right part.
-			//TODO: put in sentinel values?
+
+			answerSheetGoingUp[0][0][indexGroundedAbove][rotationGroundedAbove][sideBump] = setImpossibleForAnswerSheet();
+			newGroundedIndexAbove[0][0][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_INDEX;
+			newGroundedRotationAbove[0][0][indexGroundedAbove][rotationGroundedAbove][rotationGroundedAbove] = BAD_ROTATION;						
 			return;
+
 		}
 		
 		int groundingFromAbove[] = CELLS_TO_ADD_BY_STATE_GOING_DOWN[layerStateAbove];
@@ -301,6 +304,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		int leftMostRelativeBottomLayer = sideBump - 6;
 		
 		boolean connected = false;
+		boolean wentThroughLoopAlready = false;
 		
 
 		Coord2D curGroundAbove = null;
@@ -308,60 +312,83 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		BIG_LOOP:
 		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_DOWN.length; i++) {
 			
+			int topLayerIndex = i - leftMostRelativeBottomLayer;
 			
-			for(int j=Math.max(0, leftMostRelativeBottomLayer); j<Math.min(LENGTH_LAYER_STATES, LENGTH_LAYER_STATES + leftMostRelativeBottomLayer); j++) {
+			if( topLayerIndex < 0 || topLayerIndex > CELLS_TO_ADD_BY_STATE_GOING_DOWN.length) {
+				continue;
+			}
+
+			if(groundingFromAbove[topLayerIndex] == 1) {
 				
-				if(groundingFromAbove[leftMostRelativeBottomLayer] == 1) {
+				if(curGroundAbove == null) {
+					curGroundAbove = new Coord2D(indexGroundedAbove, rotationGroundedAbove);
+				} else {
+					if(groundingFromAbove[leftMostRelativeBottomLayer - 1] != 1) {
+						System.out.println("ERROR: unexpected result in handleLayerStateOverLayerStatePreComputeTopToBottom");
+						System.exit(1);
+					}
+					curGroundAbove = tryAttachCellInDir(curGroundAbove.i, curGroundAbove.j, RIGHT);
+				}
+				
+				if(CELLS_TO_ADD_BY_STATE_GOING_DOWN[layerStateBelow][i] == 1) {
+
+					connected = true;
+
+					Coord2D cellBelowCurGround = tryAttachCellInDir(curGroundAbove.i, curGroundAbove.j, BELOW);
+
+					Coord2D curCell = cellBelowCurGround;
+					//Go to left:
+					for(int k=i; k - 1 >=0 && CELLS_TO_ADD_BY_STATE_GOING_DOWN[layerStateBelow][k-1] == 1; k--) {
+						curCell = tryAttachCellInDir(curCell.i, curCell.j, LEFT);
+						tmpArray[curCell.i] = true;
+					}
 					
-					if(curGroundAbove == null) {
-						curGroundAbove = new Coord2D(indexGroundedAbove, rotationGroundedAbove);
+					Coord2D nextGounded = curCell;
+					
+					curCell = cellBelowCurGround;
+					
+					//Go to right:
+					for(int k=i; k + 1 < CELLS_TO_ADD_BY_STATE_GOING_DOWN.length 
+							&& CELLS_TO_ADD_BY_STATE_GOING_DOWN[layerStateBelow][k+1] == 1; k++) {
+						curCell = tryAttachCellInDir(curCell.i, curCell.j, RIGHT);
+						tmpArray[curCell.i] = true;
+					}
+
+					if(wentThroughLoopAlready == false) {
+
+						answerSheetGoingDown[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = convertBoolArrayToLongs(tmpArray);
+						
+						newGroundedIndexBelow[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = nextGounded.i;
+						newGroundedRotationBelow[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = nextGounded.j;
+					
+						wentThroughLoopAlready = true;
+						
 					} else {
-						if(groundingFromAbove[leftMostRelativeBottomLayer - 1] != 1) {
-							System.out.println("ERROR: unexpected result in handleLayerStateOverLayerStatePreComputeTopToBottom");
-							System.exit(1);
-						}
-						curGroundAbove = tryAttachCellInDir(curGroundAbove.i, curGroundAbove.j, RIGHT);
+						//TODO: take away big loop and test that the results are the same here!
+						
 					}
+					//TODO: 
+					// Bonus feature: make sure it works (i.e: cells of tmpArray doesn't conflict with cells of top layer.)
+					// I'll do that in a future iteration...
 					
-					if(CELLS_TO_ADD_BY_STATE_GOING_DOWN[layerStateBelow][j] == 1) {
-						connected = true;
-						
-						//TODO
-	
-						//private long answerSheetGoingDown[][][][][][];
-						//private int newGroundedIndexBelow[][][][][];
-						//private int newGroundedRotationBelow[][][][][];
-						
-						//answerSheetGoingDown = new long[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS][NUM_LONGS_TO_USE];
-						//newGroundedIndexBelow = new int[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS];
-						//newGroundedRotationBelow = new int[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS];
-						
-						//tryAttachCellInDir(int curIndex, int rotationRelativeFlatMap, int dir)
-						/*
-						 * Coord2D cur = new Coord2D(index, rotation);
-							//Go to right until there's a cell above:
-							
-							for(int i=0; i<leftMostRelativeTopLeftGrounded; i++) {
-								cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
-							}
-						 */
-						//TODO: you will need to make drawings...
-						
-						break BIG_LOOP;
-					}
+					//TODO: take away the break for testing purposes...
+					break BIG_LOOP;
 				}
 			}
+		
 		}
 		
 		if(connected == false) {
-			//TODO: no need...
 			System.out.println("ERROR: something went wrong in handleLayerStateOverLayerStatePreComputeTopToBottom");
 			System.exit(1);
 		}
 		
 	}
 	
-	
+
+	private void handleLayerStateOverLayerStatePreComputeBottomToTop(int layerStateBelow, int layerStateAbove, int index, int rotation, int sideBump) {
+		//TODO!
+	}
 
 	//TODO: I might decide to throw this away later.
 	private void handleSimpleLayerOverSimpleLayer(int index, int rotation, int sideBump) {
