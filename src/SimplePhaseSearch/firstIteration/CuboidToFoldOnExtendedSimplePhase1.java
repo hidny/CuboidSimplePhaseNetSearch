@@ -168,8 +168,16 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	
 	private long answerSheetForTopCell[][][][];
 	private long answerSheetForTopCellAnySideBump[][][];
+	
+
+	private long answerSheetGoingUpFirstLayer[][][][];
+	private int newGroundedIndexAboveFirst[][][];
+	private int newGroundedRotationAboveFirst[][][];
 
 
+	public void debugPrintState() {
+		System.out.println(curState[0]);
+	}
 	//State variables:
 	private long curState[] = new long[NUM_LONGS_TO_USE];
 
@@ -249,10 +257,60 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		
 	}
 	
-	public void addFirstLayerFast(int sideBump) {
-		//TODO: AHH!
+	public static final int FIRST_LAYER_INDEX = 0;
+	public static final int BOTTOM_CELL_INDEX = 0;
+
+	public void addFirstLayer(int sideBump) {
+		long tmp[] = answerSheetGoingUpFirstLayer[groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump];
+		curState[0] = curState[0] | tmp[0];
+		curState[1] = curState[1] | tmp[1];
+		
+		int tmp1 = newGroundedIndexAboveFirst[this.groundedIndexMid][this.groundRotationRelativeFlatMapMid][sideBump];
+		int tmp2 = newGroundedRotationAboveFirst[this.groundedIndexMid][this.groundRotationRelativeFlatMapMid][sideBump];
+		
+		prevGroundedIndexesMid[currentLayerIndex] = this.groundedIndexMid;
+		prevGroundedRotationsMid[currentLayerIndex] = this.groundRotationRelativeFlatMapMid;
+
+		prevGroundedIndexesSide[currentLayerIndex] = this.groundedIndexSide;
+		prevGroundedRotationsSide[currentLayerIndex] = this.groundRotationRelativeFlatMapSide;
+
+		prevSideBumps[currentLayerIndex] = sideBump;
+		prevLayerIndex[currentLayerIndex] = FIRST_LAYER_INDEX;
+		currentLayerIndex++;
+		
+		//TODO: connect newly grounded lower layers (This is currently missing, and will cause it to not work)
+
+		this.groundedIndexMid = tmp1;
+		this.groundRotationRelativeFlatMapMid = tmp2;
+
+		this.groundedIndexSide = tmp1;
+		this.groundRotationRelativeFlatMapSide = tmp2;
 		
 	}
+	
+	public void leaveOnlyTheBottomCell() {
+		
+		currentLayerIndex--;
+		this.groundedIndexMid = prevGroundedIndexesMid[currentLayerIndex]; 
+		this.groundRotationRelativeFlatMapMid = prevGroundedRotationsMid[currentLayerIndex];
+
+		this.groundedIndexSide = prevGroundedIndexesSide[currentLayerIndex]; 
+		this.groundRotationRelativeFlatMapSide = prevGroundedRotationsSide[currentLayerIndex];
+		
+		boolean tmpArray[] = new boolean[getNumCellsToFill()];
+		
+		
+		for(int i=0; i<tmpArray.length; i++) {
+			tmpArray[i] = false;
+		}
+		
+		tmpArray[groundedIndexMid] = true;
+		
+		
+		curState = convertBoolArrayToLongs(tmpArray);
+		
+	}
+	
 	
 	public void removePrevLayerFast() {
 		
@@ -319,7 +377,10 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		newGroundedRotationAboveSide = new int[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS];
 		newGroundedIndexAboveSide = new int[NUM_LAYER_STATES][NUM_LAYER_STATES][Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS];
 		
-		
+
+		answerSheetGoingUpFirstLayer = new long[Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS][NUM_LONGS_TO_USE];
+		newGroundedIndexAboveFirst = new int[Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS];
+		newGroundedRotationAboveFirst = new int[Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS];
 		
 		for(int layerStateBelow=0; layerStateBelow<NUM_LAYER_STATES; layerStateBelow++) {
 			for(int layerStateAbove=0; layerStateAbove<NUM_LAYER_STATES; layerStateAbove++) {
@@ -699,6 +760,14 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 						tmpArray[curCell.i] = true;
 					}
 
+					if(i == BOTTOM_CELL_INDEX && layerStateBelow == FIRST_LAYER_INDEX && layerStateAbove == FIRST_LAYER_INDEX) {
+
+						//Handle the slightly different logic for the 1st layer to be added:
+						answerSheetGoingUpFirstLayer[indexGroundedMidBelow][rotationGroundedMidBelow][sideBump]  = convertBoolArrayToLongs(tmpArray);;
+						newGroundedIndexAboveFirst[indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = nextGounded.i;
+						newGroundedRotationAboveFirst[indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = nextGounded.j;
+					}
+	
 					if(wentThroughLoopAlready == false) {
 
 						answerSheetGoingUpMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = convertBoolArrayToLongs(tmpArray);

@@ -177,6 +177,8 @@ public class ReallySimpleIntersectFinder5 {
 	public static final int FIRST_LEGAL_SIDE_BUMP_Nx1x1 = 3;
 	public static final int WIDTH_Nx1x1 = 4;
 	public static final int FIRST_CUR_LAYER_INDEX = 1;
+	
+	//TODO Nx1x1CuboidToFold reference is doing a lot of overhead work that could be done on solution time
 	public static long findReallySimpleSolutionsRecursionFirstLayer(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedSimplePhase1 cuboidToBuild, int numLayers) {
 		long ret = 0;
 		
@@ -192,14 +194,33 @@ public class ReallySimpleIntersectFinder5 {
 				System.exit(1);
 			}
 			
-			cuboidToBuild.addFirstLayerFast(sideBump);
+			System.out.println();
+			System.out.println("Before sideBump " + sideBump);
+			cuboidToBuild.debugPrintState();
+			
+			if(sideBump == 5) {
+				System.out.println("Debug please!");
+			}
+			cuboidToBuild.addFirstLayer(sideBump);
+
+			System.out.println();
+			System.out.println("Debug After add: " + sideBump);
+			cuboidToBuild.debugPrintState();
+			
 			reference.addNextLevel(new Coord2D(0, sideBump), null);
 
 			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, FIRST_CUR_LAYER_INDEX, numLayers);
+
+			System.out.println("Debug 2 " + sideBump);
+			cuboidToBuild.debugPrintState();
+
+			cuboidToBuild.leaveOnlyTheBottomCell();
+			reference.removeCurrentTopLevel();
 			
 
-			cuboidToBuild.removePrevLayerFast();
-			reference.removeCurrentTopLevel();
+			System.out.println("After sideBump " + sideBump);
+			cuboidToBuild.debugPrintState();
+			System.out.println();
 		}
 		
 		
@@ -218,18 +239,24 @@ public class ReallySimpleIntersectFinder5 {
 			
 			System.out.println("Debug it: " + debugIterator);
 			
-			if(debugIterator == 2) {
-				System.out.println("Debug");
+			if(debugIterator == 3) {
+				System.out.println("Debug please");
+				System.out.println();
 			}
+			
 			
 			if(cuboidToBuild.isTopCellAbleToBeAddedFast()) {
 
 				for(int sideBump=6; sideBump <10; sideBump++) {
+
+					System.out.println("Before sideBump inner" + sideBump);
+					cuboidToBuild.debugPrintState();
 					if(cuboidToBuild.isTopCellAbleToBeAddedForSideBumpFast(sideBump)) {
 						ret++;
 						
 						reference.addNextLevel(new Coord2D(0, sideBump), null);
-						if(BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
+						//TODO: remove 0 == 0 when done testing
+						if(0 == 0 || BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
 							System.out.println("Unique solution found");
 							System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 							
@@ -238,6 +265,9 @@ public class ReallySimpleIntersectFinder5 {
 						}
 						reference.removeCurrentTopLevel();
 					}
+
+					System.out.println("Before sideBump inner" + sideBump);
+					cuboidToBuild.debugPrintState();
 				}
 				
 				if(ret > 0) {
@@ -248,7 +278,8 @@ public class ReallySimpleIntersectFinder5 {
 					System.out.println("----");
 				}
 			}
-			
+			System.out.println("Output before ret");
+			cuboidToBuild.debugPrintState();
 			return ret;
 		}
 		
@@ -256,6 +287,9 @@ public class ReallySimpleIntersectFinder5 {
 		for(int nextLayerState = 0; nextLayerState<CuboidToFoldOnExtendedSimplePhase1.NUM_LAYER_STATES; nextLayerState++) {
 			
 			for(int sideBump=0; sideBump <CuboidToFoldOnExtendedSimplePhase1.NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
+				
+
+				cuboidToBuild.debugPrintState();
 				
 				if(cuboidToBuild.isNewLayerValidSimpleFast(nextLayerState, sideBump)) {
 					cuboidToBuild.addNewLayerFast(nextLayerState, sideBump);
@@ -266,6 +300,9 @@ public class ReallySimpleIntersectFinder5 {
 					cuboidToBuild.removePrevLayerFast();
 					reference.removeCurrentTopLevel();
 				}
+				
+
+				cuboidToBuild.debugPrintState();
 			}
 		}
 		
