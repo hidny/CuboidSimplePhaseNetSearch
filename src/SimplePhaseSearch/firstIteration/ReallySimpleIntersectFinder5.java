@@ -116,12 +116,10 @@ public class ReallySimpleIntersectFinder5 {
 		System.out.println("END");
 	}
 	
-	public static SolutionResolverInterface solutionResolver;
 
 	public static void reallySimpleSearch(int a, int b, int c) {
 		
 		BasicUniqueCheckImproved.resetUniqList();
-		solutionResolver = new StandardResolverForSmallIntersectSolutions();
 		
 		
 		CuboidToFoldOnExtendedSimplePhase1 cuboidToBuild = new CuboidToFoldOnExtendedSimplePhase1(a, b, c);
@@ -175,7 +173,9 @@ public class ReallySimpleIntersectFinder5 {
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedSimplePhase1 cuboidToBuild) {
 		return findReallySimpleSolutionsRecursionFirstLayer(reference, cuboidToBuild, getNumLayers(cuboidToBuild));
 	}
-	
+
+	public static final int FIRST_LEGAL_SIDE_BUMP_Nx1x1 = 3;
+	public static final int WIDTH_Nx1x1 = 4;
 	public static final int FIRST_CUR_LAYER_INDEX = 1;
 	public static long findReallySimpleSolutionsRecursionFirstLayer(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedSimplePhase1 cuboidToBuild, int numLayers) {
 		long ret = 0;
@@ -184,30 +184,43 @@ public class ReallySimpleIntersectFinder5 {
 			return 1L;
 		}
 		
-		for(int sideBump=3; sideBump <= 6; sideBump++) {
-			
-			if(cuboidToBuild.isNewLayerValidSimpleFast(0, sideBump)) {
-				cuboidToBuild.addNewLayerFast(0, sideBump);
-				reference.addNextLevel(new Coord2D(0, sideBump), null);
+		for(int sideBump=FIRST_LEGAL_SIDE_BUMP_Nx1x1; sideBump <FIRST_LEGAL_SIDE_BUMP_Nx1x1 + WIDTH_Nx1x1; sideBump++) {
 
-				ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, FIRST_CUR_LAYER_INDEX, numLayers);
-				
-	
-				cuboidToBuild.removePrevLayerFast();
-				reference.removeCurrentTopLevel();
+			//TODO: hide (sideBump - 6) inside a function...
+			if(CuboidToFoldOnExtendedSimplePhase1.LEVEL_OPTIONS[0][0 - (sideBump - 6)] != 1) {
+				System.out.println("OOPS in findReallySimpleSolutionsRecursionFirstLayer!");
+				System.exit(1);
 			}
+			
+			cuboidToBuild.addFirstLayerFast(sideBump);
+			reference.addNextLevel(new Coord2D(0, sideBump), null);
+
+			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, FIRST_CUR_LAYER_INDEX, numLayers);
+			
+
+			cuboidToBuild.removePrevLayerFast();
+			reference.removeCurrentTopLevel();
 		}
 		
 		
 		return ret;
 	}
 	
+	public static int debugIterator = 0;
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedSimplePhase1 cuboidToBuild, int curLayerIndex, int numLayers) {
 
-		System.out.println("hello");
+		debugIterator++;
+		System.out.println("hello " + debugIterator);
+		
 		long ret = 0;
 		
 		if(curLayerIndex == numLayers) {
+			
+			System.out.println("Debug it: " + debugIterator);
+			
+			if(debugIterator == 2) {
+				System.out.println("Debug");
+			}
 			
 			if(cuboidToBuild.isTopCellAbleToBeAddedFast()) {
 

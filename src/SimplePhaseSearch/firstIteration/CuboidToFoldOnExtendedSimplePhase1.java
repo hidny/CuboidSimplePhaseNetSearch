@@ -249,6 +249,11 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		
 	}
 	
+	public void addFirstLayerFast(int sideBump) {
+		//TODO: AHH!
+		
+	}
+	
 	public void removePrevLayerFast() {
 		
 		currentLayerIndex--;
@@ -421,6 +426,8 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 					Coord2D cellBelowCurGround = tryAttachCellInDir(curGroundAbove.i, curGroundAbove.j, BELOW);
 
 					Coord2D curCell = cellBelowCurGround;
+					tmpArray[curCell.i] = true;
+
 					//Go to left:
 					for(int k=i; k - 1 >=0 && CELLS_TO_ADD_BY_STATE_GOING_DOWN[layerStateBelow][k-1] == 1; k--) {
 						curCell = tryAttachCellInDir(curCell.i, curCell.j, LEFT);
@@ -480,6 +487,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	}
 	
 
+	//TODO: make sure it's similar to handleLayerStateOverLayerStatePreComputeBottomToTopMid
 
 	//TODO: test this!
 	private void handleLayerStateOverLayerStatePreComputeBottomToTopSide(int layerStateBelow, int layerStateAbove, int indexGroundedSideBelow, int rotationGroundedSideBelow, int sideBump) {
@@ -546,8 +554,11 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 					Coord2D cellAboveCurGround = tryAttachCellInDir(curGroundBelow.i, curGroundBelow.j, ABOVE);
 
 					Coord2D curCell = cellAboveCurGround;
+					
+					tmpArray[curCell.i] = true;
+					
 					//Go to left:
-					for(int k=topLayerIndex; k - 1 >=0 && CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[layerStateAbove][k-1] == 1; k--) {
+					for(int k=topLayerIndex; k - 1 >= 0 && CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[layerStateAbove][k-1] == 1; k--) {
 						curCell = tryAttachCellInDir(curCell.i, curCell.j, LEFT);
 						tmpArray[curCell.i] = true;
 					}
@@ -557,12 +568,12 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 					curCell = cellAboveCurGround;
 					
 					//Go to right:
-					for(int k=topLayerIndex; k + 1 < CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE.length 
-							&& CELLS_TO_ADD_BY_STATE_GOING_DOWN[layerStateAbove][k+1] == 1; k++) {
+					for(int k=topLayerIndex; k + 1 < CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE.length
+							&& CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[layerStateAbove][k+1] == 1; k++) {
 						curCell = tryAttachCellInDir(curCell.i, curCell.j, RIGHT);
 						tmpArray[curCell.i] = true;
 					}
-
+					
 					if(wentThroughLoopAlready == false) {
 
 						answerSheetGoingUpSide[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump] = convertBoolArrayToLongs(tmpArray);
@@ -605,18 +616,22 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	
 	
 	//TODO: test this!
-	private void handleLayerStateOverLayerStatePreComputeBottomToTopMid(int layerStateBelow, int layerStateAbove, int indexGroundedMidBelow, int rotationGroundedMidAbove, int sideBump) {
+	private void handleLayerStateOverLayerStatePreComputeBottomToTopMid(int layerStateBelow, int layerStateAbove, int indexGroundedMidBelow, int rotationGroundedMidBelow, int sideBump) {
 		
 		if(layerStateAbove != 0 && connectToTopToBottomFromLeft(layerStateBelow) != connectToTopToBottomFromLeft(layerStateAbove)) {
 
 			// No need to connect from bottom to top because
 			// below state connects the left part while above state connects the right part.
 
-			answerSheetGoingUpMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidAbove][sideBump] = setImpossibleForAnswerSheet();
-			newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidAbove][sideBump] = BAD_INDEX;
-			newGroundedRotationAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidAbove][sideBump] = BAD_ROTATION;						
+			answerSheetGoingUpMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = setImpossibleForAnswerSheet();
+			newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = BAD_INDEX;
+			newGroundedRotationAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = BAD_ROTATION;						
 			return;
 
+		}
+		if(layerStateBelow == 0 && layerStateAbove == 0 && sideBump == 4 && indexGroundedMidBelow == 0) {
+			System.out.println("Test");
+			System.out.println(rotationGroundedMidBelow);
 		}
 		
 		int groundingFromBelow[] = CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[layerStateBelow];
@@ -648,7 +663,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			if(groundingFromBelow[i] == 1) {
 				
 				if(curGroundBelow == null) {
-					curGroundBelow = new Coord2D(indexGroundedMidBelow, rotationGroundedMidAbove);
+					curGroundBelow = new Coord2D(indexGroundedMidBelow, rotationGroundedMidBelow);
 				} else {
 					if(groundingFromBelow[i - 1] != 1) {
 						System.out.println("ERROR: unexpected result in handleLayerStateOverLayerStatePreComputeBottomToTopMid");
@@ -664,6 +679,9 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 					Coord2D cellAboveCurGround = tryAttachCellInDir(curGroundBelow.i, curGroundBelow.j, ABOVE);
 
 					Coord2D curCell = cellAboveCurGround;
+
+					tmpArray[curCell.i] = true;
+					
 					//Go to left:
 					for(int k=topLayerIndex; k - 1 >=0 && CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[layerStateAbove][k-1] == 1; k--) {
 						curCell = tryAttachCellInDir(curCell.i, curCell.j, LEFT);
@@ -675,7 +693,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 					curCell = cellAboveCurGround;
 					
 					//Go to right:
-					for(int k=topLayerIndex; k + 1 < CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE.length 
+					for(int k=topLayerIndex; k + 1 < CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE.length
 							&& CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[layerStateAbove][k+1] == 1; k++) {
 						curCell = tryAttachCellInDir(curCell.i, curCell.j, RIGHT);
 						tmpArray[curCell.i] = true;
@@ -683,10 +701,10 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 
 					if(wentThroughLoopAlready == false) {
 
-						answerSheetGoingUpMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidAbove][sideBump] = convertBoolArrayToLongs(tmpArray);
+						answerSheetGoingUpMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = convertBoolArrayToLongs(tmpArray);
 						
-						newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidAbove][sideBump] = nextGounded.i;
-						newGroundedRotationAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidAbove][sideBump] = nextGounded.j;
+						newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = nextGounded.i;
+						newGroundedRotationAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = nextGounded.j;
 					
 						tmpArray = new boolean[Utils.getTotalArea(this.dimensions)];
 						wentThroughLoopAlready = true;
@@ -696,13 +714,14 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 						//If the answer isn't consistent, then it doesn't work:
 						
 						if(convertBoolArrayToLongs(tmpArray) !=
-								answerSheetGoingUpMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidAbove][sideBump]
+								answerSheetGoingUpMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump]
 							|| nextGounded.i !=
-									newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidAbove][sideBump]
+									newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump]
 							|| nextGounded.j !=
-									newGroundedRotationAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidAbove][sideBump]
+									newGroundedRotationAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump]
 							) {
 
+							
 							connectedAndNoProblems = false;
 							break;
 
@@ -715,12 +734,17 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		} // end loop through places to connect top and bottom layer
 		
 		if(connectedAndNoProblems == false) {
-			answerSheetGoingUpMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidAbove][sideBump] = setImpossibleForAnswerSheet();
-			newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidAbove][sideBump] = BAD_INDEX;
-			newGroundedRotationAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidAbove][sideBump] = BAD_ROTATION;
+			if(layerStateBelow == 0 && layerStateAbove == 0 && sideBump == 4 && indexGroundedMidBelow == 0) {
+				System.out.println("Test 2");
+				System.out.println(rotationGroundedMidBelow);
+			}
+			answerSheetGoingUpMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = setImpossibleForAnswerSheet();
+			newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = BAD_INDEX;
+			newGroundedRotationAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = BAD_ROTATION;
 		}
 	}
 	
+	//TODO: make sure it's similar to handleLayerStateOverLayerStatePreComputeBottomToTopMid
 	public void setupAnswerSheetForTopCell() {
 		
 		answerSheetForTopCell = new long[Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS][NUM_LONGS_TO_USE];
