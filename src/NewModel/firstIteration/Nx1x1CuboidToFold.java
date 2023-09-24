@@ -444,7 +444,7 @@ public class Nx1x1CuboidToFold {
 			//TODO: You will have to do something different for the top level
 		}
 		
-		if(this.numLevelsUsed >= this.heightOfCuboid) {
+		if(this.numLevelsUsed > this.heightOfCuboid) {
 			//Insert last layer:
 			curXCoordStart += sideBump[this.numLevelsUsed - 1] - TOP_SHIFT_LEFT_1ST_IT;
 			
