@@ -426,7 +426,7 @@ public class Nx1x1CuboidToFold {
 		int rightOfBottom = getAmountSpaceRightOfBottom();
 		int width = leftOfBottom + 1+ rightOfBottom;
 		
-		boolean ret[][] = new boolean[numLevelsUsed + 1][width];
+		boolean ret[][] = new boolean[numLevelsUsed + 2][width];
 		
 		//bottom:
 		int bottomXCoord = leftOfBottom;
@@ -444,7 +444,7 @@ public class Nx1x1CuboidToFold {
 			//TODO: You will have to do something different for the top level
 		}
 		
-		if(this.numLevelsUsed > this.heightOfCuboid) {
+		if(this.numLevelsUsed >= this.heightOfCuboid) {
 			//Insert last layer:
 			curXCoordStart += sideBump[this.numLevelsUsed - 1] - TOP_SHIFT_LEFT_1ST_IT;
 			
