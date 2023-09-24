@@ -273,6 +273,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 								
 								//Top to bottom:
 								handleLayerStateOverLayerStatePreComputeTopToBottom(layerStateBelow, layerStateAbove, index, rotation, sideBump);
+								handleLayerStateOverLayerStatePreComputeBottomToTopNonMid(layerStateBelow, layerStateAbove, index, rotation, sideBump);
 							}
 						}
 					}
@@ -309,9 +310,9 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			// below layer is fully connected
 			// I set it to impossible, but it's more like "Not applicable"...
 			
-			answerSheetGoingUp[0][0][indexGroundedAbove][rotationGroundedAbove][sideBump] = setImpossibleForAnswerSheet();
-			newGroundedIndexAbove[0][0][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_INDEX;
-			newGroundedRotationAbove[0][0][indexGroundedAbove][rotationGroundedAbove][rotationGroundedAbove] = BAD_ROTATION;						
+			answerSheetGoingUp[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = setImpossibleForAnswerSheet();
+			newGroundedIndexAbove[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_INDEX;
+			newGroundedRotationAbove[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_ROTATION;						
 			return;
 
 		} else if(layerStateAbove != 0 && connectToTopToBottomFromLeft(layerStateBelow) != connectToTopToBottomFromLeft(layerStateAbove)) {
@@ -319,9 +320,9 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			// No need to connect from top to bottom because
 			// below state connects the left part while above state connects the right part.
 
-			answerSheetGoingUp[0][0][indexGroundedAbove][rotationGroundedAbove][sideBump] = setImpossibleForAnswerSheet();
-			newGroundedIndexAbove[0][0][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_INDEX;
-			newGroundedRotationAbove[0][0][indexGroundedAbove][rotationGroundedAbove][rotationGroundedAbove] = BAD_ROTATION;						
+			answerSheetGoingUp[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = setImpossibleForAnswerSheet();
+			newGroundedIndexAbove[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_INDEX;
+			newGroundedRotationAbove[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_ROTATION;						
 			return;
 
 		}
@@ -422,21 +423,138 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		} // end loop through places to connect top and bottom layer
 		
 		if(connectedAndNoProblems == false) {
-			answerSheetGoingUp[0][0][indexGroundedAbove][rotationGroundedAbove][sideBump] = setImpossibleForAnswerSheet();
-			newGroundedIndexAbove[0][0][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_INDEX;
-			newGroundedRotationAbove[0][0][indexGroundedAbove][rotationGroundedAbove][rotationGroundedAbove] = BAD_ROTATION;
+			answerSheetGoingUp[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = setImpossibleForAnswerSheet();
+			newGroundedIndexAbove[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_INDEX;
+			newGroundedRotationAbove[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_ROTATION;
 		}
 		
 	}
+	
+
+
+	//TODO: test this!
+	private void handleLayerStateOverLayerStatePreComputeBottomToTopNonMid(int layerStateBelow, int layerStateAbove, int indexGroundedSideBelow, int rotationGroundedSideBelow, int sideBump) {
+		
+		if(layerStateAbove != 0 && connectToTopToBottomFromLeft(layerStateBelow) != connectToTopToBottomFromLeft(layerStateAbove)) {
+
+			// No need to connect from bottom to top because
+			// below state connects the left part while above state connects the right part.
+
+			answerSheetGoingUp[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump] = setImpossibleForAnswerSheet();
+			newGroundedIndexAbove[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump] = BAD_INDEX;
+			newGroundedRotationAbove[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump] = BAD_ROTATION;						
+			return;
+
+		}
+		
+		int groundingFromBelow[] = CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[layerStateBelow];
+		
+		if(layerStateAbove == 0) {
+			groundingFromBelow = LEVEL_OPTIONS[0];
+		}
+		
+		
+		boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
+		
+
+		int leftMostRelativeBottomLayer = sideBump - 6;
+		
+		boolean connectedAndNoProblems = false;
+		boolean wentThroughLoopAlready = false;
+		
+
+		Coord2D curGroundBelow = null;
+
+		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE.length; i++) {
+			
+			int topLayerIndex = i - leftMostRelativeBottomLayer;
+			
+			if( topLayerIndex < 0 || topLayerIndex >= CELLS_TO_ADD_BY_STATE_GOING_DOWN.length) {
+				continue;
+			}
+
+			if(groundingFromBelow[i] == 1) {
+				
+				if(curGroundBelow == null) {
+					curGroundBelow = new Coord2D(indexGroundedSideBelow, rotationGroundedSideBelow);
+				} else {
+					if(groundingFromBelow[i - 1] != 1) {
+						System.out.println("ERROR: unexpected result in handleLayerStateOverLayerStatePreComputeBottomToTopNonMid");
+						System.exit(1);
+					}
+					curGroundBelow = tryAttachCellInDir(curGroundBelow.i, curGroundBelow.j, RIGHT);
+				}
+				
+				if(CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[layerStateAbove][topLayerIndex] == 1) {
+
+					connectedAndNoProblems = true;
+
+					Coord2D cellAboveCurGround = tryAttachCellInDir(curGroundBelow.i, curGroundBelow.j, ABOVE);
+
+					Coord2D curCell = cellAboveCurGround;
+					//Go to left:
+					for(int k=topLayerIndex; k - 1 >=0 && CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[layerStateAbove][k-1] == 1; k--) {
+						curCell = tryAttachCellInDir(curCell.i, curCell.j, LEFT);
+						tmpArray[curCell.i] = true;
+					}
+					
+					Coord2D nextGounded = curCell;
+					
+					curCell = cellAboveCurGround;
+					
+					//Go to right:
+					for(int k=topLayerIndex; k + 1 < CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE.length 
+							&& CELLS_TO_ADD_BY_STATE_GOING_DOWN[layerStateAbove][k+1] == 1; k++) {
+						curCell = tryAttachCellInDir(curCell.i, curCell.j, RIGHT);
+						tmpArray[curCell.i] = true;
+					}
+
+					if(wentThroughLoopAlready == false) {
+
+						answerSheetGoingDown[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump] = convertBoolArrayToLongs(tmpArray);
+						
+						newGroundedIndexBelow[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump] = nextGounded.i;
+						newGroundedRotationBelow[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump] = nextGounded.j;
+					
+						tmpArray = new boolean[Utils.getTotalArea(this.dimensions)];
+						wentThroughLoopAlready = true;
+						
+					} else {
+						
+						//If the answer isn't consistent, then it doesn't work:
+						
+						if(convertBoolArrayToLongs(tmpArray) !=
+								answerSheetGoingDown[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump]
+							|| nextGounded.i !=
+								newGroundedIndexBelow[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump]
+							|| nextGounded.j !=
+									newGroundedRotationBelow[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump]
+							) {
+
+							connectedAndNoProblems = false;
+							break;
+
+						}
+						
+					}
+				}
+			}
+		
+		} // end loop through places to connect top and bottom layer
+		
+		if(connectedAndNoProblems == false) {
+			answerSheetGoingUp[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump] = setImpossibleForAnswerSheet();
+			newGroundedIndexAbove[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump] = BAD_INDEX;
+			newGroundedRotationAbove[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump] = BAD_ROTATION;
+		}
+	}
+	
 	
 
 	private void handleLayerStateOverLayerStatePreComputeBottomToTopMid(int layerStateBelow, int layerStateAbove, int index, int rotation, int sideBump) {
 		//TODO!
 	}
 
-	private void handleLayerStateOverLayerStatePreComputeBottomToTopNonMid(int layerStateBelow, int layerStateAbove, int index, int rotation, int sideBump) {
-		//TODO!
-	}
 	//TODO: I might decide to throw this away later.
 	private void handleSimpleLayerOverSimpleLayer(int index, int rotation, int sideBump) {
 		
