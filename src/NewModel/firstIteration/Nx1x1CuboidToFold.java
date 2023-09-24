@@ -426,7 +426,7 @@ public class Nx1x1CuboidToFold {
 		int rightOfBottom = getAmountSpaceRightOfBottom();
 		int width = leftOfBottom + 1+ rightOfBottom;
 		
-		boolean ret[][] = new boolean[numLevelsUsed + 2][width];
+		boolean ret[][] = new boolean[numLevelsUsed + 1][width];
 		
 		//bottom:
 		int bottomXCoord = leftOfBottom;

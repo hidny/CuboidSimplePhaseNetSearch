@@ -18,7 +18,7 @@ public class ReallySimpleIntersectFinder5 {
 	public static void main(String[] args) {
 		
 		//N: 5
-		reallySimpleSearch(3, 1, 1);
+		reallySimpleSearch(2, 1, 1);
 		
 		//reallySimpleSearch(3, 2, 1);
 
@@ -173,10 +173,11 @@ public class ReallySimpleIntersectFinder5 {
 	}
 	
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedSimplePhase1 cuboidToBuild) {
-		return findReallySimpleSolutionsRecursionFirstLayer(reference, cuboidToBuild, 1, getNumLayers(cuboidToBuild));
+		return findReallySimpleSolutionsRecursionFirstLayer(reference, cuboidToBuild, getNumLayers(cuboidToBuild));
 	}
 	
-	public static long findReallySimpleSolutionsRecursionFirstLayer(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedSimplePhase1 cuboidToBuild, int layerIndexToAdd, int numLayers) {
+	public static final int FIRST_CUR_LAYER_INDEX = 1;
+	public static long findReallySimpleSolutionsRecursionFirstLayer(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedSimplePhase1 cuboidToBuild, int numLayers) {
 		long ret = 0;
 		
 		if(numLayers == 0) {
@@ -189,15 +190,8 @@ public class ReallySimpleIntersectFinder5 {
 				cuboidToBuild.addNewLayerFast(0, sideBump);
 				reference.addNextLevel(new Coord2D(0, sideBump), null);
 
-				if(layerIndexToAdd == numLayers) {
-
-					System.out.println("GO");
-					//Edge case for when N == 1:
-					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndexToAdd, numLayers);
-				} else {
-
-					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndexToAdd + 1, numLayers);
-				}
+				ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, FIRST_CUR_LAYER_INDEX, numLayers);
+				
 	
 				cuboidToBuild.removePrevLayerFast();
 				reference.removeCurrentTopLevel();
@@ -208,12 +202,12 @@ public class ReallySimpleIntersectFinder5 {
 		return ret;
 	}
 	
-	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedSimplePhase1 cuboidToBuild, int layerIndexToAdd, int numLayers) {
+	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedSimplePhase1 cuboidToBuild, int curLayerIndex, int numLayers) {
 
 		System.out.println("hello");
 		long ret = 0;
 		
-		if(layerIndexToAdd == numLayers) {
+		if(curLayerIndex == numLayers) {
 			
 			if(cuboidToBuild.isTopCellAbleToBeAddedFast()) {
 
@@ -254,7 +248,7 @@ public class ReallySimpleIntersectFinder5 {
 					cuboidToBuild.addNewLayerFast(nextLayerState, sideBump);
 					reference.addNextLevel(new Coord2D(0, sideBump), null);
 	
-					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndexToAdd + 1, numLayers);
+					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, curLayerIndex + 1, numLayers);
 		
 					cuboidToBuild.removePrevLayerFast();
 					reference.removeCurrentTopLevel();
