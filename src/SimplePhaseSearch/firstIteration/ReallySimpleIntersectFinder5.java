@@ -18,7 +18,7 @@ public class ReallySimpleIntersectFinder5 {
 	public static void main(String[] args) {
 		
 		//N: 5
-		reallySimpleSearch(2, 1, 1);
+		reallySimpleSearch(1, 1, 1);
 		
 		//reallySimpleSearch(3, 2, 1);
 

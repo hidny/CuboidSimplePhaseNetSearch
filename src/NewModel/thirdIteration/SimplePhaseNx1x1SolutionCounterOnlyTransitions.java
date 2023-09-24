@@ -6,7 +6,7 @@ import NewModel.firstIteration.Nx1x1CuboidToFold;
 
 public class SimplePhaseNx1x1SolutionCounterOnlyTransitions {
 
-	public static int N = 10;
+	public static int N = 5;
 	
 	//F(N) (but non-uniq)
 	// 16
