@@ -18,7 +18,7 @@ public class ReallySimpleIntersectFinder5 {
 	public static void main(String[] args) {
 		
 		//N: 5
-		reallySimpleSearch(2, 1, 1);
+		reallySimpleSearch(6, 1, 1);
 		
 		//reallySimpleSearch(3, 2, 1);
 
@@ -178,7 +178,8 @@ public class ReallySimpleIntersectFinder5 {
 	public static final int WIDTH_Nx1x1 = 4;
 	public static final int FIRST_CUR_LAYER_INDEX = 1;
 	
-	//TODO Nx1x1CuboidToFold reference is doing a lot of overhead work that could be done on solution time
+	//TODO The "Nx1x1CuboidToFold reference" is doing a lot of overhead work that could be done on solution time
+	//Fix this in a future iteration
 	public static long findReallySimpleSolutionsRecursionFirstLayer(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedSimplePhase1 cuboidToBuild, int numLayers) {
 		long ret = 0;
 		
@@ -215,7 +216,7 @@ public class ReallySimpleIntersectFinder5 {
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedSimplePhase1 cuboidToBuild, int curLayerIndex, int numLayers) {
 
 		debugIterator++;
-		System.out.println("hello " + debugIterator);
+		System.out.println("Iteration number: " + debugIterator);
 		
 		long ret = 0;
 		
@@ -246,9 +247,8 @@ public class ReallySimpleIntersectFinder5 {
 				if(ret > 0) {
 					System.out.println("Found " + ret + " places for top from this net:");
 					
-					//TODO: Make a debug function:
 					//cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference);
-					System.out.println("----");
+					//System.out.println("----");
 				}
 			}
 			return ret;

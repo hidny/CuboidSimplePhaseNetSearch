@@ -146,7 +146,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	// 2 longs means this is limited to a maximum of 128 squares.
 	// I think that's fine for now. I might decide to increase it later.
 	// Warning: if you increase this, you'll have to make 5-10 more changes on top of just increasing this number.
-	private static final int NUM_BYTES_IN_LONG = 64;
+	private static final int NUM_BITS_IN_LONG = 64;
 	private static final int NUM_LONGS_TO_USE = 2;
 	
 	
@@ -201,6 +201,13 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	
 	public boolean isNewLayerValidSimpleFast(int layerStateToAdd, int sideBump) {
 	
+		/*System.out.println("prevLayerIndex[currentLayerIndex]] = " + prevLayerIndex[currentLayerIndex]);
+		System.out.println("layerStateToAdd: " + layerStateToAdd);
+		System.out.println("groundedIndexMid: " + groundedIndexMid);
+		System.out.println("groundRotationRelativeFlatMapMid: " + groundRotationRelativeFlatMapMid);
+		System.out.println("sideBump: " + sideBump);
+		System.out.println("");
+		*/
 		long tmp[] = answerSheetGoingUpMid[prevLayerIndex[currentLayerIndex]][layerStateToAdd][groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump];
 		
 		if( ((curState[0] & tmp[0]) | (curState[1] & tmp[1])) == 0L) {
@@ -209,28 +216,51 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			
 			//TODO: also check top to bottom Answer sheet if layer index 0!!! (This is currently missing, and will cause it to not work)
 			
-			return ( ((curState[0] | tmp[0]) & tmp2[0] ) | ((curState[1] | tmp[1])) & tmp2[1] ) == 0L;
+			
+			
+			boolean debug = ( ((curState[0] | tmp[0]) & tmp2[0] ) | ((curState[1] | tmp[1])) & tmp2[1] ) == 0L;
+			
+			/*if(debug) {
+				System.out.println("Returns true");
+			} else {
+				System.out.println("Returns false 2");
+			}*/
+			
+			return debug;
+			
 		} else {
+			/*System.out.println("Returns false 1");
+			System.out.println("Current state:");
+			printStateFromLongs();
+			System.out.println("Answer sheet:");
+			printStateFromLongs(answerSheetGoingUpMid[prevLayerIndex[currentLayerIndex]][layerStateToAdd][groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump]);
+			*/
 			return false;
 		}
 		
 	}
 	
 	public void addNewLayerFast(int layerIndex, int sideBump) {
-		long tmp[] = answerSheetGoingUpMid[prevLayerIndex[currentLayerIndex - 1]][layerIndex][groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump];
+		
+		/*System.out.println("groundedIndexMid: " + groundedIndexMid);
+		System.out.println("groundRotationRelativeFlatMapMid: " + groundRotationRelativeFlatMapMid);
+		System.out.println("sideBump: " + sideBump);
+		*/
+
+		long tmp[] = answerSheetGoingUpMid[prevLayerIndex[currentLayerIndex]][layerIndex][groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump];
 		curState[0] = curState[0] | tmp[0];
 		curState[1] = curState[1] | tmp[1];
 		
-		tmp = answerSheetGoingUpSide[prevLayerIndex[currentLayerIndex - 1]][layerIndex][groundedIndexSide][groundRotationRelativeFlatMapSide][sideBump];
+		tmp = answerSheetGoingUpSide[prevLayerIndex[currentLayerIndex]][layerIndex][groundedIndexSide][groundRotationRelativeFlatMapSide][sideBump];
 		curState[0] = curState[0] | tmp[0];
 		curState[1] = curState[1] | tmp[1];
 		
 		
-		int tmp1 = newGroundedIndexAboveMid[prevLayerIndex[currentLayerIndex - 1]][layerIndex][this.groundedIndexMid][this.groundRotationRelativeFlatMapMid][sideBump];
-		int tmp2 = newGroundedRotationAboveMid[prevLayerIndex[currentLayerIndex - 1]][layerIndex][this.groundedIndexMid][this.groundRotationRelativeFlatMapMid][sideBump];
+		int tmp1 = newGroundedIndexAboveMid[prevLayerIndex[currentLayerIndex]][layerIndex][this.groundedIndexMid][this.groundRotationRelativeFlatMapMid][sideBump];
+		int tmp2 = newGroundedRotationAboveMid[prevLayerIndex[currentLayerIndex]][layerIndex][this.groundedIndexMid][this.groundRotationRelativeFlatMapMid][sideBump];
 		
-		int tmp3 = newGroundedIndexAboveSide[prevLayerIndex[currentLayerIndex - 1]][layerIndex][this.groundedIndexSide][this.groundRotationRelativeFlatMapSide][sideBump];
-		int tmp4 = newGroundedRotationAboveSide[prevLayerIndex[currentLayerIndex - 1]][layerIndex][this.groundedIndexSide][this.groundRotationRelativeFlatMapSide][sideBump];
+		int tmp3 = newGroundedIndexAboveSide[prevLayerIndex[currentLayerIndex]][layerIndex][this.groundedIndexSide][this.groundRotationRelativeFlatMapSide][sideBump];
+		int tmp4 = newGroundedRotationAboveSide[prevLayerIndex[currentLayerIndex]][layerIndex][this.groundedIndexSide][this.groundRotationRelativeFlatMapSide][sideBump];
 		
 		prevGroundedIndexesMid[currentLayerIndex] = this.groundedIndexMid;
 		prevGroundedRotationsMid[currentLayerIndex] = this.groundRotationRelativeFlatMapMid;
@@ -285,9 +315,10 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 
 		this.groundedIndexSide = tmp1;
 		this.groundRotationRelativeFlatMapSide = tmp2;
+		/*
 		System.out.println("In addFirstLayer ground index:" + this.groundedIndexMid);
 		System.out.println("In addFirstLayer rotation index:" + this.groundRotationRelativeFlatMapMid);
-		
+		*/
 	}
 	
 	public void leaveOnlyTheBottomCell() {
@@ -522,8 +553,9 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 						
 						//If the answer isn't consistent, then it doesn't work:
 						
-						if(convertBoolArrayToLongs(tmpArray) !=
+						if( ! longArrayMatches(convertBoolArrayToLongs(tmpArray),
 								answerSheetGoingDown[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump]
+								)
 							|| nextGounded.i !=
 								newGroundedIndexBelow[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump]
 							|| nextGounded.j !=
@@ -651,8 +683,9 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 						
 						//If the answer isn't consistent, then it doesn't work:
 						
-						if(convertBoolArrayToLongs(tmpArray) !=
+						if(! longArrayMatches(convertBoolArrayToLongs(tmpArray),
 								answerSheetGoingUpSide[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump]
+							)
 							|| nextGounded.i !=
 								newGroundedIndexAboveSide[layerStateBelow][layerStateAbove][indexGroundedSideBelow][rotationGroundedSideBelow][sideBump]
 							|| nextGounded.j !=
@@ -765,6 +798,8 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 						newGroundedIndexAboveFirst[indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = nextGounded.i;
 						newGroundedRotationAboveFirst[indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = nextGounded.j;
 					}
+					
+					//printStateFromLongs(convertBoolArrayToLongs(tmpArray));
 	
 					if(wentThroughLoopAlready == false) {
 
@@ -780,8 +815,8 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 						
 						//If the answer isn't consistent, then it doesn't work:
 						
-						if(convertBoolArrayToLongs(tmpArray) !=
-								answerSheetGoingUpMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump]
+						if( ! longArrayMatches(convertBoolArrayToLongs(tmpArray),
+								answerSheetGoingUpMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump])
 							|| nextGounded.i !=
 									newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump]
 							|| nextGounded.j !=
@@ -805,6 +840,20 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = BAD_INDEX;
 			newGroundedRotationAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = BAD_ROTATION;
 		}
+	}
+	
+	public static boolean longArrayMatches(long array1[], long array2[]) {
+		
+		if(array1.length != array2.length) {
+			return false;
+		}
+		
+		for(int i=0; i<array1.length; i++) {
+			if(array1[i] != array2[i]) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	//TODO: make sure it's similar to handleLayerStateOverLayerStatePreComputeBottomToTopMid
@@ -868,8 +917,8 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		for(int i=0; i<tmpArray.length; i++) {
 			
 			if(tmpArray[i]) {
-				int indexArray = i / NUM_BYTES_IN_LONG;
-				int bitShift = (NUM_BYTES_IN_LONG - 1) - i - indexArray * NUM_BYTES_IN_LONG;
+				int indexArray = i / NUM_BITS_IN_LONG;
+				int bitShift = (NUM_BITS_IN_LONG - 1) - i - indexArray * NUM_BITS_IN_LONG;
 				
 				ret[indexArray] += 1L << bitShift;
 			}
@@ -879,6 +928,39 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		return ret;
 	}
 
+	public void printStateFromLongs() {
+		
+		printStateFromLongs(curState, getNumCellsToFill());
+	}
+	
+	public void printStateFromLongs(long answerSheet[]) {
+		
+		printStateFromLongs(answerSheet, getNumCellsToFill());
+	}
+
+	public static void printStateFromLongs(long inputLongs[], int numCells) {
+		boolean ret[] = new boolean[numCells];
+		
+		for(int i=0; i<ret.length; i++) {
+			int indexArray = i / NUM_BITS_IN_LONG;
+			int bitShift = (NUM_BITS_IN_LONG - 1) - i - indexArray * NUM_BITS_IN_LONG;
+			
+			if( (inputLongs[indexArray]  & 1L << bitShift) != 0) {
+				ret[i] = true;
+			} else {
+				ret[i] = false;
+			}
+		}
+		
+		System.out.println("Active cells:");
+		for(int i=0; i<ret.length; i++) {
+			if(ret[i]) {
+				System.out.println(i);
+			}
+		}
+		System.out.println();
+	}
+	
 	private static long[] setImpossibleForAnswerSheet() {
 		
 		long ret[] = new long[NUM_LONGS_TO_USE];
