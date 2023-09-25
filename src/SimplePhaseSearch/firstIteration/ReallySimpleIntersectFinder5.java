@@ -18,7 +18,7 @@ public class ReallySimpleIntersectFinder5 {
 	public static void main(String[] args) {
 		
 		//N: 5
-		reallySimpleSearch(1, 1, 1);
+		reallySimpleSearch(2, 1, 1);
 		
 		//reallySimpleSearch(3, 2, 1);
 
@@ -194,33 +194,17 @@ public class ReallySimpleIntersectFinder5 {
 				System.exit(1);
 			}
 			
-			System.out.println();
-			System.out.println("Before sideBump " + sideBump);
-			cuboidToBuild.debugPrintState();
 			
-			if(sideBump == 5) {
-				System.out.println("Debug please!");
-			}
 			cuboidToBuild.addFirstLayer(sideBump);
 
-			System.out.println();
-			System.out.println("Debug After add: " + sideBump);
-			cuboidToBuild.debugPrintState();
 			
 			reference.addNextLevel(new Coord2D(0, sideBump), null);
 
 			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, FIRST_CUR_LAYER_INDEX, numLayers);
 
-			System.out.println("Debug 2 " + sideBump);
-			cuboidToBuild.debugPrintState();
-
 			cuboidToBuild.leaveOnlyTheBottomCell();
 			reference.removeCurrentTopLevel();
 			
-
-			System.out.println("After sideBump " + sideBump);
-			cuboidToBuild.debugPrintState();
-			System.out.println();
 		}
 		
 		
@@ -237,20 +221,11 @@ public class ReallySimpleIntersectFinder5 {
 		
 		if(curLayerIndex == numLayers) {
 			
-			System.out.println("Debug it: " + debugIterator);
-			
-			if(debugIterator == 3) {
-				System.out.println("Debug please");
-				System.out.println();
-			}
-			
 			
 			if(cuboidToBuild.isTopCellAbleToBeAddedFast()) {
 
 				for(int sideBump=6; sideBump <10; sideBump++) {
 
-					System.out.println("Before sideBump inner" + sideBump);
-					cuboidToBuild.debugPrintState();
 					if(cuboidToBuild.isTopCellAbleToBeAddedForSideBumpFast(sideBump)) {
 						ret++;
 						
@@ -266,8 +241,6 @@ public class ReallySimpleIntersectFinder5 {
 						reference.removeCurrentTopLevel();
 					}
 
-					System.out.println("Before sideBump inner" + sideBump);
-					cuboidToBuild.debugPrintState();
 				}
 				
 				if(ret > 0) {
@@ -278,18 +251,17 @@ public class ReallySimpleIntersectFinder5 {
 					System.out.println("----");
 				}
 			}
-			System.out.println("Output before ret");
-			cuboidToBuild.debugPrintState();
 			return ret;
 		}
 		
 		//TODO: go faster by iterating through the possible moves (i.e. (nextLayerState, sideBump) tuples)
-		for(int nextLayerState = 0; nextLayerState<CuboidToFoldOnExtendedSimplePhase1.NUM_LAYER_STATES; nextLayerState++) {
-			
+		
+		//TODO: Go back to iterating over layer states once done debug
+		//for(int nextLayerState = 0; nextLayerState<CuboidToFoldOnExtendedSimplePhase1.NUM_LAYER_STATES; nextLayerState++) {
+		for(int nextLayerState = 0; nextLayerState<1; nextLayerState++) {
+		
 			for(int sideBump=0; sideBump <CuboidToFoldOnExtendedSimplePhase1.NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
 				
-
-				cuboidToBuild.debugPrintState();
 				
 				if(cuboidToBuild.isNewLayerValidSimpleFast(nextLayerState, sideBump)) {
 					cuboidToBuild.addNewLayerFast(nextLayerState, sideBump);
@@ -301,8 +273,6 @@ public class ReallySimpleIntersectFinder5 {
 					reference.removeCurrentTopLevel();
 				}
 				
-
-				cuboidToBuild.debugPrintState();
 			}
 		}
 		

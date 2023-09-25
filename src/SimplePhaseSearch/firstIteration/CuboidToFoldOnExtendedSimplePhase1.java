@@ -201,11 +201,11 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	
 	public boolean isNewLayerValidSimpleFast(int layerStateToAdd, int sideBump) {
 	
-		long tmp[] = answerSheetGoingUpMid[prevLayerIndex[currentLayerIndex - 1]][layerStateToAdd][groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump];
+		long tmp[] = answerSheetGoingUpMid[prevLayerIndex[currentLayerIndex]][layerStateToAdd][groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump];
 		
 		if( ((curState[0] & tmp[0]) | (curState[1] & tmp[1])) == 0L) {
 			
-			long tmp2[] = answerSheetGoingUpSide[prevLayerIndex[currentLayerIndex - 1]][layerStateToAdd][groundedIndexSide][groundRotationRelativeFlatMapSide][sideBump];
+			long tmp2[] = answerSheetGoingUpSide[prevLayerIndex[currentLayerIndex]][layerStateToAdd][groundedIndexSide][groundRotationRelativeFlatMapSide][sideBump];
 			
 			//TODO: also check top to bottom Answer sheet if layer index 0!!! (This is currently missing, and will cause it to not work)
 			
@@ -285,6 +285,8 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 
 		this.groundedIndexSide = tmp1;
 		this.groundRotationRelativeFlatMapSide = tmp2;
+		System.out.println("In addFirstLayer ground index:" + this.groundedIndexMid);
+		System.out.println("In addFirstLayer rotation index:" + this.groundRotationRelativeFlatMapMid);
 		
 	}
 	
@@ -690,10 +692,6 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			return;
 
 		}
-		if(layerStateBelow == 0 && layerStateAbove == 0 && sideBump == 4 && indexGroundedMidBelow == 0) {
-			System.out.println("Test");
-			System.out.println(rotationGroundedMidBelow);
-		}
 		
 		int groundingFromBelow[] = CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[layerStateBelow];
 		
@@ -803,10 +801,6 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		} // end loop through places to connect top and bottom layer
 		
 		if(connectedAndNoProblems == false) {
-			if(layerStateBelow == 0 && layerStateAbove == 0 && sideBump == 4 && indexGroundedMidBelow == 0) {
-				System.out.println("Test 2");
-				System.out.println(rotationGroundedMidBelow);
-			}
 			answerSheetGoingUpMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = setImpossibleForAnswerSheet();
 			newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = BAD_INDEX;
 			newGroundedRotationAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = BAD_ROTATION;
