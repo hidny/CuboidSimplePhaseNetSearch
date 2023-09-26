@@ -492,7 +492,15 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		
 
 		//TODO: this logic is broken for curGroundAbove
-		Coord2D curGroundAbove = null;
+		//Coord2D curGroundAbove = null;
+		int aboveLeftmostGroundedIndex = -1;
+		
+		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[0].length; i++) {
+			if(groundingFromAbove[i] == 1) {
+				aboveLeftmostGroundedIndex = i;
+				break;
+			}
+		}
 
 		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_DOWN.length; i++) {
 			
@@ -504,21 +512,23 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 
 			if(groundingFromAbove[topLayerIndex] == 1) {
 				
-				if(curGroundAbove == null) {
-					curGroundAbove = new Coord2D(indexGroundedAbove, rotationGroundedAbove);
-				} else {
-					if(groundingFromAbove[topLayerIndex - 1] != 1) {
-						System.out.println("ERROR: unexpected result in handleLayerStateOverLayerStatePreComputeTopToBottom");
-						System.exit(1);
-					}
-					curGroundAbove = tryAttachCellInDir(curGroundAbove.i, curGroundAbove.j, RIGHT);
-				}
-				
 				if(CELLS_TO_ADD_BY_STATE_GOING_DOWN[layerStateBelow][i] == 1) {
 
 					connectedAndNoProblems = true;
+					
+					Coord2D curGroundAbove = new Coord2D(indexGroundedAbove, rotationGroundedAbove);
 
+					
+					if(topLayerIndex < aboveLeftmostGroundedIndex) {
+						System.out.println("ERROR: something went wrong in handleLayerStateOverLayerStatePreComputeBottomToTopMid");
+						System.exit(1);
+					}
+
+					for(int j=topLayerIndex; j < aboveLeftmostGroundedIndex; j++) {
+						curGroundAbove = tryAttachCellInDir(curGroundAbove.i, curGroundAbove.j, RIGHT);
+					}
 					Coord2D cellBelowCurGround = tryAttachCellInDir(curGroundAbove.i, curGroundAbove.j, BELOW);
+
 
 					Coord2D curCell = cellBelowCurGround;
 					tmpArray[curCell.i] = true;
@@ -619,9 +629,15 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		
 		boolean connectedAndNoProblems = false;
 		boolean wentThroughLoopAlready = false;
+
+		int belowLeftmostGroundedIndex = -1;
 		
-		//TODO: this logic is broken for curGroundAbove
-		Coord2D curGroundBelow = null;
+		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[0].length; i++) {
+			if(groundingFromBelow[i] == 1) {
+				belowLeftmostGroundedIndex = i;
+				break;
+			}
+		}
 
 		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE.length; i++) {
 			
@@ -633,20 +649,22 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 
 			if(groundingFromBelow[i] == 1) {
 				
-				if(curGroundBelow == null) {
-					curGroundBelow = new Coord2D(indexGroundedSideBelow, rotationGroundedSideBelow);
-				} else {
-					if(groundingFromBelow[i - 1] != 1) {
-						System.out.println("ERROR: unexpected result in handleLayerStateOverLayerStatePreComputeBottomToTopNonMid");
-						System.exit(1);
-					}
-					curGroundBelow = tryAttachCellInDir(curGroundBelow.i, curGroundBelow.j, RIGHT);
-				}
-				
+			
 				if(CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[layerStateAbove][topLayerIndex] == 1) {
 
 					connectedAndNoProblems = true;
 
+					Coord2D curGroundBelow = new Coord2D(indexGroundedSideBelow, rotationGroundedSideBelow);
+					
+					if(i < belowLeftmostGroundedIndex) {
+						System.out.println("ERROR: something went wrong in handleLayerStateOverLayerStatePreComputeBottomToTopMid");
+						System.exit(1);
+					}
+
+					for(int j=belowLeftmostGroundedIndex; j < i; j++) {
+						curGroundBelow = tryAttachCellInDir(curGroundBelow.i, curGroundBelow.j, RIGHT);
+					}
+					
 					Coord2D cellAboveCurGround = tryAttachCellInDir(curGroundBelow.i, curGroundBelow.j, ABOVE);
 
 					Coord2D curCell = cellAboveCurGround;
@@ -741,9 +759,6 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		
 		boolean connectedAndNoProblems = false;
 		boolean wentThroughLoopAlready = false;
-		
-
-		//Coord2D curGroundBelow = null;
 		
 		int belowLeftmostGroundedIndex = -1;
 		
