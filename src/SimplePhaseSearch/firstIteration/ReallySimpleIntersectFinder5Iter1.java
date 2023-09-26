@@ -8,34 +8,34 @@ import GraphUtils.PivotCellDescription;
 import GraphUtils.PivotCellDescriptionForNx1x1;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
-import SolutionResolver.SolutionResolverInterface;
-import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
-//TODO: I made small changes to this. Please test new findReallySimpleSolutionsRecursionFirstLayer
-// function.
-public class ReallySimpleIntersectFinder5 {
+public class ReallySimpleIntersectFinder5Iter1 {
 
 	public static void main(String[] args) {
 		
 		//N: 5
-		reallySimpleSearch(6, 1, 1);
+		reallySimpleSearch(4, 1, 1);
 		
+		//Found 80 simply stacked solutions (ignore symmetry)
 		//reallySimpleSearch(3, 2, 1);
 
 		//N: 7
+		//Found 0 simply stacked solutions... uh oh.
 		//reallySimpleSearch(3, 3, 1);
 		
 
 		//N: 8
+		//Found 2086 simply stacked solutions ignoring symmetry
 		//reallySimpleSearch(5, 2, 1);
 		
 
 		//N: 9
-		//X solutions: (Y unique solutions)
+		//Found 5632 simply stacked solutions (ignore symmetry)
 		//reallySimpleSearch(4, 3, 1);
 		
 
 		//N: 10
+		//Found 0 simply stacked solutions... uh oh.
 		//reallySimpleSearch(3, 3, 2);
 		
 		
@@ -137,7 +137,7 @@ public class ReallySimpleIntersectFinder5 {
 		
 		long ret = 0;
 		
-		//TODO: put it back after you're done testing!
+		//TODO: switch it back when done debuging:
 		//for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
 		for(int i=0; i<1; i++) {
 
@@ -216,12 +216,11 @@ public class ReallySimpleIntersectFinder5 {
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedSimplePhase1 cuboidToBuild, int curLayerIndex, int numLayers) {
 
 		debugIterator++;
-		System.out.println("Iteration number: " + debugIterator);
+		//System.out.println("Iteration number: " + debugIterator);
 		
 		long ret = 0;
 		
 		if(curLayerIndex == numLayers) {
-			
 			
 			if(cuboidToBuild.isTopCellAbleToBeAddedFast()) {
 
@@ -260,7 +259,7 @@ public class ReallySimpleIntersectFinder5 {
 		//for(int nextLayerState = 0; nextLayerState<CuboidToFoldOnExtendedSimplePhase1.NUM_LAYER_STATES; nextLayerState++) {
 		for(int nextLayerState = 0; nextLayerState<1; nextLayerState++) {
 		
-			for(int sideBump=0; sideBump <CuboidToFoldOnExtendedSimplePhase1.NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
+			for(int sideBump=0; sideBump < CuboidToFoldOnExtendedSimplePhase1.NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
 				
 				
 				if(cuboidToBuild.isNewLayerValidSimpleFast(nextLayerState, sideBump)) {

@@ -491,6 +491,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		boolean wentThroughLoopAlready = false;
 		
 
+		//TODO: this logic is broken for curGroundAbove
 		Coord2D curGroundAbove = null;
 
 		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_DOWN.length; i++) {
@@ -619,7 +620,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		boolean connectedAndNoProblems = false;
 		boolean wentThroughLoopAlready = false;
 		
-
+		//TODO: this logic is broken for curGroundAbove
 		Coord2D curGroundBelow = null;
 
 		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE.length; i++) {
@@ -742,32 +743,43 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		boolean wentThroughLoopAlready = false;
 		
 
-		Coord2D curGroundBelow = null;
+		//Coord2D curGroundBelow = null;
+		
+		int belowLeftmostGroundedIndex = -1;
+		
+		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[0].length; i++) {
+			if(groundingFromBelow[i] == 1) {
+				belowLeftmostGroundedIndex = i;
+				break;
+			}
+		}
 
-		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE.length; i++) {
+		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[0].length; i++) {
 			
 			int topLayerIndex = i - leftMostRelativeBottomLayer;
 			
-			if( topLayerIndex < 0 || topLayerIndex >= CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE.length) {
+			if( topLayerIndex < 0 || topLayerIndex >= CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[0].length) {
 				continue;
 			}
 
 			if(groundingFromBelow[i] == 1) {
 				
-				if(curGroundBelow == null) {
-					curGroundBelow = new Coord2D(indexGroundedMidBelow, rotationGroundedMidBelow);
-				} else {
-					if(groundingFromBelow[i - 1] != 1) {
-						System.out.println("ERROR: unexpected result in handleLayerStateOverLayerStatePreComputeBottomToTopMid");
-						System.exit(1);
-					}
-					curGroundBelow = tryAttachCellInDir(curGroundBelow.i, curGroundBelow.j, RIGHT);
-				}
 				
 				if(CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[layerStateAbove][topLayerIndex] == 1) {
 
 					connectedAndNoProblems = true;
 
+					Coord2D curGroundBelow = new Coord2D(indexGroundedMidBelow, rotationGroundedMidBelow);
+					
+					if(i < belowLeftmostGroundedIndex) {
+						System.out.println("ERROR: something went wrong in handleLayerStateOverLayerStatePreComputeBottomToTopMid");
+						System.exit(1);
+					}
+
+					for(int j=belowLeftmostGroundedIndex; j < i; j++) {
+						curGroundBelow = tryAttachCellInDir(curGroundBelow.i, curGroundBelow.j, RIGHT);
+					}
+					
 					Coord2D cellAboveCurGround = tryAttachCellInDir(curGroundBelow.i, curGroundBelow.j, ABOVE);
 
 					Coord2D curCell = cellAboveCurGround;
@@ -875,6 +887,8 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			
 					int leftMostRelativeTopLeftGrounded = sideBump - 6;
 					
+					//TODO: this only works for layer index 0. It's ok for now, but will need to change once we change types
+					// of solutions:
 					if(leftMostRelativeTopLeftGrounded >= 0 && leftMostRelativeTopLeftGrounded < 4) {
 					
 
@@ -939,6 +953,19 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	}
 
 	public static void printStateFromLongs(long inputLongs[], int numCells) {
+	
+		boolean array[] = debugGetBoolArrayFromLongs(inputLongs, numCells);
+		
+		System.out.println("Active cells:");
+		for(int i=0; i<array.length; i++) {
+			if(array[i]) {
+				System.out.println(i);
+			}
+		}
+		System.out.println();
+	}
+	
+	public static boolean[] debugGetBoolArrayFromLongs(long inputLongs[], int numCells) {
 		boolean ret[] = new boolean[numCells];
 		
 		for(int i=0; i<ret.length; i++) {
@@ -951,14 +978,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 				ret[i] = false;
 			}
 		}
-		
-		System.out.println("Active cells:");
-		for(int i=0; i<ret.length; i++) {
-			if(ret[i]) {
-				System.out.println(i);
-			}
-		}
-		System.out.println();
+		return ret;
 	}
 	
 	private static long[] setImpossibleForAnswerSheet() {

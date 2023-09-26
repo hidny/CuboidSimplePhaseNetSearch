@@ -17,7 +17,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 		try {
 			String file1 = "D:\\CheckA106with17x2x1.txt";
 			
-			int dimensionsCuboidToCheck[] = new int[]{8, 5, 1};
+			int dimensionsCuboidToCheck[] = new int[]{3, 3, 1};
 			
 			//Alt: {17, 2, 1}
 			int otherDimensions1[] = new int[] {17, 2, 1};
