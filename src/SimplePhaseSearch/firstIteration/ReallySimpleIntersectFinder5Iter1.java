@@ -14,7 +14,7 @@ public class ReallySimpleIntersectFinder5Iter1 {
 	public static void main(String[] args) {
 		
 		//N: 5
-		reallySimpleSearch(4, 1, 1);
+		//reallySimpleSearch(5, 1, 1);
 		
 		//Found 80 simply stacked solutions (ignore symmetry)
 		//reallySimpleSearch(3, 2, 1);
@@ -42,7 +42,7 @@ public class ReallySimpleIntersectFinder5Iter1 {
 		//N: 11
 		//reallySimpleSearch(5, 3, 1);
 		
-		//reallySimpleSearch(7, 2, 1);
+		reallySimpleSearch(7, 2, 1);
 		
 		
 		//N: 13
@@ -137,9 +137,10 @@ public class ReallySimpleIntersectFinder5Iter1 {
 		
 		long ret = 0;
 		
-		//TODO: switch it back when done debuging:
-		//for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
-		for(int i=0; i<1; i++) {
+		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
+
+		//TODO: switch it to be able to debug faster:
+		//for(int i=0; i<1; i++) {
 
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
@@ -230,8 +231,10 @@ public class ReallySimpleIntersectFinder5Iter1 {
 						ret++;
 						
 						reference.addNextLevel(new Coord2D(0, sideBump), null);
-						//TODO: remove 0 == 0 when done testing
-						if(0 == 0 || BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
+						//TODO: add 0 == 0 when done testing
+						if(
+								//0 == 0 || 
+								BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
 							System.out.println("Unique solution found");
 							System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 							
