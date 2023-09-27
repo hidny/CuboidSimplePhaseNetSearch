@@ -14,7 +14,7 @@ public class ReallySimpleIntersectFinder5Iter1 {
 	public static void main(String[] args) {
 		
 		//N: 5
-		//reallySimpleSearch(5, 1, 1);
+		reallySimpleSearch(3, 1, 1);
 		
 		//Found 80 simply stacked solutions (ignore symmetry)
 		//reallySimpleSearch(3, 2, 1);
@@ -42,7 +42,7 @@ public class ReallySimpleIntersectFinder5Iter1 {
 		//N: 11
 		//reallySimpleSearch(5, 3, 1);
 		
-		reallySimpleSearch(7, 2, 1);
+		//reallySimpleSearch(7, 2, 1);
 		
 		
 		//N: 13
@@ -137,10 +137,11 @@ public class ReallySimpleIntersectFinder5Iter1 {
 		
 		long ret = 0;
 		
-		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
+		//TODO: this is the correct one:
+		//for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
 
-		//TODO: switch it to be able to debug faster:
-		//for(int i=0; i<1; i++) {
+		//TODO: this is the debug one:
+		for(int i=0; i<1; i++) {
 
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
@@ -233,7 +234,7 @@ public class ReallySimpleIntersectFinder5Iter1 {
 						reference.addNextLevel(new Coord2D(0, sideBump), null);
 						//TODO: add 0 == 0 when done testing
 						if(
-								//0 == 0 || 
+								0 == 0 || 
 								BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
 							System.out.println("Unique solution found");
 							System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
@@ -243,7 +244,6 @@ public class ReallySimpleIntersectFinder5Iter1 {
 						}
 						reference.removeCurrentTopLevel();
 					}
-
 				}
 				
 				if(ret > 0) {
@@ -258,21 +258,42 @@ public class ReallySimpleIntersectFinder5Iter1 {
 		
 		//TODO: go faster by iterating through the possible moves (i.e. (nextLayerState, sideBump) tuples)
 		
-		//TODO: Go back to iterating over layer states once done debug
+		//Iterating over all 7 possible layer states:
 		//for(int nextLayerState = 0; nextLayerState<CuboidToFoldOnExtendedSimplePhase1.NUM_LAYER_STATES; nextLayerState++) {
+		
+		//TODO: Iterating over simply stacked options only for debug
 		for(int nextLayerState = 0; nextLayerState<1; nextLayerState++) {
 		
 			for(int sideBump=0; sideBump < CuboidToFoldOnExtendedSimplePhase1.NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
 				
 				
 				if(cuboidToBuild.isNewLayerValidSimpleFast(nextLayerState, sideBump)) {
+					
+					/*if(nextLayerState != 0) {
+						System.out.println("Test in");
+						cuboidToBuild.printStateFromLongs();
+						cuboidToBuild.printStateStuffDEBUG();
+						
+					}*/
 					cuboidToBuild.addNewLayerFast(nextLayerState, sideBump);
-					reference.addNextLevel(new Coord2D(0, sideBump), null);
-	
+					if(nextLayerState >= 4) {
+						//TODO: hide this hack...
+						reference.addNextLevel(new Coord2D(nextLayerState - 3, sideBump), null);
+					} else {
+						reference.addNextLevel(new Coord2D(nextLayerState, sideBump), null);
+					}
 					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, curLayerIndex + 1, numLayers);
 		
 					cuboidToBuild.removePrevLayerFast();
 					reference.removeCurrentTopLevel();
+					
+
+					/*
+					if(nextLayerState != 0) {
+						System.out.println("Test out");
+						cuboidToBuild.printStateFromLongs();
+						cuboidToBuild.printStateStuffDEBUG();
+					}*/
 				}
 				
 			}

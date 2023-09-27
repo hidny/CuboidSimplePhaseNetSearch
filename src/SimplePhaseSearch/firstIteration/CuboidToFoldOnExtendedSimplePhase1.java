@@ -2,6 +2,12 @@ package SimplePhaseSearch.firstIteration;
 
 //TODO: this is incomplete!
 
+//TODO: Because this is for the 1st iteration, I skipped basic optimizations like:
+// region split check (This is a big one)
+// isolated cell check
+// only valid transition iterator...
+// I'll cover that later.
+
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;
 import Model.CuboidToFoldOnInterface;
@@ -45,6 +51,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		return dimensions;
 	}
 	
+	
 	public void initializeNewBottomIndexAndRotation(int bottomIndex, int bottomRotationRelativeFlatMap) {
 		
 		this.groundedIndexMid = bottomIndex;
@@ -73,7 +80,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		prevGroundedRotationsMid[0] = bottomRotationRelativeFlatMap;
 		prevGroundedIndexesSide[0] = bottomIndex;
 		prevGroundedRotationsSide[0] = bottomRotationRelativeFlatMap;
-		prevLayerIndex[0] = 0;
+		prevLayerIndex[0] = NOT_APPLICABLE;
 
 		//Start it at layer 1:
 		currentLayerIndex = 1;
@@ -140,6 +147,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	public static final int NUM_ROTATIONS = 4;
 	
 
+	public static final int NOT_APPLICABLE = -30;
 	public static final int BAD_ROTATION = -10;
 	public static final int BAD_INDEX = -20;
 	
@@ -175,17 +183,14 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	private int newGroundedRotationAboveFirst[][][];
 
 
-	public void debugPrintState() {
-		System.out.println(curState[0]);
-	}
 	//State variables:
 	private long curState[] = new long[NUM_LONGS_TO_USE];
 
-	private int groundedIndexMid = 0;
-	private int groundRotationRelativeFlatMapMid = 0;
+	private int groundedIndexMid;
+	private int groundRotationRelativeFlatMapMid;
 
-	private int groundedIndexSide = 0;
-	private int groundRotationRelativeFlatMapSide = 0;
+	private int groundedIndexSide;
+	private int groundRotationRelativeFlatMapSide;
 	
 	private int prevSideBumps[];
 	private int prevGroundedIndexesMid[];
@@ -194,25 +199,49 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	private int prevGroundedIndexesSide[];
 	private int prevGroundedRotationsSide[];
 
-
 	private int prevLayerIndex[];
 	
 	private int currentLayerIndex;
 	
+	public void printStateStuffDEBUG() {
+		System.out.println("DEBUG:");
+		System.out.println(groundedIndexMid);
+		System.out.println(groundRotationRelativeFlatMapMid);
+
+		System.out.println(groundedIndexSide);
+		System.out.println(groundRotationRelativeFlatMapSide);
+		
+		for(int i=0; i<prevSideBumps.length; i++) {
+			System.out.println("i = " + i);
+			System.out.println(prevSideBumps[i]);
+			System.out.println(prevGroundedIndexesMid[i]);
+			System.out.println(prevGroundedRotationsMid[i]);
+
+			System.out.println(prevGroundedIndexesSide[i]);
+			System.out.println(prevGroundedRotationsSide[i]);
+
+			System.out.println(prevLayerIndex[i]);
+			
+		}
+		System.out.println(currentLayerIndex);
+		System.out.println("END DEBUG");
+	}
+	
+	
 	public boolean isNewLayerValidSimpleFast(int layerStateToAdd, int sideBump) {
 	
-		/*System.out.println("prevLayerIndex[currentLayerIndex]] = " + prevLayerIndex[currentLayerIndex]);
+		/*System.out.println("prevLayerIndex[currentLayerIndex - 1]] = " + prevLayerIndex[currentLayerIndex - 1]);
 		System.out.println("layerStateToAdd: " + layerStateToAdd);
 		System.out.println("groundedIndexMid: " + groundedIndexMid);
 		System.out.println("groundRotationRelativeFlatMapMid: " + groundRotationRelativeFlatMapMid);
 		System.out.println("sideBump: " + sideBump);
 		System.out.println("");
 		*/
-		long tmp[] = answerSheetGoingUpMid[prevLayerIndex[currentLayerIndex]][layerStateToAdd][groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump];
+		long tmp[] = answerSheetGoingUpMid[prevLayerIndex[currentLayerIndex - 1]][layerStateToAdd][groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump];
 		
 		if( ((curState[0] & tmp[0]) | (curState[1] & tmp[1])) == 0L) {
 			
-			long tmp2[] = answerSheetGoingUpSide[prevLayerIndex[currentLayerIndex]][layerStateToAdd][groundedIndexSide][groundRotationRelativeFlatMapSide][sideBump];
+			long tmp2[] = answerSheetGoingUpSide[prevLayerIndex[currentLayerIndex - 1]][layerStateToAdd][groundedIndexSide][groundRotationRelativeFlatMapSide][sideBump];
 			
 			//TODO: also check top to bottom Answer sheet if layer index 0!!! (This is currently missing, and will cause it to not work)
 			
@@ -233,7 +262,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			System.out.println("Current state:");
 			printStateFromLongs();
 			System.out.println("Answer sheet:");
-			printStateFromLongs(answerSheetGoingUpMid[prevLayerIndex[currentLayerIndex]][layerStateToAdd][groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump]);
+			printStateFromLongs(answerSheetGoingUpMid[prevLayerIndex[currentLayerIndex - 1]][layerStateToAdd][groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump]);
 			*/
 			return false;
 		}
@@ -247,20 +276,20 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		System.out.println("sideBump: " + sideBump);
 		*/
 
-		long tmp[] = answerSheetGoingUpMid[prevLayerIndex[currentLayerIndex]][layerIndex][groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump];
+		long tmp[] = answerSheetGoingUpMid[prevLayerIndex[currentLayerIndex - 1]][layerIndex][groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump];
 		curState[0] = curState[0] | tmp[0];
 		curState[1] = curState[1] | tmp[1];
 		
-		tmp = answerSheetGoingUpSide[prevLayerIndex[currentLayerIndex]][layerIndex][groundedIndexSide][groundRotationRelativeFlatMapSide][sideBump];
+		tmp = answerSheetGoingUpSide[prevLayerIndex[currentLayerIndex - 1]][layerIndex][groundedIndexSide][groundRotationRelativeFlatMapSide][sideBump];
 		curState[0] = curState[0] | tmp[0];
 		curState[1] = curState[1] | tmp[1];
 		
 		
-		int tmp1 = newGroundedIndexAboveMid[prevLayerIndex[currentLayerIndex]][layerIndex][this.groundedIndexMid][this.groundRotationRelativeFlatMapMid][sideBump];
-		int tmp2 = newGroundedRotationAboveMid[prevLayerIndex[currentLayerIndex]][layerIndex][this.groundedIndexMid][this.groundRotationRelativeFlatMapMid][sideBump];
+		int tmp1 = newGroundedIndexAboveMid[prevLayerIndex[currentLayerIndex - 1]][layerIndex][this.groundedIndexMid][this.groundRotationRelativeFlatMapMid][sideBump];
+		int tmp2 = newGroundedRotationAboveMid[prevLayerIndex[currentLayerIndex - 1]][layerIndex][this.groundedIndexMid][this.groundRotationRelativeFlatMapMid][sideBump];
 		
-		int tmp3 = newGroundedIndexAboveSide[prevLayerIndex[currentLayerIndex]][layerIndex][this.groundedIndexSide][this.groundRotationRelativeFlatMapSide][sideBump];
-		int tmp4 = newGroundedRotationAboveSide[prevLayerIndex[currentLayerIndex]][layerIndex][this.groundedIndexSide][this.groundRotationRelativeFlatMapSide][sideBump];
+		int tmp3 = newGroundedIndexAboveSide[prevLayerIndex[currentLayerIndex - 1]][layerIndex][this.groundedIndexSide][this.groundRotationRelativeFlatMapSide][sideBump];
+		int tmp4 = newGroundedRotationAboveSide[prevLayerIndex[currentLayerIndex - 1]][layerIndex][this.groundedIndexSide][this.groundRotationRelativeFlatMapSide][sideBump];
 		
 		prevGroundedIndexesMid[currentLayerIndex] = this.groundedIndexMid;
 		prevGroundedRotationsMid[currentLayerIndex] = this.groundRotationRelativeFlatMapMid;
@@ -272,11 +301,13 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		prevLayerIndex[currentLayerIndex] = layerIndex;
 		currentLayerIndex++;
 		
-		//TODO: connect newly grounded lower layers (This is currently missing, and will cause it to not work)
+		//TODO: Connect newly grounded lower layers (This is currently missing, and will cause it to not work)
 
 		this.groundedIndexMid = tmp1;
 		this.groundRotationRelativeFlatMapMid = tmp2;
 		
+		
+		//TODO: Maybe remove the need for this if condition in the future iterations:
 		if(layerIndex == 0) {
 			this.groundedIndexSide = tmp1;
 			this.groundRotationRelativeFlatMapSide = tmp2;
@@ -377,8 +408,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		
 		long tmp[] = answerSheetForTopCellAnySideBump[groundedIndexMid][groundRotationRelativeFlatMapMid];
 		
-		boolean ret = this.prevLayerIndex[currentLayerIndex] == 0 && ((~curState[0] & tmp[0]) | (~curState[1] & tmp[1]) ) != 0;
-
+		boolean ret = this.prevLayerIndex[currentLayerIndex - 1] == 0 &&  ((curState[0] & tmp[0]) | (curState[1] & tmp[1])) == 0L;
 		
 		return ret;
 	}
@@ -387,7 +417,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	public boolean isTopCellAbleToBeAddedForSideBumpFast(int sideBump) {
 		long tmp[] = answerSheetForTopCell[groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump];
 		
-		return this.prevLayerIndex[currentLayerIndex] == 0 &&  ((~curState[0] & tmp[0]) | (~curState[1] & tmp[1]) ) != 0;
+		return this.prevLayerIndex[currentLayerIndex - 1] == 0 &&  ((~curState[0] & tmp[0]) | (~curState[1] & tmp[1]) ) != 0;
 	}
 	
 	// ***********************************************************
@@ -425,11 +455,17 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 							handleLayerStateOverLayerStatePreComputeTopToBottom(layerStateBelow, layerStateAbove, index, rotation, sideBump);
 							handleLayerStateOverLayerStatePreComputeBottomToTopMid(layerStateBelow, layerStateAbove, index, rotation, sideBump);
 							handleLayerStateOverLayerStatePreComputeBottomToTopSide(layerStateBelow, layerStateAbove, index, rotation, sideBump);
+							
+							
 						}
 					}
 				}
 			}
 		}
+		
+		//TODO: if answerSheetGoingUpMid is impossible for layerStateBelow = 0, and all other params , then the equiv answerSheetGoingUpSide should also be impossible,
+		// and vice-versa
+		//This won't make it much faster, but it just makes sense...
 		
 	}
 	
