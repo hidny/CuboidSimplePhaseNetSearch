@@ -194,7 +194,7 @@ This allows me to quickly do basic checks with some bit manipulation.
 
 For example:
 
-The question: 'if the reference index cell is 13 with rotation 1, can I add layer 0 on top of it?'
+The question: 'Can I add layer type 0 on top of index cell 13 with rotation 1?'
 
 becomes a question of ANDing 2 or 3 64-bit integer states.
 
@@ -245,7 +245,7 @@ Cells that have a path to the bottom cell
 Example:
 15, 34, and 13 are grounded because it's connected to the 0 cell, but 34 is not:
 
-|34|13|  |<br>
+|34|13|..|<br>
 |15|..|34|<br>
 |00|..|..|<br>
 
@@ -388,7 +388,7 @@ Because there are only up to 8 possible symmetries for a 2D square lattice, F(n)
 
  
 The reason the matrix is 7x7 is because there's only 7 different possible states an in-between layer could be in and this matrix
-describes how many ways a state 'i' could go to a state 'j' by adding a new layer.
+describes how many ways we could layer state 'i' onto state 'j'.
 
 I googled for the eigenvectors and eigenvalues and found that the biggest eigenvalue is 9.4956...
 
