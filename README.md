@@ -249,25 +249,22 @@ TODO: (As of this writing, I actually just got back to working on this repo afte
 
 ### Basic DSF search
 
-  
-
-TODO
+It's just a depth-first-search where the algo makes the Nx1x1 one layer at a time.
 
 ### Pre-compute based on top-left grounded cell...
 
-TODO
+To make it as fast as possible, I pre-computed as much as possible, so the depth-first-search algorithm will need to do as little as possible.
 
 ### Explanation of 'Grounded cells'
 
-Cells that are currently connected to the bottom cell
+Cells that have a path to the bottom cell
 
 Example:
-15 is grounded because it's connected to the 0 cell, but 34 is not:
+15, 34, and 13 are grounded because it's connected to the 0 cell, but 34 is not:
 
+|34|13|  |<br>
 |15|__|34|<br>
-|00|__|__|
-
-  
+|00|__|__|<br>
 
   
 
@@ -342,7 +339,7 @@ and 2 states for each of the other configurations.
 
 There's 2 states for the rest because either the left 2 connected square 'islands' are 'grounded' to the bottom cell without the need of the above layer's help,
 
-or the right 2 are 'grounded' to the bottom cell without the need of the above layer's help.
+or the right 2 are 'grounded' to the bottom cell without the need of the above layer's help. (See: 'Explanation of 'Grounded cells'', for an idea of what is meant by 'grounded')
 
   
 
