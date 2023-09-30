@@ -57,13 +57,13 @@ they paired up so well, but I have the feeling there's an answer to that questio
 
 This repo is currently very messy because I didn't delete files I stopped using, and I didn't get rid of previous versions of the same code just in case I wanted to refer back to it.
 
-I'll try to clean it up a bit.
+I'll try to clean it up a bit soon.
 
   
 
 ## State of README
 
-This current iteration of the README is still needs a few more revisions and edits.
+This current iteration of the README still needs a few more revisions and edits.
 
   
 
@@ -145,9 +145,9 @@ See Appendix A for the theory behind the shortcuts I'm planning on using.
 
   
 
-This is just 'simple phase nets', but every in-between layer has have 4 horizontal 
+This is just 'simple phase nets', but every in-between layer has 4 horizontal 
 
-cells in a row... (Just like example 1 of the 'simple phase nets' examples)
+cells in a row without any space in between them... (Just like example 1 of the 'simple phase nets' examples)
 
   
 
@@ -276,7 +276,7 @@ Example:
 
   
 
-I currently have three conjectures that, (if true), would make the search a lot easier.
+I currently have three conjectures that, if true, would make the search a lot easier.
 
 I'm a bit embarrassed about the fact that I haven't proved any of these conjectures, but I completely believe them and
 
@@ -290,9 +290,9 @@ The three conjectures build on each other, and I don't technically depend on the
 
 'simple phase nets' conjecture 1:
 
-There's only 4 ways for an in-between row to be configured:
+There's only 4 ways for a layer of an Nx1x1 cuboid to be configured:
 
-  
+Here they are:
 
 {1, 1, 1, 1, 0, 0, 0}, or<br>
 
@@ -338,7 +338,7 @@ Example option 4:
 
 Every layer/row can be described by one of 7 states. One state for {1, 1, 1, 1, 0, 0, 0}
 
-and 2 states for the other configurations.
+and 2 states for each of the other configurations.
 
 There's 2 states for the rest because either the left 2 connected square 'islands' are 'grounded' to the bottom cell without the need of the above layer's help,
 
@@ -352,7 +352,6 @@ or the right 2 are 'grounded' to the bottom cell without the need of the above l
 
 This formula gets us the number of ways to have a 'simple phase nets' with dimensions 1x1xn:
 
-(note that this only counts the number of fixed solutions)
 
 F(n) = 16 * (1 0 0 0 0 0 0) M^(n-1) (1)
 
@@ -367,10 +366,6 @@ F(n) = 16 * (1 0 0 0 0 0 0) M^(n-1) (1)
                               (0)
 
                               (0)
-
-  
-
-  
 
 Where the matrix M =
 
@@ -408,8 +403,13 @@ M=
 
 1 0 0 0 1 1 1<br>
 
-The reason it's 7x7 is because there's only 7 different possible states an in-between layer could be in and this matrix
-describes how many ways state i could go to state j by adding a new layer.
+Note that this only counts the number of fixed solutions.
+(i.e: this ignores the 2D symmetries)
+Because there are only up to 8 possible symmetries for a 2D square lattice, F(n) is within a factor of 8 of the number of 'simple phase nets' if you don't ignore the symmetries.
+
+ 
+The reason the matrix 7x7 is because there's only 7 different possible states an in-between layer could be in and this matrix
+describes how many ways a state 'i' could go to a state 'j' by adding a new layer.
 
 I googled for the eigenvectors and eigenvalues and found that the biggest eigenvalue is 9.4956...
 
