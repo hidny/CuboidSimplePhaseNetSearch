@@ -1,11 +1,6 @@
 
 # CuboidSimplePhaseNetSearch
 
-  
-
-## (NOTICE: README.md is still a work-in-progress)
-
-  
 
 ## Goal:
 
@@ -25,8 +20,7 @@ On September 17th, I finally managed to find 15 'easy' nets that fold into 3 cub
 
   
 
-  
-
+ 
 ## The Nets that Fold 3 cuboids
 
 
@@ -47,7 +41,7 @@ In the future, I plan to find smaller nets by changing the category of net that 
 
 An interesting fact about the 15 nets I found is that, in all cases, cell index #0 of the (8x5x1) cuboid matches up with the index #0 of the 26x1x1 cuboid.
 I don't think it's a coincidence, but I still can't confidently explain why it's not a coincidence.
-I also found that there was a lot of ways to have a net that covers both the 26x1x1 cuboid and the 8x5x1 cuboid (more than 9 million simply stacked nets!). I don't know why
+I also found that there were a lot of ways to have a net that covers both the 26x1x1 cuboid and the 8x5x1 cuboid (more than 9 million simply stacked nets!). I don't know why
 they paired up so well, but I have the feeling there's an answer to that question.
 
 
@@ -59,15 +53,6 @@ This repo is currently very messy because I didn't delete files I stopped using,
 
 I'll try to clean it up a bit soon.
 
-  
-
-## State of README
-
-This current iteration of the README still needs a few more revisions and edits.
-
-  
-
-  
 
 ## Easy Net Targets
 
@@ -95,43 +80,43 @@ Example 1:
 
   
 
-|__|__|__|__|__|__|__|__|13|__|<br>
+|..|..|..|..|..|..|..|..|13|..|<br>
 
-|__|__|__|__|__|__|12|#9|#6|#3|<br>
+|..|..|..|..|..|..|12|#9|#6|#3|<br>
 
-|__|__|__|#8|#5|#2|11|__|__|__|<br>
+|..|..|..|#8|#5|#2|11|..|..|..|<br>
 
-|#4|#1|10|#7|__|__|__|__|__|__|<br>
+|#4|#1|10|#7|..|..|..|..|..|..|<br>
 
-|__|__|#0|__|__|__|__|__|__|__|<br>
+|..|..|#0|..|..|..|..|..|..|..|<br>
 
   
 
 Example 2:
 
-|__|__|13|__|__|__|__|<br>
+|..|..|13|..|..|..|..|<br>
 
-|__|__|12|#9|#6|#3|__|<br>
+|..|..|12|#9|#6|#3|..|<br>
 
-|#5|__|__|#8|__|#2|11|<br>
+|#5|..|..|#8|..|#2|11|<br>
 
-|#4|#1|10|#7|__|__|__|<br>
+|#4|#1|10|#7|..|..|..|<br>
 
-|__|__|#0|__|__|__|__|<br>
+|..|..|#0|..|..|..|..|<br>
 
   
 
 Example 3:
 
-|__|__|13|__|__|__|__|<br>
+|..|..|13|..|..|..|..|<br>
 
-|__|__|12|29|26|23|__|<br>
+|..|..|12|29|26|23|..|<br>
 
-|#5|__|11|28|__|22|__|<br>
+|#5|..|11|28|..|22|..|<br>
 
-|#4|#1|10|27|__|__|__|<br>
+|#4|#1|10|27|..|..|..|<br>
 
-|__|__|#0|__|__|__|__|<br>
+|..|..|#0|..|..|..|..|<br>
 
   
 
@@ -151,9 +136,7 @@ cells in a row without any space in between them... (Just like example 1 of the 
 
   
 
-Because this is really simple, it allowed me to look at cuboids of dimension up to 1x1x26, and
-
-only searching this type of net allowed me to find the 15 nets of area 106 that fold into 3 cuboids.
+Because this is really simple, it allowed me to look at cuboids of dimension up to 1x1x26, and allowed me to find the 15 nets of area 106 that fold into 3 cuboids.
 
   
 
@@ -187,7 +170,7 @@ Just cover the whole space. I'm hoping to pull this off while pre-computing the 
 ### Rotationally symmetric solutions only
 
 After noticing that 2 of the 15 nets that fold into 3 cuboids are rotationally symmetric, I figured that this might be a good avenue of attack.
-I read about this strategy in section 3.5.1 of "Introduction to Computational Origani" by Ryuhei Uehara, but I forgot about it until now.
+I read about this strategy in section 3.5.1 of "Introduction to Computational Origami" by Ryuhei Uehara, but I forgot about it until now.
   
 
 ### Reset but for 1x2xN
@@ -213,7 +196,7 @@ For example:
 
 The question: 'if the reference index cell is 13 with rotation 1, can I add layer 0 on top of it?'
 
-becomes a question of ANDing 2 or 3 64-bit integers states.
+becomes a question of ANDing 2 or 3 64-bit integer states.
 
 (i.e: state_of_cells AND bit_mask_cells_to_add_in_layer)
 
@@ -238,7 +221,7 @@ I used bit-masking to make this check even faster.
 
   
 
-TODO: (As of this writing, I actually just got back to working on this repo after a 2-month break, so I'll have to figure it out...)
+TODO: (As of this writing, I actually just got back to working on this repo after a 2-month break, so I'll have to figure it out and I'll probably reorganize it later...)
 
   
 
@@ -263,8 +246,8 @@ Example:
 15, 34, and 13 are grounded because it's connected to the 0 cell, but 34 is not:
 
 |34|13|  |<br>
-|15|__|34|<br>
-|00|__|__|<br>
+|15|..|34|<br>
+|00|..|..|<br>
 
   
 
@@ -309,19 +292,19 @@ Example option 1:
 
 Example option 2:
 
-|25|22|__|28|__|__|11|<br>
+|25|22|..|28|..|..|11|<br>
 
   
 
 Example option 3:
 
-|25|__|28|22|__|11|<br>
+|25|..|28|22|..|11|<br>
 
   
 
 Example option 4:
 
-|25|__|__|28|__|22|11|<br>
+|25|..|..|28|..|22|11|<br>
 
   
 
@@ -400,12 +383,11 @@ M=
 
 1 0 0 0 1 1 1<br>
 
-Note that this only counts the number of fixed solutions.
-(i.e: this ignores the 2D symmetries)
+Note that this only counts the number of fixed solutions. (i.e: this ignores the 2D symmetries)
 Because there are only up to 8 possible symmetries for a 2D square lattice, F(n) is within a factor of 8 of the number of 'simple phase nets' if you don't ignore the symmetries.
 
  
-The reason the matrix 7x7 is because there's only 7 different possible states an in-between layer could be in and this matrix
+The reason the matrix is 7x7 is because there's only 7 different possible states an in-between layer could be in and this matrix
 describes how many ways a state 'i' could go to a state 'j' by adding a new layer.
 
 I googled for the eigenvectors and eigenvalues and found that the biggest eigenvalue is 9.4956...
