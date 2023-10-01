@@ -476,6 +476,12 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	}
 	
 	
+	//If bottom layer is index 1,2, or 3 top layer can't be 4, 5, 6, (and vice-versa)
+	private boolean topAndBottomStateDontMix(int layerStateBelow, int layerStateAbove) {
+		return layerStateAbove != 0 
+				&& layerStateBelow != 0
+				&& connectToTopToBottomFromLeft(layerStateBelow) != connectToTopToBottomFromLeft(layerStateAbove);
+	}
 	private boolean connectToTopToBottomFromLeft(int layerState) {
 		
 		if(layerState <= 4) {
@@ -499,8 +505,9 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			newGroundedRotationBelow[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_ROTATION;						
 			return;
 
-		} else if(layerStateAbove != 0 && connectToTopToBottomFromLeft(layerStateBelow) != connectToTopToBottomFromLeft(layerStateAbove)) {
-
+			//TODO: make this into a help function:
+		} else if(topAndBottomStateDontMix(layerStateBelow, layerStateAbove)) {
+		//END TODO
 			// No need to connect from top to bottom because
 			// below state connects the left part while above state connects the right part.
 
@@ -634,7 +641,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	//TODO: test this!
 	private void handleLayerStateOverLayerStatePreComputeBottomToTopSide(int layerStateBelow, int layerStateAbove, int indexGroundedSideBelow, int rotationGroundedSideBelow, int sideBump) {
 		
-		if(layerStateAbove != 0 && connectToTopToBottomFromLeft(layerStateBelow) != connectToTopToBottomFromLeft(layerStateAbove)) {
+		if(topAndBottomStateDontMix(layerStateBelow, layerStateAbove)) {
 
 			// No need to connect from bottom to top because
 			// below state connects the left part while above state connects the right part.
@@ -769,7 +776,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	//TODO: test this!
 	private void handleLayerStateOverLayerStatePreComputeBottomToTopMid(int layerStateBelow, int layerStateAbove, int indexGroundedMidBelow, int rotationGroundedMidBelow, int sideBump) {
 		
-		if(layerStateAbove != 0 && connectToTopToBottomFromLeft(layerStateBelow) != connectToTopToBottomFromLeft(layerStateAbove)) {
+		if(topAndBottomStateDontMix(layerStateBelow, layerStateAbove)) {
 
 			// No need to connect from bottom to top because
 			// below state connects the left part while above state connects the right part.
@@ -815,9 +822,39 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 
 			if(groundingFromBelow[i] == 1) {
 				
-				
+				boolean layerGoodToAdd = false;
 				if(CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[layerStateAbove][topLayerIndex] == 1) {
 
+					//Check if layer state 0 can be added by also considering cells that will need to be grounded top to bottom:
+					if(layerStateBelow != FIRST_LAYER_INDEX
+							&& layerStateAbove == FIRST_LAYER_INDEX) {
+						
+						for(int k=0; k<CELLS_TO_ADD_BY_STATE_GOING_DOWN.length; k++) {
+							
+							int topLayerIndex2 = k - leftMostRelativeBottomLayer;
+							
+							if( topLayerIndex2 < 0 || topLayerIndex2 >= CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[0].length) {
+								continue;
+							}
+
+							if(CELLS_TO_ADD_BY_STATE_GOING_DOWN[layerStateBelow][k] == 1 &&
+									CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[layerStateAbove][topLayerIndex2] == 1
+							) {
+								layerGoodToAdd = true;
+								break;
+							}
+						}
+						
+					} else {
+						layerGoodToAdd = true;
+					}
+					
+					if( ! layerGoodToAdd) {
+						continue;
+					}
+					//END check if layer state 0 can be added by also considering cells that will need to be grounded top to bottom:
+					
+					
 					connectedAndNoProblems = true;
 
 					Coord2D curGroundBelow = new Coord2D(indexGroundedMidBelow, rotationGroundedMidBelow);

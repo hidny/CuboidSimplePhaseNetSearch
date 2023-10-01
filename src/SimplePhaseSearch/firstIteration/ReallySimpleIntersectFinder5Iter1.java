@@ -14,7 +14,7 @@ public class ReallySimpleIntersectFinder5Iter1 {
 	public static void main(String[] args) {
 		
 		//N: 5
-		reallySimpleSearch(3, 1, 1);
+		reallySimpleSearch(4, 1, 1);
 		
 		//Found 80 simply stacked solutions (ignore symmetry)
 		//reallySimpleSearch(3, 2, 1);
@@ -259,10 +259,10 @@ public class ReallySimpleIntersectFinder5Iter1 {
 		//TODO: go faster by iterating through the possible moves (i.e. (nextLayerState, sideBump) tuples)
 		
 		//Iterating over all 7 possible layer states:
-		//for(int nextLayerState = 0; nextLayerState<CuboidToFoldOnExtendedSimplePhase1.NUM_LAYER_STATES; nextLayerState++) {
+		for(int nextLayerState = 0; nextLayerState<CuboidToFoldOnExtendedSimplePhase1.NUM_LAYER_STATES; nextLayerState++) {
 		
-		//TODO: Iterating over simply stacked options only for debug
-		for(int nextLayerState = 0; nextLayerState<1; nextLayerState++) {
+		//TODO: Iterating over 'simply-stacked' options only for debug
+		//for(int nextLayerState = 0; nextLayerState<1; nextLayerState++) {
 		
 			for(int sideBump=0; sideBump < CuboidToFoldOnExtendedSimplePhase1.NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
 				
