@@ -13,6 +13,7 @@ import Coord.CoordWithRotationAndIndex;
 import Model.CuboidToFoldOnInterface;
 import Model.NeighbourGraphCreator;
 import Model.Utils;
+import NewModel.firstIteration.Nx1x1CuboidToFold;
 
 public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterface {
 
@@ -484,7 +485,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	}
 	private boolean connectToTopToBottomFromLeft(int layerState) {
 		
-		if(layerState <= 4) {
+		if(layerState <= 3) {
 			return true;
 		} else {
 			return false;
@@ -772,6 +773,58 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		}
 	}
 	
+	private boolean ungroundedSideWorksWithSideBump(int layerStateBelow, int layerStateAbove, int sideBumpUsed) {
+		
+		if(topAndBottomStateDontMix(layerStateBelow, layerStateAbove)) {
+			return false;
+		}
+		
+		int arrayToUseBelow[] = null;
+		if(layerStateBelow == 0) {
+
+			//if layer State Below is 0, the ungrounded side doesn't need to connect to the bottom layer:
+			return true;
+			
+		} else {
+			arrayToUseBelow = CELLS_TO_ADD_BY_STATE_GOING_DOWN[layerStateBelow];
+		}
+		
+		int arrayToUseAbove[] = null;
+		if(layerStateAbove == 0) {
+			arrayToUseAbove = LEVEL_OPTIONS[0];
+		} else {
+			arrayToUseAbove = CELLS_TO_ADD_BY_STATE_GOING_DOWN[layerStateAbove];
+		}
+		
+		int leftMostRelativeBottomLayer = sideBumpUsed - 6;
+		
+		for(int i=0; i<arrayToUseBelow.length; i++) {
+			int topLayerIndex = i - leftMostRelativeBottomLayer;
+			
+			if(topLayerIndex < 0 || topLayerIndex >= arrayToUseAbove.length) {
+				continue;
+			}
+			
+			if(arrayToUseBelow[i] == 1
+					&& arrayToUseAbove[topLayerIndex] == 1) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private static int translateStateToLayerIndex(int stateIndex) {
+		
+		if(stateIndex >=4) {
+			return stateIndex - 3;
+		} else {
+			return stateIndex;
+		}
+	}
+	
+	
+	
 	
 	//TODO: test this!
 	private void handleLayerStateOverLayerStatePreComputeBottomToTopMid(int layerStateBelow, int layerStateAbove, int indexGroundedMidBelow, int rotationGroundedMidBelow, int sideBump) {
@@ -786,6 +839,15 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			newGroundedRotationAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = BAD_ROTATION;						
 			return;
 
+		} else if( ! ungroundedSideWorksWithSideBump(layerStateBelow, layerStateAbove, sideBump)) {
+			
+			answerSheetGoingUpMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = setImpossibleForAnswerSheet();
+			newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = BAD_INDEX;
+			newGroundedRotationAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = BAD_ROTATION;
+			
+			//debugPrintLowerAndUpperLayers(layerStateBelow, layerStateAbove, sideBump, indexGroundedMidBelow, rotationGroundedMidBelow);
+			
+			return;
 		}
 		
 		int groundingFromBelow[] = CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[layerStateBelow];
@@ -819,6 +881,8 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			if( topLayerIndex < 0 || topLayerIndex >= CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[0].length) {
 				continue;
 			}
+			
+			
 
 			if(groundingFromBelow[i] == 1) {
 				
@@ -1254,6 +1318,20 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			}
 		}
 		
+	}
+	
+
+	private void debugPrintLowerAndUpperLayers(int layerStateBelow, int layerStateAbove, int sideBump, int indexGroundedMidBelow, int rotationGroundedMidBelow) {
+		if(indexGroundedMidBelow == 0 && rotationGroundedMidBelow == 0) {
+			System.out.println("Hello new condition...");
+			System.out.println(layerStateBelow + ", " + layerStateAbove + ", " + sideBump);
+			
+			Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(3);
+			reference.addNextLevel(new Coord2D(0, 6), null);
+			reference.addNextLevel(new Coord2D(translateStateToLayerIndex(layerStateBelow), 6), null);
+			reference.addNextLevel(new Coord2D(translateStateToLayerIndex(layerStateAbove), sideBump), null);
+			System.out.println(reference);
+		}
 	}
 
 }
