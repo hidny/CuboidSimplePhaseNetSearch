@@ -2,7 +2,7 @@
 # CuboidSimplePhaseNetSearch
 
 
-## Goal:
+## Goal
 
 
 Find a net that folds into 3 cuboids by being strategic about what to search.
@@ -12,9 +12,19 @@ I created this repo because I figured that I might find success faster if I focu
 
 Once done with searching the easy to find nets, I plan to find clever ways of expanding my search to include more and more types of nets until the search becomes exhaustive.
 
-  
+## Related links
 
-## Latest update(s):
+Here's a link to a video that explains the challenge:
+
+https://www.youtube.com/watch?v=jOTTZtVPrgo
+
+Here's a link to documentation about my previous attempt to find a net that folds into 3 cuboids by exhaustive search:
+
+https://github.com/hidny/CuboidNetSolver/tree/main/docs
+
+
+
+## Latest update(s)
 
 On September 17th, I finally managed to find 15 'easy' nets that fold into 3 cuboids, but the area of the nets are a bit too big for my liking.
 
@@ -383,18 +393,17 @@ M=
 
 1 0 0 0 1 1 1<br>
 
-Note that this only counts the number of fixed solutions. (i.e: this ignores the 2D symmetries)
-Because there are only up to 8 possible symmetries for a 2D square lattice, F(n) is within a factor of 8 of the number of 'simple phase nets' if you don't ignore the symmetries.
+### Notes about this equation
+* This only counts the number of fixed solutions. (i.e: this ignores the 2D symmetries)
+	* Because there are only up to 8 possible symmetries for a 2D square lattice, F(n) is within a factor of 8 of the number of 'simple phase nets' if you don't ignore the symmetries.
+* The reason the matrix is 7x7 is because there's only 7 different possible states an in-between layer could be in and this matrix describes how many ways we could layer state 'i' onto state 'j'.
+* I googled for the eigenvectors and eigenvalues and found that the biggest eigenvalue is 9.4956...
+	* See below for more details
 
- 
-The reason the matrix is 7x7 is because there's only 7 different possible states an in-between layer could be in and this matrix
-describes how many ways we could layer state 'i' onto state 'j'.
-
-I googled for the eigenvectors and eigenvalues and found that the biggest eigenvalue is 9.4956...
-
+#### The Matrix Eigenvalue
 https://matrixcalc.org/ gives this:
 9.4956226893 ...
-I also took screenshots of the exact form of the solution from wolframalpha. (See the pics folder)
+I also took screenshots of the exact form of the solution from wolframalpha (See the pics folder).
 I believe that it's the solution to a cubic polynomial, but I'm not 100% sure.
 
 The eigenvalue found means that for every layer you add to the 1x1xN cuboid, you get around 9.5 times more possible configurations.
