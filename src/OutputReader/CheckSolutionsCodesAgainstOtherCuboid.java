@@ -15,13 +15,25 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 		// TODO Auto-generated method stub
 
 		try {
+			
+			//Testing simple phase Nx1x1 solutions:
+			/*String file1 = "D:\\test2.txt";
+			int dimensionsCuboidToCheck[] = new int[]{6, 1, 1};
+			
+			//Alt: {17, 2, 1}
+			int otherDimensions1[] = new int[] {6, 1, 1};
+			int otherDimensions2[] = new int[] {6, 1, 1};
+			*/
+			
+			//Getting answer for area of 106:
 			String file1 = "D:\\CheckA106with17x2x1.txt";
 			
-			int dimensionsCuboidToCheck[] = new int[]{3, 3, 1};
+			int dimensionsCuboidToCheck[] = new int[]{8, 5, 1};
 			
 			//Alt: {17, 2, 1}
 			int otherDimensions1[] = new int[] {17, 2, 1};
 			int otherDimensions2[] = new int[] {26, 1, 1};
+			
 			
 			int areaOfCuboidToCheck = Utils.getTotalArea(dimensionsCuboidToCheck);
 			

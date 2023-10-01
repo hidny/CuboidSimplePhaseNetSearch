@@ -14,7 +14,7 @@ public class ReallySimpleIntersectFinder5Iter1 {
 	public static void main(String[] args) {
 		
 		//N: 5
-		reallySimpleSearch(7, 1, 1);
+		reallySimpleSearch(6, 1, 1);
 		
 		//Found 80 simply stacked solutions (ignore symmetry)
 		//reallySimpleSearch(3, 2, 1);
@@ -234,7 +234,7 @@ public class ReallySimpleIntersectFinder5Iter1 {
 						reference.addNextLevel(new Coord2D(0, sideBump), null);
 						//TODO: add 0 == 0 when done testing
 						if(
-								0 == 0 || 
+								//0 == 0 || 
 								BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
 							System.out.println("Unique solution found");
 							System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
