@@ -26,7 +26,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			*/
 			
 			//Getting answer for area of 106:
-			String file1 = "D:\\CheckA106with17x2x1.txt";
+			String file1 = "D:\\test1.txt";
 			
 			int dimensionsCuboidToCheck[] = new int[]{8, 5, 1};
 			

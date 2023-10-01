@@ -47,7 +47,7 @@ public class ReallySimpleIntersectFinder5 {
 		//reallySimpleSearch(5, 3, 1);
 		
 		//74 solutions (19 unique solutions)
-		reallySimpleSearch(7, 2, 1);
+		//reallySimpleSearch(7, 2, 1);
 		
 		
 		//N: 13
@@ -125,7 +125,7 @@ public class ReallySimpleIntersectFinder5 {
 		 */
 		// N = 26
 		//268 unique solution for 17x2x1
-		//reallySimpleSearch(17, 2, 1);
+		reallySimpleSearch(17, 2, 1);
 		
 		// N = 27
 		

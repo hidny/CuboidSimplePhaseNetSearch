@@ -14,7 +14,7 @@ public class ReallySimpleIntersectFinder5Iter1 {
 	public static void main(String[] args) {
 		
 		//N: 5
-		reallySimpleSearch(6, 1, 1);
+		reallySimpleSearch(5, 1, 1);
 		
 		//Found 80 simply stacked solutions (ignore symmetry)
 		//reallySimpleSearch(3, 2, 1);
@@ -232,7 +232,7 @@ public class ReallySimpleIntersectFinder5Iter1 {
 						ret++;
 						
 						reference.addNextLevel(new Coord2D(0, sideBump), null);
-						//TODO: add 0 == 0 when done testing
+						//TODO: remove 0 == 0 when done testing
 						if(
 								//0 == 0 || 
 								BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
@@ -261,7 +261,7 @@ public class ReallySimpleIntersectFinder5Iter1 {
 		//Iterating over all 7 possible layer states:
 		for(int nextLayerState = 0; nextLayerState<CuboidToFoldOnExtendedSimplePhase1.NUM_LAYER_STATES; nextLayerState++) {
 		
-		//TODO: Iterating over 'simply-stacked' options only for debug
+		//TODO: iterating over 'simply-stacked' options only for debug:
 		//for(int nextLayerState = 0; nextLayerState<1; nextLayerState++) {
 		
 			for(int sideBump=0; sideBump < CuboidToFoldOnExtendedSimplePhase1.NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {

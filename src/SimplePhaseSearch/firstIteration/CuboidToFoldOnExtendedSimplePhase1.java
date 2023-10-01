@@ -6,6 +6,7 @@ package SimplePhaseSearch.firstIteration;
 // region split check (This is a big one)
 // isolated cell check
 // only valid transition iterator...
+// Only use reference Nx1x1 cuboid to fold when wanting to print the net.
 // I'll cover that later.
 
 import Coord.Coord2D;
@@ -340,8 +341,6 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		prevLayerIndex[currentLayerIndex] = FIRST_LAYER_INDEX;
 		currentLayerIndex++;
 		
-		//TODO: connect newly grounded lower layers (This is currently missing, and will cause it to not work)
-
 		this.groundedIndexMid = tmp1;
 		this.groundRotationRelativeFlatMapMid = tmp2;
 
@@ -496,22 +495,20 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	//TODO: test this!
 	private void handleLayerStateOverLayerStatePreComputeTopToBottom(int layerStateBelow, int layerStateAbove, int indexGroundedAbove, int rotationGroundedAbove, int sideBump) {
 		
-		if(layerStateBelow == 0) {	
+		if(topAndBottomStateDontMix(layerStateBelow, layerStateAbove)) {
 			// No need to connect from top to bottom because
-			// below layer is fully connected
-			// I set it to impossible, but it's more like "Not applicable"...
-			
+			// below state connects the left part while above state connects the right part.
+
 			answerSheetGoingDown[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = setImpossibleForAnswerSheet();
 			newGroundedIndexBelow[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_INDEX;
 			newGroundedRotationBelow[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_ROTATION;						
 			return;
 
-			//TODO: make this into a help function:
-		} else if(topAndBottomStateDontMix(layerStateBelow, layerStateAbove)) {
-		//END TODO
+		} else if(layerStateBelow == 0) {	
 			// No need to connect from top to bottom because
-			// below state connects the left part while above state connects the right part.
-
+			// below layer is fully connected
+			// I set it to impossible, but it's more like "Not applicable"...
+			
 			answerSheetGoingDown[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = setImpossibleForAnswerSheet();
 			newGroundedIndexBelow[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_INDEX;
 			newGroundedRotationBelow[layerStateBelow][layerStateAbove][indexGroundedAbove][rotationGroundedAbove][sideBump] = BAD_ROTATION;						
@@ -546,7 +543,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			}
 		}
 
-		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_DOWN.length; i++) {
+		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_DOWN[0].length; i++) {
 			
 			int topLayerIndex = i - leftMostRelativeBottomLayer;
 			
@@ -568,7 +565,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 						System.exit(1);
 					}
 
-					for(int j=topLayerIndex; j < aboveLeftmostGroundedIndex; j++) {
+					for(int j=aboveLeftmostGroundedIndex; j < topLayerIndex; j++) {
 						curGroundAbove = tryAttachCellInDir(curGroundAbove.i, curGroundAbove.j, RIGHT);
 					}
 					Coord2D cellBelowCurGround = tryAttachCellInDir(curGroundAbove.i, curGroundAbove.j, BELOW);
@@ -683,7 +680,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			}
 		}
 
-		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE.length; i++) {
+		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[0].length; i++) {
 			
 			int topLayerIndex = i - leftMostRelativeBottomLayer;
 			
@@ -1040,7 +1037,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 					int leftMostRelativeTopLeftGrounded = sideBump - 6;
 					
 					//TODO: this only works for layer index 0. It's ok for now, but will need to change once we change types
-					// of solutions:
+					// of solutions (i.e. Once we move away from just Simple phase solutions)
 					if(leftMostRelativeTopLeftGrounded >= 0 && leftMostRelativeTopLeftGrounded < 4) {
 					
 
