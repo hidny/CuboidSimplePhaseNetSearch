@@ -137,11 +137,7 @@ public class ReallySimpleIntersectFinder5Iter1 {
 		
 		long ret = 0;
 		
-		//TODO: this is the correct one:
-		//for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
-
-		//TODO: this is the debug one:
-		for(int i=0; i<1; i++) {
+		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
 
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
@@ -232,10 +228,8 @@ public class ReallySimpleIntersectFinder5Iter1 {
 						ret++;
 						
 						reference.addNextLevel(new Coord2D(0, sideBump), null);
-						//TODO: remove 0 == 0 when done testing
 						if(
-								//0 == 0 || 
-								BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
+							BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
 							System.out.println("Unique solution found");
 							System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 							

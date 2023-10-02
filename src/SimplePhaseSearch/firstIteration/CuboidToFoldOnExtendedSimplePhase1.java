@@ -1,7 +1,5 @@
 package SimplePhaseSearch.firstIteration;
 
-//TODO: this is incomplete!
-
 //TODO: Because this is for the 1st iteration, I skipped basic optimizations like:
 // region split check (This is a big one)
 // isolated cell check
@@ -344,11 +342,12 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		prevLayerStateIndex[currentLayerIndex] = layerStateIndex;
 		currentLayerIndex++;
 		
-		//TODO: Connect newly grounded lower layers (This is currently missing, and will cause it to not work)
 
 		this.groundedIndexMid = tmp1;
 		this.groundRotationRelativeFlatMapMid = tmp2;
 		
+
+		//Connect newly grounded lower layers:
 		if(layerStateIndex == 0 
 		&& prevLayerStateIndex[currentLayerIndex - 2] != 0) {
 
@@ -370,6 +369,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			
 			}
 		}
+		//END Connect newly grounded lower layers
 				
 		//TODO: Maybe remove the need for this if condition in the future iterations:
 		if(layerStateIndex == 0) {
@@ -617,9 +617,6 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		boolean connectedAndNoProblems = false;
 		boolean wentThroughLoopAlready = false;
 		
-
-		//TODO: this logic is broken for curGroundAbove
-		//Coord2D curGroundAbove = null;
 		int aboveLeftmostGroundedIndex = -1;
 		
 		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[0].length; i++) {
@@ -719,9 +716,6 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		
 	}
 	
-
-	//TODO: make sure it's similar to handleLayerStateOverLayerStatePreComputeBottomToTopMid
-
 	//TODO: test this!
 	private void handleLayerStateOverLayerStatePreComputeBottomToTopSide(int layerStateBelow, int layerStateAbove, int indexGroundedSideBelow, int rotationGroundedSideBelow, int sideBump) {
 		
@@ -1103,7 +1097,6 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		return true;
 	}
 	
-	//TODO: make sure it's similar to handleLayerStateOverLayerStatePreComputeBottomToTopMid
 	public void setupAnswerSheetForTopCell() {
 		
 		answerSheetForTopCell = new long[Utils.getTotalArea(this.dimensions)][NUM_ROTATIONS][NUM_POSSIBLE_SIDE_BUMPS][NUM_LONGS_TO_USE];
