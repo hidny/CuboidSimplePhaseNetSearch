@@ -229,6 +229,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		System.out.println("END DEBUG");
 	}
 	
+	private long tmpStateTestGoingDown[] = new long[NUM_LONGS_TO_USE];
 	
 	public boolean isNewLayerValidSimpleFast(int layerStateToAdd, int sideBump) {
 	
@@ -247,9 +248,52 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			
 			//TODO: also check top to bottom Answer sheet if layer index 0!!! (This is currently missing, and will cause it to not work)
 			
-			
-			
 			boolean debug = ( ((curState[0] | tmp[0]) & tmp2[0] ) | ((curState[1] | tmp[1])) & tmp2[1] ) == 0L;
+			
+			//Check validity of grounding from higher layers to lower layers:
+			if(debug 
+					&& layerStateToAdd == 0 
+					&& prevLayerIndex[currentLayerIndex - 1] != 0) {
+				
+				int curSideBump = sideBump;
+				int curGroundIndexAbove = newGroundedIndexAboveMid[prevLayerIndex[currentLayerIndex - 1]][layerStateToAdd][this.groundedIndexMid][this.groundRotationRelativeFlatMapMid][curSideBump];
+				int curRotationGroundIndexAbove = newGroundedRotationAboveMid[prevLayerIndex[currentLayerIndex - 1]][layerStateToAdd][this.groundedIndexMid][this.groundRotationRelativeFlatMapMid][curSideBump];
+				
+				
+				tmpStateTestGoingDown[0] = (curState[0] | tmp[0] | tmp2[0]);
+				tmpStateTestGoingDown[1] = (curState[1] | tmp[1] | tmp2[1]);
+				
+				//Dangerous, but ok.
+				prevLayerIndex[currentLayerIndex] = 0;
+				
+				for(int curLayerBelow=currentLayerIndex - 1; prevLayerIndex[curLayerBelow] != 0; curLayerBelow--) {
+					
+					long tmp3[] = answerSheetGoingDown[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+					
+					
+					boolean debug2 = (( tmpStateTestGoingDown[0] & tmp3[0] )
+							         | (tmpStateTestGoingDown[1] & tmp3[1] )) == 0L;
+					
+					if(! debug2) {
+
+						return false;
+
+					} else {
+						tmpStateTestGoingDown[0] = (curState[0] | tmp3[0]);
+						tmpStateTestGoingDown[1] = (curState[1] | tmp3[1]);
+						
+						curGroundIndexAbove =            newGroundedIndexBelow[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+						curRotationGroundIndexAbove = newGroundedRotationBelow[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+						curSideBump = prevSideBumps[curLayerBelow];
+					}
+				}
+				
+				System.out.println("TRUE");
+				//At this point, top to bottom works:
+				return true;
+				
+				
+			}
 			
 			/*if(debug) {
 				System.out.println("Returns true");
