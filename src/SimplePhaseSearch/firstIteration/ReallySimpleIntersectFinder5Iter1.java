@@ -241,6 +241,9 @@ public class ReallySimpleIntersectFinder5Iter1 {
 							
 							System.out.println(reference.toString());
 							System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
+							
+							//TODO: remove sanity check once confident:
+							cuboidToBuild.debugMakeSureCuboidIsFilledExceptForTop();
 						}
 						reference.removeCurrentTopLevel();
 					}

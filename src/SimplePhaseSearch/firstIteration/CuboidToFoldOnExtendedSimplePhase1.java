@@ -350,30 +350,21 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		this.groundRotationRelativeFlatMapMid = tmp2;
 		
 		if(layerIndex == 0 
-		&& prevLayerIndex[currentLayerIndex - 1] != 0) {
-	
+		&& prevLayerIndex[currentLayerIndex - 2] != 0) {
+
 			int curSideBump = sideBump;
 			int curGroundIndexAbove = this.groundedIndexMid;
 			int curRotationGroundIndexAbove = this.groundRotationRelativeFlatMapMid;
 		
-			for(int curLayerBelow=currentLayerIndex - 1; prevLayerIndex[curLayerBelow] != 0; curLayerBelow--) {
+			for(int curLayerBelow=currentLayerIndex - 2; prevLayerIndex[curLayerBelow] != 0; curLayerBelow--) {
 				
 				long tmp5[] = answerSheetGoingDown[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
-				
-				if((curState[0] & tmp5[0]) == 0L) {
-					System.out.println("Doh 3");
-					System.exit(1);
-				}
-				if((curState[1] & tmp5[1]) == 0L) {
-					System.out.println("Doh 4");
-					System.exit(1);
-				}
 				
 				curState[0] = (curState[0] | tmp5[0]);
 				curState[1] = (curState[1] | tmp5[1]);
 				
 			
-				curGroundIndexAbove =            newGroundedIndexBelow[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+				curGroundIndexAbove =         newGroundedIndexBelow[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
 				curRotationGroundIndexAbove = newGroundedRotationBelow[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
 				curSideBump = prevSideBumps[curLayerBelow];
 			
@@ -477,27 +468,10 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 				curState[0] = (curState[0] & (~tmp3[0]));
 				curState[1] = (curState[1] & (~tmp3[1]));
 				
-				//Debug that only works if the addNewLayerFast function doesn't take care of the top to bottom case:
-				if((curState[0] & tmp3[0]) != 0L) {
-					System.out.println("DOH");
-					System.exit(1);
-				}
-				if((curState[1] & tmp3[1]) != 0L) {
-					System.out.println("DOH2");
-					System.exit(1);
-				}
-				//End debug that only works if the addNewLayerFast function doesn't take care of the top to bottom case
-				
-				
 				curGroundIndexAbove =            newGroundedIndexBelow[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
 				curRotationGroundIndexAbove = newGroundedRotationBelow[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
 				curSideBump = prevSideBumps[curLayerBelow];
 			
-				/*
-				if(curLayerBelow < currentLayerIndex - 2) {
-					System.out.println("DEBUG IN: " + (currentLayerIndex - 1 - curLayerBelow));
-					System.exit(1);
-				}*/
 			}
 			
 			
@@ -1204,6 +1178,24 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		return ret;
 	}
 
+	public void debugMakeSureCuboidIsFilledExceptForTop() {
+		boolean array[] = debugGetBoolArrayFromLongs(curState, getNumCellsToFill());
+		
+		int numInactive = 0;
+		for(int i=0; i<array.length; i++) {
+			if(! array[i]) {
+				
+				numInactive++;
+
+				if(numInactive > 1) {
+					System.out.println("ERROR: cuboid is not filled!");
+					printInactiveStateFromLongs(curState, getNumCellsToFill());
+					System.exit(1);
+				}
+			}
+		}
+	}
+	
 	public void printStateFromLongs() {
 		
 		printStateFromLongs(curState, getNumCellsToFill());
@@ -1221,6 +1213,19 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		System.out.println("Active cells:");
 		for(int i=0; i<array.length; i++) {
 			if(array[i]) {
+				System.out.println(i);
+			}
+		}
+		System.out.println();
+	}
+	
+	private static void printInactiveStateFromLongs(long inputLongs[], int numCells) {
+		
+		boolean array[] = debugGetBoolArrayFromLongs(inputLongs, numCells);
+		
+		System.out.println("Inactive cells:");
+		for(int i=0; i<array.length; i++) {
+			if(!array[i]) {
 				System.out.println(i);
 			}
 		}
