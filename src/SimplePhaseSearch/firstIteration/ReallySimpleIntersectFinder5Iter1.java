@@ -14,10 +14,10 @@ public class ReallySimpleIntersectFinder5Iter1 {
 	public static void main(String[] args) {
 		
 		//N: 5
-		reallySimpleSearch(5, 1, 1);
+		//reallySimpleSearch(5, 1, 1);
 		
 		//Found 80 simply stacked solutions (ignore symmetry)
-		//reallySimpleSearch(3, 2, 1);
+		reallySimpleSearch(3, 2, 1);
 
 		//N: 7
 		//Found 0 simply stacked solutions... uh oh.
