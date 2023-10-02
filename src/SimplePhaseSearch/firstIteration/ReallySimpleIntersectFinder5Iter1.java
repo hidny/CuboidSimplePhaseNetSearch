@@ -16,56 +16,71 @@ public class ReallySimpleIntersectFinder5Iter1 {
 		//N: 5
 		//reallySimpleSearch(5, 1, 1);
 		
-		//Found 80 simply stacked solutions (ignore symmetry)
-		reallySimpleSearch(3, 2, 1);
+		//Found 34 unique solutions
+		//reallySimpleSearch(3, 2, 1);
 
 		//N: 7
-		//Found 0 simply stacked solutions... uh oh.
+		//Found 6 unique solutions
 		//reallySimpleSearch(3, 3, 1);
 		
 
 		//N: 8
-		//Found 2086 simply stacked solutions ignoring symmetry
+		//Found 197 unique solutions
 		//reallySimpleSearch(5, 2, 1);
 		
 
 		//N: 9
-		//Found 5632 simply stacked solutions (ignore symmetry)
+		//Found 33 unique solutions
 		//reallySimpleSearch(4, 3, 1);
 		
 
 		//N: 10
-		//Found 0 simply stacked solutions... uh oh.
+		//Found 158 unique solutions
 		//reallySimpleSearch(3, 3, 2);
 		
 		
 		//N: 11
-		//reallySimpleSearch(5, 3, 1);
-		
+		//Found  unique solutions
+		reallySimpleSearch(5, 3, 1);
+
+		//Found  unique solutions
 		//reallySimpleSearch(7, 2, 1);
 		
 		
 		//N: 13
+		//Found  unique solutions
 		//reallySimpleSearch(3, 3, 3);
-		
+
+		//Found  unique solutions
 		//reallySimpleSearch(6, 3, 1);
 		
 		//N: 14
+		//Found  unique solutions
 		//reallySimpleSearch(5, 4, 1);
+		
+		//Found  unique solutions
 		//reallySimpleSearch(9, 2, 1);
 		
 		//N:15
+		//Found  unique solutions
 		//reallySimpleSearch(5, 3, 2);
+		//Found  unique solutions
 		//reallySimpleSearch(7, 3, 1);
 		
 		//N: 17
+		//Found  unique solutions
 		//reallySimpleSearch(5, 5, 1);
+		//Found  unique solutions
 		//reallySimpleSearch(8, 3, 1);
+		//Found  unique solutions
 		//reallySimpleSearch(11, 2, 1);
 		
 		//N: 19 (No luck)
+		//Found  unique solutions
 		//reallySimpleSearch(5, 3, 3);
+		//Found  unique solutions
 		//reallySimpleSearch(7, 4, 1);
+		//Found  unique solutions
 		//reallySimpleSearch(9, 3, 1);
 		
 		//N: 20
