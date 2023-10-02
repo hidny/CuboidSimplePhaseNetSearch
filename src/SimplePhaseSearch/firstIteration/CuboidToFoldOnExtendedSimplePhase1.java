@@ -503,7 +503,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		
 		long tmp[] = answerSheetForTopCellAnySideBump[groundedIndexMid][groundRotationRelativeFlatMapMid];
 		
-		boolean ret = this.prevLayerStateIndex[currentLayerIndex - 1] == 0 &&  ((curState[0] & tmp[0]) | (curState[1] & tmp[1])) == 0L;
+		boolean ret = this.prevLayerStateIndex[currentLayerIndex - 1] == 0 &&  ((curState[0] & tmp[0]) | (curState[1] & tmp[1])) != 0L;
 		
 		return ret;
 	}
@@ -512,7 +512,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 	public boolean isTopCellAbleToBeAddedForSideBumpFast(int sideBump) {
 		long tmp[] = answerSheetForTopCell[groundedIndexMid][groundRotationRelativeFlatMapMid][sideBump];
 		
-		return this.prevLayerStateIndex[currentLayerIndex - 1] == 0 &&  ((~curState[0] & tmp[0]) | (~curState[1] & tmp[1]) ) != 0;
+		return this.prevLayerStateIndex[currentLayerIndex - 1] == 0 &&  ((~curState[0] & tmp[0]) | (~curState[1] & tmp[1]) ) != 0L;
 	}
 	
 	// ***********************************************************
