@@ -263,6 +263,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 				prevLayerStateIndex[currentLayerIndex] = 0;
 				
 				for(int curLayerBelow=currentLayerIndex - 1; prevLayerStateIndex[curLayerBelow] != 0; curLayerBelow--) {
+
 					
 					long tmp3[] = answerSheetGoingDown[prevLayerStateIndex[curLayerBelow]][prevLayerStateIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
 					
@@ -278,9 +279,13 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 						tmpStateTestGoingDown[0] = (tmpStateTestGoingDown[0] | tmp3[0]);
 						tmpStateTestGoingDown[1] = (tmpStateTestGoingDown[1] | tmp3[1]);
 						
-						curGroundIndexAbove =            newGroundedIndexBelow[prevLayerStateIndex[curLayerBelow]][prevLayerStateIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+						int newCurGroundIndexAbove =  newGroundedIndexBelow[prevLayerStateIndex[curLayerBelow]][prevLayerStateIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
 						curRotationGroundIndexAbove = newGroundedRotationBelow[prevLayerStateIndex[curLayerBelow]][prevLayerStateIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+						
+						curGroundIndexAbove = newCurGroundIndexAbove;
 						curSideBump = prevSideBumps[curLayerBelow];
+						
+						
 					}
 				}
 				
@@ -363,8 +368,10 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 				curState[1] = (curState[1] | tmp5[1]);
 				
 			
-				curGroundIndexAbove =         newGroundedIndexBelow[prevLayerStateIndex[curLayerBelow]][prevLayerStateIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+				int newCurGroundIndexAbove =  newGroundedIndexBelow[prevLayerStateIndex[curLayerBelow]][prevLayerStateIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
 				curRotationGroundIndexAbove = newGroundedRotationBelow[prevLayerStateIndex[curLayerBelow]][prevLayerStateIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+				
+				curGroundIndexAbove = newCurGroundIndexAbove;
 				curSideBump = prevSideBumps[curLayerBelow];
 			
 			}
@@ -468,8 +475,10 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 				curState[0] = (curState[0] & (~tmp3[0]));
 				curState[1] = (curState[1] & (~tmp3[1]));
 				
-				curGroundIndexAbove =            newGroundedIndexBelow[prevLayerStateIndex[curLayerBelow]][prevLayerStateIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+				int newCurGroundIndexAbove =  newGroundedIndexBelow[prevLayerStateIndex[curLayerBelow]][prevLayerStateIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
 				curRotationGroundIndexAbove = newGroundedRotationBelow[prevLayerStateIndex[curLayerBelow]][prevLayerStateIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+				
+				curGroundIndexAbove = newCurGroundIndexAbove;
 				curSideBump = prevSideBumps[curLayerBelow];
 			
 			}
