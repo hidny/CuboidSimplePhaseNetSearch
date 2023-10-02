@@ -279,8 +279,8 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 						return false;
 
 					} else {
-						tmpStateTestGoingDown[0] = (curState[0] | tmp3[0]);
-						tmpStateTestGoingDown[1] = (curState[1] | tmp3[1]);
+						tmpStateTestGoingDown[0] = (tmpStateTestGoingDown[0] | tmp3[0]);
+						tmpStateTestGoingDown[1] = (tmpStateTestGoingDown[1] | tmp3[1]);
 						
 						curGroundIndexAbove =            newGroundedIndexBelow[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
 						curRotationGroundIndexAbove = newGroundedRotationBelow[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
@@ -288,7 +288,6 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 					}
 				}
 				
-				System.out.println("TRUE");
 				//At this point, top to bottom works:
 				return true;
 				
