@@ -349,7 +349,37 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		this.groundedIndexMid = tmp1;
 		this.groundRotationRelativeFlatMapMid = tmp2;
 		
+		if(layerIndex == 0 
+		&& prevLayerIndex[currentLayerIndex - 1] != 0) {
+	
+			int curSideBump = sideBump;
+			int curGroundIndexAbove = this.groundedIndexMid;
+			int curRotationGroundIndexAbove = this.groundRotationRelativeFlatMapMid;
 		
+			for(int curLayerBelow=currentLayerIndex - 1; prevLayerIndex[curLayerBelow] != 0; curLayerBelow--) {
+				
+				long tmp5[] = answerSheetGoingDown[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+				
+				if((curState[0] & tmp5[0]) == 0L) {
+					System.out.println("Doh 3");
+					System.exit(1);
+				}
+				if((curState[1] & tmp5[1]) == 0L) {
+					System.out.println("Doh 4");
+					System.exit(1);
+				}
+				
+				curState[0] = (curState[0] | tmp5[0]);
+				curState[1] = (curState[1] | tmp5[1]);
+				
+			
+				curGroundIndexAbove =            newGroundedIndexBelow[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+				curRotationGroundIndexAbove = newGroundedRotationBelow[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+				curSideBump = prevSideBumps[curLayerBelow];
+			
+			}
+		}
+				
 		//TODO: Maybe remove the need for this if condition in the future iterations:
 		if(layerIndex == 0) {
 			this.groundedIndexSide = tmp1;
@@ -381,6 +411,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		prevSideBumps[currentLayerIndex] = sideBump;
 		prevLayerIndex[currentLayerIndex] = FIRST_LAYER_INDEX;
 		currentLayerIndex++;
+		
 		
 		this.groundedIndexMid = tmp1;
 		this.groundRotationRelativeFlatMapMid = tmp2;
