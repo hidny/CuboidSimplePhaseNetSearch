@@ -246,8 +246,6 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 			
 			long tmp2[] = answerSheetGoingUpSide[prevLayerIndex[currentLayerIndex - 1]][layerStateToAdd][groundedIndexSide][groundRotationRelativeFlatMapSide][sideBump];
 			
-			//TODO: also check top to bottom Answer sheet if layer index 0!!! (This is currently missing, and will cause it to not work)
-			
 			boolean debug = ( ((curState[0] | tmp[0]) & tmp2[0] ) | ((curState[1] | tmp[1])) & tmp2[1] ) == 0L;
 			
 			//Check validity of grounding from higher layers to lower layers:
@@ -428,12 +426,53 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		this.groundedIndexSide = prevGroundedIndexesSide[currentLayerIndex]; 
 		this.groundRotationRelativeFlatMapSide = prevGroundedRotationsSide[currentLayerIndex];
 		
-		int sideBumpToCancel  = prevSideBumps[currentLayerIndex];
-		
+
 		int layerBelow = prevLayerIndex[currentLayerIndex - 1];
 		int layerIndexUsed = prevLayerIndex[currentLayerIndex];
+		int sideBumpToCancel  = prevSideBumps[currentLayerIndex];
 		
+		//Also cancel top to bottom cells!  (This is currently missing, and will cause it to not work)
+		if(layerIndexUsed == 0 
+				&& layerBelow != 0) {
+			
+			int curSideBump = sideBumpToCancel;
+			int curGroundIndexAbove = newGroundedIndexAboveMid[layerBelow][layerIndexUsed][this.groundedIndexMid][this.groundRotationRelativeFlatMapMid][curSideBump];
+			int curRotationGroundIndexAbove = newGroundedRotationAboveMid[layerBelow][layerIndexUsed][this.groundedIndexMid][this.groundRotationRelativeFlatMapMid][curSideBump];
+
+			for(int curLayerBelow=currentLayerIndex - 1; prevLayerIndex[curLayerBelow] != 0; curLayerBelow--) {
+				
+				long tmp3[] = answerSheetGoingDown[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+				
+				curState[0] = (curState[0] & (~tmp3[0]));
+				curState[1] = (curState[1] & (~tmp3[1]));
+				
+				//Debug that only works if the addNewLayerFast function doesn't take care of the top to bottom case:
+				if((curState[0] & tmp3[0]) != 0L) {
+					System.out.println("DOH");
+					System.exit(1);
+				}
+				if((curState[1] & tmp3[1]) != 0L) {
+					System.out.println("DOH2");
+					System.exit(1);
+				}
+				//End debug that only works if the addNewLayerFast function doesn't take care of the top to bottom case
+				
+				
+				curGroundIndexAbove =            newGroundedIndexBelow[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+				curRotationGroundIndexAbove = newGroundedRotationBelow[prevLayerIndex[curLayerBelow]][prevLayerIndex[curLayerBelow + 1]][curGroundIndexAbove][curRotationGroundIndexAbove][curSideBump];
+				curSideBump = prevSideBumps[curLayerBelow];
+			
+				/*
+				if(curLayerBelow < currentLayerIndex - 2) {
+					System.out.println("DEBUG IN: " + (currentLayerIndex - 1 - curLayerBelow));
+					System.exit(1);
+				}*/
+			}
+			
+			
+		}
 		
+
 		long tmp[] = answerSheetGoingUpMid[layerBelow][layerIndexUsed][groundedIndexMid][groundRotationRelativeFlatMapMid][sideBumpToCancel];
 		curState[0] = curState[0] ^ tmp[0];
 		curState[1] = curState[1] ^ tmp[1];
@@ -443,7 +482,7 @@ public class CuboidToFoldOnExtendedSimplePhase1  implements CuboidToFoldOnInterf
 		curState[1] = curState[1] ^ tmp[1];
 		
 		
-		//TODO also cancel top to bottom cells!  (This is currently missing, and will cause it to not work)
+		
 	}
 	
 	//pre: The only cell left is top cell:
