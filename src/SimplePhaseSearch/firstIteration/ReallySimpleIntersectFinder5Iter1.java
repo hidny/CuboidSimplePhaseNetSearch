@@ -40,15 +40,21 @@ public class ReallySimpleIntersectFinder5Iter1 {
 		
 		
 		//N: 11
-		//Found  unique solutions
-		reallySimpleSearch(5, 3, 1);
+		//Found 1401 unique solutions
+		/* From 11x1x1AND5x3x1Only1BottomNeighbourSolutions.txt:
+		 * Current UTC timestamp in milliseconds: 1675458353391
+Final number of unique solutions: 1401
+Current UTC timestamp in milliseconds: 1675458353391
 
-		//Found  unique solutions
+		 */
+		//reallySimpleSearch(5, 3, 1);
+
+		//Found 54 unique solutions
 		//reallySimpleSearch(7, 2, 1);
 		
 		
 		//N: 13
-		//Found  unique solutions
+		//Found 203 unique solutions
 		//reallySimpleSearch(3, 3, 3);
 
 		//Found  unique solutions
@@ -59,41 +65,53 @@ public class ReallySimpleIntersectFinder5Iter1 {
 		//reallySimpleSearch(5, 4, 1);
 		
 		//Found  unique solutions
-		//reallySimpleSearch(9, 2, 1);
+		reallySimpleSearch(9, 2, 1);
 		
 		//N:15
 		//Found  unique solutions
 		//reallySimpleSearch(5, 3, 2);
+		
 		//Found  unique solutions
 		//reallySimpleSearch(7, 3, 1);
 		
 		//N: 17
 		//Found  unique solutions
 		//reallySimpleSearch(5, 5, 1);
+		
 		//Found  unique solutions
 		//reallySimpleSearch(8, 3, 1);
+		
 		//Found  unique solutions
 		//reallySimpleSearch(11, 2, 1);
 		
 		//N: 19 (No luck)
 		//Found  unique solutions
 		//reallySimpleSearch(5, 3, 3);
+		
 		//Found  unique solutions
 		//reallySimpleSearch(7, 4, 1);
+		
 		//Found  unique solutions
 		//reallySimpleSearch(9, 3, 1);
 		
 		//N: 20
+		//Found  unique solutions
 		//reallySimpleSearch(6, 5, 1);
+
+		//Found  unique solutions
 		//reallySimpleSearch(7, 3, 2);
+		
+		//Found  unique solutions
 		//reallySimpleSearch(13, 2, 1);
 		//
 		
 		// N = 22
 		//{5, 5, 2}, {6, 3, 3)
-		
+
+		//Found  unique solutions
 		//reallySimpleSearch(5, 5, 2);
-		
+
+		//Found  unique solutions
 		//reallySimpleSearch(6, 3, 3);
 		
 		// N = 23 (4 other ones...)
@@ -105,13 +123,21 @@ public class ReallySimpleIntersectFinder5Iter1 {
 		 */
 		
 		 //11,3,1:
+		//5, 4, 3
+
+		//Found  unique solutions
+		//reallySimpleSearch(5, 4, 3);
+
+		//Found  unique solutions
+		//reallySimpleSearch(7, 5, 1);
+
+		//Found  unique solutions
 		//reallySimpleSearch(11, 3, 1);
 		
-		//5, 4, 3
-		
-		//reallySimpleSearch(5, 4, 3);
-		
+		//Found  unique solutions
 		//reallySimpleSearch(15, 2, 1);
+		
+
 		
 		// N = 25
 		/*
@@ -119,14 +145,22 @@ public class ReallySimpleIntersectFinder5Iter1 {
 9 x 3 x 2: 102
 12 x 3 x 1: 102
 		 */
+		//Found  unique solutions
+		//reallySimpleSearch(7, 3, 3);
+		
+		//Found  unique solutions
+		//reallySimpleSearch(9, 3, 2);
+		
+		//Found  unique solutions
+		//reallySimpleSearch(12, 3, 1);
 
 		// N = 26
-		//268 unique solution for 17x2x1
+
+		//Found  unique solutions
 		//reallySimpleSearch(17, 2, 1);
-		
-		// N = 27
-		
-		// N = 29 (5 other ones...)
+
+		//Found  unique solutions
+		//reallySimpleSearch(8, 5, 1);
 		
 		System.out.println("END");
 	}
