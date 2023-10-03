@@ -57,19 +57,19 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//Found 203 unique solutions
 		//reallySimpleSearch(3, 3, 3);
 
-		//Found  unique solutions
+		//Found 77 unique solutions
 		//reallySimpleSearch(6, 3, 1);
 		
 		//N: 14
-		//Found  unique solutions
+		//Found 13264 unique solutions
 		//reallySimpleSearch(5, 4, 1);
 		
-		//Found  unique solutions
-		reallySimpleSearch(9, 2, 1);
+		//Found 355 unique solutions
+		//reallySimpleSearch(9, 2, 1);
 		
 		//N:15
 		//Found  unique solutions
-		//reallySimpleSearch(5, 3, 2);
+		reallySimpleSearch(5, 3, 2);
 		
 		//Found  unique solutions
 		//reallySimpleSearch(7, 3, 1);

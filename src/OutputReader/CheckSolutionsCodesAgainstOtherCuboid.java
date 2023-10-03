@@ -25,7 +25,17 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int otherDimensions2[] = new int[] {6, 1, 1};
 			*/
 			
+			//Check 1x1x14:
+			String file1 = "D:\\test5x4x1_N14.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{9, 2, 1};
+			
+			//Alt: {17, 2, 1}
+			int otherDimensions1[] = new int[] {5, 4, 1};
+			int otherDimensions2[] = new int[] {14, 1, 1};
+			
 			//Getting answer for area of 106:
+			/*
 			String file1 = "D:\\test1.txt";
 			
 			int dimensionsCuboidToCheck[] = new int[]{8, 5, 1};
@@ -33,7 +43,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			//Alt: {17, 2, 1}
 			int otherDimensions1[] = new int[] {17, 2, 1};
 			int otherDimensions2[] = new int[] {26, 1, 1};
-			
+			*/
 			
 			int areaOfCuboidToCheck = Utils.getTotalArea(dimensionsCuboidToCheck);
 			
@@ -123,7 +133,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 							}
 							
 						} else {
-							System.out.println("WARNING: dimensions set for otherDimensions1 don't match the area of the dimensionsCuboidToCheck variable.");
+							System.out.println("WARNING: dimensions set for otherDimensions2 don't match the area of the dimensionsCuboidToCheck variable.");
 						}
 						System.out.println();
 						
