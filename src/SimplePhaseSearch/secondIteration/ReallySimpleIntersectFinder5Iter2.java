@@ -14,7 +14,7 @@ public class ReallySimpleIntersectFinder5Iter2 {
 	public static void main(String[] args) {
 		
 		//N: 5
-		//reallySimpleSearch(5, 1, 1);
+		//reallySimpleSearch(6, 1, 1);
 		
 		//Found 34 unique solutions
 		//reallySimpleSearch(3, 2, 1);
@@ -47,10 +47,10 @@ Final number of unique solutions: 1401
 Current UTC timestamp in milliseconds: 1675458353391
 
 		 */
-		//reallySimpleSearch(5, 3, 1);
+		reallySimpleSearch(5, 3, 1);
 
 		//Found 54 unique solutions
-		reallySimpleSearch(7, 2, 1);
+		//reallySimpleSearch(7, 2, 1);
 		
 		
 		//N: 13
@@ -61,17 +61,17 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(6, 3, 1);
 		
 		//N: 14
-		//Found 13264 unique solutions
+		//Found 13264 unique solution.
 		//reallySimpleSearch(5, 4, 1);
 		
 		//Found 355 unique solutions
 		//reallySimpleSearch(9, 2, 1);
 		
 		//N:15
-		//Found  unique solutions
+		//Found 507 unique solution.
 		//reallySimpleSearch(5, 3, 2);
 		
-		//Found  unique solutions
+		//Found 31 unique solutions
 		//reallySimpleSearch(7, 3, 1);
 		
 		//N: 17
@@ -82,7 +82,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(8, 3, 1);
 		
 		//Found  unique solutions
-		//reallySimpleSearch(11, 2, 1);
+	//	reallySimpleSearch(11, 2, 1);
 		
 		//N: 19 (No luck)
 		//Found  unique solutions
@@ -240,7 +240,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 			
 			cuboidToBuild.addFirstLayer(sideBump);
 
-			ret += findReallySimpleSolutionsRecursion(cuboidToBuild, FIRST_CUR_LAYER_INDEX, numLayers);
+			ret += findReallySimpleSolutionsRecursion(cuboidToBuild, FIRST_CUR_LAYER_INDEX, numLayers, 0);
 
 			cuboidToBuild.leaveOnlyTheBottomCell();
 			
@@ -251,7 +251,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 	}
 	
 	public static int debugIterator = 0;
-	public static long findReallySimpleSolutionsRecursion(CuboidToFoldOnExtendedSimplePhase2 cuboidToBuild, int curLayerIndex, int numLayers) {
+	public static long findReallySimpleSolutionsRecursion(CuboidToFoldOnExtendedSimplePhase2 cuboidToBuild, int curLayerIndex, int numLayers, int prevLayerStateIndex) {
 
 		debugIterator++;
 		//System.out.println("Iteration number: " + debugIterator);
@@ -293,41 +293,23 @@ Current UTC timestamp in milliseconds: 1675458353391
 			return ret;
 		}
 		
-		//TODO: go faster by iterating through the possible moves (i.e. (nextLayerState, sideBump) tuples)
-		
-		//Iterating over all 7 possible layer states:
-		for(int nextLayerState = 0; nextLayerState<CuboidToFoldOnExtendedSimplePhase2.NUM_LAYER_STATES; nextLayerState++) {
-		
-		//TODO: iterating over 'simply-stacked' options only for debug:
-		//for(int nextLayerState = 0; nextLayerState<1; nextLayerState++) {
-		
-			for(int sideBump=0; sideBump < CuboidToFoldOnExtendedSimplePhase2.NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
-				
-				
-				if(cuboidToBuild.isNewLayerValidSimpleFast(nextLayerState, sideBump)) {
-					
-					/*if(nextLayerState != 0) {
-						System.out.println("Test in");
-						cuboidToBuild.printStateFromLongs();
-						cuboidToBuild.printStateStuffDEBUG();
-						
-					}*/
-					cuboidToBuild.addNewLayerFast(nextLayerState, sideBump);
-					
-					ret += findReallySimpleSolutionsRecursion(cuboidToBuild, curLayerIndex + 1, numLayers);
-		
-					cuboidToBuild.removePrevLayerFast();
-					
+		//Go faster by iterating through the possible moves (i.e. (nextLayerState, sideBump) tuples)
+		for(int i=0; i<cuboidToBuild.nextLayerPossibilities[prevLayerStateIndex].length; i++) {
 
-					/*
-					if(nextLayerState != 0) {
-						System.out.println("Test out");
-						cuboidToBuild.printStateFromLongs();
-						cuboidToBuild.printStateStuffDEBUG();
-					}*/
-				}
+			int nextLayerState = cuboidToBuild.nextLayerPossibilities[prevLayerStateIndex][i].i;
+			int sideBump = cuboidToBuild.nextLayerPossibilities[prevLayerStateIndex][i].j;
+			
+			if(cuboidToBuild.isNewLayerValidSimpleFast(nextLayerState, sideBump)) {
 				
+				cuboidToBuild.addNewLayerFast(nextLayerState, sideBump);
+				
+				ret += findReallySimpleSolutionsRecursion(cuboidToBuild, curLayerIndex + 1, numLayers, nextLayerState);
+	
+				cuboidToBuild.removePrevLayerFast();
+				
+
 			}
+			
 		}
 		
 		return ret;

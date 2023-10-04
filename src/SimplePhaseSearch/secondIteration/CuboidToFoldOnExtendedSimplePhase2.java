@@ -1,5 +1,7 @@
 package SimplePhaseSearch.secondIteration;
 
+import java.util.ArrayList;
+
 //TODO: Because this is for the 1st iteration, I skipped basic optimizations like:
 // region split check (This is a big one)
 // isolated cell check
@@ -35,6 +37,8 @@ public class CuboidToFoldOnExtendedSimplePhase2  implements CuboidToFoldOnInterf
 		
 		setupAnswerSheetInBetweenLayers();
 		setupAnswerSheetForTopCell();
+		
+		setupNextLayerPossibilities();
 	}
 	
 	public int getNumCellsToFill() {
@@ -181,6 +185,7 @@ public class CuboidToFoldOnExtendedSimplePhase2  implements CuboidToFoldOnInterf
 	private int newGroundedIndexAboveFirst[][][];
 	private int newGroundedRotationAboveFirst[][][];
 
+	public Coord2D nextLayerPossibilities[][] = null;
 
 	//State variables:
 	private long curState[] = new long[NUM_LONGS_TO_USE];
@@ -563,10 +568,58 @@ public class CuboidToFoldOnExtendedSimplePhase2  implements CuboidToFoldOnInterf
 		
 	}
 	
-	private void getSideBumpAndStateIdArrayToIterateOver() {
+	
+	private void setupNextLayerPossibilities() {
+
+		nextLayerPossibilities = new Coord2D[NUM_LAYER_STATES][];
 		
-		//TODO:
-		//This can be done in the next iteration...
+		for(int m=0; m<NUM_LAYER_STATES; m++) {
+
+			nextLayerPossibilities[m] = this.getSideBumpAndStateIdArrayToIterateOverByPreviousLayer(m);
+			
+		}
+	}
+	
+	private Coord2D[] getSideBumpAndStateIdArrayToIterateOverByPreviousLayer(int prevLayer) {
+		
+		ArrayList<Coord2D> options = new ArrayList<Coord2D>();
+		for(int nextLayerState = 0; nextLayerState<CuboidToFoldOnExtendedSimplePhase2.NUM_LAYER_STATES; nextLayerState++) {
+			
+				for(int sideBump=0; sideBump < CuboidToFoldOnExtendedSimplePhase2.NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
+					
+					boolean foundAWay = false;
+					
+					SEARCH_INDEX_ROTATION_THAT_WORKS:
+					for(int groundIndex = 0; groundIndex<this.getNumCellsToFill(); groundIndex++) {
+						for(int rotationIndex = 0; rotationIndex<NUM_ROTATIONS; rotationIndex++) {
+
+							
+							if(isAnswerSheetImpossible(answerSheetGoingUpMid[prevLayer][nextLayerState][groundIndex][rotationIndex][sideBump])) {
+								continue;
+							} else if(isAnswerSheetImpossible(answerSheetGoingUpSide[prevLayer][nextLayerState][groundIndex][rotationIndex][sideBump])) {
+								continue;
+							} else if(prevLayer != 0 && nextLayerState == 0
+									&& isAnswerSheetImpossible(answerSheetGoingDown[prevLayer][nextLayerState][groundIndex][rotationIndex][sideBump])) {
+								continue;
+							} else {
+								foundAWay = true;
+								break SEARCH_INDEX_ROTATION_THAT_WORKS;
+							}
+						}
+					}
+					
+					if(foundAWay) {
+						options.add(new Coord2D(nextLayerState, sideBump));
+					}
+				}
+		}
+		
+		Coord2D ret[] = new Coord2D[options.size()];
+		
+		for(int i=0; i<ret.length; i++) {
+			ret[i] = options.get(i);
+		}
+		return ret;
 	}
 	
 	
@@ -1251,6 +1304,16 @@ public class CuboidToFoldOnExtendedSimplePhase2  implements CuboidToFoldOnInterf
 		
 		return ret;
 	}
+	
+	private static boolean isAnswerSheetImpossible(long sheet[]) {
+		for(int i=0; i<sheet.length; i++) {
+			if(sheet[i] != -1L) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	private static long[] setAllPossibleForAnswerSheet() {
 		
 		long ret[] = new long[NUM_LONGS_TO_USE];
@@ -1320,6 +1383,17 @@ public class CuboidToFoldOnExtendedSimplePhase2  implements CuboidToFoldOnInterf
 		sanityTestGetCellsToAddGoingUpAndDown();
 		
 		CuboidToFoldOnExtendedSimplePhase2 test1 = new CuboidToFoldOnExtendedSimplePhase2(5, 1, 1);
+		
+		for(int m=0; m<7; m++) {
+			System.out.println("m = " + m);
+			Coord2D array[] = test1.getSideBumpAndStateIdArrayToIterateOverByPreviousLayer(m);
+			
+			for(int i=0; i<array.length; i++) {
+				System.out.println(array[i].i + ", " + array[i].j);
+			}
+			
+			System.out.println();
+		}
 		
 
 		//CuboidToFoldOnExtendedSimplePhase1 test2 = new CuboidToFoldOnExtendedSimplePhase1(3, 2, 1);
