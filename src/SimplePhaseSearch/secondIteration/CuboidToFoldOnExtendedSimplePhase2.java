@@ -2,10 +2,9 @@ package SimplePhaseSearch.secondIteration;
 
 import java.util.ArrayList;
 
-//TODO: Because this is for the 1st iteration, I skipped basic optimizations like:
+//TODO: Because this is for the 2nd iteration, I skipped basic optimizations like:
 // region split check (This is a big one)
-// isolated cell check
-// only valid transition iterator...
+// isolated cell check (If an unused cell can't be touched by any cell, it's no good) (Probably related to region split check)
 // I'll cover that later.
 
 import Coord.Coord2D;
@@ -561,10 +560,7 @@ public class CuboidToFoldOnExtendedSimplePhase2  implements CuboidToFoldOnInterf
 				}
 			}
 		}
-		
-		//TODO: if answerSheetGoingUpMid is impossible for layerStateBelow = 0, and all other params , then the equiv answerSheetGoingUpSide should also be impossible,
-		// and vice-versa
-		//This won't make it much faster, but it just makes sense...
+
 		
 	}
 	

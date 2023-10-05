@@ -14,7 +14,7 @@ public class ReallySimpleIntersectFinder5Iter2 {
 	public static void main(String[] args) {
 		
 		//N: 5
-		//reallySimpleSearch(6, 1, 1);
+		reallySimpleSearch(6, 1, 1);
 		
 		//Found 34 unique solutions
 		//reallySimpleSearch(3, 2, 1);
@@ -47,7 +47,7 @@ Final number of unique solutions: 1401
 Current UTC timestamp in milliseconds: 1675458353391
 
 		 */
-		reallySimpleSearch(5, 3, 1);
+		//reallySimpleSearch(5, 3, 1);
 
 		//Found 54 unique solutions
 		//reallySimpleSearch(7, 2, 1);
@@ -177,8 +177,6 @@ Current UTC timestamp in milliseconds: 1675458353391
 			System.out.println("ERROR: trying to find intersect between Nx1x1 solution and a cuboid solution that doesn't have a surface area that matches any Nx1x1 cuboid.");
 			return;
 		}
-		
-		int NofNx1x1Cuboid = getNumLayers(cuboidToBuild);
 
 		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForNx1x1.getUniqueRotationListsWithCellInfo(cuboidToBuild);
 		
