@@ -568,7 +568,6 @@ public class CuboidToFoldOnExtendedSimplePhase2  implements CuboidToFoldOnInterf
 		
 	}
 	
-	
 	private void setupNextLayerPossibilities() {
 
 		nextLayerPossibilities = new Coord2D[NUM_LAYER_STATES][];
@@ -918,7 +917,8 @@ public class CuboidToFoldOnExtendedSimplePhase2  implements CuboidToFoldOnInterf
 		int arrayToUseBelow[] = null;
 		if(layerStateBelow == 0) {
 
-			//if layer State Below is 0, the ungrounded side doesn't need to connect to the bottom layer:
+			//if layer State Below is 0, the ungrounded side doesn't need to connect to the bottom layer,
+			// so we don't worry about it:
 			return true;
 			
 		} else {
@@ -950,6 +950,49 @@ public class CuboidToFoldOnExtendedSimplePhase2  implements CuboidToFoldOnInterf
 		return false;
 	}
 	
+	//TODO: this is copy/paste code of ungroundedSideWorksWithSideBump. Maybe I could refactor this one day?
+	private boolean groundedSideWorksWithSideBump(int layerStateBelow, int layerStateAbove, int sideBumpUsed) {
+		
+		if(topAndBottomStateDontMix(layerStateBelow, layerStateAbove)) {
+			return false;
+		}
+		
+		int arrayToUseAbove[] = null;
+
+		if(layerStateAbove == 0) {
+			//if layer State Above is 0, the grounded side doesn't need to connect to the top layer,
+			// so we don't worry about it:
+			return true;
+			
+		} else {
+			arrayToUseAbove = CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[layerStateAbove];
+		}
+		
+		int arrayToUseBelow[] = null;
+		if(layerStateBelow == 0) {
+			arrayToUseBelow = LEVEL_OPTIONS[0];
+		} else {
+			arrayToUseBelow = CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[layerStateBelow];
+		}
+		
+		int leftMostRelativeBottomLayer = sideBumpUsed - 6;
+		
+		for(int i=0; i<arrayToUseBelow.length; i++) {
+			int topLayerIndex = i - leftMostRelativeBottomLayer;
+			
+			if(topLayerIndex < 0 || topLayerIndex >= arrayToUseAbove.length) {
+				continue;
+			}
+			
+			if(arrayToUseBelow[i] == 1
+					&& arrayToUseAbove[topLayerIndex] == 1) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	private static int translateStateToLayerIndex(int stateIndex) {
 		
 		if(stateIndex >=4) {
@@ -959,6 +1002,7 @@ public class CuboidToFoldOnExtendedSimplePhase2  implements CuboidToFoldOnInterf
 		}
 	}
 	
+	public static int debug = 0;
 	private void handleLayerStateOverLayerStatePreComputeBottomToTopMid(int layerStateBelow, int layerStateAbove, int indexGroundedMidBelow, int rotationGroundedMidBelow, int sideBump) {
 		
 		if(topAndBottomStateDontMix(layerStateBelow, layerStateAbove)) {
@@ -971,7 +1015,8 @@ public class CuboidToFoldOnExtendedSimplePhase2  implements CuboidToFoldOnInterf
 			newGroundedRotationAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = BAD_ROTATION;						
 			return;
 
-		} else if( ! ungroundedSideWorksWithSideBump(layerStateBelow, layerStateAbove, sideBump)) {
+		} else if( ! ungroundedSideWorksWithSideBump(layerStateBelow, layerStateAbove, sideBump)
+				|| ! groundedSideWorksWithSideBump(layerStateBelow, layerStateAbove, sideBump)) {
 			
 			answerSheetGoingUpMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = setImpossibleForAnswerSheet();
 			newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedMidBelow][rotationGroundedMidBelow][sideBump] = BAD_INDEX;

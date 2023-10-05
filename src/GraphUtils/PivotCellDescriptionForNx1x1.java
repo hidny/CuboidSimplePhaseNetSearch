@@ -65,7 +65,7 @@ public class PivotCellDescriptionForNx1x1 {
 			return true;
 		}
 		
-		//Accept side-by-side relections as the same
+		//Accept side-by-side reflections as the same
 		for(int i=0; i<desc1.lengthsAroundCell.length; i++) {
 			if( i % 2 == 1 && desc1.lengthsAroundCell[i] != desc2.lengthsAroundCell[desc1.lengthsAroundCell.length - i]) {
 				return false;
