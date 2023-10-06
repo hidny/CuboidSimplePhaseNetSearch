@@ -14,7 +14,7 @@ public class ReallySimpleIntersectFinder5Iter2 {
 	public static void main(String[] args) {
 		
 		//N: 5
-		reallySimpleSearch(6, 1, 1);
+		//reallySimpleSearch(6, 1, 1);
 		
 		//Found 34 unique solutions
 		//reallySimpleSearch(3, 2, 1);
@@ -81,15 +81,15 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//Found 54 unique solutions
 		//reallySimpleSearch(8, 3, 1);
 		
-		//Found  unique solutions
+		//Found 89 unique solution.
 		//reallySimpleSearch(11, 2, 1);
 		
-		//N: 19 (No luck)
+		//N: 19
 		//Found  unique solutions
 		//reallySimpleSearch(5, 3, 3);
 		
 		//Found  unique solutions
-		//reallySimpleSearch(7, 4, 1);
+		reallySimpleSearch(7, 4, 1);
 		
 		//Found  unique solutions
 		//reallySimpleSearch(9, 3, 1);

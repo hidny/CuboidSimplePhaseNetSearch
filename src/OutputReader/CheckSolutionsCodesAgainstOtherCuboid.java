@@ -25,17 +25,80 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int otherDimensions2[] = new int[] {6, 1, 1};
 			*/
 			
+			/*
+			//Check 1x1x11:
+			String file1 = "D:\\output5x3x1N=11Oct5test.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{7, 2, 1};
+			
+			//Alt: {1, 1, 11}
+			int otherDimensions1[] = new int[] {5, 3, 1};
+			int otherDimensions2[] = new int[] {11, 1, 1};
+			*/
+
+			/*
+			//Check 1x1x13:
+			String file1 = "D:\\test6x3x1.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{3, 3, 3};
+			
+			//Alt: {1, 1, 13}
+			int otherDimensions1[] = new int[] {6, 3, 1};
+			int otherDimensions2[] = new int[] {13, 1, 1};
+			*/
+			/*
 			//Check 1x1x14:
-			String file1 = "D:\\test5x4x1_N14.txt";
+			String file1 = "D:\\test9x2x1_N14.txt";
 			
-			int dimensionsCuboidToCheck[] = new int[]{9, 2, 1};
+			int dimensionsCuboidToCheck[] = new int[]{5, 4, 1};
 			
-			//Alt: {17, 2, 1}
-			int otherDimensions1[] = new int[] {5, 4, 1};
+			//Alt: {1, 1, 14}
+			int otherDimensions1[] = new int[] {9, 2, 1};
 			int otherDimensions2[] = new int[] {14, 1, 1};
+			*/
+			/*
+			//Check 1x1x15:
+			String file1 = "D:\\test7x3x1_N15.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{5, 3, 2};
+			
+			//Alt: {1, 1, 14}
+			int otherDimensions1[] = new int[] {7, 3, 1};
+			int otherDimensions2[] = new int[] {15, 1, 1};
+			*/
+			/*
+			//Check 1x1x17 v1:
+			String file1 = "D:\\output11x2x1N=17Oct4.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{8, 3, 1};
+			
+			//Alt: {1, 1, 14}
+			int otherDimensions1[] = new int[] {11, 2, 1};
+			int otherDimensions2[] = new int[] {5, 5, 1};
+*/
+			/*
+			//Check 1x1x17 v2:
+			String file1 = "D:\\output11x2x1N=17Oct4.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{5, 5, 1};
+			
+			//Alt: {1, 1, 14}
+			int otherDimensions1[] = new int[] {11, 2, 1};
+			int otherDimensions2[] = new int[] {8, 3, 1};
+			*/
+/*
+			//Check 1x1x17 v3:
+			String file1 = "D:\\output8x3x1N=17Oct4.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{5, 5, 1};
+			
+			//Alt: {1, 1, 14}
+			int otherDimensions1[] = new int[] {11, 2, 1};
+			int otherDimensions2[] = new int[] {8, 3, 1};
+	*/		
 			
 			//Getting answer for area of 106:
-			/*
+			
 			String file1 = "D:\\test1.txt";
 			
 			int dimensionsCuboidToCheck[] = new int[]{8, 5, 1};
@@ -43,7 +106,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			//Alt: {17, 2, 1}
 			int otherDimensions1[] = new int[] {17, 2, 1};
 			int otherDimensions2[] = new int[] {26, 1, 1};
-			*/
+			
 			
 			int areaOfCuboidToCheck = Utils.getTotalArea(dimensionsCuboidToCheck);
 			
