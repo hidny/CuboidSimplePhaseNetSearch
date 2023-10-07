@@ -2,7 +2,6 @@ package SimplePhaseSearch.secondIteration;
 
 import java.util.ArrayList;
 
-import Coord.Coord2D;
 import DupRemover.BasicUniqueCheckImproved;
 import GraphUtils.PivotCellDescription;
 import GraphUtils.PivotCellDescriptionForNx1x1;
@@ -50,7 +49,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(5, 3, 1);
 
 		//Found 54 unique solutions
-		//reallySimpleSearch(7, 2, 1);
+		reallySimpleSearch(7, 2, 1);
 		
 		
 		//N: 13
@@ -89,7 +88,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(5, 3, 3);
 		
 		//Found  unique solutions
-		reallySimpleSearch(7, 4, 1);
+		//eallySimpleSearch(7, 4, 1);
 		
 		//Found  unique solutions
 		//reallySimpleSearch(9, 3, 1);
@@ -166,6 +165,9 @@ Current UTC timestamp in milliseconds: 1675458353391
 	}
 	
 
+	public static int debugBottomIndex = -1;
+	public static int debugAboveBottomIndex = -1;
+
 	public static void reallySimpleSearch(int a, int b, int c) {
 		
 		BasicUniqueCheckImproved.resetUniqList();
@@ -194,6 +196,8 @@ Current UTC timestamp in milliseconds: 1675458353391
 			cuboidToBuild = new CuboidToFoldOnExtendedSimplePhase2(a, b, c);
 			cuboidToBuild.initializeNewBottomIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation);
 			
+			debugBottomIndex = otherCuboidStartIndex;
+			debugAboveBottomIndex = cuboidToBuild.getIndexAboveIndex(otherCuboidStartIndex, otherCuboidStartRotation);
 			ret += findReallySimpleSolutionsRecursion(cuboidToBuild);
 			
 			System.out.println("Done with trying to intersect 2nd cuboid that has a start index of " + otherCuboidStartIndex + " and a rotation index of " + otherCuboidStartRotation +".");
@@ -220,6 +224,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 	public static final int FIRST_LEGAL_SIDE_BUMP_Nx1x1 = 3;
 	public static final int WIDTH_Nx1x1 = 4;
 	public static final int FIRST_CUR_LAYER_INDEX = 1;
+	
 	
 	public static long findReallySimpleSolutionsRecursionFirstLayer(CuboidToFoldOnExtendedSimplePhase2 cuboidToBuild, int numLayers) {
 		long ret = 0;
@@ -273,6 +278,12 @@ Current UTC timestamp in milliseconds: 1675458353391
 							System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 							
 							System.out.println(reference.toString());
+							
+							System.out.println("bottom index: " + debugBottomIndex);
+							System.out.println("above bottom index: " + debugAboveBottomIndex);
+							System.out.println();
+							System.out.println("top index: " + cuboidToBuild.debugGetTopCell());
+							System.out.println();
 							
 							System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
 							

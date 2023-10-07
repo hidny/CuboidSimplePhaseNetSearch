@@ -1283,6 +1283,24 @@ public class CuboidToFoldOnExtendedSimplePhase2  implements CuboidToFoldOnInterf
 		}
 	}
 	
+	
+	public int debugGetTopCell() {
+		boolean array[] = debugGetBoolArrayFromLongs(curState, getNumCellsToFill());
+		
+		int curRet = -1;
+		
+		for(int i=0; i<array.length; i++) {
+			if(! array[i]) {
+				
+				if(curRet != -1) {
+					System.out.println("WARNING: more than 1 top cell?");
+				}
+				curRet = i;
+			}
+		}
+		
+		return curRet;
+	}
 	public void printStateFromLongs() {
 		
 		printStateFromLongs(curState, getNumCellsToFill());
@@ -1392,6 +1410,9 @@ public class CuboidToFoldOnExtendedSimplePhase2  implements CuboidToFoldOnInterf
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
 	}
 
+	public int getIndexAboveIndex(int curIndex, int rotationRelativeFlatMap) {
+		return tryAttachCellInDir(curIndex, rotationRelativeFlatMap, CuboidToFoldOnExtendedSimplePhase2.ABOVE).i;
+	}
 	
 	//Pre: The cuboid is built
 	public Nx1x1CuboidToFold createSolutionToPrint(int topSideBump) {
