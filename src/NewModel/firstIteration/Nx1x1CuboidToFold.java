@@ -383,7 +383,7 @@ public class Nx1x1CuboidToFold {
 			}
 			int revIndex = net.length - 2 - i;
 			if(revIndex >= 0 && revIndex < optionUsedPerLevel.length) {
-				ret += "  (sideBump: " + sideBump[revIndex] + ") (numTouches " + this.numCellsGroundedPrevLevel[revIndex] + ")";
+				ret += "  (sideBump: " + sideBump[revIndex] + ")";
 			}
 			ret += "\n";
 		}

@@ -4,60 +4,74 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import Coord.Coord2D;
-import Model.Utils;
+import Coord.CoordWithRotationAndIndex;
+
+//For now, I'm just copying what's in CuboidToFoldOnExtendedFaster5
+//I'll try to make sense of it and fix it up later.
 
 public class RegionSplitLogic {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	private CoordWithRotationAndIndex[][] neighbours;
 
+	public RegionSplitLogic(CoordWithRotationAndIndex[][] neighbours) {
+		this.neighbours = neighbours;
 	}
-
 	
-	//For now, I'm just copying what's in CuboidToFoldOnExtendedFaster5
-	//I'll try to make sense of it and fix it up later.
-	
-
-	private long preComputedPossiblyEmptyCellsAroundNewLayer[][][][];
+	private long preComputedPossiblyEmptyCellsAroundNewLayer[][][][][][];
 	
 	//TODO: what does this variable even mean?
 	//AHA:
 	// This covers the case where the bottom layer and the top layer split the cuboid into 2 regions
 	// by themselves. I'll have to handle it for the case where the bottom layer state is not 0 (i.e: 4-in-a-row)
-	private boolean preComputedForceRegionSplitIfEmptyAroundNewLayer[][][];
+	//This is highly applicable when the other cuboid is the 1x2xN cuboid
+	private boolean preComputedForceRegionSplitIfEmptyAroundNewLayer[][][][][];
 	
 	
 	
 	//Looking at this, it seems like a badly made breadth first search algo that was supposed to be a proof of concept...
 	//TODO: Maybe this could be much fast if we don't convert to bool array?
+	//TODO: treat this as a proof-of-concept and make a faster version later.
 	
-	// What this function does:
+	// What this function should do:
 	// Does a bit mask around the cells of the new layer and
 	// then use a lookup-table to decide if the region split (use the lookup table associate with the grounded index and rotation for help)
 
+	//What this function actually does:
+	// Does a bit mask around the cells of the new layer and
+	// then uses a loop to decide if the region split
+	
 	private static int debugStop = 0;
 	private static int debugBugFix = 0;
 	private static int debugThru = 0;
 	
-	public boolean unoccupiedRegionSplit(long newLayerDetails[], int sideBump, long curState[], int totalArea) {
+	//TODO: figure out what the params actually should be.
+	public boolean unoccupiedRegionSplit(long newLayerDetails[], int sideBump, long curState[], int totalArea,
+			int prevLayerIndex,
+			int currentLayerIndex,
+			int topLeftGroundedIndex,
+			int topLeftGroundRotationRelativeFlatMap) {
 		
 		curState[0] = curState[0] | newLayerDetails[0];
 		curState[1] = curState[1] | newLayerDetails[1];
 		
 		//TODO: shortcut
 
-		long checkAroundNewLayer[] = preComputedPossiblyEmptyCellsAroundNewLayer[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
+		long checkAroundNewLayer[] = preComputedPossiblyEmptyCellsAroundNewLayer[prevLayerIndex][currentLayerIndex][topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
 		
 		if(((curState[0] & checkAroundNewLayer[0]) | (curState[1] & checkAroundNewLayer[1])) == 0L) {
-			
+			//At this point, the cells around the current layer and new layer are empty.
 			debugStop++;
 			
-			if(preComputedForceRegionSplitIfEmptyAroundNewLayer[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump]) {
+			if(preComputedForceRegionSplitIfEmptyAroundNewLayer[prevLayerIndex][currentLayerIndex][topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump]) {
 				
 				//This is the corner case where the bottom layer and the top layer split the unoccupied cells into two regions:
 				//System.out.println(topLeftGroundRotationRelativeFlatMap);
 				//System.out.println(sideBump);
 				debugBugFix++;
+				
+				//TODO: why didn't I return true here before?
+				// was it so that I could see the debug logs?
+				
 			} else {
 			
 				//At this point, we know that the unoccupied cells didn't split into two regions:
@@ -68,30 +82,19 @@ public class RegionSplitLogic {
 		debugThru++;
 		
 		if(debugThru % 100000000L == 0L) {
+			System.out.println("Region split debug:");
 			System.out.println(debugThru + " goes thru while " + debugStop + " get stopped.");
 			System.out.println((100.0 * debugThru) / (1.0 * (debugThru + debugStop)) + "% thru rate");
 			System.out.println((100.0 * debugBugFix) / (1.0 * (debugThru + debugStop)) + "% debugBugFix rate");
-			System.out.println("Side bumps used:");
-			for(int i=0; i<currentLayerIndex; i++) {
-				System.out.println(prevSideBumps[i]);
-			}
-			System.out.println("END side bumps used");
+			
 		}
 		
-		//TODO: 2nd shortcut:
-		// 1st shortcut didn't make it go faster...
-		//if(couldAlreadyDetermineSplit(cellsAroundNewLayer[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump][hashMap.get(hashkey)])) {
-			
-		//}
-		
-		//END TODO shortcut
 		
 		boolean tmpArray[] = new boolean[totalArea];
 		
 		for(int i=0; i<tmpArray.length; i++) {
-			tmpArray[i] = isCellIoccupied(i);
+			tmpArray[i] = isCellIoccupied(curState, i);
 		}
-		
 		
 		
 		curState[0] = curState[0] ^ newLayerDetails[0];
@@ -143,74 +146,121 @@ public class RegionSplitLogic {
 	
 	//Pre-compute:
 	
+	//TODO: put some of these in a constants file:
 	public static final int NUM_SIDE_BUMP_OPTIONS = 15;
 	public static final int NUM_NEIGHBOURS_PER_CELL = 4;
 	
 	public static final int NUM_ROTATIONS = 4;
+	public static final int NUM_NEIGHBOURS = 4;
+	public static final int NUM_CELLS_PER_LAYER = 4;
 	
-	private void setupAnswerSheetInBetweenLayers(int totalArea) {
-			
-			
-			preComputedPossiblyEmptyCellsAroundNewLayer = new long[totalArea][NUM_NEIGHBOURS_PER_CELL][NUM_SIDE_BUMP_OPTIONS][NUM_LONGS_TO_USE];
-			preComputedForceRegionSplitIfEmptyAroundNewLayer = new boolean[totalArea][NUM_NEIGHBOURS_PER_CELL][NUM_SIDE_BUMP_OPTIONS];
+	public static final int NUM_LONGS_TO_USE = 2;
+	private static final int NUM_BITS_IN_LONG = 64;
+	
+	public static final int ABOVE = 0;
+	public static final int RIGHT = 1;
+	public static final int BELOW = 2;
+	public static final int LEFT = 3;
+	
+	public static final int NUM_LAYER_STATES = 7;
+	//END Constants TODO
+	
+	
+	//TODO: this is only for going up...
 
-			for(int index=0; index<totalArea; index++) {
-				for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
+	private void setupAnswerSheetInBetweenLayers(
+			int totalArea,
+			int newGroundedIndex[][][][][],
+			int newGroundedRotation[][][][][]) {
+			
+			
+			preComputedPossiblyEmptyCellsAroundNewLayer = new long[NUM_LAYER_STATES][NUM_LAYER_STATES][totalArea][NUM_NEIGHBOURS_PER_CELL][NUM_SIDE_BUMP_OPTIONS][NUM_LONGS_TO_USE];
+			preComputedForceRegionSplitIfEmptyAroundNewLayer = new boolean[NUM_LAYER_STATES][NUM_LAYER_STATES][totalArea][NUM_NEIGHBOURS_PER_CELL][NUM_SIDE_BUMP_OPTIONS];
+			for(int layerStateBelow=0; layerStateBelow<NUM_LAYER_STATES; layerStateBelow++) {
+				for(int layerStateAbove=0; layerStateAbove<NUM_LAYER_STATES; layerStateAbove++) {
 					
-					for(int sideBump=0; sideBump<NUM_SIDE_BUMP_OPTIONS; sideBump++) {
-						
-						//TODO: setup tmpArray with layer above (and layer below?)
-						
-						//Start with the case where layer above is state 0...
-						
-						//TODO: setup the tmpArray
-						
-						preComputedPossiblyEmptyCellsAroundNewLayer[index][rotation][sideBump]  = getPossiblyEmptyCellsAroundNewLayer(tmpArray, index, rotation);
-						preComputedForceRegionSplitIfEmptyAroundNewLayer[index][rotation][sideBump]  = checkPreComputedForceRegionSplitIfEmptyAroundNewLayer(tmpArray, index, rotation);
-						
-						
+					for(int index=0; index<totalArea; index++) {
+						for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
+							
+							for(int sideBump=0; sideBump<NUM_SIDE_BUMP_OPTIONS; sideBump++) {
+								
+								//TODO: setup tmpArray with layer above (and layer below?)
+								
+								//Start with the case where layer state above and layer state below is state 0...
+								if(layerStateBelow != 0 || layerStateAbove != 0) {
+									preComputedPossiblyEmptyCellsAroundNewLayer[index][rotation][sideBump]  = null;
+									preComputedForceRegionSplitIfEmptyAroundNewLayer[index][rotation][sideBump]  = null;
+									continue;
+								}
+								
+								//TODO: copy/paste code (1)
+								//preComputedForceRegionSplitIfEmptyAroundNewLayer
+								boolean tmpArray[] = new boolean[totalArea];
+								
+								//Get the bool array with the new layer indexes true:
+								for(int i=0; i<tmpArray.length; i++) {
+									tmpArray[i] = false;
+								}
+								
+								//Set the prev layer's indexes to true:
+								Coord2D cur = new Coord2D(index, rotation);
+								
+								//TODO: if prev layer is a different 
+								for(int i=0; i<NUM_CELLS_PER_LAYER; i++) {
+									tmpArray[cur.i] = true;
+									cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);	
+								}
+								
+								int curGroundIndexAbove = newGroundedIndex[layerStateBelow][layerStateAbove][index][rotation][sideBump];
+								int curRotationGroundIndexAbove = newGroundedRotation[layerStateBelow][layerStateAbove][index][rotation][sideBump];
+
+								cur = new Coord2D(curGroundIndexAbove, curRotationGroundIndexAbove);
+								
+								for(int i=0; i<NUM_CELLS_PER_LAYER; i++) {
+									if(tmpArray[cur.i]) {
+										System.out.println("ERROR: something went wrong in RegionSplitLogic -> setupAnswerSheetInBetweenLayers");
+										System.exit(1);
+									}
+									tmpArray[cur.i] = true;
+									cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);	
+								}
+								
+								
+								preComputedPossiblyEmptyCellsAroundNewLayer[layerStateBelow][layerStateAbove][index][rotation][sideBump]  = getPossiblyEmptyCellsAroundNewLayer(layerStateBelow, layerStateAbove, tmpArray);
+								preComputedForceRegionSplitIfEmptyAroundNewLayer[layerStateBelow][layerStateAbove][index][rotation][sideBump]  = checkPreComputedForceRegionSplitIfEmptyAroundNewLayer(layerStateBelow, layerStateAbove, tmpArray, totalArea);
+								
+							}
+						}
 					}
 				}
 			}
 	
 	}
 
-
-	boolean checkPreComputedForceRegionSplitIfEmptyAroundNewLayer(boolean newLayerArray[], int prevGroundIndex, int prevGroundRotation) {
+	
+	
+	//TODO: don't assume layer state index is 0 in the future:
+	//pre: This assumes that the layer state of the new layer is 0.
+	//pre: This also assumes that the layer state of the previous layer is 0.
+	boolean checkPreComputedForceRegionSplitIfEmptyAroundNewLayer(int belowLayerStateIndex, int aboveLayerStateIndex, boolean aboveAndBelowLayerState[], int totalArea) {
 		
-		//TODO: copy/paste code (1)
-		//preComputedForceRegionSplitIfEmptyAroundNewLayer
-		boolean tmpArray[] = new boolean[newLayerArray.length];
-		
-		//Get the bool array with the new layer indexes true:
-		for(int i=0; i<tmpArray.length; i++) {
-			tmpArray[i] = newLayerArray[i];
+		if(belowLayerStateIndex != 0 || aboveLayerStateIndex != 0) {
+			System.out.println("ERROR: this function currently assumes that both the belowLayerIndex and aboveLayerIndex is 0 (checkPreComputedForceRegionSplitIfEmptyAroundNewLayer)");
+			System.exit(1);
 		}
 		
 		
-		//Set the prev layer's indexes to true:
-		Coord2D cur = new Coord2D(prevGroundIndex, prevGroundRotation);
+		Queue<Integer> visited = new LinkedList<Integer>();
 		
-		for(int i=0; i<NUM_ROTATIONS; i++) {
-			tmpArray[cur.i] = true;
-			cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);	
-		}
-		//END TODO: copy/paste code
+		boolean explored[] = new boolean[totalArea];
 		
-		
-		//TODO: copy/paste code (2)
 		int firstUnoccupiedIndex = -1;
-		for(int i=0; i<tmpArray.length; i++) {
-			if(tmpArray[i] == false) {
+		for(int i=0; i<aboveAndBelowLayerState.length; i++) {
+			if(aboveAndBelowLayerState[i] == false) {
 				firstUnoccupiedIndex = i;
 				break;
 			}
 		}
-	
-		Queue<Integer> visited = new LinkedList<Integer>();
-		
-		boolean explored[] = new boolean[Utils.getTotalArea(this.dimensions)];
-		
 		explored[firstUnoccupiedIndex] = true;
 		visited.add(firstUnoccupiedIndex);
 		
@@ -224,7 +274,7 @@ public class RegionSplitLogic {
 				
 				int neighbourIndex = this.neighbours[v.intValue()][i].getIndex();
 				
-				if( ! tmpArray[neighbourIndex] && ! explored[neighbourIndex]) {
+				if( ! aboveAndBelowLayerState[neighbourIndex] && ! explored[neighbourIndex]) {
 					explored[neighbourIndex] = true;
 					visited.add(neighbourIndex);
 				}
@@ -233,16 +283,109 @@ public class RegionSplitLogic {
 			
 		}
 	
-		for(int i=0; i<tmpArray.length; i++) {
-			if( ! tmpArray[i] && ! explored[i]) {
+		for(int i=0; i<aboveAndBelowLayerState.length; i++) {
+			if( ! aboveAndBelowLayerState[i] && ! explored[i]) {
 				
 				return true;
 			}
 		}
 	
 		return false;
-		//END TODO copy/paste code
 		
+	}
+	
+	private long[] getPossiblyEmptyCellsAroundNewLayer(int belowLayerStateIndex, int aboveLayerStateIndex, boolean aboveAndBelowLayerState[]) {
+		if(belowLayerStateIndex != 0 || aboveLayerStateIndex != 0) {
+			System.out.println("ERROR: this function currently assumes that both the belowLayerIndex and aboveLayerIndex is 0 (getPossiblyEmptyCellsAroundNewLayer)");
+			System.exit(1);
+		}
+		// Set output to the cells around the new layer that aren't the new layer and aren't the old layer:
+		// This assumes both layers are state 0. (4 cells in a row)
+		boolean output[] = new boolean[aboveAndBelowLayerState.length];
+
+		for(int i=0; i<aboveAndBelowLayerState.length; i++) {
+			output[i] = false;
+		}
+		
+		for(int i=0; i<aboveAndBelowLayerState.length; i++) {
+			if(aboveAndBelowLayerState[i]) {
+				
+				for(int dir=0; dir<NUM_ROTATIONS; dir++) {
+					
+					Coord2D cur = tryAttachCellInDir(i, 0, dir);
+					
+					if(aboveAndBelowLayerState[cur.i] == false) {
+						output[cur.i] = true;
+					}
+					
+					//cells touching corner to corner are also around new layer:
+					//This works in my head, but feels like a hack...
+					for(int dir2=0; dir2<NUM_ROTATIONS; dir2++) {
+						
+						if(dir2 % 2 == dir % 2) {
+							continue;
+						}
+						Coord2D cur2 = tryAttachCellInDir(cur.i, cur.j, dir2);
+						
+						if(aboveAndBelowLayerState[cur2.i] == false) {
+							output[cur2.i] = true;
+						}
+						
+						
+					}
+					
+				}
+			}
+		}
+		
+		return convertBoolArrayToLongs(output);
+	}
+
+	
+	//TODO: Below is copy/paste code
+	// Maybe put this in a utility function or something?
+	
+	private Coord2D tryAttachCellInDir(int curIndex, int rotationRelativeFlatMap, int dir) {
+		CoordWithRotationAndIndex neighbours[] = this.neighbours[curIndex];
+		
+		int neighbourIndex = (rotationRelativeFlatMap + dir) % NUM_NEIGHBOURS;
+		curIndex = neighbours[neighbourIndex].getIndex();
+		rotationRelativeFlatMap = (rotationRelativeFlatMap + neighbours[neighbourIndex].getRot() + NUM_NEIGHBOURS) % NUM_NEIGHBOURS;
+		
+		return new Coord2D(curIndex, rotationRelativeFlatMap);
+	}
+
+
+	//TODO: this function is really bad and against the spirit of trying to be optimal:
+	// At least get the answer thought bit-wise anding, but also don't use this function in future:
+	public boolean isCellIoccupied(long curState[], int i) {
+		int indexArray = i / NUM_BITS_IN_LONG;
+		int bitShift = (NUM_BITS_IN_LONG - 1) - i - indexArray * NUM_BITS_IN_LONG;
+		
+		return ((1L << bitShift) & curState[indexArray]) != 0L;
+	}
+	
+	private long[] convertBoolArrayToLongs(boolean tmpArray[]) {
+		
+		//1st entry:
+		long ret[] = new long[NUM_LONGS_TO_USE];
+		
+		for(int i=0; i<ret.length; i++) {
+			ret[i] = 0;
+		}
+		
+		for(int i=0; i<tmpArray.length; i++) {
+			
+			if(tmpArray[i]) {
+				int indexArray = i / NUM_BITS_IN_LONG;
+				int bitShift = (NUM_BITS_IN_LONG - 1) - i - indexArray * NUM_BITS_IN_LONG;
+				
+				ret[indexArray] += 1L << bitShift;
+			}
+		}
+		
+		
+		return ret;
 	}
 
 }
