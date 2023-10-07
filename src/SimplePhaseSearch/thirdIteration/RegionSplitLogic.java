@@ -19,8 +19,6 @@ public class RegionSplitLogic {
 	
 	private long preComputedPossiblyEmptyCellsAroundNewLayer[][][][][][];
 	
-	//TODO: what does this variable even mean?
-	//AHA:
 	// This covers the case where the bottom layer and the top layer split the cuboid into 2 regions
 	// by themselves. I'll have to handle it for the case where the bottom layer state is not 0 (i.e: 4-in-a-row)
 	//This is highly applicable when the other cuboid is the 1x2xN cuboid
@@ -44,7 +42,7 @@ public class RegionSplitLogic {
 	private static int debugBugFix = 0;
 	private static int debugThru = 0;
 	
-	//TODO: figure out what the params actually should be.
+	//TODO: figure out what the params should be and try to use this
 	public boolean unoccupiedRegionSplit(long newLayerDetails[], int sideBump, long curState[], int totalArea,
 			int prevLayerIndex,
 			int currentLayerIndex,
@@ -54,8 +52,6 @@ public class RegionSplitLogic {
 		curState[0] = curState[0] | newLayerDetails[0];
 		curState[1] = curState[1] | newLayerDetails[1];
 		
-		//TODO: shortcut
-
 		long checkAroundNewLayer[] = preComputedPossiblyEmptyCellsAroundNewLayer[prevLayerIndex][currentLayerIndex][topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
 		
 		if(((curState[0] & checkAroundNewLayer[0]) | (curState[1] & checkAroundNewLayer[1])) == 0L) {
@@ -70,7 +66,8 @@ public class RegionSplitLogic {
 				debugBugFix++;
 				
 				//TODO: why didn't I return true here before?
-				// was it so that I could see the debug logs?
+				// Was it so that I could see the debug logs?
+				// Was it because I'm a coward?
 				
 			} else {
 			
@@ -90,6 +87,8 @@ public class RegionSplitLogic {
 		}
 		
 		
+		//TODO: please avoid doing a breadth-first search in the future.
+		// This is the slow and reliable way that I should test new functions against:
 		boolean tmpArray[] = new boolean[totalArea];
 		
 		for(int i=0; i<tmpArray.length; i++) {
@@ -163,10 +162,11 @@ public class RegionSplitLogic {
 	public static final int LEFT = 3;
 	
 	public static final int NUM_LAYER_STATES = 7;
-	//END Constants TODO
+	//END Constants
 	
 	
-	//TODO: this is only for going up...
+	//TODO: this is only for going up through the middle...
+	// Try to also cover the case of going up on the side and going from top to bottom...
 
 	private void setupAnswerSheetInBetweenLayers(
 			int totalArea,
@@ -184,8 +184,6 @@ public class RegionSplitLogic {
 							
 							for(int sideBump=0; sideBump<NUM_SIDE_BUMP_OPTIONS; sideBump++) {
 								
-								//TODO: setup tmpArray with layer above (and layer below?)
-								
 								//Start with the case where layer state above and layer state below is state 0...
 								if(layerStateBelow != 0 || layerStateAbove != 0) {
 									preComputedPossiblyEmptyCellsAroundNewLayer[index][rotation][sideBump]  = null;
@@ -193,7 +191,6 @@ public class RegionSplitLogic {
 									continue;
 								}
 								
-								//TODO: copy/paste code (1)
 								//preComputedForceRegionSplitIfEmptyAroundNewLayer
 								boolean tmpArray[] = new boolean[totalArea];
 								
@@ -202,10 +199,8 @@ public class RegionSplitLogic {
 									tmpArray[i] = false;
 								}
 								
-								//Set the prev layer's indexes to true:
 								Coord2D cur = new Coord2D(index, rotation);
-								
-								//TODO: if prev layer is a different 
+								//This loop assumes it's layer state 0:
 								for(int i=0; i<NUM_CELLS_PER_LAYER; i++) {
 									tmpArray[cur.i] = true;
 									cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);	
@@ -215,7 +210,8 @@ public class RegionSplitLogic {
 								int curRotationGroundIndexAbove = newGroundedRotation[layerStateBelow][layerStateAbove][index][rotation][sideBump];
 
 								cur = new Coord2D(curGroundIndexAbove, curRotationGroundIndexAbove);
-								
+
+								//This loop assumes it's layer state 0:
 								for(int i=0; i<NUM_CELLS_PER_LAYER; i++) {
 									if(tmpArray[cur.i]) {
 										System.out.println("ERROR: something went wrong in RegionSplitLogic -> setupAnswerSheetInBetweenLayers");
@@ -239,7 +235,7 @@ public class RegionSplitLogic {
 
 	
 	
-	//TODO: don't assume layer state index is 0 in the future:
+	//TODO: don't assume layer state index above and below is 0 in the future:
 	//pre: This assumes that the layer state of the new layer is 0.
 	//pre: This also assumes that the layer state of the previous layer is 0.
 	boolean checkPreComputedForceRegionSplitIfEmptyAroundNewLayer(int belowLayerStateIndex, int aboveLayerStateIndex, boolean aboveAndBelowLayerState[], int totalArea) {
@@ -356,8 +352,6 @@ public class RegionSplitLogic {
 	}
 
 
-	//TODO: this function is really bad and against the spirit of trying to be optimal:
-	// At least get the answer thought bit-wise anding, but also don't use this function in future:
 	public boolean isCellIoccupied(long curState[], int i) {
 		int indexArray = i / NUM_BITS_IN_LONG;
 		int bitShift = (NUM_BITS_IN_LONG - 1) - i - indexArray * NUM_BITS_IN_LONG;
