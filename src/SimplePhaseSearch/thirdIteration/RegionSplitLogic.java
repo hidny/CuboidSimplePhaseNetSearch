@@ -17,6 +17,8 @@ public class RegionSplitLogic {
 		this.neighbours = neighbours;
 	}
 	
+	//TODO: this variable is barely used
+	// Use it as a tool to replace the slow breadth-first search in unoccupiedRegionSplit function. 
 	private long preComputedPossiblyEmptyCellsAroundNewLayer[][][][][][];
 	
 	// This covers the case where the bottom layer and the top layer split the cuboid into 2 regions
