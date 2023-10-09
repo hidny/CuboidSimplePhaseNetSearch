@@ -1,4 +1,4 @@
-package SimplePhaseSearch.secondIteration;
+package SimplePhaseSearch.thirdIteration;
 
 import java.util.ArrayList;
 
@@ -8,7 +8,7 @@ import GraphUtils.PivotCellDescriptionForNx1x1;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
 
-public class ReallySimpleIntersectFinder5Iter2 {
+public class ReallySimpleIntersectFinder5Iter3 {
 
 	public static void main(String[] args) {
 		
@@ -173,7 +173,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		BasicUniqueCheckImproved.resetUniqList();
 		
 		
-		CuboidToFoldOnExtendedSimplePhase2 cuboidToBuild = new CuboidToFoldOnExtendedSimplePhase2(a, b, c);
+		CuboidToFoldOnExtendedSimplePhase3 cuboidToBuild = new CuboidToFoldOnExtendedSimplePhase3(a, b, c);
 		
 		if(cuboidToBuild.getNumCellsToFill() % 4 != 2) {
 			System.out.println("ERROR: trying to find intersect between Nx1x1 solution and a cuboid solution that doesn't have a surface area that matches any Nx1x1 cuboid.");
@@ -193,7 +193,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
-			cuboidToBuild = new CuboidToFoldOnExtendedSimplePhase2(a, b, c);
+			cuboidToBuild = new CuboidToFoldOnExtendedSimplePhase3(a, b, c);
 			cuboidToBuild.initializeNewBottomIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation);
 			
 			debugBottomIndex = otherCuboidStartIndex;
@@ -212,12 +212,12 @@ Current UTC timestamp in milliseconds: 1675458353391
 
 	}
 	
-	public static int getNumLayers(CuboidToFoldOnExtendedSimplePhase2 cuboidToBuild) {
+	public static int getNumLayers(CuboidToFoldOnExtendedSimplePhase3 cuboidToBuild) {
 		
 		return (cuboidToBuild.getNumCellsToFill() - 2) / 4;
 	}
 	
-	public static long findReallySimpleSolutionsRecursion(CuboidToFoldOnExtendedSimplePhase2 cuboidToBuild) {
+	public static long findReallySimpleSolutionsRecursion(CuboidToFoldOnExtendedSimplePhase3 cuboidToBuild) {
 		return findReallySimpleSolutionsRecursionFirstLayer(cuboidToBuild, getNumLayers(cuboidToBuild));
 	}
 
@@ -226,7 +226,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 	public static final int FIRST_CUR_LAYER_INDEX = 1;
 	
 	
-	public static long findReallySimpleSolutionsRecursionFirstLayer(CuboidToFoldOnExtendedSimplePhase2 cuboidToBuild, int numLayers) {
+	public static long findReallySimpleSolutionsRecursionFirstLayer(CuboidToFoldOnExtendedSimplePhase3 cuboidToBuild, int numLayers) {
 		long ret = 0;
 		
 		if(numLayers == 0) {
@@ -236,7 +236,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		for(int sideBump=FIRST_LEGAL_SIDE_BUMP_Nx1x1; sideBump <FIRST_LEGAL_SIDE_BUMP_Nx1x1 + WIDTH_Nx1x1; sideBump++) {
 
 			//TODO: hide (sideBump - 6) inside a function...
-			if(CuboidToFoldOnExtendedSimplePhase2.LEVEL_OPTIONS[0][0 - (sideBump - 6)] != 1) {
+			if(CuboidToFoldOnExtendedSimplePhase3.LEVEL_OPTIONS[0][0 - (sideBump - 6)] != 1) {
 				System.out.println("OOPS in findReallySimpleSolutionsRecursionFirstLayer!");
 				System.exit(1);
 			}
@@ -254,7 +254,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 	}
 	
 	public static int debugIterator = 0;
-	public static long findReallySimpleSolutionsRecursion(CuboidToFoldOnExtendedSimplePhase2 cuboidToBuild, int curLayerIndex, int numLayers, int prevLayerStateIndex) {
+	public static long findReallySimpleSolutionsRecursion(CuboidToFoldOnExtendedSimplePhase3 cuboidToBuild, int curLayerIndex, int numLayers, int prevLayerStateIndex) {
 
 		debugIterator++;
 		//System.out.println("Iteration number: " + debugIterator);

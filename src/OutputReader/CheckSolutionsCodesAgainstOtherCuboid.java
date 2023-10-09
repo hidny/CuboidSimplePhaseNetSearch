@@ -96,6 +96,28 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int otherDimensions1[] = new int[] {11, 2, 1};
 			int otherDimensions2[] = new int[] {8, 3, 1};
 	*/		
+			/*//Check 1x1x19 v1:
+			String file1 = "D:\\output5x3x3N=19Oct4test.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{7, 4, 1};
+			
+			int otherDimensions1[] = new int[] {5, 3, 3};
+			int otherDimensions2[] = new int[] {19, 1, 1};
+	*/
+			
+			/*
+			//Check 1x1x19 v2:
+			String file1 = "D:\\output5x3x3N=19Oct4test.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{9, 3, 1};
+			
+			int otherDimensions1[] = new int[] {5, 3, 3};
+			int otherDimensions2[] = new int[] {19, 1, 1};
+	*/
+			//Check 1x1x19 v3:
+			
+			//TODO
+			
 			
 			//Getting answer for area of 106:
 			
@@ -106,6 +128,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			//Alt: {17, 2, 1}
 			int otherDimensions1[] = new int[] {17, 2, 1};
 			int otherDimensions2[] = new int[] {26, 1, 1};
+			
 			
 			
 			int areaOfCuboidToCheck = Utils.getTotalArea(dimensionsCuboidToCheck);

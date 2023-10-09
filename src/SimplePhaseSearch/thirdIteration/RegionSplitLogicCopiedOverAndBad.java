@@ -9,11 +9,11 @@ import Coord.CoordWithRotationAndIndex;
 //For now, I'm just copying what's in CuboidToFoldOnExtendedFaster5
 //I'll try to make sense of it and fix it up later.
 
-public class RegionSplitLogic {
+public class RegionSplitLogicCopiedOverAndBad {
 
 	private CoordWithRotationAndIndex[][] neighbours;
 
-	public RegionSplitLogic(CoordWithRotationAndIndex[][] neighbours) {
+	public RegionSplitLogicCopiedOverAndBad(CoordWithRotationAndIndex[][] neighbours) {
 		this.neighbours = neighbours;
 	}
 	
@@ -45,7 +45,7 @@ public class RegionSplitLogic {
 	private static int debugThru = 0;
 	
 	//TODO: figure out what the params should be and try to use this
-	public boolean unoccupiedRegionSplit(long newLayerDetails[], int sideBump, long curState[], int totalArea,
+	public boolean unoccupiedRegionSplitSkip(long newLayerDetails[], int sideBump, long curState[], int totalArea,
 			int prevLayerIndex,
 			int currentLayerIndex,
 			int topLeftGroundedIndex,
@@ -170,7 +170,7 @@ public class RegionSplitLogic {
 	//TODO: this is only for going up through the middle...
 	// Try to also cover the case of going up on the side and going from top to bottom...
 
-	private void setupAnswerSheetInBetweenLayers(
+	public void setupAnswerSheetInBetweenLayers(
 			int totalArea,
 			int newGroundedIndex[][][][][],
 			int newGroundedRotation[][][][][]) {
@@ -240,7 +240,7 @@ public class RegionSplitLogic {
 	//TODO: don't assume layer state index above and below is 0 in the future:
 	//pre: This assumes that the layer state of the new layer is 0.
 	//pre: This also assumes that the layer state of the previous layer is 0.
-	boolean checkPreComputedForceRegionSplitIfEmptyAroundNewLayer(int belowLayerStateIndex, int aboveLayerStateIndex, boolean aboveAndBelowLayerState[], int totalArea) {
+	private boolean checkPreComputedForceRegionSplitIfEmptyAroundNewLayer(int belowLayerStateIndex, int aboveLayerStateIndex, boolean aboveAndBelowLayerState[], int totalArea) {
 		
 		if(belowLayerStateIndex != 0 || aboveLayerStateIndex != 0) {
 			System.out.println("ERROR: this function currently assumes that both the belowLayerIndex and aboveLayerIndex is 0 (checkPreComputedForceRegionSplitIfEmptyAroundNewLayer)");
