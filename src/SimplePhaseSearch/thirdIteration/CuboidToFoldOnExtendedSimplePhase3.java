@@ -206,7 +206,7 @@ public class CuboidToFoldOnExtendedSimplePhase3  implements CuboidToFoldOnInterf
 	
 	private int currentLayerIndex;
 	
-	private RegionSplitLogicSimple regionSlitLogicSimple;
+	private RegionSplitLogicSimple2 regionSplitLogicSimple2;
 	
 	public void printStateStuffDEBUG() {
 		System.out.println("DEBUG:");
@@ -296,7 +296,15 @@ public class CuboidToFoldOnExtendedSimplePhase3  implements CuboidToFoldOnInterf
 			}
 			// At this point, it's valid going from top to bottom:
 			
-			return validForMidAndSidePart && !(layerStateToAdd == 0 && regionSlitLogicSimple.unoccupiedRegionSplitSkip(curState));
+			return validForMidAndSidePart && !(layerStateToAdd == 0 && 
+					regionSplitLogicSimple2.unoccupiedRegionSplitSkipGoingUpMid(
+							curState,
+							prevLayerStateIndex[currentLayerIndex - 1],
+							layerStateToAdd,
+							this.groundedIndexMid,
+							this.groundRotationRelativeFlatMapMid,
+							sideBump)
+					);
 			
 			
 		} else {
@@ -548,8 +556,13 @@ public class CuboidToFoldOnExtendedSimplePhase3  implements CuboidToFoldOnInterf
 			}
 		}
 
-		regionSlitLogicSimple = new RegionSplitLogicSimple(this.neighbours);
+		regionSplitLogicSimple2 = new RegionSplitLogicSimple2(this.neighbours);
 		
+		regionSplitLogicSimple2.setupAnswerSheetInBetweenLayersMid(
+				Utils.getTotalArea(this.dimensions),
+				newGroundedIndexAboveMid,
+				newGroundedRotationAboveMid
+			);
 		//TODO: when the region split logic isn't simple, precompute as much as possible.
 		
 		
@@ -1569,7 +1582,6 @@ public class CuboidToFoldOnExtendedSimplePhase3  implements CuboidToFoldOnInterf
 					System.out.println("ERROR: unexpected value for CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE. (" + i + "," + j + ")");
 					System.exit(1);
 				}
-
 
 				if(goingUpSide[i][j] != CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[i][j]) {
 					System.out.println("ERROR: unexpected value for CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE. (" + i + "," + j + ")");
