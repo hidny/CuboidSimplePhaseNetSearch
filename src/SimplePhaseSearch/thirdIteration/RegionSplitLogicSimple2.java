@@ -25,7 +25,7 @@ public class RegionSplitLogicSimple2 {
 			int rotationGroundedBelowLayer,
 			int sideBump) {
 		
-		
+		//TODO: uncomment (commented it for the nx2x1 case
 		if((curState[0] & preComputedCellsAroundNewLayerMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayer][rotationGroundedBelowLayer][sideBump][0]) == 0L
 		 &&(curState[1] & preComputedCellsAroundNewLayerMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayer][rotationGroundedBelowLayer][sideBump][1]) == 0L
 				) {
