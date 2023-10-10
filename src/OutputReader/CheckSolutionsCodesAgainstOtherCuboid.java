@@ -95,15 +95,17 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			//Alt: {1, 1, 14}
 			int otherDimensions1[] = new int[] {11, 2, 1};
 			int otherDimensions2[] = new int[] {8, 3, 1};
-	*/		
-			/*//Check 1x1x19 v1:
+		
+			*/
+			/*
+			//Check 1x1x19 v1:
 			String file1 = "D:\\output5x3x3N=19Oct4test.txt";
 			
 			int dimensionsCuboidToCheck[] = new int[]{7, 4, 1};
 			
 			int otherDimensions1[] = new int[] {5, 3, 3};
 			int otherDimensions2[] = new int[] {19, 1, 1};
-	*/
+			 */
 			
 			/*
 			//Check 1x1x19 v2:
@@ -114,8 +116,16 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int otherDimensions1[] = new int[] {5, 3, 3};
 			int otherDimensions2[] = new int[] {19, 1, 1};
 	*/
-			//Check 1x1x19 v3:
 			
+			//Check 1x1x19 v3:
+
+			String file1 = "D:\\output7x4x1N=19Oct5test.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[] {9, 3, 1};
+			
+			int otherDimensions1[] = new int[]{7, 4, 1};
+			int otherDimensions2[] = new int[] {19, 1, 1};
+
 			//TODO
 			
 			//Check 1x1x20 v1:
@@ -141,10 +151,19 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			*/
 
 			//Check 1x1x20 v3:
+/*
+			String file1 = "D:\\output7x3x2forN=20RegionSplit2.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{6, 5, 1};
+			
+			//Alt: {17, 2, 1}
+			int otherDimensions1[] = new int[] {7, 3, 2};
+			int otherDimensions2[] = new int[] {20, 1, 1};
+			*/
 			//TODO
 			
 			//Getting answer for area of 106:
-			
+			/*
 			String file1 = "D:\\test1.txt";
 			
 			int dimensionsCuboidToCheck[] = new int[]{8, 5, 1};
@@ -152,9 +171,17 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			//Alt: {17, 2, 1}
 			int otherDimensions1[] = new int[] {17, 2, 1};
 			int otherDimensions2[] = new int[] {26, 1, 1};
-			
+			*/
 			
 			int areaOfCuboidToCheck = Utils.getTotalArea(dimensionsCuboidToCheck);
+			if(areaOfCuboidToCheck != Utils.getTotalArea(otherDimensions1)) {
+				System.out.println("Doh! otherDimensions1 is wrong");
+				System.exit(1);
+			}
+			if(areaOfCuboidToCheck != Utils.getTotalArea(otherDimensions2)) {
+				System.out.println("Doh! otherDimensions2 is wrong");
+				System.exit(1);
+			}
 			
 			Scanner in = new Scanner(new File(file1));
 			
