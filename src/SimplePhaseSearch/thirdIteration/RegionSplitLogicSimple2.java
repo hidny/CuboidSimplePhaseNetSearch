@@ -18,14 +18,19 @@ public class RegionSplitLogicSimple2 {
 	
 	private long preComputedCellsAroundNewLayerMid[][][][][][];
 	
-	public boolean unoccupiedRegionSplitSkipGoingUpMid(long curState[],
+	public boolean unoccupiedRegionSplit(long curState[],
 			int layerStateBelow,
 			int layerStateAbove,
 			int indexGroundedBelowLayer,
 			int rotationGroundedBelowLayer,
-			int sideBump) {
+			int sideBump,
+			int newGroundedIndexAboveMid[][][][][],
+			int newGroundedIndexAboveSide[][][][][]
+	) {
+		
 		
 		//TODO: uncomment (commented it for the nx2x1 case
+		/*
 		if((curState[0] & preComputedCellsAroundNewLayerMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayer][rotationGroundedBelowLayer][sideBump][0]) == 0L
 		 &&(curState[1] & preComputedCellsAroundNewLayerMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayer][rotationGroundedBelowLayer][sideBump][1]) == 0L
 				) {
@@ -33,7 +38,7 @@ public class RegionSplitLogicSimple2 {
 			// If there's no non-trivial cells around the new layer, it's (usually) safe to assume there's no region split.
 			// TODO: handle exception where there is a region split if there's no non-trivial around the new layer.
 			return false;
-		}
+		}*/
 		
 		//TODO: please avoid doing a breadth-first search in the future.
 		// This is the slow and reliable way that I should test new functions against:
@@ -42,22 +47,19 @@ public class RegionSplitLogicSimple2 {
 		for(int i=0; i<tmpArray.length; i++) {
 			tmpArray[i] = isCellIoccupied(curState, i);
 		}
-		
-		int firstUnoccupiedIndex = -1;
-		for(int i=0; i<tmpArray.length; i++) {
-			if(tmpArray[i] == false) {
-				firstUnoccupiedIndex = i;
-				break;
-			}
-		}
 
 		Queue<Integer> visited = new LinkedList<Integer>();
 		
 		boolean explored[] = new boolean[this.neighbours.length];
 		
-		explored[firstUnoccupiedIndex] = true;
-		visited.add(firstUnoccupiedIndex);
-		
+		explored[newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayer][rotationGroundedBelowLayer][sideBump]] = true;
+		visited.add(newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayer][rotationGroundedBelowLayer][sideBump]);
+
+		if(layerStateAbove > 0) {
+			explored[newGroundedIndexAboveSide[layerStateBelow][layerStateAbove][indexGroundedBelowLayer][rotationGroundedBelowLayer][sideBump]] = true;
+			visited.add(newGroundedIndexAboveSide[layerStateBelow][layerStateAbove][indexGroundedBelowLayer][rotationGroundedBelowLayer][sideBump]);
+		}
+
 		Integer v;
 		
 		while( ! visited.isEmpty()) {

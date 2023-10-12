@@ -297,13 +297,16 @@ public class CuboidToFoldOnExtendedSimplePhase3  implements CuboidToFoldOnInterf
 			// At this point, it's valid going from top to bottom:
 			
 			return validForMidAndSidePart && !(layerStateToAdd == 0 && 
-					regionSplitLogicSimple2.unoccupiedRegionSplitSkipGoingUpMid(
+					regionSplitLogicSimple2.unoccupiedRegionSplit(
 							curState,
 							prevLayerStateIndex[currentLayerIndex - 1],
 							layerStateToAdd,
 							this.groundedIndexMid,
 							this.groundRotationRelativeFlatMapMid,
-							sideBump)
+							sideBump,
+							newGroundedIndexAboveMid,
+							newGroundedIndexAboveSide
+							)
 					);
 			
 			

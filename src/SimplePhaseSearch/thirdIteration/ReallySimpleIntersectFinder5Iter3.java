@@ -11,9 +11,12 @@ import NewModel.firstIteration.Nx1x1CuboidToFold;
 public class ReallySimpleIntersectFinder5Iter3 {
 
 	public static void main(String[] args) {
-		
-		//N: 5
+
+		//N:6 1 1: 223160
 		//reallySimpleSearch(6, 1, 1);
+
+		//N: 5 1 1: 23604
+		//reallySimpleSearch(5, 1, 1);
 		
 		//Found 34 unique solutions
 		//reallySimpleSearch(3, 2, 1);
@@ -61,7 +64,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		//N: 14
 		//Found 13264 unique solution.
-		//reallySimpleSearch(5, 4, 1);
+		reallySimpleSearch(5, 4, 1);
 		
 		//Found 355 unique solutions
 		//reallySimpleSearch(9, 2, 1);
@@ -99,7 +102,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(6, 5, 1);
 
 		//Found 581 unique solution.
-		reallySimpleSearch(7, 3, 2);
+		//reallySimpleSearch(7, 3, 2);
 		
 		//Found 507 unique solutions
 		//reallySimpleSearch(13, 2, 1);
