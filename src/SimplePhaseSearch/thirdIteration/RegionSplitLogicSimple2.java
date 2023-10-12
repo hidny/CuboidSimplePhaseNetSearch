@@ -21,8 +21,10 @@ public class RegionSplitLogicSimple2 {
 	public boolean unoccupiedRegionSplit(long curState[],
 			int layerStateBelow,
 			int layerStateAbove,
-			int indexGroundedBelowLayer,
-			int rotationGroundedBelowLayer,
+			int indexGroundedBelowLayerMid,
+			int rotationGroundedBelowLayerMid,
+			int indexGroundedBelowLayerSide,
+			int rotationGroundedBelowLayerSide,
 			int sideBump,
 			int newGroundedIndexAboveMid[][][][][],
 			int newGroundedIndexAboveSide[][][][][]
@@ -52,12 +54,12 @@ public class RegionSplitLogicSimple2 {
 		
 		boolean explored[] = new boolean[this.neighbours.length];
 		
-		explored[newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayer][rotationGroundedBelowLayer][sideBump]] = true;
-		visited.add(newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayer][rotationGroundedBelowLayer][sideBump]);
+		explored[newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][sideBump]] = true;
+		visited.add(newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][sideBump]);
 
 		if(layerStateAbove > 0) {
-			explored[newGroundedIndexAboveSide[layerStateBelow][layerStateAbove][indexGroundedBelowLayer][rotationGroundedBelowLayer][sideBump]] = true;
-			visited.add(newGroundedIndexAboveSide[layerStateBelow][layerStateAbove][indexGroundedBelowLayer][rotationGroundedBelowLayer][sideBump]);
+			explored[newGroundedIndexAboveSide[layerStateBelow][layerStateAbove][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide][sideBump]] = true;
+			visited.add(newGroundedIndexAboveSide[layerStateBelow][layerStateAbove][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide][sideBump]);
 		}
 
 		Integer v;
