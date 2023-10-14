@@ -1,4 +1,4 @@
-package SimplePhaseSearch.thirdIteration;
+package SimplePhaseSearch.fourthIteration;
 
 import java.util.ArrayList;
 
@@ -87,7 +87,6 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//Found 89 unique solution. (17 minutes on oct 12th)
 		//reallySimpleSearch(11, 2, 1);
 
-		//--------
 		//N: 19
 		//Found 11290 unique solution. (8 hours and 30 minutes on oct 12th)
 		//reallySimpleSearch(5, 3, 3);
@@ -97,18 +96,19 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		//Found  unique solutions
 		//reallySimpleSearch(9, 3, 1);
-		
+
 		//N: 20
 		//Found  unique solution
 		//reallySimpleSearch(6, 5, 1);
 
-		//Found 581 unique solution.
+		//Found 581 unique solution. (Almost 28 hours)
 		//reallySimpleSearch(7, 3, 2);
 		
 		//Found 507 unique solutions (3 hours and 20 minutes on oct 12th)
 		//reallySimpleSearch(13, 2, 1);
 		//
-		
+
+		//--------
 		// N = 22
 		//{5, 5, 2}, {6, 3, 3)
 
