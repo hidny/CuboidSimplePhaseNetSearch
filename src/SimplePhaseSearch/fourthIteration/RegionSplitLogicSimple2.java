@@ -14,6 +14,9 @@ public class RegionSplitLogicSimple2 {
 
 	public RegionSplitLogicSimple2(CoordWithRotationAndIndex[][] neighbours) {
 		this.neighbours = neighbours;
+		this.tmpExplored = new boolean[this.neighbours.length];
+		this.tmpArray = new boolean[this.neighbours.length];
+		this.queue = new CustomDangerousQueue(this.neighbours.length);
 	}
 	
 	private long preComputedCellsAroundNewLayerMid[][][][][][];
@@ -25,6 +28,9 @@ public class RegionSplitLogicSimple2 {
 	private long preComputedCellsAboveCurLayerMid[][][][][];
 	private long preComputedCellsAboveCurLayerSide[][][][][];
 	
+	private boolean tmpExplored[];
+	private boolean tmpArray[];
+	private CustomDangerousQueue queue;
 	//TODO:
 	// This check is meant to save time by checking if there's a split before iterating through
 	// every sidebump:
@@ -36,15 +42,13 @@ public class RegionSplitLogicSimple2 {
 			int rotationGroundedBelowLayerSide
 	) {
 		
-		boolean tmpArray[] = new boolean[this.neighbours.length];
 		
 		for(int i=0; i<tmpArray.length; i++) {
-			tmpArray[i] = isCellIoccupied(curState, i);
+			this.tmpArray[i] = isCellIoccupied(curState, i);
+			this.tmpExplored[i] = false;
 		}
+		this.queue.resetQueue();
 
-		Queue<Integer> visited = new LinkedList<Integer>();
-		
-		boolean explored[] = new boolean[this.neighbours.length];
 		
 		//TODO: add cells above the bottom layer.
 		//explored[newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][sideBump]] = true;
@@ -52,17 +56,17 @@ public class RegionSplitLogicSimple2 {
 
 		Integer v;
 		
-		while( ! visited.isEmpty()) {
+		while( ! this.queue.isEmpty()) {
 			
-			v = visited.poll();
+			v = this.queue.poll();
 			
 			for(int i=0; i<NUM_NEIGHBOURS_PER_CELL; i++) {
 				
 				int neighbourIndex = this.neighbours[v.intValue()][i].getIndex();
 				
-				if( ! tmpArray[neighbourIndex] && ! explored[neighbourIndex]) {
-					explored[neighbourIndex] = true;
-					visited.add(neighbourIndex);
+				if( ! tmpArray[neighbourIndex] && ! tmpExplored[neighbourIndex]) {
+					tmpExplored[neighbourIndex] = true;
+					this.queue.add(neighbourIndex);
 				}
 				
 			}
@@ -70,7 +74,7 @@ public class RegionSplitLogicSimple2 {
 		}
 
 		for(int i=0; i<tmpArray.length; i++) {
-			if( ! tmpArray[i] && ! explored[i]) {
+			if( ! tmpArray[i] && ! tmpExplored[i]) {
 
 				return true;
 			}
@@ -103,39 +107,33 @@ public class RegionSplitLogicSimple2 {
 			return false;
 		}*/
 		
-		//TODO: please avoid doing a breadth-first search in the future.
-		// This is the slow and reliable way that I should test new functions against:
-		boolean tmpArray[] = new boolean[this.neighbours.length];
-		
 		for(int i=0; i<tmpArray.length; i++) {
-			tmpArray[i] = isCellIoccupied(curState, i);
+			this.tmpArray[i] = isCellIoccupied(curState, i);
+			this.tmpExplored[i] = false;
 		}
-
-		Queue<Integer> visited = new LinkedList<Integer>();
+		this.queue.resetQueue();
 		
-		boolean explored[] = new boolean[this.neighbours.length];
-		
-		explored[newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][sideBump]] = true;
-		visited.add(newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][sideBump]);
+		this.tmpArray[newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][sideBump]] = true;
+		this.queue.add(newGroundedIndexAboveMid[layerStateBelow][layerStateAbove][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][sideBump]);
 
 		if(layerStateAbove > 0) {
-			explored[newGroundedIndexAboveSide[layerStateBelow][layerStateAbove][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide][sideBump]] = true;
-			visited.add(newGroundedIndexAboveSide[layerStateBelow][layerStateAbove][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide][sideBump]);
+			this.tmpArray[newGroundedIndexAboveSide[layerStateBelow][layerStateAbove][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide][sideBump]] = true;
+			this.queue.add(newGroundedIndexAboveSide[layerStateBelow][layerStateAbove][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide][sideBump]);
 		}
 
 		Integer v;
 		
-		while( ! visited.isEmpty()) {
+		while( ! this.queue.isEmpty()) {
 			
-			v = visited.poll();
+			v = this.queue.poll();
 			
 			for(int i=0; i<NUM_NEIGHBOURS_PER_CELL; i++) {
 				
 				int neighbourIndex = this.neighbours[v.intValue()][i].getIndex();
 				
-				if( ! tmpArray[neighbourIndex] && ! explored[neighbourIndex]) {
-					explored[neighbourIndex] = true;
-					visited.add(neighbourIndex);
+				if( ! tmpArray[neighbourIndex] && ! this.tmpExplored[neighbourIndex]) {
+					this.tmpExplored[neighbourIndex] = true;
+					this.queue.add(neighbourIndex);
 				}
 				
 			}
@@ -143,7 +141,7 @@ public class RegionSplitLogicSimple2 {
 		}
 
 		for(int i=0; i<tmpArray.length; i++) {
-			if( ! tmpArray[i] && ! explored[i]) {
+			if( ! tmpArray[i] && ! this.tmpExplored[i]) {
 
 				return true;
 			}

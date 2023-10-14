@@ -14,7 +14,7 @@ import Model.NeighbourGraphCreator;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
 
-public class CuboidToFoldOnExtendedSimplePhase3  implements CuboidToFoldOnInterface {
+public class CuboidToFoldOnExtendedSimplePhase4  implements CuboidToFoldOnInterface {
 
 	
 	private CoordWithRotationAndIndex[][] neighbours;
@@ -22,7 +22,7 @@ public class CuboidToFoldOnExtendedSimplePhase3  implements CuboidToFoldOnInterf
 	public static final int NUM_DIMENSIONS_CUBOID = 3;
 	private int dimensions[] = new int[NUM_DIMENSIONS_CUBOID];
 
-	public CuboidToFoldOnExtendedSimplePhase3(int a, int b, int c) {
+	public CuboidToFoldOnExtendedSimplePhase4(int a, int b, int c) {
 
 		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c);
 		
@@ -586,9 +586,9 @@ public class CuboidToFoldOnExtendedSimplePhase3  implements CuboidToFoldOnInterf
 	private Coord2D[] getSideBumpAndStateIdArrayToIterateOverByPreviousLayer(int prevLayer) {
 		
 		ArrayList<Coord2D> options = new ArrayList<Coord2D>();
-		for(int nextLayerState = 0; nextLayerState<CuboidToFoldOnExtendedSimplePhase3.NUM_LAYER_STATES; nextLayerState++) {
+		for(int nextLayerState = 0; nextLayerState<CuboidToFoldOnExtendedSimplePhase4.NUM_LAYER_STATES; nextLayerState++) {
 			
-				for(int sideBump=0; sideBump < CuboidToFoldOnExtendedSimplePhase3.NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
+				for(int sideBump=0; sideBump < CuboidToFoldOnExtendedSimplePhase4.NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
 					
 					boolean foundAWay = false;
 					
@@ -1419,7 +1419,7 @@ public class CuboidToFoldOnExtendedSimplePhase3  implements CuboidToFoldOnInterf
 	}
 
 	public int getIndexAboveIndex(int curIndex, int rotationRelativeFlatMap) {
-		return tryAttachCellInDir(curIndex, rotationRelativeFlatMap, CuboidToFoldOnExtendedSimplePhase3.ABOVE).i;
+		return tryAttachCellInDir(curIndex, rotationRelativeFlatMap, CuboidToFoldOnExtendedSimplePhase4.ABOVE).i;
 	}
 	
 	//Pre: The cuboid is built
@@ -1452,7 +1452,7 @@ public class CuboidToFoldOnExtendedSimplePhase3  implements CuboidToFoldOnInterf
 
 		sanityTestGetCellsToAddGoingUpAndDown();
 		
-		CuboidToFoldOnExtendedSimplePhase3 test1 = new CuboidToFoldOnExtendedSimplePhase3(5, 1, 1);
+		CuboidToFoldOnExtendedSimplePhase4 test1 = new CuboidToFoldOnExtendedSimplePhase4(5, 1, 1);
 		
 		for(int m=0; m<7; m++) {
 			System.out.println("m = " + m);
