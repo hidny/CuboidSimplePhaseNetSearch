@@ -506,12 +506,11 @@ public class CuboidToFoldOnExtendedSimplePhase4  implements CuboidToFoldOnInterf
 	
 	public boolean untouchableRegionCreatedAfterLayerAdded() {
 		
-		System.out.println("Test:");
-		System.out.println(groundedIndexMid + "," + 
-					groundRotationRelativeFlatMapMid + ". Side:" + 
-					groundedIndexSide + "," + 
-					groundRotationRelativeFlatMapSide);
-		return (prevLayerStateIndex[currentLayerIndex - 1] != 0 || prevLayerStateIndex[currentLayerIndex - 2] == 0)
+				
+		return //Make sure there's no top to bottom cells that make things too complicated:
+				(prevLayerStateIndex[currentLayerIndex - 1] != 0 || prevLayerStateIndex[currentLayerIndex - 2] == 0)
+				
+				//Do the actual check:
 				&& regionSplitLogicSimple3.untouchableRegionCreatedAfterLayerAdded
 				(curState,
 					prevLayerStateIndex[currentLayerIndex - 1],

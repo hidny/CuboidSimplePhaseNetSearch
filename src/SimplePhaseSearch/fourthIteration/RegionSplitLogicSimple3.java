@@ -46,35 +46,23 @@ public class RegionSplitLogicSimple3 {
 			this.tmpExplored[i] = false;
 		}
 		this.queue.resetQueue();
-
-		//[NUM_LAYER_STATES][totalArea][NUM_ROTATION][NUM_CELLS_PER_LAYER];
-		//private long preComputedCellsAboveCurLayerMid[][][][];
-		//private long preComputedCellsAboveCurLayerSide[][][][];
-		
-		System.out.println("start search");
-		//TODO: add cells above the bottom layer.
+	
 		for(int i=0; i<preComputedCellsAboveCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid].length; i++) {
 			
 			int tmpIndex = preComputedCellsAboveCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][i];
 			if(! tmpArray[tmpIndex]) {
-				System.out.println("Index Mid above: " + tmpIndex);
 				this.tmpExplored[tmpIndex] = true;
 				this.queue.add(tmpIndex);
-			} else {
-				System.out.println("Cancel: " + tmpIndex);
 			}
 		}
 		
 		for(int i=0; i<preComputedCellsAboveCurLayerSide[lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide].length; i++) {
-			
 			int tmpIndex = preComputedCellsAboveCurLayerSide[lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide][i];
 			if(! tmpArray[tmpIndex]) {
-				System.out.println("Index Side above: " + tmpIndex);
 				this.tmpExplored[tmpIndex] = true;
 				this.queue.add(tmpIndex);
 			}
 		}
-		System.out.println("end search");
 		
 		Integer v;
 		
@@ -215,6 +203,7 @@ public class RegionSplitLogicSimple3 {
 
 					cur = new Coord2D(index, rotation);
 					for(int indexCurLayer=0; indexCurLayer<numCellsAbovePerLayerSide[layerState]; indexCurLayer++) {
+						
 						Coord2D above = tryAttachCellInDir(cur.i, cur.j, ABOVE);
 
 						//TODO: I didn't bother making sure that the indexes in the list are distinct.

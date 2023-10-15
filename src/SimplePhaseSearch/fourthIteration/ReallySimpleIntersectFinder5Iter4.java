@@ -23,7 +23,7 @@ public class ReallySimpleIntersectFinder5Iter4 {
 
 		//N: 7
 		//Found 6 unique solutions
-		reallySimpleSearch(3, 3, 1);
+		//reallySimpleSearch(3, 3, 1);
 		
 
 		//N: 8
@@ -63,16 +63,16 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(6, 3, 1);
 		
 		//N: 14
-		//Found 13264 unique solution. (just over 6 minutes for iter4)
+		//Found 13264 unique solution. (3 minutes and 2 seconds on oct 14th)
 		//reallySimpleSearch(5, 4, 1);
 		
 		
-		//Found 355 unique solutions (1.5 minutes for iter4)
+		//Found 355 unique solutions (40 seconds on oct 14th)
 		//reallySimpleSearch(9, 2, 1);
 
 		//N:15
 		//Found 507 unique solution. (16 minutes for iter4)
-		//reallySimpleSearch(5, 3, 2);
+		reallySimpleSearch(5, 3, 2);
 
 		//Found 31 unique solutions (almost 20 minutes for iter4)
 		//reallySimpleSearch(7, 3, 1);
@@ -323,15 +323,8 @@ Current UTC timestamp in milliseconds: 1675458353391
 				
 				cuboidToBuild.addNewLayerFast(nextLayerState, sideBump);
 				
-				//TODO: add here...
-				
 				if( ! cuboidToBuild.untouchableRegionCreatedAfterLayerAdded() ) {
 					ret += findReallySimpleSolutionsRecursion(cuboidToBuild, curLayerIndex + 1, numLayers, nextLayerState, debugNope);
-				} else {
-					
-					System.out.println("Nope! " + curLayerIndex);
-					ret += findReallySimpleSolutionsRecursion(cuboidToBuild, curLayerIndex + 1, numLayers, nextLayerState, true);
-					
 				}
 				
 				cuboidToBuild.removePrevLayerFast();
