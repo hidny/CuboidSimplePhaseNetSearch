@@ -71,27 +71,27 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(9, 2, 1);
 
 		//N:15
-		//Found 507 unique solution. (16 minutes for iter4)
-		reallySimpleSearch(5, 3, 2);
+		//Found 507 unique solution. (6 minutes and 36 seconds on oct 14th)
+		//reallySimpleSearch(5, 3, 2);
 
-		//Found 31 unique solutions (almost 20 minutes for iter4)
+		//Found 31 unique solutions (almost 11 minutes 20 seconds on oct 14th)
 		//reallySimpleSearch(7, 3, 1);
 
 		//N: 17
 		//Found  unique solutions
 		//reallySimpleSearch(5, 5, 1);
 
-		//Found 54 unique solutions ( just over 2 hours on oct 12th and 1 hour and 52 minutes on oct 14th)
+		//Found 54 unique solutions ( just over 2 hours on oct 12th and 1 hour and 34 minutes on oct 14th)
 		//reallySimpleSearch(8, 3, 1);
 		
-		//Found 89 unique solution. (17 minutes on oct 12th and under 13 minutes on oct 14th!)
+		//Found 89 unique solution. (17 minutes on oct 12th and 8 minutes and 36 seconds on oct 14th!)
 		//reallySimpleSearch(11, 2, 1);
 
 		//N: 19
-		//Found 11290 unique solution. (8 hours and 30 minutes on oct 12th)
+		//Found 11290 unique solution. (8 hours and 30 minutes on oct 12th and 4 hours and 40 minutes on oct 14th)
 		//reallySimpleSearch(5, 3, 3);
 		
-		//Found 52 unique solution. (12 hours and 30 minutes on oct 12th)
+		//Found 52 unique solution. (12 hours and 30 minutes on oct 12th and 5 hours and 30 minutes on oct 14th)
 		//reallySimpleSearch(7, 4, 1);
 		
 		//Found  unique solutions
