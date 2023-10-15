@@ -51,16 +51,30 @@ public class RegionSplitLogicSimple3 {
 		//private long preComputedCellsAboveCurLayerMid[][][][];
 		//private long preComputedCellsAboveCurLayerSide[][][][];
 		
+		System.out.println("start search");
 		//TODO: add cells above the bottom layer.
 		for(int i=0; i<preComputedCellsAboveCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid].length; i++) {
-			this.tmpExplored[preComputedCellsAboveCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][i]] = true;
-			this.queue.add(preComputedCellsAboveCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][i]);		
+			
+			int tmpIndex = preComputedCellsAboveCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][i];
+			if(! tmpArray[tmpIndex]) {
+				System.out.println("Index Mid above: " + tmpIndex);
+				this.tmpExplored[tmpIndex] = true;
+				this.queue.add(tmpIndex);
+			} else {
+				System.out.println("Cancel: " + tmpIndex);
+			}
 		}
 		
 		for(int i=0; i<preComputedCellsAboveCurLayerSide[lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide].length; i++) {
-			this.tmpExplored[preComputedCellsAboveCurLayerSide[lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide][i]] = true;
-			this.queue.add(preComputedCellsAboveCurLayerSide[lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide][i]);		
+			
+			int tmpIndex = preComputedCellsAboveCurLayerSide[lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide][i];
+			if(! tmpArray[tmpIndex]) {
+				System.out.println("Index Side above: " + tmpIndex);
+				this.tmpExplored[tmpIndex] = true;
+				this.queue.add(tmpIndex);
+			}
 		}
+		System.out.println("end search");
 		
 		Integer v;
 		
@@ -186,34 +200,28 @@ public class RegionSplitLogicSimple3 {
 					preComputedCellsAboveCurLayerMid[layerState][index][rotation] = new int[numCellsAbovePerLayerMid[layerState]];
 					preComputedCellsAboveCurLayerSide[layerState][index][rotation] = new int[numCellsAbovePerLayerSide[layerState]];
 					
+
+					Coord2D cur = new Coord2D(index, rotation);
 					for(int indexCurLayer=0; indexCurLayer<numCellsAbovePerLayerMid[layerState]; indexCurLayer++) {
 						
-						Coord2D cur = new Coord2D(index, rotation);
+						Coord2D above = tryAttachCellInDir(cur.i, cur.j, ABOVE);
 						
-						for(int i=0; i<NUM_CELLS_PER_LAYER; i++) {
-							Coord2D above = tryAttachCellInDir(cur.i, cur.j, ABOVE);
-							
-							//TODO: I didn't bother making sure that the indexes in the list are distinct.
-							// I'll deal with this later.
-							preComputedCellsAboveCurLayerMid[layerState][index][rotation][indexCurLayer] = above.i;
-							
-							cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);	
-						}
+						//TODO: I didn't bother making sure that the indexes in the list are distinct.
+						// I'll deal with this later.
+						preComputedCellsAboveCurLayerMid[layerState][index][rotation][indexCurLayer] = above.i;
+						
+						cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);	
 					}
-					
-					for(int indexCurLayer=0; indexCurLayer<numCellsAbovePerLayerSide[layerState]; indexCurLayer++) {
-						
-						Coord2D cur = new Coord2D(index, rotation);
-						
-						for(int i=0; i<NUM_CELLS_PER_LAYER; i++) {
-							Coord2D above = tryAttachCellInDir(cur.i, cur.j, ABOVE);
 
-							//TODO: I didn't bother making sure that the indexes in the list are distinct.
-							// I'll deal with this later.
-							preComputedCellsAboveCurLayerSide[layerState][index][rotation][indexCurLayer] = above.i;
-							
-							cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);	
-						}
+					cur = new Coord2D(index, rotation);
+					for(int indexCurLayer=0; indexCurLayer<numCellsAbovePerLayerSide[layerState]; indexCurLayer++) {
+						Coord2D above = tryAttachCellInDir(cur.i, cur.j, ABOVE);
+
+						//TODO: I didn't bother making sure that the indexes in the list are distinct.
+						// I'll deal with this later.
+						preComputedCellsAboveCurLayerSide[layerState][index][rotation][indexCurLayer] = above.i;
+						
+						cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
 						
 					}
 				}

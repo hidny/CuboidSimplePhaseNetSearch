@@ -23,12 +23,12 @@ public class ReallySimpleIntersectFinder5Iter4 {
 
 		//N: 7
 		//Found 6 unique solutions
-		//reallySimpleSearch(3, 3, 1);
+		reallySimpleSearch(3, 3, 1);
 		
 
 		//N: 8
 		//Found 197 unique solutions
-		reallySimpleSearch(5, 2, 1);
+		//reallySimpleSearch(5, 2, 1);
 		
 
 		//N: 9
@@ -248,7 +248,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 			
 			cuboidToBuild.addFirstLayer(sideBump);
 
-			ret += findReallySimpleSolutionsRecursion(cuboidToBuild, FIRST_CUR_LAYER_INDEX, numLayers, 0);
+			ret += findReallySimpleSolutionsRecursion(cuboidToBuild, FIRST_CUR_LAYER_INDEX, numLayers, 0, false);
 
 			cuboidToBuild.leaveOnlyTheBottomCell();
 			
@@ -259,7 +259,8 @@ Current UTC timestamp in milliseconds: 1675458353391
 	}
 	
 	public static int debugIterator = 0;
-	public static long findReallySimpleSolutionsRecursion(CuboidToFoldOnExtendedSimplePhase4 cuboidToBuild, int curLayerIndex, int numLayers, int prevLayerStateIndex) {
+	public static long findReallySimpleSolutionsRecursion(CuboidToFoldOnExtendedSimplePhase4 cuboidToBuild, int curLayerIndex, int numLayers, int prevLayerStateIndex,
+			boolean debugNope) {
 
 		debugIterator++;
 		//System.out.println("Iteration number: " + debugIterator);
@@ -279,6 +280,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 						
 						if(
 							BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
+							
 							System.out.println("Unique solution found");
 							System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 							
@@ -291,7 +293,11 @@ Current UTC timestamp in milliseconds: 1675458353391
 							System.out.println();
 							
 							System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
-							
+
+							if(debugNope) {
+								System.out.println("Debug nope");
+								System.exit(1);
+							}
 							
 							//TODO: remove sanity check once confident:
 							cuboidToBuild.debugMakeSureCuboidIsFilledExceptForTop();
@@ -320,7 +326,12 @@ Current UTC timestamp in milliseconds: 1675458353391
 				//TODO: add here...
 				
 				if( ! cuboidToBuild.untouchableRegionCreatedAfterLayerAdded() ) {
-					ret += findReallySimpleSolutionsRecursion(cuboidToBuild, curLayerIndex + 1, numLayers, nextLayerState);
+					ret += findReallySimpleSolutionsRecursion(cuboidToBuild, curLayerIndex + 1, numLayers, nextLayerState, debugNope);
+				} else {
+					
+					System.out.println("Nope! " + curLayerIndex);
+					ret += findReallySimpleSolutionsRecursion(cuboidToBuild, curLayerIndex + 1, numLayers, nextLayerState, true);
+					
 				}
 				
 				cuboidToBuild.removePrevLayerFast();
