@@ -1,7 +1,5 @@
 package SimplePhaseSearch.fourthIteration;
 
-import java.util.LinkedList;
-import java.util.Queue;
 
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;

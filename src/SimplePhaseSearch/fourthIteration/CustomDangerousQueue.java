@@ -9,7 +9,8 @@ public class CustomDangerousQueue {
 	
 	
 	public CustomDangerousQueue(int size) {
-		queue = new int[size];
+		//Add 10 to be safe...
+		queue = new int[size + 10];
 	}
 	
 	public void add(int item) {

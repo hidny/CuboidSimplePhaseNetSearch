@@ -206,7 +206,7 @@ public class CuboidToFoldOnExtendedSimplePhase4  implements CuboidToFoldOnInterf
 	
 	private int currentLayerIndex;
 	
-	private RegionSplitLogicSimple2 regionSplitLogicSimple2;
+	private RegionSplitLogicSimple3 regionSplitLogicSimple3;
 	
 	public void printStateStuffDEBUG() {
 		System.out.println("DEBUG:");
@@ -296,20 +296,7 @@ public class CuboidToFoldOnExtendedSimplePhase4  implements CuboidToFoldOnInterf
 			}
 			// At this point, it's valid going from top to bottom:
 			
-			return validForMidAndSidePart
-					&& ! regionSplitLogicSimple2.unoccupiedRegionSplit(
-							curState,
-							prevLayerStateIndex[currentLayerIndex - 1],
-							layerStateToAdd,
-							this.groundedIndexMid,
-							this.groundRotationRelativeFlatMapMid,
-							this.groundedIndexSide,
-							this.groundRotationRelativeFlatMapSide,
-							sideBump,
-							newGroundedIndexAboveMid,
-							newGroundedIndexAboveSide
-						);
-			
+			return validForMidAndSidePart;
 			
 		} else {
 			return false;
@@ -517,6 +504,16 @@ public class CuboidToFoldOnExtendedSimplePhase4  implements CuboidToFoldOnInterf
 		return this.prevLayerStateIndex[currentLayerIndex - 1] == 0 &&  ((~curState[0] & tmp[0]) | (~curState[1] & tmp[1]) ) != 0L;
 	}
 	
+	public boolean untouchableRegionCreatedAfterLayerAdded() {
+		return regionSplitLogicSimple3.untouchableRegionCreatedAfterLayerAdded
+				(curState,
+					prevLayerStateIndex[currentLayerIndex - 1],
+					groundedIndexMid,
+					groundRotationRelativeFlatMapMid,
+					groundedIndexSide,
+					groundRotationRelativeFlatMapSide);
+	}
+	
 	// ***********************************************************
 	// ***********************************************************
 	//Pre-compute functions that make the program faster:
@@ -560,14 +557,7 @@ public class CuboidToFoldOnExtendedSimplePhase4  implements CuboidToFoldOnInterf
 			}
 		}
 
-		regionSplitLogicSimple2 = new RegionSplitLogicSimple2(this.neighbours);
-		
-		regionSplitLogicSimple2.setupAnswerSheetInBetweenLayersMid(
-				Utils.getTotalArea(this.dimensions),
-				newGroundedIndexAboveMid,
-				newGroundedRotationAboveMid
-			);
-		//TODO: when the region split logic isn't simple, precompute as much as possible.
+		regionSplitLogicSimple3 = new RegionSplitLogicSimple3(this.neighbours);
 		
 		
 	}

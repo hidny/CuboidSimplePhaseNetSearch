@@ -28,7 +28,7 @@ public class ReallySimpleIntersectFinder5Iter4 {
 
 		//N: 8
 		//Found 197 unique solutions
-		//reallySimpleSearch(5, 2, 1);
+		reallySimpleSearch(5, 2, 1);
 		
 
 		//N: 9
@@ -317,8 +317,12 @@ Current UTC timestamp in milliseconds: 1675458353391
 				
 				cuboidToBuild.addNewLayerFast(nextLayerState, sideBump);
 				
-				ret += findReallySimpleSolutionsRecursion(cuboidToBuild, curLayerIndex + 1, numLayers, nextLayerState);
-	
+				//TODO: add here...
+				
+				if( ! cuboidToBuild.untouchableRegionCreatedAfterLayerAdded() ) {
+					ret += findReallySimpleSolutionsRecursion(cuboidToBuild, curLayerIndex + 1, numLayers, nextLayerState);
+				}
+				
 				cuboidToBuild.removePrevLayerFast();
 				
 
