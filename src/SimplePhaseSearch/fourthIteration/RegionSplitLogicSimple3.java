@@ -19,16 +19,119 @@ public class RegionSplitLogicSimple3 {
 
 		initNumCellsAbovePerLayer();
 		setupAnswerCellsAboveLayer();
+		
+		setupPreComputedCellsAroundCurLayer();
+		
+		//preComputedCellsAboveCurLayerMid[layerState][index][rotation][indexToAdd] = above.i;
+		
+		System.out.println("Testing indexes around index...");
+		
+		//TODO: I didn't avoid duplicate indexes...
+		//Will have to be careful about the corner indexes..
+		for(int layerState=0; layerState<NUM_LAYER_STATES; layerState++) {
+			
+			if(layerState != 0) {
+				continue;
+			}
+			for(int index=0; index<neighbours.length; index++) {
+				for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
+					
+					System.out.println("State: " + layerState);
+					System.out.println("Ground index: " + index);
+					System.out.println("Ground rotation: " + rotation);
+					System.out.println();
+					for(int indexAround=0; indexAround<preComputedCellsAroundCurLayerMid[layerState][index][rotation].length; indexAround++) {
+
+						System.out.println(preComputedCellsAroundCurLayerMid[layerState][index][rotation][indexAround]);
+						
+					}
+					System.out.println();
+					
+				}
+			}
+		}
+		
+		System.out.println("Done");
+		//System.exit(1);
+
 	}
 	
 	// Structure: [totalArea][NUM_ROTATION][NUM_LAYER_STATES][NUM_CELLS_PER_LAYER];
 
-	private int preComputedCellsAboveCurLayerMid[][][][];
-	private int preComputedCellsAboveCurLayerSide[][][][];
 	
 	private boolean tmpExplored[];
 	private boolean tmpArray[];
 	private CustomDangerousQueue queue;
+	
+	//pre: layerBeforeLastLayerAdded does not represent the bottom cell. (I guess it doesn't matter too much though.)
+	
+	//TODO: have special code that dismisses adding layer state 0.
+	
+	//TODO: 
+	
+	//TODO:
+	public boolean untouchableRegionNotCreatedAfterLayerAddedQuick(long curState[],
+			int layerBeforeLastLayerAdded,
+			int lastLayerStateAdded,
+			int indexGroundedBelowLayerMid,
+			int rotationGroundedBelowLayerMid,
+			int indexGroundedBelowLayerSide,
+			int rotationGroundedBelowLayerSide,
+			int curNumRegions
+	) {
+		
+		if( layerBeforeLastLayerAdded != 0 && lastLayerStateAdded == 0) {
+			return false;
+		}
+		//TODO:
+		// make this faster later.
+		
+
+		for(int i=0; i<tmpArray.length; i++) {
+			this.tmpArray[i] = isCellIoccupied(curState, i);
+		}
+		
+		int numAround = 0;
+		
+		for(int i=0; i<preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid].length; i++) {
+			
+			int tmpIndex = preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][i];
+			
+			if(tmpArray[tmpIndex]) {
+				
+				numAround++;
+			}
+		}
+		
+		for(int i=0; i<preComputedCellsAroundCurLayerSide[lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide].length; i++) {
+			
+			int tmpIndex = preComputedCellsAroundCurLayerSide[lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide][i];
+			
+			if(tmpArray[tmpIndex]) {
+				
+				numAround++;
+			}
+		}
+		
+		return numAround == preComputedNumCellsBelowCurLayerMid[layerBeforeLastLayerAdded][lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid]
+				        + preComputedNumCellsBelowCurLayerSide[layerBeforeLastLayerAdded][lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide];
+	}
+	
+	public boolean untouchableRegionCreatedAfterLayerAddedQuick(long curState[],
+			int lastLayerStateAdded,
+			int layerBeforeLastLayerAdded,
+			int indexGroundedBelowLayerMid,
+			int rotationGroundedBelowLayerMid,
+			int indexGroundedBelowLayerSide,
+			int rotationGroundedBelowLayerSide
+	) {
+		return false;
+	}
+	
+
+	private int preComputedCellsAboveCurLayerMid[][][][];
+	private int preComputedCellsAboveCurLayerSide[][][][];
+
 	//TODO:
 	// This check is meant to save time by checking if there's a split before iterating through
 	// every sidebump:
@@ -213,6 +316,115 @@ public class RegionSplitLogicSimple3 {
 						cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
 						
 					}
+				}
+			}
+		}
+	}
+	
+
+	
+	//TODO
+	// Structure: [NUM_LAYER_STATES][totalArea][NUM_ROTATION][NUM_CELLS_PER_LAYER];
+	private int preComputedCellsAroundCurLayerMid[][][][];
+	private int preComputedCellsAroundCurLayerSide[][][][];
+	
+	// Structure: [NUM_LAYER_STATES][NUM_LAYER_STATES][totalArea][NUM_ROTATION]
+	private int preComputedNumCellsBelowCurLayerMid[][][][];
+	private int preComputedNumCellsBelowCurLayerSide[][][][];
+	
+	public void setupPreComputedCellsAroundCurLayer() {
+		
+		preComputedCellsAroundCurLayerMid = new int[NUM_LAYER_STATES][neighbours.length][NUM_ROTATIONS][];
+		
+		for(int layerState=0; layerState<NUM_LAYER_STATES; layerState++) {
+			
+			if(layerState != 0) {
+				//TODO: remove this after testing.
+				continue;
+			}
+			
+			for(int index=0; index<neighbours.length; index++) {
+				for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
+					
+					int indexToAdd = 0;
+
+					//TODO: -2  is a magic number
+					//TODO: because it's on a cuboid, there might be repeat indexes... that doesn't work...
+					preComputedCellsAroundCurLayerMid[layerState][index][rotation] = new int[2 * (numCellsAbovePerLayerMid[layerState] - 2 + 3)];
+					
+					//System.out.println("Number: " + numCellsAbovePerLayerMid[layerState]);
+					Coord2D cur = new Coord2D(index, rotation);
+					
+					// TODO: - 2 is a magic number to rm the corners above.
+					for(int indexCurLayer=0; indexCurLayer<numCellsAbovePerLayerMid[layerState] - 2; indexCurLayer++) {
+						
+						Coord2D above = tryAttachCellInDir(cur.i, cur.j, ABOVE);
+						
+						//TODO: I didn't bother making sure that the indexes in the list are distinct.
+						// I'll deal with this later.
+						preComputedCellsAroundCurLayerMid[layerState][index][rotation][indexToAdd] = above.i;
+						indexToAdd++;
+
+							
+						cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+					}
+					
+					cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+					
+					Coord2D above = tryAttachCellInDir(cur.i, cur.j, ABOVE);
+					Coord2D aboveRight = tryAttachCellInDir(above.i, above.j, RIGHT);
+
+					preComputedCellsAroundCurLayerMid[layerState][index][rotation][indexToAdd] = aboveRight.i;
+					indexToAdd++;
+					
+					Coord2D right = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+
+					preComputedCellsAroundCurLayerMid[layerState][index][rotation][indexToAdd] = right.i;
+					indexToAdd++;
+					
+					Coord2D belowOutsideLoop = tryAttachCellInDir(cur.i, cur.j, BELOW);
+					
+					Coord2D belowRight = tryAttachCellInDir(belowOutsideLoop.i, belowOutsideLoop.j, RIGHT);
+					
+					preComputedCellsAroundCurLayerMid[layerState][index][rotation][indexToAdd] = belowRight.i;
+					indexToAdd++;
+					
+					//TODO: - 2 is a bad magic number
+					for(int indexCurLayer=0; indexCurLayer<numCellsAbovePerLayerMid[layerState] - 2; indexCurLayer++) {
+						
+						Coord2D below = tryAttachCellInDir(cur.i, cur.j, BELOW);
+						
+						//TODO: I didn't bother making sure that the indexes in the list are distinct.
+						// I'll deal with this later.
+						preComputedCellsAroundCurLayerMid[layerState][index][rotation][indexToAdd] = below.i;
+						indexToAdd++;
+
+						cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+						
+					}
+
+					cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+					
+					belowOutsideLoop = tryAttachCellInDir(cur.i, cur.j, BELOW);
+					
+					Coord2D belowLeft = tryAttachCellInDir(belowOutsideLoop.i, belowOutsideLoop.j, LEFT);
+					
+					preComputedCellsAroundCurLayerMid[layerState][index][rotation][indexToAdd] = belowLeft.i;
+					indexToAdd++;
+					
+					Coord2D left = tryAttachCellInDir(cur.i, cur.j, LEFT);
+					
+					preComputedCellsAroundCurLayerMid[layerState][index][rotation][indexToAdd] = left.i;
+					indexToAdd++;
+					
+
+					above = tryAttachCellInDir(cur.i, cur.j, ABOVE);
+					Coord2D aboveLeft = tryAttachCellInDir(above.i, above.j, LEFT);
+					
+
+					preComputedCellsAroundCurLayerMid[layerState][index][rotation][indexToAdd] = aboveLeft.i;
+					indexToAdd++;
+
 				}
 			}
 		}

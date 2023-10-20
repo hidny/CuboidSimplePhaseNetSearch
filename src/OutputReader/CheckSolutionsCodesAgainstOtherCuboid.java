@@ -117,6 +117,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int otherDimensions2[] = new int[] {19, 1, 1};
 	*/
 			
+			/*
 			//Check 1x1x19 v3:
 
 			String file1 = "D:\\output7x4x1N=19Oct5test.txt";
@@ -125,7 +126,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			
 			int otherDimensions1[] = new int[]{7, 4, 1};
 			int otherDimensions2[] = new int[] {19, 1, 1};
-
+			*/
 			//TODO
 			
 			//Check 1x1x20 v1:
@@ -160,7 +161,51 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int otherDimensions1[] = new int[] {7, 3, 2};
 			int otherDimensions2[] = new int[] {20, 1, 1};
 			*/
+			
+			//TODO:
+			//N=22
+			//{5, 5, 2}, {6, 3, 3)
+			String file1 = "D:\\forgotname633.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[] {5, 5, 2};
+			
+			int otherDimensions1[] = new int[] {6, 3, 3};
+			int otherDimensions2[] = new int [] {22, 1, 1};
 			//TODO
+			//5 x 4 x 3: 94
+			//7 x 5 x 1: 94
+			//11 x 3 x 1: 94
+			//15 x 2 x 1: 94
+			
+			/*
+			//V1:
+			String file1 = "D:\\output15x2x1N=23.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{5, 4, 3};
+			
+			int otherDimensions1[] = new int[] {15, 2, 1};
+			int otherDimensions2[] = new int[] {23, 1, 1};
+			*/
+
+			/*
+			//V2:
+			String file1 = "D:\\output15x2x1N=23.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{7, 5, 1};
+			
+			int otherDimensions1[] = new int[] {15, 2, 1};
+			int otherDimensions2[] = new int[] {23, 1, 1};
+			*/
+			
+			/*
+			//V3:
+			String file1 = "D:\\output15x2x1N=23.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{11, 3, 1};
+			
+			int otherDimensions1[] = new int[] {15, 2, 1};
+			int otherDimensions2[] = new int[] {23, 1, 1};
+			*/
 			
 			//Getting answer for area of 106:
 			/*
@@ -172,7 +217,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int otherDimensions1[] = new int[] {17, 2, 1};
 			int otherDimensions2[] = new int[] {26, 1, 1};
 			*/
-			
+		
 			int areaOfCuboidToCheck = Utils.getTotalArea(dimensionsCuboidToCheck);
 			if(areaOfCuboidToCheck != Utils.getTotalArea(otherDimensions1)) {
 				System.out.println("Doh! otherDimensions1 is wrong");
