@@ -94,19 +94,19 @@ public class RegionSplitLogicSimple3 {
 		
 		int numAround = 0;
 		
-		//System.out.println();
-		//System.out.println();
-		//System.out.println("Length: " + preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid].length);
+		System.out.println();
+		System.out.println();
+		System.out.println("Length: " + preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid].length);
 		for(int i=0; i<preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid].length; i++) {
 			
 			int tmpIndex = preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][i];
 			
 			if(tmpArray[tmpIndex]) {
-				//System.out.println("tmpIndex: " + tmpIndex);
+				System.out.println("tmpIndex: " + tmpIndex);
 				numAround++;
-			}// else {
-			//	System.out.println("nope: " + tmpIndex);
-			//}
+			} else {
+				System.out.println("nope: " + tmpIndex);
+			}
 		}
 		
 		if(lastLayerStateAdded != 0) {
@@ -134,14 +134,23 @@ public class RegionSplitLogicSimple3 {
 			System.exit(1);
 		}
 		
-		//System.out.println("test1: " + test1);
-		//System.out.println("test2: " + test2);
-		//System.out.println("numAround: " + numAround);
+		System.out.println("test1: " + test1);
+		System.out.println("test2: " + test2);
+		System.out.println("numAround: " + numAround);
 		
 		
 		if(lastLayerStateAdded != 0) {
 
 			if(numAround < test1 + test2) {
+				System.out.println("indexGroundedBelowLayerMid: " + indexGroundedBelowLayerMid);
+				System.out.println("rotationGroundedBelowLayerMid: " + rotationGroundedBelowLayerMid);
+				System.out.println("layerBeforeLastLayerAdded: " + layerBeforeLastLayerAdded);
+				System.out.println("lastLayerStateAdded: " + lastLayerStateAdded);
+				System.out.println("Prev side bump: " + prevSideBump);
+				
+				System.out.println(numAround);
+				System.out.println(test1);
+				System.out.println(test2);
 				System.out.println("oops! NumAround is too low (1)");
 				System.exit(1);
 			}
