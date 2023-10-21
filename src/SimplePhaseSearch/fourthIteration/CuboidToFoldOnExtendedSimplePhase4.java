@@ -38,6 +38,7 @@ public class CuboidToFoldOnExtendedSimplePhase4  implements CuboidToFoldOnInterf
 		setupAnswerSheetForTopCell();
 		
 		setupNextLayerPossibilities();
+		
 	}
 	
 	public int getNumCellsToFill() {
@@ -86,6 +87,7 @@ public class CuboidToFoldOnExtendedSimplePhase4  implements CuboidToFoldOnInterf
 
 		//Start it at layer 1:
 		currentLayerIndex = 1;
+		
 		
 	}
 
@@ -504,6 +506,9 @@ public class CuboidToFoldOnExtendedSimplePhase4  implements CuboidToFoldOnInterf
 		return this.prevLayerStateIndex[currentLayerIndex - 1] == 0 &&  ((~curState[0] & tmp[0]) | (~curState[1] & tmp[1]) ) != 0L;
 	}
 	
+	public static long debugEmpty = 0L;
+	public static long debugNotEmpty = 0L;
+	
 	public boolean untouchableRegionCreatedAfterLayerAdded() {
 		
 		//TODO: do some kind of short-cut, but only do the shortcut if top to bottom cells aren't a thing:
@@ -511,6 +516,44 @@ public class CuboidToFoldOnExtendedSimplePhase4  implements CuboidToFoldOnInterf
 		//(prevLayerStateIndex[currentLayerIndex - 1] != 0 || prevLayerStateIndex[currentLayerIndex - 2] == 0)
 				
 				//Do the actual check:
+		
+		/*if(regionSplitLogicSimple3.untouchableRegionNotCreatedAfterLayerAddedQuick(curState,
+				int layerBeforeLastLayerAdded,
+				int lastLayerStateAdded,
+				int indexGroundedBelowLayerMid,
+				int rotationGroundedBelowLayerMid,
+				int indexGroundedBelowLayerSide,
+				int rotationGroundedBelowLayerSide,
+				int prevSideBump,
+				int curNumRegions
+		)*/
+		if(regionSplitLogicSimple3.untouchableRegionNotCreatedAfterLayerAddedQuick(curState,
+				this.prevLayerStateIndex[currentLayerIndex - 2],
+				this.prevLayerStateIndex[currentLayerIndex - 1],
+				this.groundedIndexMid,
+				this.groundRotationRelativeFlatMapMid,
+				this.groundedIndexSide,
+				this.groundRotationRelativeFlatMapSide,
+				prevSideBumps[currentLayerIndex - 1],
+				//TODO: actually use curNumRegion in future:
+				1
+				)
+		)
+				{
+			
+			//TODO: for some combinations, it's obviously bad if empty
+			
+			System.out.println("Empty");
+			debugEmpty++;
+			//System.exit(1);
+			//For now, let's say that it's ok.
+			return false;
+		} else {
+			debugNotEmpty++;
+			System.out.println("keep going");
+		}
+		
+		System.out.println(debugEmpty + " vs " + debugNotEmpty);
 				
 		return regionSplitLogicSimple3.untouchableRegionCreatedAfterLayerAdded
 				(curState,
@@ -565,6 +608,14 @@ public class CuboidToFoldOnExtendedSimplePhase4  implements CuboidToFoldOnInterf
 		}
 
 		regionSplitLogicSimple3 = new RegionSplitLogicSimple3(this.neighbours);
+		
+		regionSplitLogicSimple3.
+			setupNumCellsExpectedAroundLayer(
+				newGroundedIndexAboveMid,
+				newGroundedRotationAboveMid,
+				newGroundedIndexAboveSide,
+				newGroundedRotationAboveSide
+			);
 		
 		
 	}

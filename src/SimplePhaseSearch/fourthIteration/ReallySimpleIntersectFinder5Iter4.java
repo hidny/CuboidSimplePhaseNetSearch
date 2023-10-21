@@ -57,7 +57,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		//N: 13
 		//Found 203 unique solutions
-		//reallySimpleSearch(3, 3, 3);
+		reallySimpleSearch(3, 3, 3);
 
 		//Found 77 unique solutions
 		//reallySimpleSearch(6, 3, 1);
@@ -113,7 +113,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//{5, 5, 2}, {6, 3, 3)
 
 		//Found 163 unique solution. (Ran from Oct 12th 9PM to Oct 20th, 4pm) (or about 8 days)
-		reallySimpleSearch(5, 5, 2);
+		//reallySimpleSearch(5, 5, 2);
 
 		//Found 105801 unique solution. (Ran from Oct 12th 9pm to Oct 18th, 7 pm) (or about 6 days)
 		//reallySimpleSearch(6, 3, 3);
