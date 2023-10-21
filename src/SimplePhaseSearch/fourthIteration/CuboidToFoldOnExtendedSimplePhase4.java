@@ -543,18 +543,18 @@ public class CuboidToFoldOnExtendedSimplePhase4  implements CuboidToFoldOnInterf
 			
 			//TODO: for some combinations, it's obviously bad if empty
 			
-			System.out.println("Empty");
 			debugEmpty++;
 			//System.exit(1);
 			//For now, let's say that it's ok.
 			return false;
 		} else {
 			debugNotEmpty++;
-			System.out.println("keep going");
 		}
 		
-		System.out.println(debugEmpty + " vs " + debugNotEmpty);
-				
+		if(debugNotEmpty % 100000 == 0) {
+			System.out.println(debugEmpty + " vs " + debugNotEmpty);
+		}
+
 		return regionSplitLogicSimple3.untouchableRegionCreatedAfterLayerAdded
 				(curState,
 					prevLayerStateIndex[currentLayerIndex - 1],
