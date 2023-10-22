@@ -24,35 +24,6 @@ public class RegionSplitLogicSimple3 {
 		
 		//preComputedCellsAboveCurLayerMid[layerState][index][rotation][indexToAdd] = above.i;
 		
-		System.out.println("Testing indexes around index...");
-		
-		//TODO: I didn't avoid duplicate indexes...
-		//Will have to be careful about the corner indexes..
-		for(int layerState=0; layerState<NUM_LAYER_STATES; layerState++) {
-			
-			if(layerState != 0) {
-				continue;
-			}
-			for(int index=0; index<neighbours.length; index++) {
-				for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
-					
-					System.out.println("State: " + layerState);
-					System.out.println("Ground index: " + index);
-					System.out.println("Ground rotation: " + rotation);
-					System.out.println();
-					for(int indexAround=0; indexAround<preComputedCellsAroundCurLayerMid[layerState][index][rotation].length; indexAround++) {
-
-						System.out.println(preComputedCellsAroundCurLayerMid[layerState][index][rotation][indexAround]);
-						
-					}
-					System.out.println();
-					
-				}
-			}
-		}
-		
-		System.out.println("Done");
-		//System.exit(1);
 
 	}
 	
