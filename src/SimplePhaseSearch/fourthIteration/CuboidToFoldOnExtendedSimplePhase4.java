@@ -508,6 +508,8 @@ public class CuboidToFoldOnExtendedSimplePhase4  implements CuboidToFoldOnInterf
 	
 	public static long debugEmpty = 0L;
 	public static long debugNotEmpty = 0L;
+	public static long debugPrinted = 0L;
+	
 	
 	public boolean untouchableRegionCreatedAfterLayerAdded() {
 		
@@ -551,8 +553,9 @@ public class CuboidToFoldOnExtendedSimplePhase4  implements CuboidToFoldOnInterf
 			debugNotEmpty++;
 		}
 		
-		if(debugNotEmpty % 100000 == 0) {
+		if(debugEmpty % 100000 == 0 && debugEmpty > debugPrinted) {
 			System.out.println(debugEmpty + " vs " + debugNotEmpty);
+			debugPrinted = debugEmpty;
 		}
 
 		return regionSplitLogicSimple3.untouchableRegionCreatedAfterLayerAdded

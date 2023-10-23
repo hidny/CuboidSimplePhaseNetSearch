@@ -94,29 +94,33 @@ public class RegionSplitLogicSimple3 {
 		
 		int numAround = 0;
 		
-		System.out.println();
+		/*System.out.println();
 		System.out.println();
 		System.out.println("Length: " + preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid].length);
+		*/
 		for(int i=0; i<preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid].length; i++) {
 			
 			int tmpIndex = preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][i];
 			
 			if(tmpArray[tmpIndex]) {
-				System.out.println("tmpIndex: " + tmpIndex);
+				//System.out.println("tmpIndex: " + tmpIndex);
 				numAround++;
 			} else {
-				System.out.println("nope: " + tmpIndex);
+				//System.out.println("nope: " + tmpIndex);
 			}
 		}
 		
+		//System.out.println("......");
 		if(lastLayerStateAdded != 0) {
 			for(int i=0; i<preComputedCellsAroundCurLayerSide[lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide].length; i++) {
 				
 				int tmpIndex = preComputedCellsAroundCurLayerSide[lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide][i];
 				
 				if(tmpArray[tmpIndex]) {
-					
+					//System.out.println("tmpIndex 2: " + tmpIndex);
 					numAround++;
+				} else {
+					//System.out.println("nope 2: " + tmpIndex);
 				}
 			}
 		}
@@ -124,6 +128,10 @@ public class RegionSplitLogicSimple3 {
 		int test1 = preComputedNumCellsExpectedAroundCurLayerMid[layerBeforeLastLayerAdded][lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][prevSideBump];
 		int test2 = preComputedNumCellsExpectedAroundCurLayerSide[layerBeforeLastLayerAdded][lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide][prevSideBump];
 		
+		if(lastLayerStateAdded == 0 && test2 > 0) {
+			System.out.println("Oops! test2 > 0 when it should be 0");
+			System.exit(1);
+		}
 		if(test1 < 0 || test2 < 0) {
 			System.out.println("test1: " + test1);
 			System.exit(1);
@@ -134,10 +142,10 @@ public class RegionSplitLogicSimple3 {
 			System.exit(1);
 		}
 		
-		System.out.println("test1: " + test1);
+		/*System.out.println("test1: " + test1);
 		System.out.println("test2: " + test2);
 		System.out.println("numAround: " + numAround);
-		
+		*/
 		
 		if(lastLayerStateAdded != 0) {
 
@@ -147,6 +155,13 @@ public class RegionSplitLogicSimple3 {
 				System.out.println("layerBeforeLastLayerAdded: " + layerBeforeLastLayerAdded);
 				System.out.println("lastLayerStateAdded: " + lastLayerStateAdded);
 				System.out.println("Prev side bump: " + prevSideBump);
+
+				System.out.println("indexGroundedBelowLayerSide: " + indexGroundedBelowLayerSide);
+				System.out.println("rotationGroundedBelowLayerSide: " + rotationGroundedBelowLayerSide);
+				
+				int tmp1[] = preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid];
+				int tmp2[] = preComputedCellsAroundCurLayerSide[lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide];
+				
 				
 				System.out.println(numAround);
 				System.out.println(test1);
@@ -319,6 +334,7 @@ public class RegionSplitLogicSimple3 {
 
 				} else if(foundFirst && CuboidToFoldOnExtendedSimplePhase4.CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[i][j] == 0) {
 					lastIndex = j;
+					break;
 				}
 				
 			}
@@ -650,6 +666,10 @@ public class RegionSplitLogicSimple3 {
 								if(numExpectedAroundNewLayer == 0) {
 									System.out.println("doh");
 									System.exit(1);
+								} else if(layerStateBelow == 0 && numExpectedAroundNewLayer == 1) {
+									System.out.println("ERROR: Something went wrong in setupNumCellsExpectedAroundLayer. There's not enough cells around the layer.");
+									System.exit(1);
+									
 								}
 								
 							}
