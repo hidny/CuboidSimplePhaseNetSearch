@@ -88,33 +88,46 @@ This is what I call the type of 1x1xN net where the bottom cell and the top cell
 
 Example 1:
 
- ```
-|..|..|..|..|..|..|..|..|13|..|
-|..|..|..|..|..|..|12|#9|#6|#3|
-|..|..|..|#8|#5|#2|11|..|..|..|
-|#4|#1|10|#7|..|..|..|..|..|..|
-|..|..|#0|..|..|..|..|..|..|..|
-```
+  
+
+|..|..|..|..|..|..|..|..|13|..|<br>
+
+|..|..|..|..|..|..|12|#9|#6|#3|<br>
+
+|..|..|..|#8|#5|#2|11|..|..|..|<br>
+
+|#4|#1|10|#7|..|..|..|..|..|..|<br>
+
+|..|..|#0|..|..|..|..|..|..|..|<br>
+
+  
 
 Example 2:
 
-```
-|..|..|13|..|..|..|..|
-|..|..|12|#9|#6|#3|..|
-|#5|..|..|#8|..|#2|11|
-|#4|#1|10|#7|..|..|..|
-|..|..|#0|..|..|..|..|
-```
+|..|..|13|..|..|..|..|<br>
+
+|..|..|12|#9|#6|#3|..|<br>
+
+|#5|..|..|#8|..|#2|11|<br>
+
+|#4|#1|10|#7|..|..|..|<br>
+
+|..|..|#0|..|..|..|..|<br>
+
+  
 
 Example 3:
 
-```
-|..|..|13|..|..|..|..|
-|..|..|12|29|26|23|..|
-|#5|..|11|28|..|22|..|
-|#4|#1|10|27|..|..|..|
-|..|..|#0|..|..|..|..|
-```
+|..|..|13|..|..|..|..|<br>
+
+|..|..|12|29|26|23|..|<br>
+
+|#5|..|11|28|..|22|..|<br>
+
+|#4|#1|10|27|..|..|..|<br>
+
+|..|..|#0|..|..|..|..|<br>
+
   
 
 See Appendix A for the theory behind the shortcuts I'm planning on using.
@@ -214,17 +227,13 @@ I used bit-masking to make this check even faster.
 
   
 
-## File structure/Important packages:
+## File structure:
 
-This repo has lots of files that aren't used because I didn't bother deleting old code.
+  
 
-I'm currently working on the SimplePhaseSearch Package. The latest iteration is the one I'm working on. I'm hoping to have an optimized version
-of unoccupied cell region split detection. So far, I have a slow and simple version of it.
-I'm also using the OutputReader package to look at the output of nets intersecting 2 cuboids, and check if any of those nets intersect a third one.
+TODO: (As of this writing, I actually just got back to working on this repo after a 2-month break, so I'll have to figure it out and I'll probably reorganize it later...)
 
-Another package of note is the "NewModelWithIntersection" package. I used it to search for simply stacked nets. I'm planning on trying to improve on it by implementing 2 new ideas I had about how to make it go faster.
-
-The other code not mentioned houses helper functions that I haven't edited in a long time, or aren't being used anymore.
+  
 
   
 
@@ -246,11 +255,10 @@ Cells that have a path to the bottom cell
 Example:
 15, 34, and 13 are grounded because it's connected to the 0 cell, but 34 is not:
 
-```
-|34|13|..|
-|15|..|34|
-|00|..|..|
-```
+|34|13|..|<br>
+|15|..|34|<br>
+|00|..|..|<br>
+
   
 
 ## Appendix A: 'simple phase nets' conjectures
@@ -275,40 +283,39 @@ The three conjectures build on each other, and I don't technically depend on the
 There's only 4 ways for a layer of an Nx1x1 cuboid to be configured:
 
 Here they are:
-```
-{1, 1, 1, 1, 0, 0, 0}, or
-{1, 1, 0, 1, 0, 0, 1}, or
-{1, 0, 1, 1, 0, 1, 0}, or
-{1, 0, 0, 1, 0, 1, 1}
-```
+
+{1, 1, 1, 1, 0, 0, 0}, or<br>
+
+{1, 1, 0, 1, 0, 0, 1}, or<br>
+
+{1, 0, 1, 1, 0, 1, 0}, or<br>
+
+{1, 0, 0, 1, 0, 1, 1}<br>
+
   
 
 Example option 1:
 
-```
-|24|21|10|27|
-```
+|24|21|10|27|<br>
+
   
 
 Example option 2:
 
-```
-|25|22|..|28|..|..|11|
-```
+|25|22|..|28|..|..|11|<br>
+
   
 
 Example option 3:
 
-```
-|25|..|28|22|..|11|
-```
+|25|..|28|22|..|11|<br>
+
   
 
 Example option 4:
 
-```
-|25|..|..|28|..|22|11|
-```
+|25|..|..|28|..|22|11|<br>
+
   
 
   
@@ -327,7 +334,23 @@ There's 2 states for the rest because either the left 2 connected square 'island
 
 or the right 2 are 'grounded' to the bottom cell without the need of the above layer's help. (See: 'Explanation of 'Grounded cells'', for an idea of what is meant by 'grounded')
 
-  
+Example that uses all 7 layer states:
+
+````
+|..|..|..|..|##|..|..|
+|..|##|##|##|##|..|..|
+|..|##|..|##|##|..|##|
+|##|##|..|##|..|..|##|
+|##|..|..|##|..|##|##|
+|..|..|..|##|##|##|##|
+|..|##|..|##|##|..|##|
+|##|##|..|##|..|..|##|
+|##|..|..|##|..|##|##|
+|##|##|##|##|..|..|..|
+|..|..|##|..|..|..|..|
+```
+(The bottom half has the left side of the layers grounded from bottom to top without needing higher layers to help ground while
+for the top half, it's the opposite)
 
 'simple phase nets' conjecture 3:
 
@@ -335,15 +358,21 @@ or the right 2 are 'grounded' to the bottom cell without the need of the above l
 
 This formula gets us the number of ways to have a 'simple phase nets' with dimensions 1x1xn:
 
-```
+
 F(n) = 16 * (1 0 0 0 0 0 0) M^(n-1) (1)
-                                    (0)
-                                    (0)
-                                    (0)
-                                    (0)
-                                    (0)
-                                    (0)
-```
+
+                              (0)
+
+                              (0)
+
+                              (0)
+
+                              (0)
+
+                              (0)
+
+                              (0)
+
 Where the matrix M =
 
 7 2 1 2 2 1 2<br>
@@ -379,6 +408,8 @@ M=
 2 0 0 0 1 1 1<br>
 
 1 0 0 0 1 1 1<br>
+
+(I got this matrix from permuting the order of the states of the 1st matrix.)
 
 ### Notes about this equation
 * This only counts the number of fixed solutions. (i.e: this ignores the 2D symmetries)
