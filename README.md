@@ -89,7 +89,7 @@ This is what I call the type of 1x1xN net where the bottom cell and the top cell
 Example 1:
 
   
-
+```
 |..|..|..|..|..|..|..|..|13|..|<br>
 
 |..|..|..|..|..|..|12|#9|#6|#3|<br>
@@ -99,11 +99,12 @@ Example 1:
 |#4|#1|10|#7|..|..|..|..|..|..|<br>
 
 |..|..|#0|..|..|..|..|..|..|..|<br>
-
+```
   
 
 Example 2:
 
+```
 |..|..|13|..|..|..|..|<br>
 
 |..|..|12|#9|#6|#3|..|<br>
@@ -113,11 +114,12 @@ Example 2:
 |#4|#1|10|#7|..|..|..|<br>
 
 |..|..|#0|..|..|..|..|<br>
-
+```
   
 
 Example 3:
 
+```
 |..|..|13|..|..|..|..|<br>
 
 |..|..|12|29|26|23|..|<br>
@@ -127,7 +129,7 @@ Example 3:
 |#4|#1|10|27|..|..|..|<br>
 
 |..|..|#0|..|..|..|..|<br>
-
+```
   
 
 See Appendix A for the theory behind the shortcuts I'm planning on using.
@@ -255,10 +257,11 @@ Cells that have a path to the bottom cell
 Example:
 15, 34, and 13 are grounded because it's connected to the 0 cell, but 34 is not:
 
+```
 |34|13|..|<br>
 |15|..|34|<br>
 |00|..|..|<br>
-
+```
   
 
 ## Appendix A: 'simple phase nets' conjectures
@@ -336,7 +339,7 @@ or the right 2 are 'grounded' to the bottom cell without the need of the above l
 
 Example that uses all 7 layer states:
 
-
+```
 |..|..|..|..|##|..|..|<br>
 |..|##|##|##|##|..|..|<br>
 |..|##|..|##|##|..|##|<br>
@@ -348,7 +351,7 @@ Example that uses all 7 layer states:
 |##|..|..|##|..|##|##|<br>
 |##|##|##|##|..|..|..|<br>
 |..|..|##|..|..|..|..|<br>
-
+```
 
 (The bottom half has the left side of the layers grounded from bottom to top without needing higher layers to help ground while
 for the top half, it's the opposite)
