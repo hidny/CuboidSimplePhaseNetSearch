@@ -367,13 +367,13 @@ F(n) = 16 * (1 0 0 0 0 0 0) M^(n-1) (1)
 
 Where the matrix M =
 
-7 2 1 2 2 1 2
-1 1 0 1 0 1 0
-2 0 1 0 1 0 1
-2 1 0 1 0 1 0
-2 0 1 0 1 0 1
-2 1 0 1 0 1 0
-1 0 1 0 1 0 1
+7 2 1 2 2 1 2<br>
+1 1 0 1 0 1 0<br>
+2 0 1 0 1 0 1<br>
+2 1 0 1 0 1 0<br>
+2 0 1 0 1 0 1<br>
+2 1 0 1 0 1 0<br>
+1 0 1 0 1 0 1<br>
 
 <br>
 
@@ -381,14 +381,14 @@ or more simply:
 
 M=
 
-7 2 2 1 1 2 2
-1 1 1 1 0 0 0
-2 1 1 1 0 0 0
-2 1 1 1 0 0 0
-2 0 0 0 1 1 1
-2 0 0 0 1 1 1
-1 0 0 0 1 1 1
-
+7 2 2 1 1 2 2<br>
+1 1 1 1 0 0 0<br>
+2 1 1 1 0 0 0<br>
+2 1 1 1 0 0 0<br>
+2 0 0 0 1 1 1<br>
+2 0 0 0 1 1 1<br>
+1 0 0 0 1 1 1<br>
+<br>
 (I got this matrix from permuting the order of the states of the 1st matrix.)
 
 ### Notes about this equation
