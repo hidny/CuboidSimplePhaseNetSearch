@@ -334,7 +334,23 @@ There's 2 states for the rest because either the left 2 connected square 'island
 
 or the right 2 are 'grounded' to the bottom cell without the need of the above layer's help. (See: 'Explanation of 'Grounded cells'', for an idea of what is meant by 'grounded')
 
-  
+Example that uses all 7 layer states:
+
+````
+|..|..|..|..|##|..|..|
+|..|##|##|##|##|..|..|
+|..|##|..|##|##|..|##|
+|##|##|..|##|..|..|##|
+|##|..|..|##|..|##|##|
+|..|..|..|##|##|##|##|
+|..|##|..|##|##|..|##|
+|##|##|..|##|..|..|##|
+|##|..|..|##|..|##|##|
+|##|##|##|##|..|..|..|
+|..|..|##|..|..|..|..|
+```
+(The bottom half has the left side of the layers grounded from bottom to top without needing higher layers to help ground while
+for the top half, it's the opposite)
 
 'simple phase nets' conjecture 3:
 
@@ -392,6 +408,8 @@ M=
 2 0 0 0 1 1 1<br>
 
 1 0 0 0 1 1 1<br>
+
+(I got this matrix from permuting the order of the states of the 1st matrix.)
 
 ### Notes about this equation
 * This only counts the number of fixed solutions. (i.e: this ignores the 2D symmetries)
