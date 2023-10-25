@@ -35,10 +35,14 @@ public class RegionSplitLogicSimple3 {
 		//Will have to be careful about the corner indexes..
 		for(int layerState=0; layerState<NUM_LAYER_STATES; layerState++) {
 			
-			if(layerState != 0) {
-				continue;
-			}
+			//if(layerState != 0) {
+			//	continue;
+			//}
 			for(int index=0; index<neighbours.length; index++) {
+
+				if(index > 1) {
+					continue;
+				}
 				for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 					
 					System.out.println("State: " + layerState);
@@ -53,15 +57,14 @@ public class RegionSplitLogicSimple3 {
 					System.out.println();
 					
 				}
+				
 			}
 		}
 		
 		System.out.println("Done");
-		//System.exit(1);
+		System.exit(1);
 	}
 	
-	// Structure: [totalArea][NUM_ROTATION][NUM_LAYER_STATES][NUM_CELLS_PER_LAYER];
-
 	
 	private boolean tmpExplored[];
 	private boolean tmpArray[];
@@ -203,9 +206,12 @@ public class RegionSplitLogicSimple3 {
 	private int preComputedCellsAboveCurLayerMid[][][][];
 	private int preComputedCellsAboveCurLayerSide[][][][];
 
-	//TODO:
+	
 	// This check is meant to save time by checking if there's a split before iterating through
-	// every sidebump:
+	// every sidebump.
+	// This does a breadth-first search on the remaining empty cells, so it's a little bit slow, and 
+	// I'm hoping to limit the number of times this needs to get called.
+	// I implemented a bare-bones queue that barely works for this usecase. It's not something I'm proud of.
 	public boolean untouchableRegionCreatedAfterLayerAdded(long curState[],
 			int lastLayerStateAdded,
 			int indexGroundedBelowLayerMid,
@@ -282,13 +288,11 @@ public class RegionSplitLogicSimple3 {
 	public static final int BELOW = 2;
 	public static final int LEFT = 3;
 	
-	//TODO: this is only for going up through the middle...
-	// Try to also cover the case of going up on the side and going from top to bottom...
-
-	//TODO: handle the case of the 1st layer separately (i.e: bottom cell + 4 more cells)
-	
 	private int numCellsAbovePerLayerStateMid[];
 	private int numCellsAbovePerLayerStateSide[];
+	
+	//TODO: maybe try handling the case where we go from top to bottom?
+	// I'll do that later.
 	
 	public void initNumCellsAbovePerLayer() {
 
@@ -372,32 +376,33 @@ public class RegionSplitLogicSimple3 {
 						Coord2D above = tryAttachCellInDir(cur.i, cur.j, ABOVE);
 						
 						//TODO: I didn't bother making sure that the indexes in the list are distinct.
-						// I'll deal with this later.
+						// For the 1st implementatin, I'll just deal with it...
 						preComputedCellsAboveCurLayerMid[layerState][index][rotation][indexCurLayer] = above.i;
 						
 						cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);	
 					}
 
+					//TODO: copy/paste code:
 					cur = new Coord2D(index, rotation);
 					for(int indexCurLayer=0; indexCurLayer<numCellsAbovePerLayerStateSide[layerState]; indexCurLayer++) {
 						
 						Coord2D above = tryAttachCellInDir(cur.i, cur.j, ABOVE);
 
 						//TODO: I didn't bother making sure that the indexes in the list are distinct.
-						// I'll deal with this later.
+						// For the 1st implementatin, I'll just deal with it...
 						preComputedCellsAboveCurLayerSide[layerState][index][rotation][indexCurLayer] = above.i;
 						
 						cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
 						
 					}
+
+					//END TODO: copy/paste code:
 				}
 			}
 		}
 	}
 	
 
-	
-	//TODO
 	// Structure: [NUM_LAYER_STATES][totalArea][NUM_ROTATION][NUM_CELLS_PER_LAYER];
 	private int preComputedCellsAroundCurLayerMid[][][][];
 	private int preComputedCellsAroundCurLayerSide[][][][];
@@ -410,17 +415,13 @@ public class RegionSplitLogicSimple3 {
 		
 		for(int layerState=0; layerState<NUM_LAYER_STATES; layerState++) {
 			
-			//if(layerState != 0) {
-				//TODO: remove this after testing.
-			//	continue;
-			//}
-			
 			for(int index=0; index<neighbours.length; index++) {
 				for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 					
 					int indexToAdd = 0;
 
-					//TODO: because it's on a cuboid, there might be repeat indexes... that doesn't work...
+					//TODO: because it's on a cuboid, there might be repeat indexes...
+					// For the 1st implementation, I'll just deal with it.
 					preComputedCellsAroundCurLayerMid[layerState][index][rotation] = new int[2 * (numCellsAbovePerLayerStateMid[layerState] + 3)];
 					
 					//System.out.println("Number: " + numCellsAbovePerLayerMid[layerState]);
@@ -430,8 +431,6 @@ public class RegionSplitLogicSimple3 {
 						
 						Coord2D above = tryAttachCellInDir(cur.i, cur.j, ABOVE);
 						
-						//TODO: I didn't bother making sure that the indexes in the list are distinct.
-						// I'll deal with this later.
 						preComputedCellsAroundCurLayerMid[layerState][index][rotation][indexToAdd] = above.i;
 						indexToAdd++;
 
@@ -463,8 +462,6 @@ public class RegionSplitLogicSimple3 {
 						
 						Coord2D below = tryAttachCellInDir(cur.i, cur.j, BELOW);
 						
-						//TODO: I didn't bother making sure that the indexes in the list are distinct.
-						// I'll deal with this later.
 						preComputedCellsAroundCurLayerMid[layerState][index][rotation][indexToAdd] = below.i;
 						indexToAdd++;
 
@@ -504,22 +501,17 @@ public class RegionSplitLogicSimple3 {
 					
 					int indexToAdd = 0;
 
-					//TODO: because it's on a cuboid, there might be repeat indexes... that doesn't work...
 					preComputedCellsAroundCurLayerSide[layerState][index][rotation] = new int[2 * (numCellsAbovePerLayerStateSide[layerState] + 3)];
 					
-					//System.out.println("Number: " + numCellsAbovePerLayerSide[layerState]);
 					Coord2D cur = new Coord2D(index, rotation);
 					
 					for(int indexCurLayer=0; indexCurLayer<numCellsAbovePerLayerStateSide[layerState]; indexCurLayer++) {
 						
 						Coord2D above = tryAttachCellInDir(cur.i, cur.j, ABOVE);
 						
-						//TODO: I didn't bother making sure that the indexes in the list are distinct.
-						// I'll deal with this later.
 						preComputedCellsAroundCurLayerSide[layerState][index][rotation][indexToAdd] = above.i;
 						indexToAdd++;
 
-							
 						cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
 					}
 					
@@ -547,8 +539,6 @@ public class RegionSplitLogicSimple3 {
 						
 						Coord2D below = tryAttachCellInDir(cur.i, cur.j, BELOW);
 						
-						//TODO: I didn't bother making sure that the indexes in the list are distinct.
-						// I'll deal with this later.
 						preComputedCellsAroundCurLayerSide[layerState][index][rotation][indexToAdd] = below.i;
 						indexToAdd++;
 
@@ -709,7 +699,7 @@ public class RegionSplitLogicSimple3 {
 								
 							}
 							
-							//TODO: ahh!
+							//END TODO: Copy/paste code for side:
 							
 						}
 					}
@@ -720,6 +710,7 @@ public class RegionSplitLogicSimple3 {
 		
 	}
 	
+	//TODO: Below is copy/paste code that shouldn't be here: 
 	
 	private static final int NUM_NEIGHBOURS_PER_CELL = 4;
 	
@@ -732,7 +723,6 @@ public class RegionSplitLogicSimple3 {
 		return ((1L << bitShift) & curState[indexArray]) != 0L;
 	}
 	
-	//TODO: copy/paste code:
 	public static final int NUM_LONGS_TO_USE = 2;
 	
 	private static long[] setImpossibleForAnswerSheet() {
@@ -758,7 +748,6 @@ public class RegionSplitLogicSimple3 {
 	}
 	
 	
-	//TODO copy/paste code:
 
 	private long[] convertBoolArrayToLongs(boolean tmpArray[]) {
 		
@@ -782,5 +771,4 @@ public class RegionSplitLogicSimple3 {
 		
 		return ret;
 	}
-
 }
