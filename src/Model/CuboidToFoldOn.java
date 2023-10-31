@@ -20,7 +20,7 @@ public class CuboidToFoldOn implements CuboidToFoldOnInterface {
 	
 	public CuboidToFoldOn(int a, int b, int c) {
 
-		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c);
+		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c, true);
 		
 		cellsUsed = new boolean[Utils.getTotalArea(a, b, c)];
 		rotationPaperRelativeToCuboidFlatMap = new int[Utils.getTotalArea(a, b, c)];

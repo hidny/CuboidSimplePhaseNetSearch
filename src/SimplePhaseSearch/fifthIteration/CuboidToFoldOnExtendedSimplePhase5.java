@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;
 import Model.CuboidToFoldOnInterface;
+import Model.DataModelViews;
 import Model.NeighbourGraphCreator;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
@@ -23,8 +24,12 @@ public class CuboidToFoldOnExtendedSimplePhase5  implements CuboidToFoldOnInterf
 	private int dimensions[] = new int[NUM_DIMENSIONS_CUBOID];
 
 	public CuboidToFoldOnExtendedSimplePhase5(int a, int b, int c) {
+		this(a, b, c, true);
+	}
+	
+	public CuboidToFoldOnExtendedSimplePhase5(int a, int b, int c, boolean verbose) {
 
-		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c);
+		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c, verbose);
 		
 		dimensions[0] = a;
 		dimensions[1] = b;
@@ -556,7 +561,7 @@ public class CuboidToFoldOnExtendedSimplePhase5  implements CuboidToFoldOnInterf
 			debugNotEmpty++;
 		}
 		
-		if(debugEmpty % 100000 == 0 && debugEmpty > debugPrinted) {
+		if(debugEmpty % 10000000L == 0 && debugEmpty > debugPrinted) {
 			System.out.println(debugEmpty + " vs " + debugNotEmpty);
 			debugPrinted = debugEmpty;
 		}
@@ -1592,7 +1597,7 @@ public class CuboidToFoldOnExtendedSimplePhase5  implements CuboidToFoldOnInterf
 
 		sanityTestGetCellsToAddGoingUpAndDown();
 		
-		CuboidToFoldOnExtendedSimplePhase5 test1 = new CuboidToFoldOnExtendedSimplePhase5(5, 1, 1);
+		CuboidToFoldOnExtendedSimplePhase5 test1 = new CuboidToFoldOnExtendedSimplePhase5(5, 1, 1, true);
 		
 		for(int m=0; m<7; m++) {
 			System.out.println("m = " + m);
@@ -1748,6 +1753,225 @@ public class CuboidToFoldOnExtendedSimplePhase5  implements CuboidToFoldOnInterf
 			reference.addNextLevel(new Coord2D(translateStateToLayerIndex(layerStateAbove), sideBump), null);
 			System.out.println(reference);
 		}
+	}
+	
+	//TODO: Add more than just grounded indexes.
+	// Add Top, and top to bottom indexes.
+	public void printCurrentStateOnOtherCuboidsFlatMap() {
+		
+		CuboidToFoldOnExtendedSimplePhase5 toPrint = new CuboidToFoldOnExtendedSimplePhase5(
+				this.dimensions[0],
+				this.dimensions[1],
+				this.dimensions[2],
+				false
+				);
+		
+		toPrint.initializeNewBottomIndexAndRotation(
+				this.prevGroundedIndexesMid[0],
+				this.prevGroundedRotationsMid[0]
+				);
+		
+		String labels[] = new String[Utils.getTotalArea(toPrint.dimensions)];
+		
+		for(int i=0; i<labels.length; i++) {
+			labels[i] = null;
+		}
+		
+		//Set the bottom index:
+		labels[this.prevGroundedIndexesMid[0]] = "Bo";
+		
+		
+		//Set the grounded Mid indexes (do more later)
+		for(int i=2; i<=this.currentLayerIndex; i++) {
+			
+			char label = (char)( (i-2) + 'A');
+			
+			if(i < this.currentLayerIndex) {
+				labels[this.prevGroundedIndexesMid[i]] = label + "" + label;
+				
+
+				Coord2D cur = new Coord2D(this.prevGroundedIndexesMid[i], this.prevGroundedRotationsMid[i]);
+				
+				for(int j=0; j<getNumMidPerLayerState()[this.prevLayerStateIndex[i - 1]] - 1; j++) {
+					cur = this.tryAttachCellInDir(cur.i, cur.j, RIGHT);
+					labels[cur.i] = label + "" + label;
+					
+				}
+				
+			} else {
+				labels[this.groundedIndexMid] = label + "" + label;
+				
+
+				Coord2D cur = new Coord2D(this.groundedIndexMid, this.groundRotationRelativeFlatMapMid);
+				
+				for(int j=0; j<getNumMidPerLayerState()[this.prevLayerStateIndex[i - 1]] - 1; j++) {
+					cur = this.tryAttachCellInDir(cur.i, cur.j, RIGHT);
+					labels[cur.i] = label + "" + label;
+				}
+			}
+		}
+		
+		//Set the grounded Side indexes (do more later)
+		for(int i=2; i<=this.currentLayerIndex; i++) {
+			
+			char label = (char)( (i-2) + 'A');
+			
+			if(this.prevGroundedIndexesSide[i] != this.prevGroundedIndexesMid[i]) {
+				if(i < this.currentLayerIndex) {
+					labels[this.prevGroundedIndexesSide[i]] = label + "s";
+					
+					Coord2D cur = new Coord2D(this.prevGroundedIndexesSide[i], this.prevGroundedRotationsSide[i]);
+					
+					for(int j=0; j<getNumSidePerLayerState()[this.prevLayerStateIndex[i - 1]] - 1; j++) {
+						cur = this.tryAttachCellInDir(cur.i, cur.j, RIGHT);
+						labels[cur.i] = label + "s";
+						
+					}
+					
+				} else {
+					labels[this.groundedIndexSide] = label + "s";
+					
+
+					Coord2D cur = new Coord2D(this.groundedIndexSide, this.groundRotationRelativeFlatMapSide);
+					
+					for(int j=0; j<getNumSidePerLayerState()[this.prevLayerStateIndex[i - 1]] - 1; j++) {
+						cur = this.tryAttachCellInDir(cur.i, cur.j, RIGHT);
+						labels[cur.i] = label + "" + label;
+					}
+				}
+			}
+		}
+		
+		//Label top to bottom layers:
+		// I got it by trial and error...
+		// I don't know why I have an "[i+2]" here... I think I messed it up elsewhere and I'm now compensating for that mistake.
+		for(int i=this.currentLayerIndex; i>=2; i--) {
+			
+			if((i == this.currentLayerIndex || this.prevLayerStateIndex[i+1] == 0)
+					&& this.prevLayerStateIndex[i] != 0) {
+				
+				Coord2D curGround = null;
+				
+				if(i + 2 < this.currentLayerIndex) {
+					curGround = new Coord2D(this.prevGroundedIndexesMid[i + 2], this.prevGroundedRotationsMid[i + 2]);
+				} else {
+					curGround = new Coord2D(this.groundedIndexMid, this.groundRotationRelativeFlatMapMid);
+				}
+				
+				for(; prevLayerStateIndex[i] != 0 && i>=2; i--) {
+
+					if(i + 2 < this.currentLayerIndex) {
+						
+						curGround = new Coord2D(newGroundedIndexBelow[prevLayerStateIndex[i]][prevLayerStateIndex[i+1]][curGround.i][curGround.j][this.prevSideBumps[i+1]],
+								newGroundedRotationBelow[prevLayerStateIndex[i]][prevLayerStateIndex[i+1]][curGround.i][curGround.j][this.prevSideBumps[i+1]]);
+						
+					
+						
+					} else {
+						curGround = new Coord2D(newGroundedIndexBelow[prevLayerStateIndex[i]][0][curGround.i][curGround.j][this.prevSideBumps[i+1]],
+										newGroundedRotationBelow[prevLayerStateIndex[i]][0][curGround.i][curGround.j][this.prevSideBumps[i+1]]);
+						
+					}
+					Coord2D cur = curGround;
+					char label = (char)( (i-1) + 'A');
+					labels[cur.i] = label + "b";
+					
+					for(int j=0; j<getNumTopToBottomPerLayerState()[this.prevLayerStateIndex[i]] - 1; j++) {
+						cur = this.tryAttachCellInDir(cur.i, cur.j, RIGHT);
+						labels[cur.i] = label + "b";
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+		int numNullLabels = 0;
+		int curTopIndex = -1;
+		//Add the top:
+		for(int i=0; i<labels.length; i++) {
+			if(labels[i] == null) {
+				numNullLabels++;
+				curTopIndex = i;
+			}
+		}
+		
+		if(numNullLabels == 1) {
+			labels[curTopIndex] = "To";
+		} else {
+
+			System.out.println(DataModelViews.getFlatNumberingView(this.dimensions[0],
+					this.dimensions[1],
+					this.dimensions[2],
+					labels));
+			
+			System.out.println("DOH!");
+			System.exit(1);
+		}
+		
+
+		System.out.println(DataModelViews.getFlatNumberingView(this.dimensions[0],
+				this.dimensions[1],
+				this.dimensions[2],
+				labels));
+		
+	}
+	
+	
+	public int[] getNumMidPerLayerState() {
+		
+		int ret[] = new int[CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE.length];
+		
+		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE.length; i++) {
+			int cur = 0;
+			
+			for(int j=0; j<CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[i].length; j++) {
+				if(CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[i][j] == 1) {
+					cur++;
+				}
+			}
+			
+			ret[i] = cur;
+		}
+		return ret;
+		
+	}
+	public int[] getNumSidePerLayerState() {
+		
+		int ret[] = new int[CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE.length];
+		
+		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE.length; i++) {
+			int cur = 0;
+			
+			for(int j=0; j<CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[i].length; j++) {
+				if(CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[i][j] == 1) {
+					cur++;
+				}
+			}
+			
+			ret[i] = cur;
+		}
+		return ret;
+		
+	}
+	public int[] getNumTopToBottomPerLayerState() {
+		
+		int ret[] = new int[CELLS_TO_ADD_BY_STATE_GOING_DOWN.length];
+		
+		for(int i=0; i<CELLS_TO_ADD_BY_STATE_GOING_DOWN.length; i++) {
+			int cur = 0;
+			
+			for(int j=0; j<CELLS_TO_ADD_BY_STATE_GOING_DOWN[i].length; j++) {
+				if(CELLS_TO_ADD_BY_STATE_GOING_DOWN[i][j] == 1) {
+					cur++;
+				}
+			}
+			
+			ret[i] = cur;
+		}
+		return ret;
+		
 	}
 
 }

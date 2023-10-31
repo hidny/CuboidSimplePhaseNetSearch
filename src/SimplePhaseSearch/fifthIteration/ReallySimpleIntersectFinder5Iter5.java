@@ -56,7 +56,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		
 		//N: 13
-		//Found 203 unique solutions
+		//Found 203 unique solutions (This matches what was found using the variant of redelmeier's algo)
 		//reallySimpleSearch(3, 3, 3);
 
 		//Found 77 unique solutions
@@ -113,7 +113,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//{5, 5, 2}, {6, 3, 3)
 
 		//Found 163 unique solution. (Ran from Oct 12th 9PM to Oct 20th, 4pm) (or about 8 days)
-		reallySimpleSearch(5, 5, 2);
+		//reallySimpleSearch(5, 5, 2);
 
 		//Found 105801 unique solution. (Ran from Oct 12th 9pm to Oct 18th, 7 pm) (or about 6 days)
 		//reallySimpleSearch(6, 3, 3);
@@ -136,7 +136,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(7, 5, 1);
 
 		//Found  unique solutions
-		//reallySimpleSearch(11, 3, 1);
+		reallySimpleSearch(11, 3, 1);
 		
 		//Found 150 unique solution. (14 hours and 32 minutes on October 16th)
 		//reallySimpleSearch(15, 2, 1);
@@ -189,7 +189,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		long ret = 0;
 		
-		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
+		for(int i=3; i<startingPointsAndRotationsToCheck.size(); i++) {
 
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
@@ -294,6 +294,9 @@ Current UTC timestamp in milliseconds: 1675458353391
 							
 							System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
 
+							System.out.println("Other cuboid view:");
+							cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+							
 							if(debugNope) {
 								System.out.println("Debug nope");
 								System.exit(1);

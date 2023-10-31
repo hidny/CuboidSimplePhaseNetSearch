@@ -39,6 +39,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			/*
 			//Check 1x1x13:
 			String file1 = "D:\\test6x3x1.txt";
+			//String file1 = "D:\\test13x1x1_prev_to_compate.txt";
 			
 			int dimensionsCuboidToCheck[] = new int[]{3, 3, 3};
 			
@@ -162,22 +163,22 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int otherDimensions2[] = new int[] {20, 1, 1};
 			*/
 			
-			//TODO:
 			//N=22
 			//{5, 5, 2}, {6, 3, 3)
-			String file1 = "D:\\forgotname633.txt";
+			/*String file1 = "D:\\output5x5x2ManuallyMerged.txt";
 			
-			int dimensionsCuboidToCheck[] = new int[] {5, 5, 2};
+			int dimensionsCuboidToCheck[] = new int[] {6, 3, 3};
 			
-			int otherDimensions1[] = new int[] {6, 3, 3};
+			int otherDimensions1[] = new int[] {5, 5, 2};
 			int otherDimensions2[] = new int [] {22, 1, 1};
+			*/
 			//TODO
 			//5 x 4 x 3: 94
 			//7 x 5 x 1: 94
 			//11 x 3 x 1: 94
 			//15 x 2 x 1: 94
 			
-			/*
+			
 			//V1:
 			String file1 = "D:\\output15x2x1N=23.txt";
 			
@@ -185,7 +186,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			
 			int otherDimensions1[] = new int[] {15, 2, 1};
 			int otherDimensions2[] = new int[] {23, 1, 1};
-			*/
+			
 
 			/*
 			//V2:
@@ -228,6 +229,8 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 				System.exit(1);
 			}
 			
+			
+			HashSet <String> codesThatCover3Cuboids = new HashSet <String>();
 			Scanner in = new Scanner(new File(file1));
 			
 			HashSet<String> file1Solutions = new HashSet<String>();
@@ -273,8 +276,10 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 
 					//TODO: Check array against other dimensions! I'll do it later
 					
-					if(ValidNetSolutionChecker.hasSolution(dimensionsCuboidToCheck, netToReplicate, false)) {
+					if(ValidNetSolutionChecker.hasSolution(dimensionsCuboidToCheck, netToReplicate, false)
+							&& ! codesThatCover3Cuboids.contains(solutionCodeString)) {
 						
+						codesThatCover3Cuboids.add(solutionCodeString);
 						numSoutionsFound++;
 						
 						System.out.println("Found 3-way solution!");
