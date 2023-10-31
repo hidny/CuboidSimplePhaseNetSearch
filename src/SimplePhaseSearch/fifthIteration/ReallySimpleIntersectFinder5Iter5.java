@@ -136,7 +136,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(7, 5, 1);
 
 		//Found  unique solutions
-		reallySimpleSearch(11, 3, 1);
+		//reallySimpleSearch(11, 3, 1);
 		
 		//Found 150 unique solution. (14 hours and 32 minutes on October 16th)
 		//reallySimpleSearch(15, 2, 1);
@@ -161,7 +161,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		// N = 26
 
 		//Found  unique solutions
-		//reallySimpleSearch(17, 2, 1);
+		reallySimpleSearch(17, 2, 1);
 
 		//Found  unique solutions
 		//reallySimpleSearch(8, 5, 1);
@@ -189,7 +189,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		long ret = 0;
 		
-		for(int i=3; i<startingPointsAndRotationsToCheck.size(); i++) {
+		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
 
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
@@ -258,13 +258,19 @@ Current UTC timestamp in milliseconds: 1675458353391
 		return ret;
 	}
 	
-	public static int debugIterator = 0;
+	public static long debugIterator = 0L;
+	public static final long DEBUG_PRINT = 10000000L;
+	
 	public static long findReallySimpleSolutionsRecursion(CuboidToFoldOnExtendedSimplePhase5 cuboidToBuild, int curLayerIndex, int numLayers, int prevLayerStateIndex,
 			boolean debugNope) {
 
 		debugIterator++;
 		//System.out.println("Iteration number: " + debugIterator);
 		
+		if(debugIterator % DEBUG_PRINT == 0) {
+			System.out.println("Debug numIterations = " + debugIterator);
+			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+		}
 		long ret = 0;
 		
 		if(curLayerIndex == numLayers) {
@@ -370,6 +376,11 @@ Current UTC timestamp in milliseconds: 1675458353391
 		debugIterator++;
 		//System.out.println("Iteration number: " + debugIterator);
 
+		if(debugIterator % DEBUG_PRINT == 0) {
+			System.out.println("Debug forced side left. numIterations = " + debugIterator);
+			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+		}
+		
 		if(curLayerIndex == numLayers) {
 			return 0;
 		}
@@ -411,6 +422,11 @@ Current UTC timestamp in milliseconds: 1675458353391
 
 		debugIterator++;
 		//System.out.println("Iteration number: " + debugIterator);
+
+		if(debugIterator % DEBUG_PRINT == 0) {
+			System.out.println("Debug forced side right. numIterations = " + debugIterator);
+			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+		}
 		
 		if(curLayerIndex == numLayers) {
 			return 0;

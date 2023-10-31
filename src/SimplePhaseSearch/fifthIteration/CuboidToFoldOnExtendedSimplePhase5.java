@@ -1847,7 +1847,7 @@ public class CuboidToFoldOnExtendedSimplePhase5  implements CuboidToFoldOnInterf
 		// I don't know why I have an "[i+2]" here... I think I messed it up elsewhere and I'm now compensating for that mistake.
 		for(int i=this.currentLayerIndex; i>=2; i--) {
 			
-			if((i == this.currentLayerIndex || this.prevLayerStateIndex[i+1] == 0)
+			if(i+1 < this.currentLayerIndex && this.prevLayerStateIndex[i+1] == 0
 					&& this.prevLayerStateIndex[i] != 0) {
 				
 				Coord2D curGround = null;
@@ -1899,17 +1899,7 @@ public class CuboidToFoldOnExtendedSimplePhase5  implements CuboidToFoldOnInterf
 		
 		if(numNullLabels == 1) {
 			labels[curTopIndex] = "To";
-		} else {
-
-			System.out.println(DataModelViews.getFlatNumberingView(this.dimensions[0],
-					this.dimensions[1],
-					this.dimensions[2],
-					labels));
-			
-			System.out.println("DOH!");
-			System.exit(1);
 		}
-		
 
 		System.out.println(DataModelViews.getFlatNumberingView(this.dimensions[0],
 				this.dimensions[1],
