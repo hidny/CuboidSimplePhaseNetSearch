@@ -29,11 +29,35 @@ public class CuboidToFoldOnExtendedSimplePhase5  implements CuboidToFoldOnInterf
 	
 	public CuboidToFoldOnExtendedSimplePhase5(int a, int b, int c, boolean verbose) {
 
-		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c, verbose);
+		//Execute a sort (TODO: put in function)
+		int tmpa = a;
+		int tmpb = b;
+		int tmpc = c;
 		
-		dimensions[0] = a;
-		dimensions[1] = b;
-		dimensions[2] = c;
+		int tmp;
+		if(tmpb > tmpa) {
+			tmp = tmpa;
+			tmpa = tmpb;
+			tmpb = tmp;
+		}
+
+		if(tmpc > tmpa) {
+			tmp = tmpa;
+			tmpa = tmpc;
+			tmpc = tmp;
+		}
+		if(tmpc > tmpb) {
+			tmp = tmpb;
+			tmpb = tmpc;
+			tmpc = tmp;
+		}
+		//End execute a sort (TODO: put in function)
+		
+		neighbours = NeighbourGraphCreator.initNeighbourhood(tmpa, tmpb, tmpc, verbose);
+		
+		dimensions[0] = tmpa;
+		dimensions[1] = tmpb;
+		dimensions[2] = tmpc;
 
 		DIM_N_OF_Nx1x1 = (Utils.getTotalArea(this.dimensions)-2) / 4;
 		
@@ -44,6 +68,11 @@ public class CuboidToFoldOnExtendedSimplePhase5  implements CuboidToFoldOnInterf
 		
 		setupNextLayerPossibilities();
 		
+		initializeBoundariesForYCoord();
+		
+		/*for(int i=0; i<Utils.getTotalArea(this.dimensions); i++) {
+			System.out.println("Y coord of index " + i + ": " + getYCoordOfFlatMap(i));
+		}*/
 	}
 	
 	public int getNumCellsToFill() {
@@ -1964,4 +1993,136 @@ public class CuboidToFoldOnExtendedSimplePhase5  implements CuboidToFoldOnInterf
 		
 	}
 
+	//Niche optimization for the Nx2x1 and Nx3x1 cuboids:
+
+	//TODO: once the POC works, streamline this...
+	public boolean netShouldBeSolvedInOppositeDirection(int curLayerIndex, int prevLayerStateIndex) {
+		
+		//I just made up this short-cut... I hope it works...
+		if(curLayerIndex == 0 || curLayerIndex + 1 > getNumLayers() / 2) {
+			return false;
+		}
+		
+		if(dimensions[2] == 1 && dimensions[1] <= 3 && dimensions[0] > 3 && shouldContinueToCheckSkippable()) {
+	
+			int numLayersToGoThrough = getNumLayersDownTubeToGoThru(
+					this.groundedIndexMid, this.groundRotationRelativeFlatMapMid);
+			
+			if(numLayersToGoThrough > dimensions[0] / 2) {
+				
+				//TODO: verify the formula...
+				//For example, I added the +1 at the just to be safe, but I don't know
+				// maybe it should +0, or +2, ...
+				if(getNumLayers() - (curLayerIndex + numLayersToGoThrough) > curLayerIndex + 1) {
+					//System.out.println(dimensions[0]);
+					//System.out.println(dimensions[1]);
+					//System.out.println(dimensions[2]);
+					System.out.println(getNumLayers() + ", " + numLayersToGoThrough + ", " + curLayerIndex + "( " + this.groundedIndexMid + ", " + this.groundRotationRelativeFlatMapMid + ")");
+					
+					return true;
+				}
+				
+			}
+			//this.groundedIndexMid
+			
+			//this.groundedIndexSide
+				
+		}
+		return false;
+	}
+	
+	private int getNumLayers() {
+		
+		return (this.getNumCellsToFill() - 2) / 4;
+	}
+	
+	//If the groundMidIndex is not the same as groundedIndexSide, it doesn't always work...
+	private boolean shouldContinueToCheckSkippable() {
+		return this.groundedIndexMid == this.groundedIndexSide
+				&& groundIndexPotentiallySkipable(this.groundedIndexMid, this.groundRotationRelativeFlatMapMid);
+	}
+	
+	private boolean groundIndexPotentiallySkipable(int groundIndex, int groundRotation) {
+		
+		if(getYCoordOfFlatMap(groundIndex) != -1
+				&& isRotationGoingUpOrDown(groundRotation)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private int getNumLayersDownTubeToGoThru(int groundIndex, int groundRotation) {
+		if( ! groundIndexPotentiallySkipable(groundIndex, groundRotation)) {
+			System.out.println("ERROR: precondition for getNumLayersDownTubeToGoThru is not met.");
+			System.exit(1);
+		}
+		
+		if(isRotationGoingUp(groundRotation)) {
+			return getYCoordOfFlatMap(groundIndex);
+		
+		} else {
+			return dimensions[0] - 1 - getYCoordOfFlatMap(groundIndex);
+		}
+		
+	}
+	
+	private int boundariesForYCoord[];
+	
+	private void initializeBoundariesForYCoord() {
+		boundariesForYCoord = new int[]
+				{
+						dimensions[1],
+						dimensions[1] + dimensions[0],
+						dimensions[1] + dimensions[0] * (dimensions[1] + 1),
+						dimensions[1] + dimensions[0] * (dimensions[1] + 2),
+						dimensions[1] + dimensions[0] * (2 * dimensions[1] + 2)
+						
+				};
+	}
+	
+	//TODO: I don't like the way I wrote this...
+	// Too confusing.
+	private int getYCoordOfFlatMap(int index) {
+
+		
+		if(index >= boundariesForYCoord[0]
+				&& index < boundariesForYCoord[1]) {
+			
+			return (index - boundariesForYCoord[0]) % dimensions[0];
+		
+		} else if(index >= boundariesForYCoord[1]
+				&& index < boundariesForYCoord[2]) {
+
+			return ((index - boundariesForYCoord[1]) /  dimensions[1]) % dimensions[0];
+		
+		} else if(index >= boundariesForYCoord[2]
+				&& index < boundariesForYCoord[3]) {
+		
+			return (index - boundariesForYCoord[2]) % dimensions[0];
+	
+		} else if(index >= boundariesForYCoord[3]
+				&& index < boundariesForYCoord[4]){
+			
+
+			return ((index - boundariesForYCoord[3]) /  dimensions[1]) % dimensions[0];
+			
+		} else {
+			return -1;
+		}
+		
+	}
+	
+	private static boolean isRotationGoingUpOrDown(int rotationRelativeFlatMap) {
+		
+		return rotationRelativeFlatMap % 2 == 0;
+	}
+
+	private static boolean isRotationGoingUp(int rotationRelativeFlatMap) {
+		
+		return rotationRelativeFlatMap == 0;
+	}
+	
+
+	//END Niche optimization for the Nx2x1 and Nx3x1 cuboids:
 }

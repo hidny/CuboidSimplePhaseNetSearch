@@ -62,19 +62,21 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//Found 77 unique solutions
 		//reallySimpleSearch(6, 3, 1);
 		
+		//UP TO HERE
+		
 		//N: 14
-		//Found 13264 unique solution. (3 minutes and 2 seconds on oct 14th)
+		//Found 13264 unique solution. (3 minutes and 2 seconds on oct 14th) (30 minutes on nov 4th. Uh ob!)
 		//reallySimpleSearch(5, 4, 1);
 		
 		
-		//Found 355 unique solutions (40 seconds on oct 14th)
+		//Found 355 unique solutions (40 seconds on oct 14th) (2.5 minutes on nov 4th. Uh oh!)
 		//reallySimpleSearch(9, 2, 1);
 
 		//N:15
 		//Found 507 unique solution. (6 minutes and 36 seconds on oct 14th)
 		//reallySimpleSearch(5, 3, 2);
 
-		//Found 31 unique solutions (almost 11 minutes 20 seconds on oct 14th)
+		//Found 31 unique solutions (almost 11 minutes 20 seconds on oct 14th) (14 minutes on nov 4th...)
 		//reallySimpleSearch(7, 3, 1);
 
 		//N: 17
@@ -82,7 +84,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(5, 5, 1);
 
 		//Found 54 unique solutions ( just over 2 hours on oct 12th and 1 hour and 34 minutes on oct 14th)
-		//reallySimpleSearch(8, 3, 1);
+		reallySimpleSearch(8, 3, 1);
 		
 		//Found 89 unique solution. (17 minutes on oct 12th and 8 minutes and 36 seconds on oct 14th!)
 		//reallySimpleSearch(11, 2, 1);
@@ -161,7 +163,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		// N = 26
 
 		//Found  unique solutions
-		reallySimpleSearch(17, 2, 1);
+		//reallySimpleSearch(17, 2, 1);
 
 		//Found  unique solutions
 		//reallySimpleSearch(8, 5, 1);
@@ -271,6 +273,14 @@ Current UTC timestamp in milliseconds: 1675458353391
 			System.out.println("Debug numIterations = " + debugIterator);
 			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
 		}
+		
+		//TODO:
+		
+		if(cuboidToBuild.netShouldBeSolvedInOppositeDirection(curLayerIndex, prevLayerStateIndex)) {
+			
+			return 0;
+		}
+
 		long ret = 0;
 		
 		if(curLayerIndex == numLayers) {
@@ -461,4 +471,5 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		return ret;
 	}
+	
 }
