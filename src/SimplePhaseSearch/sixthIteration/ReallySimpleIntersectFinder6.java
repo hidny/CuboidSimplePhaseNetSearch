@@ -56,7 +56,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		
 		//N: 13
-		//Found 203 unique solutions
+		//Found 203 unique solutions (This matches what was found using the variant of redelmeier's algo)
 		//reallySimpleSearch(3, 3, 3);
 
 		//Found 77 unique solutions
@@ -74,17 +74,17 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//Found 507 unique solution. (6 minutes and 36 seconds on oct 14th)
 		//reallySimpleSearch(5, 3, 2);
 
-		//Found 31 unique solutions (almost 11 minutes 20 seconds on oct 14th)
+		//Found 31 unique solutions (almost 11 minutes 20 seconds on oct 14th) (14 minutes on nov 4th...)
 		//reallySimpleSearch(7, 3, 1);
 
 		//N: 17
 		//Found  unique solutions
 		//reallySimpleSearch(5, 5, 1);
 
-		//Found 54 unique solutions ( just over 2 hours on oct 12th and 1 hour and 34 minutes on oct 14th)
+		//Found 54 unique solutions ( just over 2 hours on oct 12th and 1 hour and 34 minutes on oct 14th) (Only 14 minutes on Nov 4th)
 		//reallySimpleSearch(8, 3, 1);
 		
-		//Found 89 unique solution. (17 minutes on oct 12th and 8 minutes and 36 seconds on oct 14th!)
+		//Found 89 unique solution. (17 minutes on oct 12th and 8 minutes and 36 seconds on oct 14th!) (4.5 minutes on nov 4th)
 		//reallySimpleSearch(11, 2, 1);
 
 		//N: 19
@@ -101,10 +101,10 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//Found  unique solution
 		//reallySimpleSearch(6, 5, 1);
 
-		//Found 581 unique solution. (Almost 28 hours)
+		//Found 581 unique solution. (Almost 28 hours) (I got 581 in 8 hours and 20 minutes on October 28th)
 		//reallySimpleSearch(7, 3, 2);
 		
-		//Found 507 unique solutions (3 hours and 20 minutes on oct 12th)
+		//Found 507 unique solutions (3 hours and 20 minutes on oct 12th) (1 hour and 30 minutes on Oct 28th) (47 minutes on Nov 4th)
 		//reallySimpleSearch(13, 2, 1);
 		//
 
@@ -112,10 +112,10 @@ Current UTC timestamp in milliseconds: 1675458353391
 		// N = 22
 		//{5, 5, 2}, {6, 3, 3)
 
-		//Found  unique solutions
+		//Found 163 unique solution. (Ran from Oct 12th 9PM to Oct 20th, 4pm) (or about 8 days)
 		//reallySimpleSearch(5, 5, 2);
 
-		//Found  unique solutions
+		//Found 105801 unique solution. (Ran from Oct 12th 9pm to Oct 18th, 7 pm) (or about 6 days)
 		//reallySimpleSearch(6, 3, 3);
 		
 		// N = 23 (4 other ones...)
@@ -138,7 +138,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//Found  unique solutions
 		//reallySimpleSearch(11, 3, 1);
 		
-		//Found  unique solutions
+		//Found 150 unique solution. (14 hours and 32 minutes on October 16th)
 		//reallySimpleSearch(15, 2, 1);
 		
 
