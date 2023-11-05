@@ -2038,7 +2038,9 @@ public class CuboidToFoldOnExtendedSimplePhase5  implements CuboidToFoldOnInterf
 	
 	//If the groundMidIndex is not the same as groundedIndexSide, it doesn't always work...
 	private boolean shouldContinueToCheckSkippable() {
-		return this.groundedIndexMid == this.groundedIndexSide
+		return 
+				//Maybe grounded side index could be different in some cases, but it's not really worth investigating:
+				this.groundedIndexMid == this.groundedIndexSide
 				&& groundIndexPotentiallySkipable(this.groundedIndexMid, this.groundRotationRelativeFlatMapMid);
 	}
 	
