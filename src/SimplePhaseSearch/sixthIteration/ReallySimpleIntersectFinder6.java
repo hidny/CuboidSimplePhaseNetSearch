@@ -64,7 +64,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		//N: 14
 		//Found 13264 unique solution. (3 minutes and 2 seconds on oct 14th)
-		reallySimpleSearch(5, 4, 1);
+		//reallySimpleSearch(5, 4, 1);
 		
 		
 		//Found 355 unique solutions (40 seconds on oct 14th)
@@ -85,6 +85,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(8, 3, 1);
 		
 		//Found 89 unique solution. (17 minutes on oct 12th and 8 minutes and 36 seconds on oct 14th!) (4.5 minutes on nov 4th)
+		//3 minutes and 15 seconds on november 5th.
 		//reallySimpleSearch(11, 2, 1);
 
 		//N: 19
@@ -105,7 +106,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(7, 3, 2);
 		
 		//Found 507 unique solutions (3 hours and 20 minutes on oct 12th) (1 hour and 30 minutes on Oct 28th) (47 minutes on Nov 4th)
-		//reallySimpleSearch(13, 2, 1);
+		reallySimpleSearch(13, 2, 1);
 		//
 
 		//--------
@@ -310,7 +311,6 @@ Current UTC timestamp in milliseconds: 1675458353391
 								numSolutionsPrinted++;
 								System.out.println("Other cuboid view:");
 								cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
-								System.exit(1);
 							}
 							
 							if(debugNope) {
