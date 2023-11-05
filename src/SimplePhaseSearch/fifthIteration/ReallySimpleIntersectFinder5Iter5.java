@@ -66,11 +66,11 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		//N: 14
 		//Found 13264 unique solution. (3 minutes and 2 seconds on oct 14th) (30 minutes on nov 4th. Uh ob!)
-		//reallySimpleSearch(5, 4, 1);
+		reallySimpleSearch(5, 4, 1);
 		
 		
 		//Found 355 unique solutions (40 seconds on oct 14th) (2.5 minutes on nov 4th. Uh oh!)
-		reallySimpleSearch(9, 2, 1);
+		//reallySimpleSearch(9, 2, 1);
 
 		//N:15
 		//Found 507 unique solution. (6 minutes and 36 seconds on oct 14th)
@@ -342,9 +342,9 @@ Current UTC timestamp in milliseconds: 1675458353391
 				
 				cuboidToBuild.addNewLayerFast(nextLayerState, sideBump);
 				
-				if( curLayerIndex > 12 || ! cuboidToBuild.untouchableRegionCreatedAfterLayerAdded() ) {
+				if( ! cuboidToBuild.untouchableRegionCreatedAfterLayerAdded() ) {
 					
-					if(curLayerIndex > 12 || ! cuboidToBuild.twoRegionsCreatedAfterLayerAdded()) {
+					if( ! cuboidToBuild.twoRegionsCreatedAfterLayerAdded()) {
 
 						ret += findReallySimpleSolutionsRecursion(cuboidToBuild, curLayerIndex + 1, numLayers, nextLayerState, debugNope);
 						

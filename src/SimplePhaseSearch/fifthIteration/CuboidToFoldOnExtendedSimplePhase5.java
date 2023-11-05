@@ -566,6 +566,7 @@ public class CuboidToFoldOnExtendedSimplePhase5  implements CuboidToFoldOnInterf
 				int prevSideBump,
 				int curNumRegions
 		)*/
+		/*
 		if(regionSplitLogicSimple4.untouchableRegionNotCreatedAfterLayerAddedQuick(curState,
 				this.prevLayerStateIndex[currentLayerIndex - 2],
 				this.prevLayerStateIndex[currentLayerIndex - 1],
@@ -593,7 +594,7 @@ public class CuboidToFoldOnExtendedSimplePhase5  implements CuboidToFoldOnInterf
 		if(debugEmpty % 10000000L == 0 && debugEmpty > debugPrinted) {
 			System.out.println(debugEmpty + " vs " + debugNotEmpty);
 			debugPrinted = debugEmpty;
-		}
+		}*/
 
 		return regionSplitLogicSimple4.untouchableRegionCreatedAfterLayerAdded
 				(curState,
