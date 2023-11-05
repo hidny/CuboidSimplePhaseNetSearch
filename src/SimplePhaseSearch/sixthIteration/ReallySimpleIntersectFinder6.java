@@ -60,11 +60,11 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(3, 3, 3);
 
 		//Found 77 unique solutions
-		reallySimpleSearch(6, 3, 1);
+		//reallySimpleSearch(6, 3, 1);
 		
 		//N: 14
 		//Found 13264 unique solution. (3 minutes and 2 seconds on oct 14th)
-		//reallySimpleSearch(5, 4, 1);
+		reallySimpleSearch(5, 4, 1);
 		
 		
 		//Found 355 unique solutions (40 seconds on oct 14th)
@@ -258,12 +258,23 @@ Current UTC timestamp in milliseconds: 1675458353391
 		return ret;
 	}
 	
-	public static int debugIterator = 0;
+	
+	public static long debugIterator = 0L;
+	public static final long DEBUG_PRINT = 100000000L;
+	public static long numSolutionsPrinted = 1L;
+	
+	
 	public static long findReallySimpleSolutionsRecursion(CuboidToFoldOnExtendedSimplePhase6 cuboidToBuild, int curLayerIndex, int numLayers, int prevLayerStateIndex,
 			boolean debugNope) {
 
 		debugIterator++;
 		//System.out.println("Iteration number: " + debugIterator);
+		
+
+		if(debugIterator % DEBUG_PRINT == 0) {
+			System.out.println("Debug forced side right. numIterations = " + debugIterator);
+			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+		}
 		
 		long ret = 0;
 		
@@ -293,7 +304,15 @@ Current UTC timestamp in milliseconds: 1675458353391
 							System.out.println();
 							
 							System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
+							
 
+							if(debugIterator / numSolutionsPrinted > DEBUG_PRINT) {
+								numSolutionsPrinted++;
+								System.out.println("Other cuboid view:");
+								cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+								System.exit(1);
+							}
+							
 							if(debugNope) {
 								System.out.println("Debug nope");
 								System.exit(1);
