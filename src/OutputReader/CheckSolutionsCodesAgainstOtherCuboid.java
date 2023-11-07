@@ -180,13 +180,13 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			
 			
 			//V1:
-			String file1 = "D:\\output15x2x1N=23.txt";
+			/*String file1 = "D:\\output15x2x1N=23.txt";
 			
 			int dimensionsCuboidToCheck[] = new int[]{5, 4, 3};
 			
 			int otherDimensions1[] = new int[] {15, 2, 1};
 			int otherDimensions2[] = new int[] {23, 1, 1};
-			
+			*/
 
 			/*
 			//V2:
@@ -207,17 +207,46 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int otherDimensions1[] = new int[] {15, 2, 1};
 			int otherDimensions2[] = new int[] {23, 1, 1};
 			*/
+
+			/*
+			//V4:
+			String file1 = "D:\\output11x3x1forN=23.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{5, 4, 3};
+			
+			int otherDimensions1[] = new int[] {11, 3, 1};
+			int otherDimensions2[] = new int[] {23, 1, 1};
+			 */
+			/*
+			//V5:
+			
+			String file1 = "D:\\output11x3x1forN=23.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{7, 5, 1};
+			
+			int otherDimensions1[] = new int[] {11, 3, 1};
+			int otherDimensions2[] = new int[] {23, 1, 1};
+			*/
+			/*
+			//V6: (bonus) I'm aware that this is a redundant check...
+			String file1 = "D:\\output11x3x1forN=23.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{15, 2, 1};
+			
+			int otherDimensions1[] = new int[] {11, 3, 1};
+			int otherDimensions2[] = new int[] {23, 1, 1};
+			 */
 			
 			//Getting answer for area of 106:
-			/*
-			String file1 = "D:\\test1.txt";
+			
+			String file1 = "D:\\output17x2x1_N=26Part2.txt";
 			
 			int dimensionsCuboidToCheck[] = new int[]{8, 5, 1};
 			
 			//Alt: {17, 2, 1}
 			int otherDimensions1[] = new int[] {17, 2, 1};
 			int otherDimensions2[] = new int[] {26, 1, 1};
-			*/
+			
 		
 			int areaOfCuboidToCheck = Utils.getTotalArea(dimensionsCuboidToCheck);
 			if(areaOfCuboidToCheck != Utils.getTotalArea(otherDimensions1)) {

@@ -106,7 +106,8 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(7, 3, 2);
 		
 		//Found 507 unique solutions (3 hours and 20 minutes on oct 12th) (1 hour and 30 minutes on Oct 28th) (47 minutes on Nov 4th)
-		reallySimpleSearch(13, 2, 1);
+		//41 minutes on Nov 5th.(but I have 4 other programs running)
+		//reallySimpleSearch(13, 2, 1);
 		//
 
 		//--------
@@ -136,7 +137,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//Found  unique solutions
 		//reallySimpleSearch(7, 5, 1);
 
-		//Found  unique solutions
+		//Found 51 unique solutions (11 hours on November 5th (or maybe more...))
 		//reallySimpleSearch(11, 3, 1);
 		
 		//Found 150 unique solution. (14 hours and 32 minutes on October 16th)
@@ -157,7 +158,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(9, 3, 2);
 		
 		//Found  unique solutions
-		//reallySimpleSearch(12, 3, 1);
+		reallySimpleSearch(12, 3, 1);
 
 		// N = 26
 
@@ -190,7 +191,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		long ret = 0;
 		
-		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
+		for(int i=22; i<startingPointsAndRotationsToCheck.size(); i++) {
 
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
@@ -273,7 +274,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 
 		if(debugIterator % DEBUG_PRINT == 0) {
-			System.out.println("Debug forced side right. numIterations = " + debugIterator);
+			System.out.println("NumIterations = " + debugIterator);
 			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
 		}
 		
