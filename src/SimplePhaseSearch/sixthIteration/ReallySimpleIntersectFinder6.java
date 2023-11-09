@@ -23,7 +23,7 @@ public class ReallySimpleIntersectFinder6 {
 
 		//N: 7
 		//Found 6 unique solutions
-		//reallySimpleSearch(3, 3, 1);
+		reallySimpleSearch(3, 3, 1);
 		
 
 		//N: 8
@@ -157,12 +157,12 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//Found  unique solutions
 		//reallySimpleSearch(9, 3, 2);
 		
-		//Found  unique solutions
-		reallySimpleSearch(12, 3, 1);
+		//Found 81 unique solutions (after merging 2 runs that each took 2-3 days)
+		//reallySimpleSearch(12, 3, 1);
 
 		// N = 26
 
-		//Found  unique solutions
+		//Found 674 unique solutions (took 2 days and 7 hours starting on Nov 5th)
 		//reallySimpleSearch(17, 2, 1);
 
 		//Found  unique solutions
@@ -191,7 +191,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		long ret = 0;
 		
-		for(int i=22; i<startingPointsAndRotationsToCheck.size(); i++) {
+		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
 
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
@@ -262,7 +262,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 	
 	
 	public static long debugIterator = 0L;
-	public static final long DEBUG_PRINT = 100000000L;
+	public static final long DEBUG_PRINT = 1000000L;
 	public static long numSolutionsPrinted = 1L;
 	
 	
@@ -308,11 +308,11 @@ Current UTC timestamp in milliseconds: 1675458353391
 							System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
 							
 
-							if(debugIterator / numSolutionsPrinted > DEBUG_PRINT) {
+							//if(debugIterator / numSolutionsPrinted > DEBUG_PRINT) {
 								numSolutionsPrinted++;
 								System.out.println("Other cuboid view:");
 								cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
-							}
+							//}
 							
 							if(debugNope) {
 								System.out.println("Debug nope");

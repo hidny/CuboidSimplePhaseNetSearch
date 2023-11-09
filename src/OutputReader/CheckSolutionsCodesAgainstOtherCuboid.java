@@ -237,6 +237,41 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int otherDimensions2[] = new int[] {23, 1, 1};
 			 */
 			
+			// N = 25
+			//V1:output12x3x1_N=25Merged.txt
+			//7 x 3 x 3: 102
+			//9 x 3 x 2: 102
+			//12 x 3 x 1: 102
+			//25 x 1 x 1: 102
+			
+			//V0: test
+			/*String file1 = "D:\\output12x3x1_N=25Merged2.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{12, 3, 1};
+			
+			int otherDimensions1[] = new int[] {12, 3, 1};
+			int otherDimensions2[] = new int[] {25, 1, 1};
+			*/
+
+			//V1:
+			/*String file1 = "D:\\output12x3x1_N=25Merged2.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{9, 3, 2};
+			
+			int otherDimensions1[] = new int[] {12, 3, 1};
+			int otherDimensions2[] = new int[] {25, 1, 1};
+			*/
+			
+			
+			//V2:
+			/*String file1 = "D:\\output12x3x1_N=25Merged2.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{7, 3, 3};
+			
+			int otherDimensions1[] = new int[] {12, 3, 1};
+			int otherDimensions2[] = new int[] {25, 1, 1};
+			*/
+			
 			//Getting answer for area of 106:
 			
 			String file1 = "D:\\output17x2x1_N=26Part2.txt";
