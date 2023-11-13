@@ -198,6 +198,7 @@ public class RegionSplitLogicSimple4Complex {
 	}
 	
 
+	/*
 	public int untouchableRegionNotCreatedAfterLayerAddedQuick2(long curState[],
 			int layerBeforeLastLayerAdded,
 			int lastLayerStateAdded,
@@ -209,7 +210,6 @@ public class RegionSplitLogicSimple4Complex {
 			int curNumRegions
 	) {
 		
-		/*
 		if(lastLayerStateAdded == 0) {
 			
 			//Start with checking the right of state 0...
@@ -273,7 +273,7 @@ public class RegionSplitLogicSimple4Complex {
 				num_quick2_stops++;
 			}
 			
-		}*/
+		}
 		//End copy/paste code
 
 		//Try going around:
@@ -314,6 +314,89 @@ public class RegionSplitLogicSimple4Complex {
 				num_quick2_stops++;
 			}
 		}
+		
+		return curNumRegions;
+	}*/
+	
+	public int untouchableRegionNotCreatedAfterLayerAddedQuick3(long curState[],
+			int layerBeforeLastLayerAdded,
+			int lastLayerStateAdded,
+			int indexGroundedBelowLayerMid,
+			int rotationGroundedBelowLayerMid,
+			int indexGroundedBelowLayerSide,
+			int rotationGroundedBelowLayerSide,
+			int prevSideBump,
+			int curNumRegions
+	) {
+
+		//Try going around:
+		int indexAboveRightMostCellOnLayerMid = numCellsAbovePerLayerStateMid.length - 1;
+		int indexAboveLeftMostCellOnLayerMid = 0;
+		
+		int start = indexAboveRightMostCellOnLayerMid;
+		
+		int lengthArray = preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid].length;
+		int end = indexAboveLeftMostCellOnLayerMid + lengthArray;
+		
+		
+		boolean prevCellOccupied = false;
+		int numOccupiedStretches = 0;
+		
+		for(int i=start; i<= end; i++) {
+
+			int tmpIndex = preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][i % lengthArray];
+			
+			if(isCellIoccupied(curState, tmpIndex)) {
+				
+				if( ! prevCellOccupied) {
+					prevCellOccupied = true;
+					numOccupiedStretches++;
+				}
+				//System.out.println("tmpIndex: " + tmpIndex);
+			} else {
+				prevCellOccupied = false;
+				//System.out.println("nope: " + tmpIndex);
+			}
+		}
+		
+		
+		if(lastLayerStateAdded > 0) {
+			int indexAboveRightMostCellOnLayerSide = numCellsAbovePerLayerStateSide.length - 1;
+			int indexAboveLeftMostCellOnLayerSide = 0;
+			
+			start = indexAboveRightMostCellOnLayerSide;
+			
+			lengthArray = preComputedCellsAroundCurLayerSide[lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide].length;
+			end = indexAboveLeftMostCellOnLayerSide + lengthArray;
+			
+			
+			prevCellOccupied = false;
+			
+			for(int i=start; i<= end; i++) {
+
+				int tmpIndex = preComputedCellsAroundCurLayerSide[lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide][i % lengthArray];
+				
+				if(isCellIoccupied(curState, tmpIndex)) {
+					
+					if( ! prevCellOccupied) {
+						prevCellOccupied = true;
+						numOccupiedStretches++;
+					}
+					//System.out.println("tmpIndex: " + tmpIndex);
+				} else {
+					prevCellOccupied = false;
+					//System.out.println("nope: " + tmpIndex);
+				}
+			}
+		}
+		
+		
+		if(numOccupiedStretches > 2
+		|| (numOccupiedStretches > 1 && layerBeforeLastLayerAdded == 0 && lastLayerStateAdded == 0)) {
+			curNumRegions = curNumRegions + 1;
+			num_quick2_stops++;
+		}
+		
 		
 		return curNumRegions;
 	}

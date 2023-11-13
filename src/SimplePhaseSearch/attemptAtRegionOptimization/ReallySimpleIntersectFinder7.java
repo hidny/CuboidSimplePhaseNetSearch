@@ -57,14 +57,14 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		//N: 13
 		//Found 203 unique solutions (This matches what was found using the variant of redelmeier's algo)
-		reallySimpleSearch(3, 3, 3);
+		//reallySimpleSearch(3, 3, 3);
 
 		//Found 77 unique solutions
 		//reallySimpleSearch(6, 3, 1);
 		
 		//N: 14
 		//Found 13264 unique solution. (3 minutes and 2 seconds on oct 14th)
-		//reallySimpleSearch(5, 4, 1);
+		reallySimpleSearch(5, 4, 1);
 		
 		
 		//Found 355 unique solutions (40 seconds on oct 14th)

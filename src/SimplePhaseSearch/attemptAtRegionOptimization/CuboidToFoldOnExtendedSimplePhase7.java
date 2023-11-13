@@ -523,7 +523,7 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 				//Do the actual check:
 		
 		
-		int numRegionsRet = regionSplitLogicSimple4.untouchableRegionNotCreatedAfterLayerAddedQuick2(
+		int numRegionsRet = regionSplitLogicSimple4.untouchableRegionNotCreatedAfterLayerAddedQuick3(
 				curState,
 				this.prevLayerStateIndex[currentLayerIndex - 2],
 				this.prevLayerStateIndex[currentLayerIndex - 1],
@@ -569,7 +569,7 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 			
 			System.out.println("Debug");
 			
-			int ret2 = regionSplitLogicSimple4.untouchableRegionNotCreatedAfterLayerAddedQuick2(
+			int ret2 = regionSplitLogicSimple4.untouchableRegionNotCreatedAfterLayerAddedQuick3(
 					curState,
 					this.prevLayerStateIndex[currentLayerIndex - 2],
 					this.prevLayerStateIndex[currentLayerIndex - 1],
