@@ -359,7 +359,7 @@ public class RegionSplitLogicSimple4Complex {
 			}
 		}
 		
-		
+		int numOccupiedStretches2 = 0;
 		if(lastLayerStateAdded > 0) {
 			int indexAboveRightMostCellOnLayerSide = numCellsAbovePerLayerStateSide.length - 1;
 			int indexAboveLeftMostCellOnLayerSide = 0;
@@ -380,7 +380,7 @@ public class RegionSplitLogicSimple4Complex {
 					
 					if( ! prevCellOccupied) {
 						prevCellOccupied = true;
-						numOccupiedStretches++;
+						numOccupiedStretches2++;
 					}
 					//System.out.println("tmpIndex: " + tmpIndex);
 				} else {
@@ -397,6 +397,11 @@ public class RegionSplitLogicSimple4Complex {
 			num_quick2_stops++;
 		}
 		
+		if(numOccupiedStretches2 + numOccupiedStretches > 3) {
+			System.exit(1);
+			curNumRegions += 1;
+			num_quick2_stops++;
+		}
 		
 		return curNumRegions;
 	}
@@ -444,6 +449,10 @@ public class RegionSplitLogicSimple4Complex {
 				this.tmpExplored[tmpIndex] = true;
 				this.queue.add(tmpIndex);
 			}
+		}
+		if(this.queue.isEmpty()) {
+			//The mid section should continue, and if the queue is empty, it can't continue:
+			return true;
 		}
 		
 		for(int i=0; i<preComputedCellsAboveCurLayerSide[lastLayerStateAdded][indexGroundedBelowLayerSide][rotationGroundedBelowLayerSide].length; i++) {

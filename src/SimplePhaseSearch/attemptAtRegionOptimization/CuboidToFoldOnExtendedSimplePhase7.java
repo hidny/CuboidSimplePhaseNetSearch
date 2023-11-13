@@ -562,7 +562,7 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 
 		if(
 			(! tmpRet && numRegionsRet == 2 && prevLayerStateIndex[currentLayerIndex - 1] == 0)
-			|| numRegionsRet > 2) {
+			|| (! tmpRet && numRegionsRet > 2)) {
 			System.out.println("DOH! Quick2 gave a false alarm!");
 			
 			
@@ -1968,10 +1968,6 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 			for(int i=1; i<this.currentLayerIndex; i++) {
 				
 				char label = (char)( (i-1) + 'A');
-				
-				if(i == this.currentLayerIndex - 1) {
-					System.out.println("Testing 1234");
-				}
 
 				
 				if(i < this.currentLayerIndex - 1) {
