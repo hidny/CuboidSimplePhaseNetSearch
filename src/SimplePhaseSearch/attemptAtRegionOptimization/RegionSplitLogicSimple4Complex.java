@@ -209,7 +209,7 @@ public class RegionSplitLogicSimple4Complex {
 			int curNumRegions
 	) {
 		
-		
+		/*
 		if(lastLayerStateAdded == 0) {
 			
 			//Start with checking the right of state 0...
@@ -273,9 +273,47 @@ public class RegionSplitLogicSimple4Complex {
 				num_quick2_stops++;
 			}
 			
-		}
+		}*/
 		//End copy/paste code
 
+		//Try going around:
+		if(lastLayerStateAdded == 0) {
+			
+			int indexAboveRightMostCellOnLayer = 3;
+			int indexAboveLeftMostCellOnLayer = 0;
+			
+			int start = indexAboveRightMostCellOnLayer;
+			
+			int lengthArray = preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid].length;
+			int end = indexAboveLeftMostCellOnLayer + lengthArray;
+			
+			
+			boolean prevCellOccupied = false;
+			int numOccupiedStretches = 0;
+			
+			for(int i=start; i<= end; i++) {
+
+				int tmpIndex = preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][i % lengthArray];
+				
+				if(isCellIoccupied(curState, tmpIndex)) {
+					
+					if( ! prevCellOccupied) {
+						prevCellOccupied = true;
+						numOccupiedStretches++;
+					}
+					//System.out.println("tmpIndex: " + tmpIndex);
+				} else {
+					prevCellOccupied = false;
+					//System.out.println("nope: " + tmpIndex);
+				}
+			}
+			
+			if(numOccupiedStretches > 2
+			|| (numOccupiedStretches > 1 && layerBeforeLastLayerAdded == 0)) {
+				curNumRegions = curNumRegions + 1;
+				num_quick2_stops++;
+			}
+		}
 		
 		return curNumRegions;
 	}
