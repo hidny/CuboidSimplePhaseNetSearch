@@ -57,7 +57,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		//N: 13
 		//Found 203 unique solutions (This matches what was found using the variant of redelmeier's algo)
-		//reallySimpleSearch(3, 3, 3);
+		reallySimpleSearch(3, 3, 3);
 
 		//Found 77 unique solutions
 		//reallySimpleSearch(6, 3, 1);
@@ -82,7 +82,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(5, 5, 1);
 
 		//Found 54 unique solutions ( just over 2 hours on oct 12th and 1 hour and 34 minutes on oct 14th) (Only 14 minutes on Nov 4th)
-		reallySimpleSearch(8, 3, 1);
+		//reallySimpleSearch(8, 3, 1);
 		
 		//Found 89 unique solution. (17 minutes on oct 12th and 8 minutes and 36 seconds on oct 14th!) (4.5 minutes on nov 4th)
 		//3 minutes and 15 seconds on november 5th.
@@ -191,7 +191,8 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		long ret = 0;
 		
-		for(int i=22; i<startingPointsAndRotationsToCheck.size(); i++) {
+		//TODO: put it back to i = 0
+		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
 
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();

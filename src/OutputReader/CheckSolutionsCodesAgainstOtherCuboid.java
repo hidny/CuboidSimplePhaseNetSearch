@@ -237,6 +237,26 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int otherDimensions2[] = new int[] {23, 1, 1};
 			 */
 			
+			
+			//V7: (bonus) I'm aware that this is a redundant check...
+			/*String file1 = "D:\\output5x4x3Merged.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{5, 4, 3};
+			
+			int otherDimensions1[] = new int[] {5, 4, 3};
+			int otherDimensions2[] = new int[] {23, 1, 1};
+			*/
+			
+			/*
+			//V8: 
+			String file1 = "D:\\output5x4x3Merged.txt";
+			
+			int dimensionsCuboidToCheck[] = new int[]{7, 5, 1};
+			
+			int otherDimensions1[] = new int[] {5, 4, 3};
+			int otherDimensions2[] = new int[] {23, 1, 1};
+			*/
+			
 			// N = 25
 			//V1:output12x3x1_N=25Merged.txt
 			//7 x 3 x 3: 102
@@ -282,7 +302,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int otherDimensions1[] = new int[] {17, 2, 1};
 			int otherDimensions2[] = new int[] {26, 1, 1};
 			
-		
+
 			int areaOfCuboidToCheck = Utils.getTotalArea(dimensionsCuboidToCheck);
 			if(areaOfCuboidToCheck != Utils.getTotalArea(otherDimensions1)) {
 				System.out.println("Doh! otherDimensions1 is wrong");

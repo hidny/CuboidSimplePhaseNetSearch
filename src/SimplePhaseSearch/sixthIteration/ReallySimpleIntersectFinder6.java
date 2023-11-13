@@ -23,7 +23,7 @@ public class ReallySimpleIntersectFinder6 {
 
 		//N: 7
 		//Found 6 unique solutions
-		reallySimpleSearch(3, 3, 1);
+		//reallySimpleSearch(3, 3, 1);
 		
 
 		//N: 8
@@ -131,7 +131,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		 //11,3,1:
 		//5, 4, 3
 
-		//Found  unique solutions
+		//Found 222 unique solutions
 		//reallySimpleSearch(5, 4, 3);
 
 		//Found  unique solutions
@@ -155,7 +155,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(7, 3, 3);
 		
 		//Found  unique solutions
-		//reallySimpleSearch(9, 3, 2);
+		reallySimpleSearch(9, 3, 2);
 		
 		//Found 81 unique solutions (after merging 2 runs that each took 2-3 days)
 		//reallySimpleSearch(12, 3, 1);
@@ -262,7 +262,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 	
 	
 	public static long debugIterator = 0L;
-	public static final long DEBUG_PRINT = 1000000L;
+	public static final long DEBUG_PRINT = 10000000L;
 	public static long numSolutionsPrinted = 1L;
 	
 	

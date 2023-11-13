@@ -215,7 +215,7 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 	
 	private int currentLayerIndex;
 	
-	private RegionSplitLogicSimple5Refined regionSplitLogicSimple3;
+	private RegionSplitLogicSimple4Complex regionSplitLogicSimple4;
 	
 	public void printStateStuffDEBUG() {
 		System.out.println("DEBUG:");
@@ -520,14 +520,78 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 		//(prevLayerStateIndex[currentLayerIndex - 1] != 0 || prevLayerStateIndex[currentLayerIndex - 2] == 0)
 				
 				//Do the actual check:
-				
-		return regionSplitLogicSimple3.untouchableRegionCreatedAfterLayerAdded
+		
+		
+		int numRegionsRet = regionSplitLogicSimple4.untouchableRegionNotCreatedAfterLayerAddedQuick2(
+				curState,
+				this.prevLayerStateIndex[currentLayerIndex - 2],
+				this.prevLayerStateIndex[currentLayerIndex - 1],
+				groundedIndexMid,
+				groundRotationRelativeFlatMapMid,
+				groundedIndexSide,
+				groundRotationRelativeFlatMapSide,
+				prevSideBumps[currentLayerIndex - 1],
+				1
+		);
+		/*
+		System.out.println("----------");
+		System.out.println("Print state:");
+		System.out.println(curState[0]);
+		System.out.println(curState[1]);
+		System.out.println("Previous layer states:");
+		System.out.println(this.prevLayerStateIndex[currentLayerIndex - 2]);
+		System.out.println(this.prevLayerStateIndex[currentLayerIndex - 1]);
+		System.out.println(groundedIndexMid);
+		System.out.println(groundRotationRelativeFlatMapMid);
+		System.out.println(groundedIndexSide);
+		System.out.println(groundRotationRelativeFlatMapSide);
+		System.out.println(prevSideBumps[currentLayerIndex - 1]);
+		System.out.println();
+		*/
+		
+		boolean tmpRet = regionSplitLogicSimple4.untouchableRegionCreatedAfterLayerAdded
 				(curState,
 					prevLayerStateIndex[currentLayerIndex - 1],
 					groundedIndexMid,
 					groundRotationRelativeFlatMapMid,
 					groundedIndexSide,
 					groundRotationRelativeFlatMapSide);
+	
+
+		if(! tmpRet && numRegionsRet == 2 && prevLayerStateIndex[currentLayerIndex - 1] == 0) {
+			System.out.println("DOH! Quick2 gave a false alarm!");
+			
+			
+			printCurrentStateOnOtherCuboidsFlatMap();
+			
+			System.out.println(this.createSolutionToPrintPartial().toString());
+			
+			System.out.println("Debug");
+			
+			int ret2 = regionSplitLogicSimple4.untouchableRegionNotCreatedAfterLayerAddedQuick2(
+					curState,
+					this.prevLayerStateIndex[currentLayerIndex - 2],
+					this.prevLayerStateIndex[currentLayerIndex - 1],
+					groundedIndexMid,
+					groundRotationRelativeFlatMapMid,
+					groundedIndexSide,
+					groundRotationRelativeFlatMapSide,
+					prevSideBumps[currentLayerIndex - 1],
+					1
+			);
+
+			boolean tmpRet2 = regionSplitLogicSimple4.untouchableRegionCreatedAfterLayerAdded
+					(curState,
+						prevLayerStateIndex[currentLayerIndex - 1],
+						groundedIndexMid,
+						groundRotationRelativeFlatMapMid,
+						groundedIndexSide,
+						groundRotationRelativeFlatMapSide);
+			System.out.println("Debug2: " + ret2);
+			System.exit(1);
+		}
+		
+		return tmpRet;
 	}
 	
 	// ***********************************************************
@@ -573,7 +637,7 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 			}
 		}
 
-		regionSplitLogicSimple3 = new RegionSplitLogicSimple5Refined(this.neighbours);
+		regionSplitLogicSimple4 = new RegionSplitLogicSimple4Complex(this.neighbours);
 		
 		
 	}
@@ -1452,6 +1516,27 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 		
 		return reference;
 	}
+	
+	public Nx1x1CuboidToFold createSolutionToPrintPartial() {
+		
+		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(DIM_N_OF_Nx1x1);
+		
+		
+		//1st layer:
+		reference.addNextLevel(new Coord2D(0, prevSideBumps[1]), null);
+		
+		//In between layers:
+		for(int i=2; i<prevSideBumps.length - 1; i++) {
+			if(prevLayerStateIndex[i] >= 4) {
+				//TODO: hide this hack...
+				reference.addNextLevel(new Coord2D(prevLayerStateIndex[i] - 3, prevSideBumps[i]), null);
+			} else {
+				reference.addNextLevel(new Coord2D(prevLayerStateIndex[i], prevSideBumps[i]), null);
+			}
+		}
+		return reference;
+	}
+
 	
 	// Only for testing:
 	public static void main(String args[]) {

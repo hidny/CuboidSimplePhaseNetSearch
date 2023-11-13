@@ -556,16 +556,6 @@ public class CuboidToFoldOnExtendedSimplePhase5  implements CuboidToFoldOnInterf
 				
 				//Do the actual check:
 		
-		/*if(regionSplitLogicSimple3.untouchableRegionNotCreatedAfterLayerAddedQuick(curState,
-				int layerBeforeLastLayerAdded,
-				int lastLayerStateAdded,
-				int indexGroundedBelowLayerMid,
-				int rotationGroundedBelowLayerMid,
-				int indexGroundedBelowLayerSide,
-				int rotationGroundedBelowLayerSide,
-				int prevSideBump,
-				int curNumRegions
-		)*/
 		/*
 		if(regionSplitLogicSimple4.untouchableRegionNotCreatedAfterLayerAddedQuick(curState,
 				this.prevLayerStateIndex[currentLayerIndex - 2],
