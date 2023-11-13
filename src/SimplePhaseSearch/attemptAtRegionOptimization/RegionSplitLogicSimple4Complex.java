@@ -393,7 +393,7 @@ public class RegionSplitLogicSimple4Complex {
 		
 		if(numOccupiedStretches > 2
 		|| (numOccupiedStretches > 1 && layerBeforeLastLayerAdded == 0 && lastLayerStateAdded == 0)) {
-			curNumRegions = curNumRegions + 1;
+			curNumRegions = curNumRegions + (numOccupiedStretches-1);
 			num_quick2_stops++;
 		}
 		

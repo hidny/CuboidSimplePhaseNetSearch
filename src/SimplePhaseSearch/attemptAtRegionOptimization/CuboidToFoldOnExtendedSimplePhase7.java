@@ -514,6 +514,7 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 		return this.prevLayerStateIndex[currentLayerIndex - 1] == 0 &&  ((~curState[0] & tmp[0]) | (~curState[1] & tmp[1]) ) != 0L;
 	}
 	
+	
 	public boolean untouchableRegionCreatedAfterLayerAdded() {
 		
 		//TODO: do some kind of short-cut, but only do the shortcut if top to bottom cells aren't a thing:
@@ -559,7 +560,9 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 					groundRotationRelativeFlatMapSide);
 	
 
-		if(! tmpRet && numRegionsRet == 2 && prevLayerStateIndex[currentLayerIndex - 1] == 0) {
+		if(
+			(! tmpRet && numRegionsRet == 2 && prevLayerStateIndex[currentLayerIndex - 1] == 0)
+			|| numRegionsRet > 2) {
 			System.out.println("DOH! Quick2 gave a false alarm!");
 			
 			
@@ -1966,8 +1969,13 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 				
 				char label = (char)( (i-1) + 'A');
 				
-				if(this.prevGroundedIndexesSide[i + 1] != this.prevGroundedIndexesMid[i + 1]) {
-					if(i < this.currentLayerIndex - 1) {
+				if(i == this.currentLayerIndex - 1) {
+					System.out.println("Testing 1234");
+				}
+
+				
+				if(i < this.currentLayerIndex - 1) {
+					if(this.prevGroundedIndexesSide[i + 1] != this.prevGroundedIndexesMid[i + 1]) {
 						labels[this.prevGroundedIndexesSide[i + 1]] = label + "s";
 						
 						Coord2D cur = new Coord2D(this.prevGroundedIndexesSide[i + 1], this.prevGroundedRotationsSide[i + 1]);
@@ -1977,11 +1985,14 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 							labels[cur.i] = label + "s";
 							
 						}
-						
-					} else {
+					}
+					
+				} else {
+
+					if(this.groundedIndexSide != this.groundedIndexMid) {
 						labels[this.groundedIndexSide] = label + "s";
 						
-
+	
 						Coord2D cur = new Coord2D(this.groundedIndexSide, this.groundRotationRelativeFlatMapSide);
 						
 						for(int j=0; j<getNumSidePerLayerState()[this.prevLayerStateIndex[i]] - 1; j++) {
@@ -1990,6 +2001,7 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 						}
 					}
 				}
+				
 			}
 			
 			//Label top to bottom layers:
