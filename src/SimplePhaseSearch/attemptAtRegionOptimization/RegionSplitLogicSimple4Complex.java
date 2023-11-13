@@ -238,7 +238,44 @@ public class RegionSplitLogicSimple4Complex {
 				//System.out.println(curNumber);
 				num_quick2_stops++;
 			}
+			
 		}
+		
+		//Copy/paste code:
+		
+		if(lastLayerStateAdded == 0) {
+			
+			//Start with checking the right of state 0...
+			//Then do the left, then do it mostly around
+			//Then do it with bit shifting.
+			int indexTopLeft = preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid].length - 1;
+			int indexBottomLeft = indexTopLeft - 2;
+			
+			int curNumber = 0;
+			
+			for(int i=indexBottomLeft; i<=indexTopLeft; i++) {
+				
+				int tmpIndex = preComputedCellsAroundCurLayerMid[lastLayerStateAdded][indexGroundedBelowLayerMid][rotationGroundedBelowLayerMid][i];
+				
+				if(isCellIoccupied(curState, tmpIndex)) {
+					//System.out.println("tmpIndex: " + tmpIndex);
+					curNumber = 2*curNumber + 1;
+				} else {
+					//System.out.println("nope: " + tmpIndex);
+					curNumber = 2*curNumber;
+				}
+			}
+			
+			if(curNumber == 1 || curNumber == 2 || curNumber == 3 || curNumber == 5) {
+				curNumRegions = curNumRegions + 1;
+				//System.out.println(curNumber);
+				
+				num_quick2_stops++;
+			}
+			
+		}
+		//End copy/paste code
+
 		
 		return curNumRegions;
 	}
@@ -315,7 +352,7 @@ public class RegionSplitLogicSimple4Complex {
 			
 		}
 		
-		if((debug_return_true + debug_return_false) % 1000000L == 0) {
+		if((debug_return_true + debug_return_false + 1) % 1000000L == 0) {
 			System.out.println("Basic region split function stats check: ");
 			
 			System.out.println("Debug_quick_2_stops: " + num_quick2_stops);

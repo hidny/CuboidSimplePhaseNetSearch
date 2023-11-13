@@ -38,7 +38,7 @@ public class ReallySimpleIntersectFinder6 {
 
 		//N: 10
 		//Found 158 unique solutions
-		//reallySimpleSearch(3, 3, 2);
+		reallySimpleSearch(3, 3, 2);
 		
 		
 		//N: 11
@@ -68,7 +68,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		
 		//Found 355 unique solutions (40 seconds on oct 14th)
-		//reallySimpleSearch(9, 2, 1);
+		reallySimpleSearch(9, 2, 1);
 
 		//N:15
 		//Found 507 unique solution. (6 minutes and 36 seconds on oct 14th)
@@ -155,7 +155,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(7, 3, 3);
 		
 		//Found  unique solutions
-		reallySimpleSearch(9, 3, 2);
+		//reallySimpleSearch(9, 3, 2);
 		
 		//Found 81 unique solutions (after merging 2 runs that each took 2-3 days)
 		//reallySimpleSearch(12, 3, 1);
