@@ -3,6 +3,7 @@ package SimplePhaseSearch.attemptAtRegionOptimization;
 
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;
+import SimplePhaseSearch.sixthIteration.CuboidToFoldOnExtendedSimplePhase6;
 
 //TODO: is this actually faster than RegionSplitLogicSimple?
 
@@ -582,7 +583,7 @@ public class RegionSplitLogicSimple4Complex {
 				
 			}
 			if(lastIndex == -1) {
-				lastIndex = 7;
+				lastIndex = CuboidToFoldOnExtendedSimplePhase6.CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[i].length;
 			}
 			numCellsAbovePerLayerStateSide[i] = lastIndex - firstIndex;
 			

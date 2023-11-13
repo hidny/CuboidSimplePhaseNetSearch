@@ -134,17 +134,21 @@ public class RegionSplitLogicSimple3 {
 
 				} else if(foundFirst && CuboidToFoldOnExtendedSimplePhase6.CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[i][j] == 0) {
 					lastIndex = j;
+					break;
 				}
 			}
 			if(lastIndex == -1) {
-				lastIndex = 7;
+				lastIndex = CuboidToFoldOnExtendedSimplePhase6.CELLS_TO_ADD_BY_STATE_GOING_UP_MIDDLE[i].length;;
 			}
 			numCellsAbovePerLayerMid[i] = lastIndex - firstIndex;
 		}
 		
 		//TODO: copy/paste code:
 		for(int i=0; i<numCellsAbovePerLayerSide.length; i++) {
-			
+			if(i == 0) {
+				numCellsAbovePerLayerSide[i] = 0;
+				continue;
+			}
 			boolean foundFirst = false;
 			int firstIndex = -1;
 			int lastIndex = -1;
@@ -157,17 +161,17 @@ public class RegionSplitLogicSimple3 {
 
 				} else if(foundFirst && CuboidToFoldOnExtendedSimplePhase6.CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[i][j] == 0) {
 					lastIndex = j;
+					break;
 				}
 				
 			}
 			if(lastIndex == -1) {
-				lastIndex = 7;
+				lastIndex = CuboidToFoldOnExtendedSimplePhase6.CELLS_TO_ADD_BY_STATE_GOING_UP_ON_SIDE[i].length;
 			}
 			numCellsAbovePerLayerSide[i] = lastIndex - firstIndex;
 			
 		}
 		//END TODO copy/paste code
-		
 		
 	}
 	
@@ -232,18 +236,6 @@ public class RegionSplitLogicSimple3 {
 	//TODO: copy/paste code:
 	public static final int NUM_LONGS_TO_USE = 2;
 	
-	private static long[] setImpossibleForAnswerSheet() {
-		
-		long ret[] = new long[NUM_LONGS_TO_USE];
-		
-		for(int i=0; i<ret.length; i++) {
-			ret[i] = -1L;
-		}
-		
-		return ret;
-	}
-	
-
 	private Coord2D tryAttachCellInDir(int curIndex, int rotationRelativeFlatMap, int dir) {
 		CoordWithRotationAndIndex neighbours[] = this.neighbours[curIndex];
 		
@@ -256,28 +248,5 @@ public class RegionSplitLogicSimple3 {
 	
 	
 	//TODO copy/paste code:
-
-	private long[] convertBoolArrayToLongs(boolean tmpArray[]) {
-		
-		//1st entry:
-		long ret[] = new long[NUM_LONGS_TO_USE];
-		
-		for(int i=0; i<ret.length; i++) {
-			ret[i] = 0;
-		}
-		
-		for(int i=0; i<tmpArray.length; i++) {
-			
-			if(tmpArray[i]) {
-				int indexArray = i / NUM_BITS_IN_LONG;
-				int bitShift = (NUM_BITS_IN_LONG - 1) - i - indexArray * NUM_BITS_IN_LONG;
-				
-				ret[indexArray] += 1L << bitShift;
-			}
-		}
-		
-		
-		return ret;
-	}
 
 }

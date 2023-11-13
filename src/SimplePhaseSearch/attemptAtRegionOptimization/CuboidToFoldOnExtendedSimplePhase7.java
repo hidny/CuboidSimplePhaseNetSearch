@@ -14,6 +14,7 @@ import Model.DataModelViews;
 import Model.NeighbourGraphCreator;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
+import SimplePhaseSearch.sixthIteration.CuboidToFoldOnExtendedSimplePhase6;
 
 public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterface {
 
@@ -1921,47 +1922,57 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 			
 			
 			//Set the grounded Mid indexes (do more later)
-			for(int i=2; i<=this.currentLayerIndex; i++) {
+			for(int i=1; i<this.currentLayerIndex; i++) {
 				
-				char label = (char)( (i-2) + 'A');
+				char label = (char)( (i-1) + 'A');
 				
-				if(i < this.currentLayerIndex) {
-					labels[this.prevGroundedIndexesMid[i]] = label + "" + label;
+
+				String labelToUse = label + "m";
+				if(this.prevLayerStateIndex[i] == 0) {
+					labelToUse = label + "" + label;
+					
+				}
+				
+				
+				if(i < this.currentLayerIndex - 1) {
+					labels[this.prevGroundedIndexesMid[i + 1]] = labelToUse;
 					
 
-					Coord2D cur = new Coord2D(this.prevGroundedIndexesMid[i], this.prevGroundedRotationsMid[i]);
+					Coord2D cur = new Coord2D(this.prevGroundedIndexesMid[i + 1], this.prevGroundedRotationsMid[i + 1]);
 					
-					for(int j=0; j<getNumMidPerLayerState()[this.prevLayerStateIndex[i - 1]] - 1; j++) {
+					for(int j=0; j<getNumMidPerLayerState()[this.prevLayerStateIndex[i]] - 1; j++) {
 						cur = this.tryAttachCellInDir(cur.i, cur.j, RIGHT);
-						labels[cur.i] = label + "" + label;
+						labels[cur.i] = labelToUse;
 						
 					}
 					
 				} else {
-					labels[this.groundedIndexMid] = label + "" + label;
+					
+					labels[this.groundedIndexMid] = labelToUse;
 					
 
 					Coord2D cur = new Coord2D(this.groundedIndexMid, this.groundRotationRelativeFlatMapMid);
 					
-					for(int j=0; j<getNumMidPerLayerState()[this.prevLayerStateIndex[i - 1]] - 1; j++) {
+					for(int j=0; j<getNumMidPerLayerState()[this.prevLayerStateIndex[i]] - 1; j++) {
 						cur = this.tryAttachCellInDir(cur.i, cur.j, RIGHT);
-						labels[cur.i] = label + "" + label;
+						labels[cur.i] = labelToUse;
 					}
 				}
+				
 			}
 			
 			//Set the grounded Side indexes (do more later)
-			for(int i=2; i<=this.currentLayerIndex; i++) {
+			for(int i=1; i<this.currentLayerIndex; i++) {
 				
-				char label = (char)( (i-2) + 'A');
+				char label = (char)( (i-1) + 'A');
 				
-				if(this.prevGroundedIndexesSide[i] != this.prevGroundedIndexesMid[i]) {
-					if(i < this.currentLayerIndex) {
-						labels[this.prevGroundedIndexesSide[i]] = label + "s";
+				if(this.prevGroundedIndexesSide[i + 1] != this.prevGroundedIndexesMid[i + 1]) {
+					if(i < this.currentLayerIndex - 1) {
+						labels[this.prevGroundedIndexesSide[i + 1]] = label + "s";
 						
-						Coord2D cur = new Coord2D(this.prevGroundedIndexesSide[i], this.prevGroundedRotationsSide[i]);
+						Coord2D cur = new Coord2D(this.prevGroundedIndexesSide[i + 1], this.prevGroundedRotationsSide[i + 1]);
 						
-						for(int j=0; j<getNumSidePerLayerState()[this.prevLayerStateIndex[i - 1]] - 1; j++) {
+						for(int j=0; j<getNumSidePerLayerState()[this.prevLayerStateIndex[i]] - 1; j++) {
 							cur = this.tryAttachCellInDir(cur.i, cur.j, RIGHT);
 							labels[cur.i] = label + "s";
 							
@@ -1973,9 +1984,9 @@ public class CuboidToFoldOnExtendedSimplePhase7  implements CuboidToFoldOnInterf
 
 						Coord2D cur = new Coord2D(this.groundedIndexSide, this.groundRotationRelativeFlatMapSide);
 						
-						for(int j=0; j<getNumSidePerLayerState()[this.prevLayerStateIndex[i - 1]] - 1; j++) {
+						for(int j=0; j<getNumSidePerLayerState()[this.prevLayerStateIndex[i]] - 1; j++) {
 							cur = this.tryAttachCellInDir(cur.i, cur.j, RIGHT);
-							labels[cur.i] = label + "" + label;
+							labels[cur.i] = label + "s";
 						}
 					}
 				}
