@@ -38,7 +38,17 @@ public class ReallySimpleIntersectFinder5 {
 		
 
 		//N: 10
-		//498 solutions: (113 unique solutions)
+		/*
+		 * Looks like I had a typographical error for a long time. This number used to be 113, but after
+		 * Landon correctly stated that there are 133 solutions, I
+		 * reran this program without changes, and got 133 unique solutions...
+		 * "Done
+Found 498 different solutions if we ignore symmetric solutions
+
+Done using the 2nd iteration (using pre-computed long arrays)
+Found 133 unique solution."
+*/
+		//498 solutions: (133 unique solution)
 		//reallySimpleSearch(3, 3, 2);
 		
 		
@@ -82,21 +92,22 @@ public class ReallySimpleIntersectFinder5 {
 		//reallySimpleSearch(5, 3, 3);
 		// 102 different solutions and 27 uniq solutions
 		//reallySimpleSearch(7, 4, 1);
-		//
+		
+		//951 unique solution.
 		//reallySimpleSearch(9, 3, 1);
 		//
 		
 		//N: 20
-		// At least 203056 uniq solutions:
+		// Found 202106 unique solution.
 		//reallySimpleSearch(6, 5, 1);
 		// 296 unique solutions
-		//reallySimpleSearch(7, 3, 2);
+		reallySimpleSearch(7, 3, 2);
 		//Found 798 non-unique solutions and 211 unique solution.
 		//reallySimpleSearch(13, 2, 1);
 		//
 		
 		// N = 22
-		//{5, 5, 2}, {6, 3, 3
+		//{5, 5, 2}, {6, 3, 3}
 		//reallySimpleSearch(5, 5, 2);
 		
 		//reallySimpleSearch(6, 3, 3);
@@ -125,7 +136,7 @@ public class ReallySimpleIntersectFinder5 {
 		 */
 		// N = 26
 		//268 unique solution for 17x2x1
-		reallySimpleSearch(17, 2, 1);
+		//reallySimpleSearch(17, 2, 1);
 		
 		// N = 27
 		

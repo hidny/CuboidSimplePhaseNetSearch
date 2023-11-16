@@ -292,6 +292,17 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int otherDimensions2[] = new int[] {25, 1, 1};
 			*/
 			
+			//V3:
+			/*
+			String file1 = "D:\\output7x3x3Index12to22.txt";
+			
+			//Partial result after checking 750228 solutions: 0... (took 38 hours)
+			int dimensionsCuboidToCheck []= new int[] {9, 3, 2};
+			
+			int otherDimensions1[] = new int[] {7, 3, 3};
+			int otherDimensions2[] = new int[] {25, 1, 1};
+			*/
+			
 			//Getting answer for area of 106:
 			
 			String file1 = "D:\\output17x2x1_N=26Part2.txt";
@@ -323,12 +334,16 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			int numSolutionsInFile = 0;
 			
 			while(in.hasNextLine()) {
+				
 				String tmp = in.nextLine();
 				
 				//System.out.println(tmp);
 				if(tmp.toLowerCase().contains("solution code:")) {
 					
 					numSolutionsInFile++;
+					if(numSolutionsInFile % 1000 == 0) {
+						System.out.println("Number of solutions in file processed: " + numSolutionsInFile);
+					}
 					
 					String solutionCodeString = getSolutionCode(tmp);
 					file1Solutions.add(solutionCodeString);

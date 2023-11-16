@@ -327,6 +327,7 @@ or the right 2 are 'grounded' to the bottom cell without the need of the above l
 
 Example that uses all 7 layer states:
 
+```
 |..|..|..|..|##|..|..|
 |..|##|##|##|##|..|..|
 |..|##|..|##|##|..|##|

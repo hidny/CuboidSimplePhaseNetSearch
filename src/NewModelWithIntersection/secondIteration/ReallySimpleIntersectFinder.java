@@ -38,7 +38,7 @@ public class ReallySimpleIntersectFinder {
 
 		//N: 10
 		//498 solutions: (113 unique solutions)
-		//reallySimpleSearch(3, 3, 2);
+		reallySimpleSearch(3, 3, 2);
 		
 		
 		//N: 11
@@ -91,7 +91,7 @@ public class ReallySimpleIntersectFinder {
 		// 296 unique solutions
 		//reallySimpleSearch(7, 3, 2);
 		//
-		reallySimpleSearch(13, 2, 1);
+		//reallySimpleSearch(13, 2, 1);
 		//
 		
 		// N = 22
