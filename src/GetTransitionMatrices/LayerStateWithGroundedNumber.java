@@ -19,6 +19,10 @@ public class LayerStateWithGroundedNumber {
 	public boolean isIndexOccupied(int index) {
 		return this.array[index];
 	}
+	
+	public int getLengthArray() {
+		return this.array.length;
+	}
 
 	public static boolean isCellGroundedDirectly(LayerStateWithGroundedNumber layerState, int index) {
 		
@@ -26,7 +30,7 @@ public class LayerStateWithGroundedNumber {
 			return false;
 		}
 		
-		int nthIsland = getNthIsland(layerState, index);
+		int nthIsland = getNthIslandOnIndexI(layerState, index);
 		
 		int power2ToUse = nthIsland + 1;
 		
@@ -35,10 +39,13 @@ public class LayerStateWithGroundedNumber {
 	}
 	
 	public static int getNumberOfIslands(LayerStateWithGroundedNumber layerState) {
-		
-		for(int i = layerState.array.length - 1; i>=0; i--) {
-			if(layerState.array[i]) {
-				return getNthIsland(layerState, i) + 1;
+		return getNumberOfIslands(layerState.array);
+	}
+
+	public static int getNumberOfIslands(boolean array[]) {
+		for(int i = array.length - 1; i>=0; i--) {
+			if(array[i]) {
+				return getNthIslandOnIndexI(array, i) + 1;
 			}
 		}
 		
@@ -47,9 +54,13 @@ public class LayerStateWithGroundedNumber {
 		return 0;
 	}
 	
-	public static int getNthIsland(LayerStateWithGroundedNumber layerState, int index) {
+	public static int getNthIslandOnIndexI(LayerStateWithGroundedNumber layerState, int index) {
+		return getNthIslandOnIndexI(layerState.array, index);
+	}
+	
+	public static int getNthIslandOnIndexI(boolean array[], int index) {
 		
-		if(! layerState.array[index]) {
+		if(! array[index]) {
 			System.out.println("ERROR: called getNthIsland on a false index");
 			System.exit(1);
 		}
@@ -59,11 +70,11 @@ public class LayerStateWithGroundedNumber {
 		
 		for(int i=0; i<=index; i++) {
 			
-			if(layerState.array[i] && ! currentlyInIsland) {
+			if(array[i] && ! currentlyInIsland) {
 				numIslandsFound++;
 				currentlyInIsland = true;
 				
-			} else if( ! layerState.array[i] && currentlyInIsland) {
+			} else if( ! array[i] && currentlyInIsland) {
 				currentlyInIsland = false;
 			}
 		}
@@ -78,6 +89,26 @@ public class LayerStateWithGroundedNumber {
 		}
 		
 		return -1;
+	}
+	
+	public String toString() {
+		String ret = "";
+		
+		for(int i=0; i<array.length; i++) {
+			if(array[i] == false) {
+				ret+=".";
+			} else {
+				if(isCellGroundedDirectly(this, i)) {
+					ret += "G";
+				} else  {
+					ret += "#";
+				}
+				
+			}
+		}
+		
+		
+		return ret;
 	}
 	
 	public static void main(String args[]) {
@@ -107,5 +138,7 @@ public class LayerStateWithGroundedNumber {
 		
 		System.out.println();
 		System.out.println("Number of islands: " + getNumberOfIslands(layerState));
+		
+		
 	}
 }
