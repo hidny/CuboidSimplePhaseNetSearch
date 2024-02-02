@@ -101,16 +101,17 @@ Found 133 unique solution."
 		// Found 202106 unique solution.
 		//reallySimpleSearch(6, 5, 1);
 		// 296 unique solutions
-		reallySimpleSearch(7, 3, 2);
+		//reallySimpleSearch(7, 3, 2);
 		//Found 798 non-unique solutions and 211 unique solution.
 		//reallySimpleSearch(13, 2, 1);
 		//
 		
 		// N = 22
 		//{5, 5, 2}, {6, 3, 3}
+		// 24 uniq solutions
 		//reallySimpleSearch(5, 5, 2);
 		
-		//reallySimpleSearch(6, 3, 3);
+		reallySimpleSearch(6, 3, 3);
 		
 		// N = 23 (4 other ones...)
 		/*

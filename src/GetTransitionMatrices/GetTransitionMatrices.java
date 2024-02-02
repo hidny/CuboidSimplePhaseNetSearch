@@ -8,7 +8,7 @@ public class GetTransitionMatrices {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		getMatrixForBandSizeN(6);
+		getMatrixForBandSizeN(10);
 	}
 	
 	public static void getMatrixForBandSizeN(int bandSize) {
@@ -38,7 +38,7 @@ public class GetTransitionMatrices {
 		}
 		
 		
-		Queue<Integer> queue = new LinkedList();
+		Queue<Integer> queue = new LinkedList<Integer>();
 		queue.add(0);
 		boolean explored1[] = new boolean[curLayerStates.size()];
 		boolean explored2[] = new boolean[curLayerStates.size()];
@@ -94,8 +94,6 @@ public class GetTransitionMatrices {
 		
 		int smallerMatrix[][] = new int[size][size];
 		
-		int curI = 0;
-		int curJ = 0;
 		
 		for(int i=0, smallI=0; i<matrixArray.length; i++) {
 			
@@ -127,7 +125,7 @@ public class GetTransitionMatrices {
 			System.out.println();
 		}
 
-
+/*
 		System.out.println("Bigger:");
 		//String SPACE = "     ";
 		for(int i=0; i<matrixArray.length; i++) {
@@ -136,7 +134,7 @@ public class GetTransitionMatrices {
 			}
 			System.out.println();
 		}
-		
+	*/	
 		matrixArray = smallerMatrix;
 		
 		String wolfram = "";
@@ -188,9 +186,7 @@ public class GetTransitionMatrices {
 	
 	public static int getNumOfWaysLayerStateCouldStack(LayerStateWithGroundedNumber top, LayerStateWithGroundedNumber bottom) {
 		
-		if(bottom.isIndexOccupied(0) && bottom.isIndexOccupied(1) && bottom.isIndexOccupied(2) ) {
-			System.out.println("Debug");
-		}
+		
 		int lengthArrays = top.getLengthArray();
 		if(top.getLengthArray() != bottom.getLengthArray()) {
 			System.out.println("ERROR: oops! top.getLengthArray() != bottom.getLengthArray()");
@@ -311,7 +307,7 @@ public class GetTransitionMatrices {
 			}
 			
 			if(connectionStillCurrentlyPossible) {
-				System.out.println("Side bump: " + sideBump);
+				//System.out.println("Side bump: " + sideBump);
 				ret++;
 			}
 		}
