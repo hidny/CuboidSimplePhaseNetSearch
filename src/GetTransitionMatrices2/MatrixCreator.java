@@ -1,5 +1,6 @@
 package GetTransitionMatrices2;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
@@ -11,60 +12,58 @@ public class MatrixCreator {
 	
 	public static void main(String args[]) {
 
-		Hashtable <String, LayerState> checkedLayerStates = new Hashtable<String, LayerState>();
 		Hashtable <String, LayerState> validLayerStates = new Hashtable<String, LayerState>();
 		
-		LinkedList<LayerState> layerStateQueue = new LinkedList<LayerState>();
 		
-		LayerState root = new LayerState(PERIMETER, 0);
+		LayerState fullyConnectedLayer = new LayerState(PERIMETER, 0);
 		
-		layerStateQueue.add(root);
-		validLayerStates.put(root.toString(), root);
+		validLayerStates.put(fullyConnectedLayer.toString(), fullyConnectedLayer);
 		
 		long numLayers = LayerState.getUpperBoundPossibleLayers(PERIMETER);
 		
 		System.out.println("Start:");
 		
-		while( ! layerStateQueue.isEmpty()) {
+
+		for(int i=0; i<numLayers; i++) {
+			System.out.println(i);
 			
-			LayerState bottomLayer = layerStateQueue.poll();
-
-			for(int i=0; i<numLayers; i++) {
+			LayerState stateWithoutConnections = new LayerState(PERIMETER, i);
+			
+			if(stateWithoutConnections.isValid() == false) {
+				continue;
+			}
+			
+			for(int sideBump=LEFT_EXTREME; sideBump<=RIGHT_EXTREME; sideBump++) {
 				
-				LayerState stateWithoutConnections = new LayerState(PERIMETER, i);
-				
-				if(stateWithoutConnections.isValid() == false) {
-					continue;
-				}
-				
-				for(int sideBump=LEFT_EXTREME; sideBump<=RIGHT_EXTREME; sideBump++) {
 					
-						
-					LayerState layerAbove = LayerState.addLayerStateOnTopOfLayerState(bottomLayer, stateWithoutConnections, sideBump);
+				LayerState layerAbove = LayerState.addLayerStateOnTopOfLayerState(fullyConnectedLayer, stateWithoutConnections, sideBump);
+				
+				if(layerAbove != null) {
 					
-					if(layerAbove != null) {
+					if( ! couldTouchTopRef.containsKey(layerAbove.toString())
+							&& curLayerStateCouldReachLayer0(layerAbove)) {
 						
-						if( ! checkedLayerStates.containsKey(layerAbove.toString())
-								&& curLayerStateCouldReachLayer0(layerAbove)) {
-							
-							System.out.println("Could reach layer 0:");
-							validLayerStates.put(layerAbove.toString(), layerAbove);
-							layerStateQueue.add(layerAbove);
+						System.out.println("Could reach layer 0:");
+						validLayerStates.put(layerAbove.toString(), layerAbove);
 
-							System.out.println(sideBump + ":");
-							System.out.println(layerAbove);
-							System.out.println();
-						}
-						
-						checkedLayerStates.put(layerAbove.toString(), layerAbove);
+						System.out.println(sideBump + ":");
+						System.out.println(layerAbove);
+						System.out.println();
 					}
+					
 				}
 			}
 		}
 	}
 	
+	public static Hashtable <String, Boolean> couldTouchTopRef = new Hashtable<String, Boolean>();
 	
 	public static boolean curLayerStateCouldReachLayer0(LayerState cur) {
+		
+		if(couldTouchTopRef.containsKey(cur.toString())) {
+			return couldTouchTopRef.get(cur.toString());
+		}
+		
 		
 		//System.out.println("Checking:  " + cur);
 		LayerState goal = new LayerState(PERIMETER, 0);
@@ -75,6 +74,8 @@ public class MatrixCreator {
 		Hashtable <String, LayerState> touchedLayerStates = new Hashtable<String, LayerState>();
 		touchedLayerStates.put(cur.toString(), cur);
 		
+		Hashtable <String, String> topToBottomRecords = new Hashtable<String, String>();
+		
 		
 		long numLayers = LayerState.getUpperBoundPossibleLayers(PERIMETER);
 		
@@ -94,8 +95,54 @@ public class MatrixCreator {
 					LayerState layerAbove = LayerState.addLayerStateOnTopOfLayerState(bottomLayer, stateWithoutConnections, sideBump);
 					
 					if(layerAbove != null) {
+						if(couldTouchTopRef.containsKey(layerAbove.toString())) {
+							
+							if(couldTouchTopRef.get(layerAbove.toString()) == true) {
+								
 
-						if(layerAbove.equals(goal)) {
+								//TODO: copy/paste code 1
+								LayerState curMemoize = bottomLayer;
+								
+								if(! couldTouchTopRef.contains(curMemoize.toString())) {
+									couldTouchTopRef.put(curMemoize.toString(), true);
+									//System.out.println("Adding: " + curMemoize.toString());
+								}
+								
+								while(topToBottomRecords.containsKey(curMemoize.toString())) {
+									curMemoize = touchedLayerStates.get(topToBottomRecords.get(curMemoize.toString()));
+									if(! couldTouchTopRef.contains(curMemoize.toString())) {
+										couldTouchTopRef.put(curMemoize.toString(), true);
+										//System.out.println("Adding: " + curMemoize.toString());
+									}
+								}
+
+								System.out.println("Hello1");
+								return true;
+								//END TODO: copy/paste code 1
+							} else {
+								//pass
+							}
+						
+						} else if(layerAbove.equals(goal)) {
+							
+							//TODO: copy/paste code 1
+							LayerState curMemoize = bottomLayer;
+							
+							if(! couldTouchTopRef.contains(curMemoize.toString())) {
+								couldTouchTopRef.put(curMemoize.toString(), true);
+								//System.out.println("Adding: " + curMemoize.toString());
+							}
+							
+							while(topToBottomRecords.containsKey(curMemoize.toString())) {
+								curMemoize = touchedLayerStates.get(topToBottomRecords.get(curMemoize.toString()));
+								if(! couldTouchTopRef.contains(curMemoize.toString())) {
+									couldTouchTopRef.put(curMemoize.toString(), true);
+									//System.out.println("Adding: " + curMemoize.toString());
+								}
+							}
+
+							System.out.println("Hello2");
+							//END TODO: copy/paste code 1
 							return true;
 							
 						} else if( ! touchedLayerStates.containsKey(layerAbove.toString())) {
@@ -103,11 +150,24 @@ public class MatrixCreator {
 							touchedLayerStates.put(layerAbove.toString(), layerAbove);
 							layerStateQueue.add(layerAbove);
 
+							topToBottomRecords.put(layerAbove.toString(), bottomLayer.toString());
+							//System.out.println("Adding top to bottom record");
+							//System.out.println(layerAbove.toString());
+							//System.out.println(layerBelow.toString());
+							
 						}
 					}
 				}
 			}
 		}
+		
+		Enumeration<String> badStates = touchedLayerStates.keys();
+		
+		/*while(badStates.hasMoreElements()) {
+
+			String curBadState = badStates.nextElement();
+			couldTouchTopRef.put(curBadState, false);
+		}*/
 		
 		return false;
 	}
