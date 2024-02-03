@@ -13,44 +13,74 @@ public class MatrixCreator {
 	public static void main(String args[]) {
 
 		Hashtable <String, LayerState> validLayerStates = new Hashtable<String, LayerState>();
+		LinkedList<LayerState> layerStateQueue = new LinkedList<LayerState>();
 		
+		//Start with the fully connected layer:
+		LayerState currentBottomLayer = new LayerState(PERIMETER, 0);
 		
-		LayerState fullyConnectedLayer = new LayerState(PERIMETER, 0);
-		
-		validLayerStates.put(fullyConnectedLayer.toString(), fullyConnectedLayer);
+		validLayerStates.put(currentBottomLayer.toString(), currentBottomLayer);
+		layerStateQueue.add(currentBottomLayer);
 		
 		long numLayers = LayerState.getUpperBoundPossibleLayers(PERIMETER);
 		
 		System.out.println("Start:");
 		
+		while(layerStateQueue.isEmpty() == false) {
+			
+			System.out.println("++++++++++++++++++");
+			currentBottomLayer = layerStateQueue.poll();
+			System.out.println(currentBottomLayer);
 
-		for(int i=0; i<numLayers; i++) {
-			System.out.println(i);
-			
-			LayerState stateWithoutConnections = new LayerState(PERIMETER, i);
-			
-			if(stateWithoutConnections.isValid() == false) {
-				continue;
-			}
-			
-			for(int sideBump=LEFT_EXTREME; sideBump<=RIGHT_EXTREME; sideBump++) {
+			for(int i=0; i<numLayers; i++) {
+				System.out.println(i);
 				
-					
-				LayerState layerAbove = LayerState.addLayerStateOnTopOfLayerState(fullyConnectedLayer, stateWithoutConnections, sideBump);
+				LayerState stateWithoutConnections = new LayerState(PERIMETER, i);
 				
-				if(layerAbove != null) {
+				if(stateWithoutConnections.isValid() == false) {
+					continue;
+				}
+
+				/*if(currentBottomLayer.toString().contains("###-#---#")
+						&& currentBottomLayer.toString().contains("1 <--> 2")
+						&& stateWithoutConnections.toString().contains("#---#-#-#---#----")) {
+					System.out.println("DEBUG");
+				}*/
+
+				for(int sideBump=LEFT_EXTREME; sideBump<=RIGHT_EXTREME; sideBump++) {
 					
-					if( ! couldTouchTopRef.containsKey(layerAbove.toString())
-							&& curLayerStateCouldReachLayer0(layerAbove)) {
 						
-						System.out.println("Could reach layer 0:");
-						validLayerStates.put(layerAbove.toString(), layerAbove);
-
-						System.out.println(sideBump + ":");
-						System.out.println(layerAbove);
-						System.out.println();
-					}
+					LayerState layerAbove = LayerState.addLayerStateOnTopOfLayerState(currentBottomLayer, stateWithoutConnections, sideBump);
 					
+					if(layerAbove != null) {
+						
+						/*if(currentBottomLayer.toString().contains("###-#---#")
+								&& currentBottomLayer.toString().contains("1 <--> 2")
+								&& stateWithoutConnections.toString().contains("#---#-#-#---#----")
+								) {
+							System.out.println("DEBUG2 with sideBump " + sideBump);
+							System.out.println(layerAbove);
+							
+							if(sideBump == 4 || sideBump == -4) {
+								System.out.println("DEBUG 3");
+								LayerState layerAbove2 = LayerState.addLayerStateOnTopOfLayerState(currentBottomLayer, stateWithoutConnections, sideBump);
+								
+							}
+						}*/
+						
+						if( ! couldTouchTopRef.containsKey(layerAbove.toString())
+								&& curLayerStateCouldReachLayer0(layerAbove)) {
+							
+							System.out.println("Could reach layer 0:");
+							validLayerStates.put(layerAbove.toString(), layerAbove);
+	
+							System.out.println(sideBump + ":");
+							System.out.println(layerAbove);
+							System.out.println();
+							
+							layerStateQueue.add(layerAbove);
+						}
+						
+					}
 				}
 			}
 		}
@@ -163,11 +193,11 @@ public class MatrixCreator {
 		
 		Enumeration<String> badStates = touchedLayerStates.keys();
 		
-		/*while(badStates.hasMoreElements()) {
+		while(badStates.hasMoreElements()) {
 
 			String curBadState = badStates.nextElement();
 			couldTouchTopRef.put(curBadState, false);
-		}*/
+		}
 		
 		return false;
 	}

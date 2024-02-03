@@ -353,12 +353,21 @@ public class LayerState {
 		for(int i=0; i<numIslandsTop; i++) {
 			for(int i2=0; i2<numIslandsTop; i2++) {
 				for(int j=0; j<numIslandsBottom; j++) {
+					for(int j2=0; j2<numIslandsBottom; j2++) {
 					
-					if(touchingBottomToTop[j][i] && touchingBottomToTop[j][i2]) {
 						
-						topRet.connections[i][i2] = true;
-						topRet.connections[i2][i] = true;
-						
+						if(i == i2
+							||
+								(j == j2
+								&& touchingBottomToTop[j][i] && touchingBottomToTop[j][i2])
+							||
+							(touchingBottomToTop[j][i] && touchingBottomToTop[j2][i2]
+									&& bottom.connections[j][j2])) {
+							
+							topRet.connections[i][i2] = true;
+							topRet.connections[i2][i] = true;
+							
+						}
 					}
 				}
 			}
