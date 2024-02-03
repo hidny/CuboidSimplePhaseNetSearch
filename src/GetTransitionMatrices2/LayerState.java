@@ -12,10 +12,11 @@ public class LayerState {
 		
 	}
 	
+	public static final int BUFFER = 5;
 	//Leave connections blank until you put it on another one.
 	public LayerState(int perimeter, long horiNumber) {
 		
-		cellTable = new boolean[perimeter * perimeter];
+		cellTable = new boolean[perimeter * perimeter + BUFFER];
 		
 		cellTable[0] = true;
 		
@@ -58,7 +59,7 @@ public class LayerState {
 			this.connections = null;
 		} else {
 		
-			int numElements = getNumberOfIslands(cellTable);
+			int numElements = this.getNumberOfIslands();
 		
 			connections = new boolean[numElements][numElements];
 		}
@@ -85,8 +86,29 @@ public class LayerState {
 		return copy;
 	}
 
-	public int getNumberOfIslands(boolean array[]) {
+	public int getNumberOfIslands() {
 		return getNumberOfIslandsFromTable(this.cellTable);
+	}
+	
+	public int getIslandsIndex(int index) {
+		
+		int islandIndex = -1;
+		
+		boolean curOnIsland = false;
+		
+		for(int i=0; i<= index; i++) {
+
+			if(! curOnIsland && this.cellTable[i]) {
+				
+				islandIndex++;
+				curOnIsland = true;
+				
+			} else if(this.cellTable[i] == false) {
+				curOnIsland = false;
+			}
+		}
+		
+		return islandIndex;
 	}
 
 	public static int getNumberOfIslandsFromTable(boolean array[]) {
@@ -174,7 +196,7 @@ public class LayerState {
 	}
 	
 	public boolean equals(LayerState other) {
-		return this.toString().equals(other);
+		return this.toString().equals(other.toString());
 	}
 	
 	public static long getUpperBoundPossibleLayers(int perimeter) {
@@ -190,11 +212,13 @@ public class LayerState {
 	
 	public static void main(String args[]) {
 		
-		int perimeter = 9;
+		int perimeter = 4;
 		
 		int numValid = 0;
 		
 		long numToCheck = getUpperBoundPossibleLayers(perimeter);
+		
+		//addLayerStateOnTopOfLayerState(LayerState bottom, LayerState top, int displacementX)
 		
 		for(int i=0; i<numToCheck; i++) {
 			
@@ -207,6 +231,141 @@ public class LayerState {
 		}
 		
 		System.out.println("Number of valid layers: " + numValid);
+		
+		LayerState layer0 = new LayerState(perimeter, 0);
+		System.out.println(layer0);
+		
+
+		for(int i=0; i<numToCheck; i++) {
+			
+			LayerState cur = new LayerState(perimeter, i);
+			
+			if(cur.isValid()) {
+				
+				LayerState layerAbove = addLayerStateOnTopOfLayerState(layer0, cur, 0);
+				
+				if(layerAbove != null) {
+					System.out.println(layerAbove);
+				}
+			}
+		}
+		
+	}
+	
+	
+	//TODO
+	//pre: bottom is connected
+	//post: if we could add layer on top of layer, return top layer with connection info
+	// otherwise: return null.
+	
+	//TODO: make function to see if you could put one layer on another
+	public static LayerState addLayerStateOnTopOfLayerState(LayerState bottom, LayerState top, int displacementX) {
+
+		int numIslandsBottom = bottom.getNumberOfIslands();
+		int numIslandsTop = top.getNumberOfIslands();
+		
+		boolean touchingBottomToTop[][] = new boolean[numIslandsBottom][numIslandsTop];
+		
+		for(int i=0; i<touchingBottomToTop.length; i++) {
+			for(int j=0; j<touchingBottomToTop[0].length; j++) {
+				touchingBottomToTop[i][j] = false;
+			}
+		}
+		
+		
+		for(int i=0; i<bottom.cellTable.length; i++) {
+			
+			int jCoord = i + displacementX;
+
+			
+			if(jCoord >=0 && jCoord < bottom.cellTable.length) {
+
+				int bottomIslandIndex = bottom.getIslandsIndex(i);
+				int topIslandIndex = top.getIslandsIndex(jCoord);
+				
+				if(bottom.cellTable[i] && top.cellTable[jCoord]) {
+					
+					touchingBottomToTop[bottomIslandIndex][topIslandIndex] = true;
+				}
+			}
+		}
+		
+		//Step 1:
+		//Figure out if nothing in bottom is abandoned.
+		
+		//Get islands that touch bottom to top:
+		boolean touchingDirectly[] = new boolean[touchingBottomToTop.length];
+		for(int i=0; i<touchingBottomToTop.length; i++) {
+			
+			//Check for a direct touch
+			boolean bottomIslandTouchingDirectly = false;
+			for(int j=0; j<touchingBottomToTop[i].length; j++) {
+				if(touchingBottomToTop[i][j]) {
+					bottomIslandTouchingDirectly = true;
+					break;
+				}
+			}
+			
+			touchingDirectly[i] = bottomIslandTouchingDirectly;
+			
+		}
+		
+		//Make sure bottom is touching top indirectly:
+		
+		boolean stillValid = true;
+		for(int i=0; i<touchingBottomToTop.length; i++) {
+			
+			if(touchingDirectly[i] == false) {
+				
+				boolean currentIslandNoGood = true;
+				
+				for(int j=0; j<bottom.connections.length; j++) {
+					
+					if(bottom.connections[i][j] && touchingDirectly[j]) {
+						currentIslandNoGood = false;
+						break;
+					}
+				}
+				
+				if(currentIslandNoGood) {
+					stillValid = false;
+					break;
+				}
+			}
+		}
+		
+		if(stillValid == false) {
+			return null;
+		}
+		
+		
+		//Step 2:
+		//Figure out the connections for top.
+		LayerState topRet = top.hardCopy();
+		
+		topRet.connections = new boolean[numIslandsTop][numIslandsTop];
+		for(int i=0; i<topRet.connections.length; i++) {
+			for(int j=0; j<topRet.connections[0].length; j++) {
+				topRet.connections[i][j] = false;
+			}
+		}
+		
+		for(int i=0; i<numIslandsTop; i++) {
+			for(int i2=0; i2<numIslandsTop; i2++) {
+				for(int j=0; j<numIslandsBottom; j++) {
+					
+					if(touchingBottomToTop[j][i] && touchingBottomToTop[j][i2]) {
+						
+						topRet.connections[i][i2] = true;
+						topRet.connections[i2][i] = true;
+						
+					}
+				}
+			}
+		}
+		
+		
+		return topRet;
 	}
 	
 	//Patterns found on OEIS when you consider the 3^(p-1) solutions that go to the right of the initial cell:
@@ -229,7 +388,5 @@ public class LayerState {
 	//  O    O    OO   O    OO   O    OO   OOO   O    O    OO    O
 	//  O    OO   O    O    OO   OOO  O    O    OO   OOO  OO   OOO  OOOO
 	//(End)
-	//In retrospect, it makes sense.
-	
-	//TODO: make function to see if you could put one layer on another
+	//After thinking about it, I still don't understand it. 
 }
