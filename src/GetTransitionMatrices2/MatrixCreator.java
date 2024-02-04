@@ -1,25 +1,59 @@
 package GetTransitionMatrices2;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class MatrixCreator {
 
-	public static final int PERIMETER = 6;
+	//Perimeter 8 takes over an hour without a few optimizations...
+	public static final int PERIMETER = 8;
 	public static final int LEFT_EXTREME = 0 - PERIMETER * PERIMETER - PERIMETER;
 	public static final int RIGHT_EXTREME = PERIMETER * PERIMETER + PERIMETER;
 	
 	public static void main(String args[]) {
 
-		Hashtable <String, LayerState> validLayerStates = new Hashtable<String, LayerState>();
+		ArrayList <LayerState> validLayerStates = getValidLayerStates();
+		
+		
+		int matrix[][] = createMatrix(validLayerStates);
+		
+		printMatrix(matrix);
+		
+		System.out.println("Matrix to be used by python:");
+		System.out.println(convertMatrixToPythonFormat(matrix));
+	}
+	
+	public static void printMatrix(int matrix[][]) {
+		String SPACE = "    ";
+		System.out.println("Matrix:");
+		for(int i=0; i<matrix.length; i++) {
+			for(int j=0; j<matrix[0].length; j++) {
+				System.out.print(SPACE.substring(0, SPACE.length() - (matrix[i][j] + "").length()) + matrix[i][j]);
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
+	
+	public static ArrayList <LayerState> getValidLayerStates() {
+		
+		//Hashtable <String, LayerState> validLayerStates = new Hashtable<String, LayerState>();
+
+		ArrayList<LayerState> validLayerStates = new ArrayList<LayerState>();
+		
 		LinkedList<LayerState> layerStateQueue = new LinkedList<LayerState>();
 		
 		//Start with the fully connected layer:
 		LayerState currentBottomLayer = new LayerState(PERIMETER, 0);
 		
-		validLayerStates.put(currentBottomLayer.toString(), currentBottomLayer);
+		validLayerStates.add(currentBottomLayer);
 		layerStateQueue.add(currentBottomLayer);
+		couldTouchTopRef.put(currentBottomLayer.toString(), true);
 		
 		long numLayers = LayerState.getUpperBoundPossibleLayers(PERIMETER);
 		
@@ -71,7 +105,7 @@ public class MatrixCreator {
 								&& curLayerStateCouldReachLayer0(layerAbove)) {
 							
 							System.out.println("Could reach layer 0:");
-							validLayerStates.put(layerAbove.toString(), layerAbove);
+							validLayerStates.add(layerAbove);
 	
 							System.out.println(sideBump + ":");
 							System.out.println(layerAbove);
@@ -84,6 +118,10 @@ public class MatrixCreator {
 				}
 			}
 		}
+		
+		return validLayerStates;
+		
+		
 	}
 	
 	public static Hashtable <String, Boolean> couldTouchTopRef = new Hashtable<String, Boolean>();
@@ -200,5 +238,70 @@ public class MatrixCreator {
 		}
 		
 		return false;
+	}
+	
+	public static int[][] createMatrix(ArrayList <LayerState> validLayerStates) {
+		
+		int ret[][] = new int[validLayerStates.size()][validLayerStates.size()];
+		
+		
+		LayerState states[] = new LayerState[validLayerStates.size()];
+		
+		System.out.println("Number of states: " + states.length);
+		
+		for(int i=0; i<states.length; i++) {
+			for(int j=0; j<states.length; j++) {
+				
+				LayerState bottom = validLayerStates.get(j);
+				LayerState top = validLayerStates.get(i);
+				
+				int curCellValue = 0;
+				
+				for(int sideBump=LEFT_EXTREME; sideBump<=RIGHT_EXTREME; sideBump++) {
+					LayerState result = LayerState.addLayerStateOnTopOfLayerState(bottom, top, sideBump);
+					
+					if(result != null && top.equals(result)) {
+						curCellValue++;
+					}
+					
+				}
+				
+				ret[i][j] = curCellValue;
+			}
+			
+		}
+		
+		
+		
+		return ret;
+		
+	}
+	
+	public static String convertMatrixToPythonFormat(int matrix[][]) {
+		String ret = "[";
+		
+		for(int i=0; i<matrix.length; i++) {
+			
+			ret += "[";
+			
+			for(int j=0; j<matrix[0].length; j++) {
+				
+				if(j<matrix[0].length - 1) {
+					ret += " " + matrix[i][j] + ",";
+				} else {
+					ret += " " + matrix[i][j];
+				}
+			}
+			
+			if(i< matrix.length - 1) {
+				ret += "],";
+			} else {
+				ret += "]";
+			}
+		}
+		
+		ret += "]";
+		
+		return ret;
 	}
 }
