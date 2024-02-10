@@ -78,6 +78,11 @@ Found 133 unique solution."
 		//reallySimpleSearch(5, 3, 2);
 		//36 solutions (9 unique solutions)
 		//reallySimpleSearch(7, 3, 1);
+
+		//N:16
+		//3724 solutions (1285 unique solutions)
+		//reallySimpleSearch(4, 3, 3);
+		
 		
 		//N: 17
 		// 115268 solutions (28817 uniq solutions) (This took 19 minutes)
@@ -106,12 +111,16 @@ Found 133 unique solution."
 		//reallySimpleSearch(13, 2, 1);
 		//
 		
+		//N = 21
+		//reallySimpleSearch(10, 3, 1);
+
 		// N = 22
 		//{5, 5, 2}, {6, 3, 3}
 		// 24 uniq solutions
 		//reallySimpleSearch(5, 5, 2);
 		
-		reallySimpleSearch(6, 3, 3);
+
+		//reallySimpleSearch(6, 3, 3);
 		
 		// N = 23 (4 other ones...)
 		/*
@@ -121,23 +130,48 @@ Found 133 unique solution."
 15 x 2 x 1: 94
 		 */
 		
+		//5, 4, 3 118 different solutions and 61 unique solution.
+		//reallySimpleSearch(5, 4, 3);
+		//System.exit(1);
+
+		 //7, 5, 1
+		//
+		//reallySimpleSearch(7, 5, 1);
 		 //11,3,1: (took about 20 hours)51 different solutions and  15 unique solution. 
 		//reallySimpleSearch(11, 3, 1);
 		
-		//5, 4, 3 118 different solutions and 61 unique solution.
-		//reallySimpleSearch(5, 4, 3);
-		
 		// 0 solutions?
 		//reallySimpleSearch(15, 2, 1);
+		
+		//N=24:
+
+		//reallySimpleSearch(9, 4, 1);
+		
+		
+		
 		// N = 25
 		/*
 		 * 7 x 3 x 3: 102
 9 x 3 x 2: 102
 12 x 3 x 1: 102
 		 */
+
+		//reallySimpleSearch(7, 3, 3);
+		
+
+		//reallySimpleSearch(9, 3, 2);
+		
+
+		reallySimpleSearch(12, 3, 1);
+
+		System.exit(1);
 		// N = 26
 		//268 unique solution for 17x2x1
 		//reallySimpleSearch(17, 2, 1);
+		
+
+		//reallySimpleSearch(8, 5, 1);
+		//System.exit(1);
 		
 		// N = 27
 		
@@ -193,6 +227,7 @@ Found 133 unique solution."
 		System.out.println("Done using the 2nd iteration (using pre-computed long arrays)");
 		System.out.println("Found " + BasicUniqueCheckImproved.uniqList.size() + " unique solution.");
 
+		System.out.println("Done for " + a + "x" + b + "x" + c);
 	}
 	
 	public static int getNumLayers(CuboidToFoldOnExtendedFaster5 cuboidToBuild) {
