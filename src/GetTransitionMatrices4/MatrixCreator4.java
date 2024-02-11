@@ -1,4 +1,4 @@
-package GetTransitionMatrices3;
+package GetTransitionMatrices4;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,7 +10,7 @@ import java.util.LinkedList;
 
 //TODO: Fix bug! Make connections transitive!
 
-public class MatrixCreator3 {
+public class MatrixCreator4 {
 	
 	//TODO:
 	
@@ -22,13 +22,13 @@ public class MatrixCreator3 {
 	//https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html
 	
 	//Perimeter 8 takes over an hour without a few optimizations...
-	public static final int PERIMETER = 10;
+	public static final int PERIMETER = 9;
 	public static final int LEFT_EXTREME = 0 - PERIMETER * PERIMETER - PERIMETER;
 	public static final int RIGHT_EXTREME = PERIMETER * PERIMETER + PERIMETER;
 	
 	public static void main(String args[]) {
 
-		ArrayList <LayerState3> validLayerStates = getValidLayerStates();
+		ArrayList <LayerState4> validLayerStates = getValidLayerStates();
 		
 		
 		int matrix[][] = createMatrix(validLayerStates);
@@ -52,23 +52,23 @@ public class MatrixCreator3 {
 		System.out.println();
 	}
 	
-	public static ArrayList <LayerState3> getValidLayerStates() {
+	public static ArrayList <LayerState4> getValidLayerStates() {
 		
 		//Hashtable <String, LayerState> validLayerStates = new Hashtable<String, LayerState>();
 
-		ArrayList<LayerState3> validLayerStates = new ArrayList<LayerState3>();
-		HashSet<LayerState3> validLayerStatesHash = new HashSet<LayerState3>();
+		ArrayList<LayerState4> validLayerStates = new ArrayList<LayerState4>();
+		HashSet<LayerState4> validLayerStatesHash = new HashSet<LayerState4>();
 		
-		LinkedList<LayerState3> layerStateQueue = new LinkedList<LayerState3>();
+		LinkedList<LayerState4> layerStateQueue = new LinkedList<LayerState4>();
 		
 		//Start with the fully connected layer:
-		LayerState3 currentBottomLayer = new LayerState3(PERIMETER, 0);
+		LayerState4 currentBottomLayer = new LayerState4(PERIMETER, 0);
 		
 		validLayerStates.add(currentBottomLayer);
 		layerStateQueue.add(currentBottomLayer);
 		couldTouchTopRef.put(currentBottomLayer.toString(), true);
 		
-		long numLayers = LayerState3.getUpperBoundPossibleLayers(PERIMETER);
+		long numLayers = LayerState4.getUpperBoundPossibleLayers(PERIMETER);
 		
 		System.out.println("Start:");
 		
@@ -81,7 +81,7 @@ public class MatrixCreator3 {
 			for(int i=0; i<numLayers; i++) {
 				//System.out.println(i);
 				
-				LayerState3 stateWithoutConnections = new LayerState3(PERIMETER, i);
+				LayerState4 stateWithoutConnections = new LayerState4(PERIMETER, i);
 				
 				if(stateWithoutConnections.isValid() == false) {
 					continue;
@@ -96,11 +96,11 @@ public class MatrixCreator3 {
 				for(int sideBump=LEFT_EXTREME; sideBump<=RIGHT_EXTREME; sideBump++) {
 					
 						
-					LayerState3 layerAbove = LayerState3.addLayerStateOnTopOfLayerState(currentBottomLayer, stateWithoutConnections, sideBump);
+					LayerState4 layerAbove = LayerState4.addLayerStateOnTopOfLayerState(currentBottomLayer, stateWithoutConnections, sideBump);
 					
 					if(layerAbove != null) {
 					
-						int numNonRedundantConnectionsSoFar = LayerState3.getNumConnectedIslands(layerAbove.connections);
+						int numNonRedundantConnectionsSoFar = LayerState4.getNumConnectedIslands(layerAbove.connections);
 						
 						if(layerAbove.getNumberOfIslands() % 2 == 0) {
 							System.out.println("EVEN!");
@@ -157,7 +157,7 @@ public class MatrixCreator3 {
 	//TODO: clean up the code!
 	public static Hashtable <String, Boolean> couldTouchTopRef = new Hashtable<String, Boolean>();
 	
-	public static boolean curLayerStateCouldReachLayer0(LayerState3 cur, HashSet<LayerState3> validLayerStatesHash) {
+	public static boolean curLayerStateCouldReachLayer0(LayerState4 cur, HashSet<LayerState4> validLayerStatesHash) {
 		
 		if(couldTouchTopRef.containsKey(cur.toString())) {
 			return couldTouchTopRef.get(cur.toString());
@@ -165,22 +165,22 @@ public class MatrixCreator3 {
 		
 		
 		//System.out.println("Checking:  " + cur);
-		LayerState3 goal = new LayerState3(PERIMETER, 0);
+		LayerState4 goal = new LayerState4(PERIMETER, 0);
 		
-		LinkedList<LayerState3> layerStateQueue = new LinkedList<LayerState3>();
+		LinkedList<LayerState4> layerStateQueue = new LinkedList<LayerState4>();
 		layerStateQueue.add(cur);
 		
-		Hashtable <String, LayerState3> touchedLayerStates = new Hashtable<String, LayerState3>();
+		Hashtable <String, LayerState4> touchedLayerStates = new Hashtable<String, LayerState4>();
 		touchedLayerStates.put(cur.toString(), cur);
 		
 		Hashtable <String, String> topToBottomRecords = new Hashtable<String, String>();
 		
 		
-		long numLayers = LayerState3.getUpperBoundPossibleLayers(PERIMETER);
+		long numLayers = LayerState4.getUpperBoundPossibleLayers(PERIMETER);
 		
 		while( ! layerStateQueue.isEmpty()) {
 			
-			LayerState3 bottomLayer = layerStateQueue.poll();
+			LayerState4 bottomLayer = layerStateQueue.poll();
 			//System.out.println("POLL");
 			//System.out.println(bottomLayer);
 			
@@ -188,7 +188,7 @@ public class MatrixCreator3 {
 			boolean searchTheGoalList = true;
 			for(int i=0; i<numLayers; i++) {
 
-				LayerState3 stateWithoutConnections = new LayerState3(PERIMETER, i);
+				LayerState4 stateWithoutConnections = new LayerState4(PERIMETER, i);
 				
 				foundSomething = searchForLayer(
 						bottomLayer,
@@ -208,7 +208,7 @@ public class MatrixCreator3 {
 			searchTheGoalList = false;
 			for(int i=0; i<numLayers; i++) {
 
-				LayerState3 stateWithoutConnections = new LayerState3(PERIMETER, i);
+				LayerState4 stateWithoutConnections = new LayerState4(PERIMETER, i);
 				
 				foundSomething = searchForLayer(
 						bottomLayer,
@@ -239,12 +239,12 @@ public class MatrixCreator3 {
 	
 	
 	public static boolean searchForLayer(
-			LayerState3 bottomLayer,
-			HashSet<LayerState3> validLayerStatesHash,
+			LayerState4 bottomLayer,
+			HashSet<LayerState4> validLayerStatesHash,
 			Hashtable <String, String> topToBottomRecords,
-			Hashtable <String, LayerState3> touchedLayerStates,
-			LinkedList<LayerState3> layerStateQueue,
-			LayerState3 stateWithoutConnections,
+			Hashtable <String, LayerState4> touchedLayerStates,
+			LinkedList<LayerState4> layerStateQueue,
+			LayerState4 stateWithoutConnections,
 			boolean searchTheGoalList
 		) {
 		
@@ -254,11 +254,11 @@ public class MatrixCreator3 {
 		
 		for(int sideBump=LEFT_EXTREME; sideBump<=RIGHT_EXTREME; sideBump++) {
 			
-			LayerState3 layerAbove = LayerState3.addLayerStateOnTopOfLayerState(bottomLayer, stateWithoutConnections, sideBump);
+			LayerState4 layerAbove = LayerState4.addLayerStateOnTopOfLayerState(bottomLayer, stateWithoutConnections, sideBump);
 			
 			if(layerAbove != null) {
 				
-				int numNonRedundantConnectionsSoFar = LayerState3.getNumConnectedIslands(layerAbove.connections);
+				int numNonRedundantConnectionsSoFar = LayerState4.getNumConnectedIslands(layerAbove.connections);
 				
 				if(searchTheGoalList && ! validLayerStatesHash.contains(layerAbove)) {
 					return false;
@@ -284,7 +284,7 @@ public class MatrixCreator3 {
 						
 						if(couldTouchTopRef.get(layerAbove.toString()) == true) {
 							
-							LayerState3 curMemoize = bottomLayer;
+							LayerState4 curMemoize = bottomLayer;
 							
 							if(! couldTouchTopRef.contains(curMemoize.toString())) {
 								couldTouchTopRef.put(curMemoize.toString(), true);
@@ -327,25 +327,25 @@ public class MatrixCreator3 {
 	
 	}
 	
-	public static int[][] createMatrix(ArrayList <LayerState3> validLayerStates) {
+	public static int[][] createMatrix(ArrayList <LayerState4> validLayerStates) {
 		
 		int ret[][] = new int[validLayerStates.size()][validLayerStates.size()];
 		
 		
-		LayerState3 states[] = new LayerState3[validLayerStates.size()];
+		LayerState4 states[] = new LayerState4[validLayerStates.size()];
 		
 		System.out.println("Number of states: " + states.length);
 		
 		for(int i=0; i<states.length; i++) {
 			for(int j=0; j<states.length; j++) {
 				
-				LayerState3 bottom = validLayerStates.get(j);
-				LayerState3 top = validLayerStates.get(i);
+				LayerState4 bottom = validLayerStates.get(j);
+				LayerState4 top = validLayerStates.get(i);
 				
 				int curCellValue = 0;
 				
 				for(int sideBump=LEFT_EXTREME; sideBump<=RIGHT_EXTREME; sideBump++) {
-					LayerState3 result = LayerState3.addLayerStateOnTopOfLayerState(bottom, top, sideBump);
+					LayerState4 result = LayerState4.addLayerStateOnTopOfLayerState(bottom, top, sideBump);
 					
 					if(result != null && top.equals(result)) {
 						curCellValue++;
