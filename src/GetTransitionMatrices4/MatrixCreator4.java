@@ -12,6 +12,7 @@ import java.util.LinkedList;
 //ODNE
 
 //TODO: Stop loops before the end of the array.
+//TODO: try to reduce left and right extreme further...
 
 public class MatrixCreator4 {
 	
@@ -25,7 +26,7 @@ public class MatrixCreator4 {
 	//https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html
 	
 	//Perimeter 8 takes over an hour without a few optimizations...
-	public static final int PERIMETER = 9;
+	public static final int PERIMETER = 10;
 	public static final int LEFT_EXTREME = 0 - PERIMETER + 1;
 	//public static final int RIGHT_EXTREME = PERIMETER * PERIMETER + PERIMETER;
 	
