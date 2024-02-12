@@ -116,6 +116,22 @@ public class LayerState4 {
 		return islandIndex;
 	}
 
+	public int getWidthLayer() {
+		
+		for(int i=this.cellTable.length - 1; i>=0; i--) {
+
+			if(this.cellTable[i] ) {
+				return i + 1;
+				
+			}
+		}
+		
+		
+		return -1;
+		
+		
+	}
+	
 	public static int getNumberOfIslandsFromTable(boolean array[]) {
 		
 		int numIslands = 0;
@@ -330,7 +346,7 @@ public class LayerState4 {
 		
 		for(int i=0; i<bottom.cellTable.length; i++) {
 			
-			int jCoord = i + displacementX;
+			int jCoord = i - displacementX;
 
 			
 			if(jCoord >=0 && jCoord < bottom.cellTable.length) {

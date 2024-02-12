@@ -9,6 +9,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 //TODO: Fix bug! Make connections transitive!
+//ODNE
+
+//TODO: Stop loops before the end of the array.
 
 public class MatrixCreator4 {
 	
@@ -23,8 +26,8 @@ public class MatrixCreator4 {
 	
 	//Perimeter 8 takes over an hour without a few optimizations...
 	public static final int PERIMETER = 9;
-	public static final int LEFT_EXTREME = 0 - PERIMETER * PERIMETER - PERIMETER;
-	public static final int RIGHT_EXTREME = PERIMETER * PERIMETER + PERIMETER;
+	public static final int LEFT_EXTREME = 0 - PERIMETER + 1;
+	//public static final int RIGHT_EXTREME = PERIMETER * PERIMETER + PERIMETER;
 	
 	public static void main(String args[]) {
 
@@ -78,6 +81,8 @@ public class MatrixCreator4 {
 			currentBottomLayer = layerStateQueue.poll();
 			System.out.println(currentBottomLayer);
 
+			int currentBottomLayerWidth = currentBottomLayer.getWidthLayer();
+			
 			for(int i=0; i<numLayers; i++) {
 				//System.out.println(i);
 				
@@ -86,6 +91,7 @@ public class MatrixCreator4 {
 				if(stateWithoutConnections.isValid() == false) {
 					continue;
 				}
+				int currentTopLayerWidth = stateWithoutConnections.getWidthLayer();
 
 				/*if(currentBottomLayer.toString().contains("###-#---#")
 						&& currentBottomLayer.toString().contains("1 <--> 2")
@@ -93,9 +99,12 @@ public class MatrixCreator4 {
 					System.out.println("DEBUG");
 				}*/
 
-				for(int sideBump=LEFT_EXTREME; sideBump<=RIGHT_EXTREME; sideBump++) {
-					
-						
+				for(int sideBump=LEFT_EXTREME; currentTopLayerWidth + sideBump < currentBottomLayerWidth + PERIMETER; sideBump++) {
+					//System.out.println(currentBottomLayerWidth + ", " + currentTopLayerWidth + ", " + sideBump);
+					//	
+					//if(currentTopLayerWidth == 7 && sideBump == -3) {
+					//	System.out.println("DEBUG");
+					//}
 					LayerState4 layerAbove = LayerState4.addLayerStateOnTopOfLayerState(currentBottomLayer, stateWithoutConnections, sideBump);
 					
 					if(layerAbove != null) {
@@ -251,8 +260,11 @@ public class MatrixCreator4 {
 		if(stateWithoutConnections.isValid() == false) {
 			return false;
 		}
+		//TODO: copy/paste code
+		int currentBottomLayerWidth = bottomLayer.getWidthLayer();
+		int currentTopLayerWidth = stateWithoutConnections.getWidthLayer();
 		
-		for(int sideBump=LEFT_EXTREME; sideBump<=RIGHT_EXTREME; sideBump++) {
+		for(int sideBump=LEFT_EXTREME; currentTopLayerWidth + sideBump < currentBottomLayerWidth + PERIMETER; sideBump++) {
 			
 			LayerState4 layerAbove = LayerState4.addLayerStateOnTopOfLayerState(bottomLayer, stateWithoutConnections, sideBump);
 			
@@ -342,9 +354,14 @@ public class MatrixCreator4 {
 				LayerState4 bottom = validLayerStates.get(j);
 				LayerState4 top = validLayerStates.get(i);
 				
+
+				//TODO: copy/paste code
+				int currentBottomLayerWidth = bottom.getWidthLayer();
+				int currentTopLayerWidth = top.getWidthLayer();
+				
 				int curCellValue = 0;
 				
-				for(int sideBump=LEFT_EXTREME; sideBump<=RIGHT_EXTREME; sideBump++) {
+				for(int sideBump=LEFT_EXTREME; currentTopLayerWidth + sideBump < currentBottomLayerWidth + PERIMETER; sideBump++) {
 					LayerState4 result = LayerState4.addLayerStateOnTopOfLayerState(bottom, top, sideBump);
 					
 					if(result != null && top.equals(result)) {
