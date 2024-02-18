@@ -22,7 +22,7 @@ public class MatrixCreator3 {
 	//https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html
 	
 	//Perimeter 8 takes over an hour without a few optimizations...
-	public static final int PERIMETER = 10;
+	public static final int PERIMETER = 7;
 	public static final int LEFT_EXTREME = 0 - PERIMETER * PERIMETER - PERIMETER;
 	public static final int RIGHT_EXTREME = PERIMETER * PERIMETER + PERIMETER;
 	
@@ -34,10 +34,10 @@ public class MatrixCreator3 {
 		int matrix[][] = createMatrix(validLayerStates);
 		
 		System.out.println("matrix width for perimter " + PERIMETER + ":" + matrix.length);
-		//printMatrix(matrix);
+		printMatrix(matrix);
 		
-		//System.out.println("Matrix to be used by python:");
-		//System.out.println(convertMatrixToPythonFormat(matrix));
+		System.out.println("Matrix to be used by python:");
+		System.out.println(convertMatrixToPythonFormat(matrix));
 	}
 	
 	public static void printMatrix(int matrix[][]) {

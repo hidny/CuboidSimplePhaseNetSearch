@@ -140,7 +140,7 @@ Found 133 unique solution."
 		 //11,3,1: (took about 20 hours)51 different solutions and  15 unique solution. 
 		//reallySimpleSearch(11, 3, 1);
 		
-		// 0 solutions?
+		// 0 solutions? No!
 		//reallySimpleSearch(15, 2, 1);
 		
 		//N=24:
@@ -157,21 +157,21 @@ Found 133 unique solution."
 		 */
 
 		//reallySimpleSearch(7, 3, 3);
-		
+		//System.exit(1);
 
 		//reallySimpleSearch(9, 3, 2);
-		
+		//System.exit(1);
 
-		reallySimpleSearch(12, 3, 1);
+		//reallySimpleSearch(12, 3, 1);
 
-		System.exit(1);
 		// N = 26
 		//268 unique solution for 17x2x1
 		//reallySimpleSearch(17, 2, 1);
 		
 
-		//reallySimpleSearch(8, 5, 1);
-		//System.exit(1);
+		//9,885,286 uniq solutions (and about 9,885,263 unique solutions after searching the cell left of 5x1 side)
+		reallySimpleSearch(8, 5, 1);
+		System.exit(1);
 		
 		// N = 27
 		

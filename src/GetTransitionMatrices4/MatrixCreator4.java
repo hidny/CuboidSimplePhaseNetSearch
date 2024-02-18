@@ -1,5 +1,8 @@
 package GetTransitionMatrices4;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -35,13 +38,100 @@ public class MatrixCreator4 {
 		ArrayList <LayerState4> validLayerStates = getValidLayerStates();
 		
 		
-		int matrix[][] = createMatrix(validLayerStates);
+		if(PERIMETER < 3) {
+			int matrix[][] = createMatrix(validLayerStates);
+			
+			System.out.println("matrix width for perimter " + PERIMETER + ":" + matrix.length);
+			printMatrix(matrix);
+			
+			System.out.println("Matrix to be used by python:");
+			System.out.println(convertMatrixToPythonFormat(matrix));
+		}
+		printSparsePythonMatrix(validLayerStates);
+	}
+	
+	public static void printSparsePythonMatrix(ArrayList <LayerState4> validLayerStates) {
 		
-		System.out.println("matrix width for perimter " + PERIMETER + ":" + matrix.length);
-		//printMatrix(matrix);
+			
+			
+			
+		try {
+			PrintWriter output = new PrintWriter("D:\\outputMatrixPerimeter" + PERIMETER + ".py");
 		
-		//System.out.println("Matrix to be used by python:");
-		//System.out.println(convertMatrixToPythonFormat(matrix));
+			output.println("import numpy as np\r\n"
+					+ "from numpy.linalg import eig");
+			
+			output.println();
+			String varName = "tmpMatrix" + PERIMETER;
+			
+			output.println(varName + " = [[0 for x in range(" + validLayerStates.size() + ")] for y in range(" + validLayerStates.size() + ")]");
+			
+			System.out.println("Number of states: " + validLayerStates.size());
+			int numNonZeroCells = 0;
+			int sumOfAllEntries = 0;
+			int maxWidth = 0;
+			
+			for(int i=0; i<validLayerStates.size(); i++) {
+				
+				if(validLayerStates.get(i).getWidthLayer() > maxWidth) {
+					maxWidth = validLayerStates.get(i).getWidthLayer();
+				}
+				
+				for(int j=0; j<validLayerStates.size(); j++) {
+					
+					LayerState4 bottom = validLayerStates.get(j);
+					LayerState4 top = validLayerStates.get(i);
+					
+
+					//TODO: copy/paste code
+					int currentBottomLayerWidth = bottom.getWidthLayer();
+					int currentTopLayerWidth = top.getWidthLayer();
+					
+					int curCellValue = 0;
+					
+					for(int sideBump=LEFT_EXTREME; currentTopLayerWidth + sideBump < currentBottomLayerWidth + PERIMETER; sideBump++) {
+						LayerState4 result = LayerState4.addLayerStateOnTopOfLayerState(bottom, top, sideBump);
+						
+						if(result != null && top.equals(result)) {
+							curCellValue++;
+						}
+						
+					}
+					
+					
+					if(curCellValue > 0) {
+						output.println(varName + "[" + i + "][" + j + "] = " + curCellValue);
+						numNonZeroCells++;
+						
+						sumOfAllEntries+= curCellValue;
+					}
+				}
+				
+			}
+			
+			System.out.println("Number of non-zero cells: " + numNonZeroCells);
+			System.out.println("Sum of all cell in matrix: " + sumOfAllEntries);
+			System.out.println("Max width layer for perimeter: " + maxWidth);
+			
+			output.println("# Number of non-zero cells: " + numNonZeroCells);
+			output.println("# Sum of all cell in matrix: " + sumOfAllEntries);
+			output.println("# Max width layer for perimeter: " + maxWidth);
+			
+			
+			output.println();
+			output.println("print(str(" + varName + "))");
+	
+			output.println("a = np.array(" + varName + ")");
+			output.println("w,v=eig(a)");
+			output.println("print('E-value:', w)");
+			output.println("print('E-vector', v)");
+			output.println();
+			
+			output.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void printMatrix(int matrix[][]) {
@@ -428,4 +518,78 @@ Does it tend down toward sqrt(3)?
 
 
 //Number of states: 1317
+*/
+
+/* P=1:
+ * Number of states: 1
+Number of non-zero cells: 1
+Sum of all cell in matrix: 1
+Max width layer for perimeter: 1
+ */
+
+/* P = 2:
+ * Number of states: 1
+Number of non-zero cells: 1
+Sum of all cell in matrix: 3
+Max width layer for perimeter: 2
+ */
+
+
+/* P = 3
+Number of states: 3
+Number of non-zero cells: 7
+Sum of all cell in matrix: 11
+Max width layer for perimeter: 5
+*/
+/* P = 4:
+ * Number of states: 7
+Number of non-zero cells: 31
+Sum of all cell in matrix: 45
+Max width layer for perimeter: 7
+
+ */
+/* P=5
+ * Number of states: 20
+Number of non-zero cells: 139
+Sum of all cell in matrix: 195
+Max width layer for perimeter: 13
+ */
+
+/* P =6:
+ * Number of states: 56
+Number of non-zero cells: 669
+Sum of all cell in matrix: 881
+Max width layer for perimeter: 16
+ */
+/*
+ * P=7:
+ * Number of states: 168
+Number of non-zero cells: 3289
+Sum of all cell in matrix: 4101
+Max width layer for perimeter: 25
+
+ */
+/*
+ * P = 8:
+ * Number of states: 512
+Number of non-zero cells: 16511
+Sum of all cell in matrix: 19563
+Max width layer for perimeter: 29
+
+ */
+/*
+ * P=9:
+ * 
+Number of states: 1607
+Number of non-zero cells: 83415
+Sum of all cell in matrix: 95234
+Max width layer for perimeter: 41
+ */
+
+/*
+P=10:
+Number of states: 5119
+Number of non-zero cells: 426540
+Sum of all cell in matrix: 471550
+
 */
