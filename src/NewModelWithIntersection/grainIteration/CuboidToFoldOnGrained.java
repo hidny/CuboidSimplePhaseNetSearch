@@ -1,4 +1,4 @@
-package NewModelWithIntersection.fifthIteration;
+package NewModelWithIntersection.grainIteration;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -8,21 +8,19 @@ import Model.CuboidToFoldOnInterface;
 import Model.DataModelViews;
 import Model.NeighbourGraphCreator;
 import Model.Utils;
-import NewModelWithIntersection.grainIteration.CuboidToFoldOnGrained;
+import SimplePhaseSearch.sixthIteration.CuboidToFoldOnExtendedSimplePhase6;
 
-public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
+public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 
 	
 	private CoordWithRotationAndIndex[][] neighbours;
 	
-	private int dimensions[] = new int[3];
+	public int dimensions[] = new int[3];
 
-	
-	public CuboidToFoldOnExtendedFaster5(int a, int b, int c) {
+	public CuboidToFoldOnGrained(int a, int b, int c) {
 		this(a, b, c, true, true);
 	}
-
-	public CuboidToFoldOnExtendedFaster5(int a, int b, int c, boolean verbose, boolean setup) {
+	public CuboidToFoldOnGrained(int a, int b, int c, boolean verbose, boolean setup) {
 
 		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c, verbose);
 		
@@ -35,7 +33,12 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 		
 		if(setup) {
 			setupAnswerSheetInBetweenLayers();
- 			setupAnswerSheetForTopCell();
+			setupAnswerSheetForTopCell();
+		}
+		
+		if(dimensions[1] % 4 != 1 || dimensions[2] != 1) {
+			System.out.println("ERROR: For now, the grained cuboids must be the form: mx(4m+1)x1");
+			System.exit(1);
 		}
 	}
 	
@@ -50,7 +53,6 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 
 	@Override
 	public int[] getDimensions() {
-		// TODO Auto-generated method stub
 		return dimensions;
 	}
 	
@@ -120,6 +122,23 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 	private long debugThru = 0L;
 	private long debugStop = 0L;
 	private long debugBugFix = 0L;
+	
+
+	//TODO:
+	//
+	//input: index
+	private int indexToRing[];
+	
+	//check if ring is decided: (depth)
+	private int indexRingDecided[];
+	
+	//The ring mod 4 to use
+	private int ringMod4AlreadySet[];
+	
+	//input: index and then rotation
+	private int ringMod4Lookup[][];
+	//END TODO
+	
 	//private long DEBUG_LAYER_INDEX = 14;
 	
 	//BFS to just get it done badly:
@@ -240,6 +259,41 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 	
 		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
 		
+		if(newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump] < 0) {
+			return false;
+		}
+
+		int nextIndex = newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
+		int nextRot = newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
+		
+		int nextRingIndex = indexToRing[nextIndex];
+		
+		//TODO: should it be <= currentLayerIndex
+		if(nextRingIndex >=0 && indexRingDecided[nextRingIndex] < currentLayerIndex - 10 && 
+				ringMod4Lookup[nextIndex][nextRot] != ringMod4AlreadySet[nextRingIndex]) {
+			
+			/*System.out.println("currentLayerIndex:" + currentLayerIndex);
+			System.out.println("next ring: " + nextRing);
+			System.out.println("Mod 4 set: " + ringMod4AlreadySet[nextRing]);
+			System.out.println("Mod 4 tried: " + ringMod4Lookup[newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]]
+					[newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]]);
+			System.out.println("index: " + newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]);
+			System.out.println("Rotation: " + newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]);
+
+			System.out.println("Prev index: "+ this.topLeftGroundedIndex);
+			System.out.println("Prev rotation: "+ this.topLeftGroundRotationRelativeFlatMap);
+			System.out.println();
+			*/
+			return false;
+		} else {
+			//System.out.println("Good");
+			//System.out.println("index: " + newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]);
+			//System.out.println("Rotation: " + newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]);
+
+			//System.out.println("Prev index: "+ this.topLeftGroundedIndex);
+			//System.out.println("Prev rotation: "+ this.topLeftGroundRotationRelativeFlatMap);
+		}
+		
 		return ((curState[0] & tmp[0]) | (curState[1] & tmp[1]) | (curState[2] & tmp[2])) == 0L  && ! unoccupiedRegionSplit(tmp, sideBump);
 		
 	}
@@ -261,10 +315,15 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 		this.topLeftGroundedIndex = tmp1;
 		this.topLeftGroundRotationRelativeFlatMap = tmp2;
 		
+		if(indexToRing[this.topLeftGroundedIndex] >= 0) {
+			indexRingDecided[indexToRing[this.topLeftGroundedIndex]] = currentLayerIndex;
+			ringMod4AlreadySet[indexToRing[this.topLeftGroundedIndex]] = ringMod4Lookup[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap];
+		}
 		
 	}
 	
 	public void removePrevLayerFast() {
+
 		
 		currentLayerIndex--;
 		this.topLeftGroundedIndex = prevGroundedIndexes[currentLayerIndex]; 
@@ -296,6 +355,7 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 		return ((~curState[0] & tmp[0]) | (~curState[1] & tmp[1]) | (~curState[2] & tmp[2])) != 0;
 	}
 	
+	int ROTATION_AGAINST_GRAIN = 1;
 	
 	private void setupAnswerSheetInBetweenLayers() {
 		
@@ -378,6 +438,15 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 						
 					}
 					
+					if( nextGounded.j % 2 == ROTATION_AGAINST_GRAIN) {
+						
+						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
+						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
+						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;						
+						continue;
+					}
+					
+					
 					answerSheet[index][rotation][sideBump] = convertBoolArrayToLongs(tmpArray);
 					preComputedPossiblyEmptyCellsAroundNewLayer[index][rotation][sideBump]  = getPossiblyEmptyCellsAroundNewLayer(tmpArray, index, rotation);
 					preComputedForceRegionSplitIfEmptyAroundNewLayer[index][rotation][sideBump]  = checkPreComputedForceRegionSplitIfEmptyAroundNewLayer(tmpArray, index, rotation);
@@ -388,6 +457,86 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 			}
 		}
 		
+		
+		//TODO: complete this
+		//System.out.println("Grain dimension is just the second one: " + dimensions[grainDim]);
+		
+		//int numTubes
+		
+		indexToRing = new int[getNumCellsToFill()];
+		
+		for(int i=0; i<indexToRing.length; i++) {
+			indexToRing[i] = getIndexToRingIndex(i);
+			//System.out.println("Cell " + i + ": " + indexToRing[i]);
+		}
+		
+		indexRingDecided = new int[dimensions[0]];
+		ringMod4AlreadySet = new int[dimensions[0]];;
+		
+		for(int i=0; i<indexRingDecided.length; i++) {
+			indexRingDecided[i] = -1;
+			ringMod4AlreadySet[i] = 0;
+		}
+
+		ringMod4Lookup = new int[getNumCellsToFill()][NUM_ROTATIONS];
+		for(int indexCell=0; indexCell<ringMod4Lookup.length; indexCell++) {
+			for(int rotation=0; rotation<ringMod4Lookup[0].length; rotation++) {
+				ringMod4Lookup[indexCell][rotation] = getRingMod4(indexCell, rotation);
+				
+				if(ringMod4Lookup[indexCell][rotation] != -1) {
+					//System.out.println("Cell " + indexCell + " and rotation " + rotation + ": " + ringMod4Lookup[indexCell][rotation]);
+				}
+			}
+			//System.out.println();
+		}
+	}
+	
+	private int getRingMod4(int indexCell, int rotation) {
+		
+		if(indexCell < dimensions[1]) {
+			return -1;
+		}
+		
+		if(rotation % 2 == 1) {
+			return -1;
+		}
+		//Rotation 0
+		
+		int ret = 0;
+		while(tryAttachCellInDir(indexCell, 0, LEFT).i < indexCell) {
+			indexCell = tryAttachCellInDir(indexCell, 0, LEFT).i;
+			ret++;
+		}
+
+		//Rotation 2:
+		if(rotation == 2) {
+			ret = 3 - (ret%4);
+		}
+		ret = ret % 4;
+		
+		if(ret < 0 || ret >=4) {
+			System.out.println("Doh! getRingMod4 is wrong!");
+			System.exit(1);
+		}
+		
+		
+		return ret;
+	}
+	
+	public int getIndexToRingIndex(int indexCell) {
+		int ret = -1;
+		
+		while(indexCell >= dimensions[1]) {
+			ret++;
+			
+			indexCell = tryAttachCellInDir(indexCell, 0, ABOVE).i;
+		}
+		
+		if(ret >= dimensions[0]) {
+			return -1;
+		} else {
+			return ret;
+		}
 	}
 	
 	boolean checkPreComputedForceRegionSplitIfEmptyAroundNewLayer(boolean newLayerArray[], int prevGroundIndex, int prevGroundRotation) {
@@ -630,90 +779,91 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
 	}
 
+	
+
 	//DEBUG PRINT STATE ON OTHER CUBOID:
-		public void printCurrentStateOnOtherCuboidsFlatMap() {
+	public void printCurrentStateOnOtherCuboidsFlatMap() {
+		
+		CuboidToFoldOnGrained toPrint = new CuboidToFoldOnGrained(
+				this.dimensions[0],
+				this.dimensions[1],
+				this.dimensions[2],
+				false,
+				false
+				);
+		
+		toPrint.initializeNewBottomIndexAndRotation(
+				this.prevGroundedIndexes[0],
+				this.prevGroundedRotations[0]
+				);
+		
+		String labels[] = new String[Utils.getTotalArea(toPrint.dimensions)];
+		
+		for(int i=0; i<labels.length; i++) {
+			labels[i] = null;
+		}
+		
+		//Set the bottom index:
+		labels[this.prevGroundedIndexes[0]] = "Bo";
+		
+		
+		//Set the grounded Mid indexes (do more later)
+		for(int i=0; i<this.currentLayerIndex; i++) {
 			
-			CuboidToFoldOnExtendedFaster5 toPrint = new CuboidToFoldOnExtendedFaster5(
-					this.dimensions[0],
-					this.dimensions[1],
-					this.dimensions[2],
-					false,
-					false
-					);
+			char label = (char)( (i) + 'A');
 			
-			toPrint.initializeNewBottomIndexAndRotation(
-					this.prevGroundedIndexes[0],
-					this.prevGroundedRotations[0]
-					);
-			
-			String labels[] = new String[Utils.getTotalArea(toPrint.dimensions)];
-			
-			for(int i=0; i<labels.length; i++) {
-				labels[i] = null;
-			}
-			
-			//Set the bottom index:
-			labels[this.prevGroundedIndexes[0]] = "Bo";
+
+			String labelToUse = label + "" + label;
 			
 			
-			//Set the grounded Mid indexes (do more later)
-			for(int i=0; i<this.currentLayerIndex; i++) {
-				
-				char label = (char)( (i) + 'A');
+			if(i < this.currentLayerIndex - 1) {
+				labels[this.prevGroundedIndexes[i + 1]] = labelToUse;
 				
 
-				String labelToUse = label + "" + label;
+				Coord2D cur = new Coord2D(this.prevGroundedIndexes[i + 1], this.prevGroundedRotations[i + 1]);
 				
-				
-				if(i < this.currentLayerIndex - 1) {
-					labels[this.prevGroundedIndexes[i + 1]] = labelToUse;
+				for(int j=0; j<4 - 1; j++) {
+					cur = this.tryAttachCellInDir(cur.i, cur.j, RIGHT);
+					labels[cur.i] = labelToUse;
 					
-
-					Coord2D cur = new Coord2D(this.prevGroundedIndexes[i + 1], this.prevGroundedRotations[i + 1]);
-					
-					for(int j=0; j<4 - 1; j++) {
-						cur = this.tryAttachCellInDir(cur.i, cur.j, RIGHT);
-						labels[cur.i] = labelToUse;
-						
-					}
-					
-				} else {
-					
-					labels[this.topLeftGroundedIndex] = labelToUse;
-					
-
-					Coord2D cur = new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap);
-					
-					for(int j=0; j<4 - 1; j++) {
-						cur = this.tryAttachCellInDir(cur.i, cur.j, RIGHT);
-						labels[cur.i] = labelToUse;
-					}
 				}
 				
-			}
-			
-			int numNullLabels = 0;
-			int curTopIndex = -1;
-			//Add the top:
-			for(int i=0; i<labels.length; i++) {
-				if(labels[i] == null) {
-					numNullLabels++;
-					curTopIndex = i;
+			} else {
+				
+				labels[this.topLeftGroundedIndex] = labelToUse;
+				
+
+				Coord2D cur = new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap);
+				
+				for(int j=0; j<4 - 1; j++) {
+					cur = this.tryAttachCellInDir(cur.i, cur.j, RIGHT);
+					labels[cur.i] = labelToUse;
 				}
 			}
-			
-			if(numNullLabels == 1) {
-				labels[curTopIndex] = "To";
-			}
-
-			System.out.println(DataModelViews.getFlatNumberingView(this.dimensions[0],
-					this.dimensions[1],
-					this.dimensions[2],
-					labels));
 			
 		}
 		
+		int numNullLabels = 0;
+		int curTopIndex = -1;
+		//Add the top:
+		for(int i=0; i<labels.length; i++) {
+			if(labels[i] == null) {
+				numNullLabels++;
+				curTopIndex = i;
+			}
+		}
+		
+		if(numNullLabels == 1) {
+			labels[curTopIndex] = "To";
+		}
 
-		//END DEBUG PRINT STATE ON OTHER CUBOID:
+		System.out.println(DataModelViews.getFlatNumberingView(this.dimensions[0],
+				this.dimensions[1],
+				this.dimensions[2],
+				labels));
+		
+	}
+	
 
+	//END DEBUG PRINT STATE ON OTHER CUBOID:
 }

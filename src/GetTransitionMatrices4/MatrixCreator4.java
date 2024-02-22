@@ -29,7 +29,7 @@ public class MatrixCreator4 {
 	//https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html
 	
 	//Perimeter 8 takes over an hour without a few optimizations...
-	public static final int PERIMETER = 10;
+	public static final int PERIMETER = 8;
 	public static final int LEFT_EXTREME = 0 - PERIMETER + 1;
 	//public static final int RIGHT_EXTREME = PERIMETER * PERIMETER + PERIMETER;
 	
@@ -101,6 +101,10 @@ public class MatrixCreator4 {
 					
 					if(curCellValue > 0) {
 						output.println(varName + "[" + i + "][" + j + "] = " + curCellValue);
+
+						if(numNonZeroCells % 1000 == 0) {
+							output.flush();
+						}
 						numNonZeroCells++;
 						
 						sumOfAllEntries+= curCellValue;
@@ -591,5 +595,13 @@ P=10:
 Number of states: 5119
 Number of non-zero cells: 426540
 Sum of all cell in matrix: 471550
+Max width layer for perimeter: 46
 
+*/
+
+/*
+P=11
+Number of states: 16557
+Number of non-zero cells: 2192772
+Sum of all cell in matrix: 2368312
 */

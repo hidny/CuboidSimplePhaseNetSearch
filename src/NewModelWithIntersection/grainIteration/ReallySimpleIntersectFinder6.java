@@ -1,4 +1,4 @@
-package NewModelWithIntersection.fifthIteration;
+package NewModelWithIntersection.grainIteration;
 
 import java.util.ArrayList;
 
@@ -11,165 +11,11 @@ import NewModel.firstIteration.Nx1x1CuboidToFold;
 import SolutionResolver.SolutionResolverInterface;
 import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
-public class ReallySimpleIntersectFinder5 {
+public class ReallySimpleIntersectFinder6 {
 
 	public static void main(String[] args) {
 		
-		//N: 5
-		//38460 solutions (Makes sense because it's Nx1x1) (9702 unique solutions)
-		//reallySimpleSearch(5, 1, 1);
-		
-		//26 solutions: (7 unique solutions)
-		//reallySimpleSearch(3, 2, 1);
-
-		//N: 7
-		//6 solutions: (2 unique solutions)
-		//reallySimpleSearch(3, 3, 1);
-		
-
-		//N: 8
-		//404 solutions: (109 unique solutions)
-		//reallySimpleSearch(5, 2, 1);
-		
-
-		//N: 9
-		//42 solutions: (12 unique solutions)
-		//reallySimpleSearch(4, 3, 1);
-		
-
-		//N: 10
-		/*
-		 * Looks like I had a typographical error for a long time. This number used to be 113, but after
-		 * Landon correctly stated that there are 133 solutions, I
-		 * reran this program without changes, and got 133 unique solutions...
-		 * "Done
-Found 498 different solutions if we ignore symmetric solutions
-
-Done using the 2nd iteration (using pre-computed long arrays)
-Found 133 unique solution."
-*/
-		//498 solutions: (133 unique solution)
-		//reallySimpleSearch(3, 3, 2);
-		
-		
-		//N: 11
-		//2364 solutions: (591 unique solutions)
 		reallySimpleSearch(3, 5, 1);
-		
-		//74 solutions (19 unique solutions)
-		//reallySimpleSearch(7, 2, 1);
-		
-		
-		//N: 13
-		//680 solutions: (175 unique soltions)
-		//reallySimpleSearch(3, 3, 3);
-		
-		//20 solutions: (6 unique solutions)
-		//reallySimpleSearch(6, 3, 1);
-		
-		//N: 14
-		//16504 solutions (That's promising!) (4182 unique solutions)
-		//reallySimpleSearch(5, 4, 1);
-		//564 solutions (152 unique solutions)
-		//reallySimpleSearch(9, 2, 1);
-		
-		//N:15
-		//722 solutions (184 unique solutions)
-		//reallySimpleSearch(5, 3, 2);
-		//36 solutions (9 unique solutions)
-		//reallySimpleSearch(7, 3, 1);
-
-		//N:16
-		//3724 solutions (1285 unique solutions)
-		//reallySimpleSearch(4, 3, 3);
-		
-		
-		//N: 17
-		// 115268 solutions (28817 uniq solutions) (This took 19 minutes)
-		//reallySimpleSearch(5, 5, 1);
-		// 60 solutions (17 unique) (7 minutes)
-		//reallySimpleSearch(8, 3, 1);
-		//114 solutions (29 unique)
-		//reallySimpleSearch(11, 2, 1);
-		
-		//N: 19 (No luck)
-		// 8418 unique solution.
-		//reallySimpleSearch(5, 3, 3);
-		// 102 different solutions and 27 uniq solutions
-		//reallySimpleSearch(7, 4, 1);
-		
-		//951 unique solution.
-		//reallySimpleSearch(9, 3, 1);
-		//
-		
-		//N: 20
-		// Found 202106 unique solution.
-		//reallySimpleSearch(6, 5, 1);
-		// 296 unique solutions
-		//reallySimpleSearch(7, 3, 2);
-		//Found 798 non-unique solutions and 211 unique solution.
-		//reallySimpleSearch(13, 2, 1);
-		//
-		
-		//N = 21
-		//reallySimpleSearch(10, 3, 1);
-
-		// N = 22
-		//{5, 5, 2}, {6, 3, 3}
-		// 24 uniq solutions
-		//reallySimpleSearch(5, 5, 2);
-		
-
-		//reallySimpleSearch(6, 3, 3);
-		
-		// N = 23 (4 other ones...)
-		/*
-		 * 5 x 4 x 3: 94
-7 x 5 x 1: 94
-11 x 3 x 1: 94
-15 x 2 x 1: 94
-		 */
-		
-		//5, 4, 3 118 different solutions and 61 unique solution.
-		//reallySimpleSearch(5, 4, 3);
-		//System.exit(1);
-
-		 //7, 5, 1
-		//
-		//reallySimpleSearch(7, 5, 1);
-		 //11,3,1: (took about 20 hours)51 different solutions and  15 unique solution. 
-		//reallySimpleSearch(11, 3, 1);
-		
-		// 0 solutions? No!
-		//reallySimpleSearch(15, 2, 1);
-		
-		//N=24:
-
-		//reallySimpleSearch(9, 4, 1);
-		
-		
-		
-		// N = 25
-		/*
-		 * 7 x 3 x 3: 102
-9 x 3 x 2: 102
-12 x 3 x 1: 102
-		 */
-
-		//reallySimpleSearch(7, 3, 3);
-		//System.exit(1);
-
-		//reallySimpleSearch(9, 3, 2);
-		//System.exit(1);
-
-		//reallySimpleSearch(12, 3, 1);
-
-		// N = 26
-		//268 unique solution for 17x2x1
-		//reallySimpleSearch(17, 2, 1);
-		
-
-		//9,885,286 uniq solutions (and about 9,885,263 unique solutions after searching the cell left of 5x1 side)
 		//reallySimpleSearch(8, 5, 1);
 		System.exit(1);
 		
@@ -188,7 +34,7 @@ Found 133 unique solution."
 		solutionResolver = new StandardResolverForSmallIntersectSolutions();
 		
 		
-		CuboidToFoldOnExtendedFaster5 cuboidToBuild = new CuboidToFoldOnExtendedFaster5(a, b, c);
+		CuboidToFoldOnGrained cuboidToBuild = new CuboidToFoldOnGrained(a, b, c);
 		
 		if(cuboidToBuild.getNumCellsToFill() % 4 != 2) {
 			System.out.println("ERROR: trying to find intersect between Nx1x1 solution and a cuboid solution that doesn't have a surface area that matches any Nx1x1 cuboid.");
@@ -212,7 +58,7 @@ Found 133 unique solution."
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
-			cuboidToBuild = new CuboidToFoldOnExtendedFaster5(a, b, c);
+			cuboidToBuild = new CuboidToFoldOnGrained(a, b, c);
 			cuboidToBuild.initializeNewBottomIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation);
 			
 			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
@@ -230,18 +76,20 @@ Found 133 unique solution."
 		System.out.println("Done for " + a + "x" + b + "x" + c);
 	}
 	
-	public static int getNumLayers(CuboidToFoldOnExtendedFaster5 cuboidToBuild) {
+	public static int getNumLayers(CuboidToFoldOnGrained cuboidToBuild) {
 		return (cuboidToBuild.getNumCellsToFill() - 2) / 4;
 	}
 	
-	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster5 cuboidToBuild) {
+	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnGrained cuboidToBuild) {
 		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild));
 	}
 	
-	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster5 cuboidToBuild, int layerIndex, int numLayers) {
+	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnGrained cuboidToBuild, int layerIndex, int numLayers) {
 
 		long ret = 0;
 		
+		//cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+
 		if(layerIndex == numLayers) {
 			
 			if(cuboidToBuild.isTopCellAbleToBeAddedFast()) {
@@ -257,6 +105,7 @@ Found 133 unique solution."
 							
 							System.out.println(reference.toString());
 							System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
+							
 							cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
 						}
 						reference.removeCurrentTopLevel();
