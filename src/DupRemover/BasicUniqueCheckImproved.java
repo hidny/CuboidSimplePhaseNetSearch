@@ -13,7 +13,8 @@ public class BasicUniqueCheckImproved {
 	public static int NUM_ROTATIONS = 4;
 	public static int CHECK_SYMMETRIES_ONE_DIM_FACTOR = 2;
 
-	public static int MAX_WIDTH_PLUS_ONE = 256;
+	public static long MAX_WIDTH_PLUS_ONE = 256;
+	public static int EXPANSION_NUMBER = 3;
 
 	public static HashSet<BigInteger> debugUniqList = new HashSet<BigInteger>();
 	
@@ -42,14 +43,19 @@ public class BasicUniqueCheckImproved {
 		BigInteger scores[] = new BigInteger[NUM_REFLECTIONS * NUM_ROTATIONS];
 		boolean tooHigh[] = new boolean[NUM_REFLECTIONS * NUM_ROTATIONS];
 		
+		while(heightShape >= MAX_WIDTH_PLUS_ONE || widthShape >= MAX_WIDTH_PLUS_ONE) {
+			MAX_WIDTH_PLUS_ONE *= MAX_WIDTH_PLUS_ONE;
+			EXPANSION_NUMBER = 2*EXPANSION_NUMBER - 1;
+		}
+		
 		if(heightShape < widthShape) {
 			scores = new BigInteger[NUM_REFLECTIONS * NUM_ROTATIONS / CHECK_SYMMETRIES_ONE_DIM_FACTOR];
 			
 
 			for(int i=0; i<scores.length; i++) {
 				//3 * 256^2 fixes a possible hash collision
-				// I made it 3 instead of 1 because in future, I want placement of first and second binary 1 to mean something
-				scores[i] = new BigInteger((3 * MAX_WIDTH_PLUS_ONE * MAX_WIDTH_PLUS_ONE + heightShape * MAX_WIDTH_PLUS_ONE + widthShape) + "");
+				// I made it EXPANSION_NUMBER=3 instead of 1 because I want placement of first and second binary 1 to mean something
+				scores[i] = new BigInteger((EXPANSION_NUMBER * MAX_WIDTH_PLUS_ONE * MAX_WIDTH_PLUS_ONE + heightShape * MAX_WIDTH_PLUS_ONE + widthShape) + "");
 
 			}
 			
@@ -106,8 +112,8 @@ public class BasicUniqueCheckImproved {
 
 			for(int i=0; i<scores.length; i++) {
 				//3 * 256^2 fixes a possible hash collision
-				// I made it 3 instead of 1 because in future, I want placement of first and second binary 1 to mean something
-				scores[i] = new BigInteger((3 * MAX_WIDTH_PLUS_ONE * MAX_WIDTH_PLUS_ONE + widthShape * MAX_WIDTH_PLUS_ONE + heightShape) + "");
+				// I made it EXPANSION_NUMBER=3 instead of 1 because I want placement of first and second binary 1 to mean something
+				scores[i] = new BigInteger((EXPANSION_NUMBER * MAX_WIDTH_PLUS_ONE * MAX_WIDTH_PLUS_ONE + widthShape * MAX_WIDTH_PLUS_ONE + heightShape) + "");
 
 
 			}
@@ -166,8 +172,8 @@ public class BasicUniqueCheckImproved {
 
 			for(int i=0; i<scores.length; i++) {
 				//3 * 256^2 fixes a possible hash collision
-				// I made it 3 instead of 1 because in future, I want placement of first and second 1 to mean something
-				scores[i] = new BigInteger((3 * MAX_WIDTH_PLUS_ONE * MAX_WIDTH_PLUS_ONE + heightShape * MAX_WIDTH_PLUS_ONE + widthShape) + "");
+				// I made it EXPANSION_NUMBER=3 instead of 1 because I want placement of first and second binary 1 to mean something
+				scores[i] = new BigInteger((EXPANSION_NUMBER * MAX_WIDTH_PLUS_ONE * MAX_WIDTH_PLUS_ONE + heightShape * MAX_WIDTH_PLUS_ONE + widthShape) + "");
 
 			}
 
