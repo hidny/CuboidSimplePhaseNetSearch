@@ -17,9 +17,10 @@ public class ReallySimpleIntersectFinder6 {
 		
 		reallySimpleSearch(2, 29, 1);
 		//reallySimpleSearch(3, 17, 1);
-		//reallySimpleSearch(8, 5, 1);
+		//reallySimpleSearch(5, 5, 1);
 		System.exit(1);
 		
+		//reallySimpleSearch(2, 33, 1);
 		// N = 27
 		
 		// N = 29 (5 other ones...)

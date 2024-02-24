@@ -280,7 +280,10 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				&& LayerIndexForRingDecided[nextRingIndex] < currentLayerIndex
 				&& ringMod4AlreadySet[nextRingIndex] >=0
 				&& ringMod4Lookup[nextIndex][nextRot] != ringMod4AlreadySet[nextRingIndex]) {
-			
+			//System.out.println("hello " + nextRingIndex + "  " + currentLayerIndex);
+			if(nextRingIndex == 0 && currentLayerIndex < 4) {
+				//System.exit(1);
+			}
 			return false;
 		}
 		
@@ -479,10 +482,10 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				ringMod4Lookup[indexCell][rotation] = getRingMod4(indexCell, rotation);
 				
 				if(ringMod4Lookup[indexCell][rotation] != -1) {
-					//System.out.println("Cell " + indexCell + " and rotation " + rotation + ": " + ringMod4Lookup[indexCell][rotation]);
+					System.out.println("Cell " + indexCell + " and rotation " + rotation + ": " + ringMod4Lookup[indexCell][rotation]);
 				}
 			}
-			//System.out.println();
+			System.out.println();
 		}
 	}
 	
@@ -501,7 +504,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		while(tryAttachCellInDir(indexCell, 0, LEFT).i < indexCell) {
 			if(tryAttachCellInDir(indexCell, 0, LEFT).j != 0) {
 				System.out.println(indexCell);
-				System.exit(1);
+				//System.exit(1);
 			}
 			indexCell = tryAttachCellInDir(indexCell, 0, LEFT).i;
 			ret++;
