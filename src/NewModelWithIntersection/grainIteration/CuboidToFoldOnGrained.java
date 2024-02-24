@@ -30,6 +30,12 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 
 		DIM_N_OF_Nx1x1 = (Utils.getTotalArea(this.dimensions)-2) / 4;
 		
+		numLongsToUse = (int) Math.floor(Utils.getTotalArea(this.dimensions) / 64) + 1;
+		System.out.println(Utils.getTotalArea(this.dimensions));
+		System.out.println("Num longs to use: " + numLongsToUse);
+		
+		curState = new long[numLongsToUse];
+		
 		if(setup) {
 			setupAnswerSheetInBetweenLayers();
 			setupAnswerSheetForTopCell();
@@ -87,7 +93,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	public static final int BAD_INDEX = -20;
 	
 	private static final int NUM_BYTES_IN_LONG = 64;
-	private static final int NUM_LONGS_TO_USE = 3;
 	
 	public static int NUM_SIDE_BUMP_OPTIONS = 15;
 	
@@ -108,7 +113,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 
 
 	//State variables:
-	private long curState[] = new long[NUM_LONGS_TO_USE];
+	private static int numLongsToUse;
+	private long curState[];
 
 	private int topLeftGroundedIndex = 0;
 	private int topLeftGroundRotationRelativeFlatMap = 0;
@@ -146,17 +152,22 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	// then use a lookup-table to decide if the region split (use the lookup table associate with the grounded index and rotation for help)
 	public boolean unoccupiedRegionSplit(long newLayerDetails[], int sideBump) {
 		
+		//TODO: does this need to go before curState[i] = curState[i] | newLayerDetails[i];
 		
-
-		curState[0] = curState[0] | newLayerDetails[0];
-		curState[1] = curState[1] | newLayerDetails[1];
-		curState[2] = curState[2] | newLayerDetails[2];
+		//TODO newLayerDetails has to be right size
+		long checkAroundNewLayer[] = preComputedPossiblyEmptyCellsAroundNewLayer[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
+		
+		long collisionDetection = 0L;
+		for(int i=0; i<curState.length; i++) {
+			curState[i] = curState[i] | newLayerDetails[i];
+			
+			collisionDetection |= curState[i] & checkAroundNewLayer[i];
+		}
 		
 		//TODO: shortcut
 
-		long checkAroundNewLayer[] = preComputedPossiblyEmptyCellsAroundNewLayer[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
 		
-		if(((curState[0] & checkAroundNewLayer[0]) | (curState[1] & checkAroundNewLayer[1]) | (curState[2] & checkAroundNewLayer[2])) == 0L) {
+		if(collisionDetection == 0L) {
 			
 			debugStop++;
 			
@@ -198,10 +209,10 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		}
 		
 		
-		
-		curState[0] = curState[0] ^ newLayerDetails[0];
-		curState[1] = curState[1] ^ newLayerDetails[1];
-		curState[2] = curState[2] ^ newLayerDetails[2];
+		//TODO: Try to make this better... (See implement in simple phase nets)
+		for(int i=0; i<curState.length; i++) {
+			curState[i] = curState[i] ^ newLayerDetails[i];
+		}
 		
 		int firstUnoccupiedIndex = -1;
 		for(int i=0; i<tmpArray.length; i++) {
@@ -266,8 +277,12 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		int nextRot = newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
 		
 		
+		long collisionNumber = 0;
+		for(int i=0; i<curState.length; i++) {
+			collisionNumber |= curState[i] & tmp[i];
+		}
 		
-		if(((curState[0] & tmp[0]) | (curState[1] & tmp[1]) | (curState[2] & tmp[2])) == 0L) {
+		if(collisionNumber == 0L) {
 			//pass
 		} else {
 			return false;
@@ -290,9 +305,10 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	
 	public void addNewLayerFast(int sideBump) {
 		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
-		curState[0] = curState[0] | tmp[0];
-		curState[1] = curState[1] | tmp[1];
-		curState[2] = curState[2] | tmp[2];
+		
+		for(int i=0; i<curState.length; i++) {
+			curState[i] = curState[i] | tmp[i];
+		}
 		
 		int tmp1 = newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
 		int tmp2 = newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
@@ -327,9 +343,11 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		
 		
 		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBumpToCancel];
-		curState[0] = curState[0] ^ tmp[0];
-		curState[1] = curState[1] ^ tmp[1];
-		curState[2] = curState[2] ^ tmp[2];
+
+		for(int i=0; i<curState.length; i++) {
+			curState[i] = curState[i] ^ tmp[i];
+		}
+		
 	}
 	
 	//pre: The only cell left is top cell:
@@ -337,28 +355,37 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		
 		long tmp[] = answerSheetForTopCellAnySideBump[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap];
 		
-		boolean ret = ((~curState[0] & tmp[0]) | (~curState[1] & tmp[1]) | (~curState[2] & tmp[2])) != 0;
+		long collisionNumber = 0;
 
+		for(int i=0; i<curState.length; i++) {
+			collisionNumber |= ~curState[i] & tmp[i];
+		}
 		
-		return ret;
+		return collisionNumber != 0;
 	}
 
 	//pre: The only cell left is top cell:
 	public boolean isTopCellAbleToBeAddedForSideBumpFast(int sideBump) {
 		long tmp[] = answerSheetForTopCell[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
 		
-		return ((~curState[0] & tmp[0]) | (~curState[1] & tmp[1]) | (~curState[2] & tmp[2])) != 0;
+		long collisionNumber = 0;
+
+		for(int i=0; i<curState.length; i++) {
+			collisionNumber |= ~curState[i] & tmp[i];
+		}
+		
+		return collisionNumber != 0;
 	}
 	
 	int ROTATION_AGAINST_GRAIN = 1;
 	
 	private void setupAnswerSheetInBetweenLayers() {
 		
-		answerSheet = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][NUM_LONGS_TO_USE];
+		answerSheet = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][numLongsToUse];
 		newGroundedRotationAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 		newGroundedIndexAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 		
-		preComputedPossiblyEmptyCellsAroundNewLayer = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][NUM_LONGS_TO_USE];
+		preComputedPossiblyEmptyCellsAroundNewLayer = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][numLongsToUse];
 		preComputedForceRegionSplitIfEmptyAroundNewLayer = new boolean[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 
 		for(int index=0; index<Utils.getTotalArea(this.dimensions); index++) {
@@ -670,8 +697,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 
 	public void setupAnswerSheetForTopCell() {
 		
-		answerSheetForTopCell = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][NUM_LONGS_TO_USE];
-		answerSheetForTopCellAnySideBump = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_LONGS_TO_USE];
+		answerSheetForTopCell = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][numLongsToUse];
+		answerSheetForTopCellAnySideBump = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][numLongsToUse];
 		
 		for(int index=0; index<Utils.getTotalArea(this.dimensions); index++) {
 			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
@@ -720,7 +747,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	private long[] convertBoolArrayToLongs(boolean tmpArray[]) {
 		
 		//1st entry:
-		long ret[] = new long[NUM_LONGS_TO_USE];
+		long ret[] = new long[numLongsToUse];
 		
 		for(int i=0; i<ret.length; i++) {
 			ret[i] = 0;
@@ -742,7 +769,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	
 	private static long[] setImpossibleForAnswerSheet() {
 		
-		long ret[] = new long[NUM_LONGS_TO_USE];
+		long ret[] = new long[numLongsToUse];
 		
 		for(int i=0; i<ret.length; i++) {
 			ret[i] = -1L;
@@ -753,7 +780,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	
 	private static long[] setImpossibleForTopAnswerSheet() {
 		
-		long ret[] = new long[NUM_LONGS_TO_USE];
+		long ret[] = new long[numLongsToUse];
 		
 		for(int i=0; i<ret.length; i++) {
 			ret[i] = 0L;
