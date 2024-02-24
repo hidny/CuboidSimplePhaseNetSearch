@@ -8,7 +8,6 @@ import Model.CuboidToFoldOnInterface;
 import Model.DataModelViews;
 import Model.NeighbourGraphCreator;
 import Model.Utils;
-import SimplePhaseSearch.sixthIteration.CuboidToFoldOnExtendedSimplePhase6;
 
 public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 
@@ -130,7 +129,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	private int indexToRing[];
 	
 	//check if ring is decided: (depth)
-	private int indexRingDecided[];
+	private int LayerIndexForRingDecided[];
 	
 	//The ring mod 4 to use
 	private int ringMod4AlreadySet[];
@@ -266,35 +265,26 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		int nextIndex = newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
 		int nextRot = newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
 		
-		int nextRingIndex = indexToRing[nextIndex];
 		
-		//TODO: should it be <= currentLayerIndex
-		if(nextRingIndex >=0 && indexRingDecided[nextRingIndex] < currentLayerIndex - 10 && 
-				ringMod4Lookup[nextIndex][nextRot] != ringMod4AlreadySet[nextRingIndex]) {
-			
-			/*System.out.println("currentLayerIndex:" + currentLayerIndex);
-			System.out.println("next ring: " + nextRing);
-			System.out.println("Mod 4 set: " + ringMod4AlreadySet[nextRing]);
-			System.out.println("Mod 4 tried: " + ringMod4Lookup[newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]]
-					[newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]]);
-			System.out.println("index: " + newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]);
-			System.out.println("Rotation: " + newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]);
-
-			System.out.println("Prev index: "+ this.topLeftGroundedIndex);
-			System.out.println("Prev rotation: "+ this.topLeftGroundRotationRelativeFlatMap);
-			System.out.println();
-			*/
-			return false;
+		
+		if(((curState[0] & tmp[0]) | (curState[1] & tmp[1]) | (curState[2] & tmp[2])) == 0L) {
+			//pass
 		} else {
-			//System.out.println("Good");
-			//System.out.println("index: " + newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]);
-			//System.out.println("Rotation: " + newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]);
-
-			//System.out.println("Prev index: "+ this.topLeftGroundedIndex);
-			//System.out.println("Prev rotation: "+ this.topLeftGroundRotationRelativeFlatMap);
+			return false;
 		}
 		
-		return ((curState[0] & tmp[0]) | (curState[1] & tmp[1]) | (curState[2] & tmp[2])) == 0L  && ! unoccupiedRegionSplit(tmp, sideBump);
+		int nextRingIndex = indexToRing[nextIndex];
+		
+		if(nextRingIndex >=0
+				&& LayerIndexForRingDecided[nextRingIndex] >= 0 
+				&& LayerIndexForRingDecided[nextRingIndex] < currentLayerIndex
+				&& ringMod4AlreadySet[nextRingIndex] >=0
+				&& ringMod4Lookup[nextIndex][nextRot] != ringMod4AlreadySet[nextRingIndex]) {
+			
+			return false;
+		}
+		
+		return ! unoccupiedRegionSplit(tmp, sideBump);
 		
 	}
 	
@@ -315,8 +305,9 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		this.topLeftGroundedIndex = tmp1;
 		this.topLeftGroundRotationRelativeFlatMap = tmp2;
 		
-		if(indexToRing[this.topLeftGroundedIndex] >= 0) {
-			indexRingDecided[indexToRing[this.topLeftGroundedIndex]] = currentLayerIndex;
+		if(indexToRing[this.topLeftGroundedIndex] >= 0
+				&& LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] == -1) {
+			LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] = currentLayerIndex;
 			ringMod4AlreadySet[indexToRing[this.topLeftGroundedIndex]] = ringMod4Lookup[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap];
 		}
 		
@@ -324,6 +315,10 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	
 	public void removePrevLayerFast() {
 
+		if(indexToRing[this.topLeftGroundedIndex] >= 0
+				&& LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] == this.currentLayerIndex) {
+			LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] = -1;
+		}
 		
 		currentLayerIndex--;
 		this.topLeftGroundedIndex = prevGroundedIndexes[currentLayerIndex]; 
@@ -470,11 +465,11 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 			//System.out.println("Cell " + i + ": " + indexToRing[i]);
 		}
 		
-		indexRingDecided = new int[dimensions[0]];
+		LayerIndexForRingDecided = new int[dimensions[0]];
 		ringMod4AlreadySet = new int[dimensions[0]];;
 		
-		for(int i=0; i<indexRingDecided.length; i++) {
-			indexRingDecided[i] = -1;
+		for(int i=0; i<LayerIndexForRingDecided.length; i++) {
+			LayerIndexForRingDecided[i] = -1;
 			ringMod4AlreadySet[i] = 0;
 		}
 
@@ -493,7 +488,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	
 	private int getRingMod4(int indexCell, int rotation) {
 		
-		if(indexCell < dimensions[1]) {
+		if(indexCell < dimensions[1] || indexCell >= this.getNumCellsToFill() - dimensions[1]) {
 			return -1;
 		}
 		
@@ -504,13 +499,17 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		
 		int ret = 0;
 		while(tryAttachCellInDir(indexCell, 0, LEFT).i < indexCell) {
+			if(tryAttachCellInDir(indexCell, 0, LEFT).j != 0) {
+				System.out.println(indexCell);
+				System.exit(1);
+			}
 			indexCell = tryAttachCellInDir(indexCell, 0, LEFT).i;
 			ret++;
 		}
 
-		//Rotation 2:
+		//Rotation 2 means top left will be 1 to the left than if it's rotation 0:
 		if(rotation == 2) {
-			ret = 3 - (ret%4);
+			ret = ret + 1;
 		}
 		ret = ret % 4;
 		
@@ -518,7 +517,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 			System.out.println("Doh! getRingMod4 is wrong!");
 			System.exit(1);
 		}
-		
 		
 		return ret;
 	}
@@ -862,6 +860,23 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				this.dimensions[2],
 				labels));
 		
+		
+		System.out.println("Location in ring mod 4:");
+		for(int i=0; i<this.currentLayerIndex; i++) {
+
+			char label = (char)( (i) + 'A');
+			
+
+			String labelToUse = label + "" + label;
+			
+			if(i < this.currentLayerIndex - 1) {
+				System.out.println(labelToUse + ": " + (this.ringMod4Lookup[this.prevGroundedIndexes[i + 1]][this.prevGroundedRotations[i + 1]]) + " (" + this.prevGroundedIndexes[i + 1] + ", " + this.prevGroundedRotations[i + 1] + ")");
+
+			} else {
+				System.out.println(labelToUse + ": " + (this.ringMod4Lookup[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap]) + " (" + this.topLeftGroundedIndex + ", " + this.topLeftGroundRotationRelativeFlatMap + ")");
+
+			}
+		}
 	}
 	
 
