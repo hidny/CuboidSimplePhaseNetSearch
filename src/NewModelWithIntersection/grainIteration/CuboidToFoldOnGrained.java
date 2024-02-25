@@ -80,7 +80,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		this.curState = convertBoolArrayToLongs(tmpArray);
 		
 
-		this.minTopIndex = 0;
+		this.minTopIndex = -1;
 		this.maxTopIndex = Utils.getTotalArea(this.dimensions);
 
 		this.oldTopMin = new int[Utils.getTotalArea(this.dimensions)];
@@ -354,6 +354,12 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 			ringMod4AlreadySet[indexToRing[this.topLeftGroundedIndex]] = ringMod4Lookup[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap];
 		}
 		
+		this.updateMinMaxTopIndexIfApplicable(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap, this.currentLayerIndex);
+		
+		if(this.minTopIndex > this.maxTopIndex) {
+			System.out.println("ERROR: DOH! this.minTopIndex > this.maxTopIndex");
+			System.exit(1);
+		}
 	}
 	
 	public void removePrevLayerFast() {
@@ -361,6 +367,11 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		if(indexToRing[this.topLeftGroundedIndex] >= 0
 				&& LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] == this.currentLayerIndex) {
 			LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] = -1;
+		}
+		if(this.minTopIndex == this.topLeftGroundedIndex) {
+			this.minTopIndex = this.oldTopMin[currentLayerIndex];
+		} else if(this.maxTopIndex == this.topLeftGroundedIndex) {
+			this.maxTopIndex = this.oldTopMax[currentLayerIndex];
 		}
 		
 		currentLayerIndex--;
@@ -374,6 +385,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		for(int i=0; i<curState.length; i++) {
 			curState[i] = curState[i] ^ tmp[i];
 		}
+		
 		
 	}
 	
@@ -544,6 +556,27 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		return indexCell < dimensions[1] || indexCell >= this.getNumCellsToFill() - dimensions[1];
 	}
 	
+	public void updateMinMaxTopIndexIfApplicable(int indexCell, int rotation, int layerIndex) {
+		
+		if(indexCell >= this.getNumCellsToFill() - dimensions[1]) {
+			
+			int addOneToPlacement = 0;
+			if(rotation == 2) {
+				addOneToPlacement =1;
+			}
+			int placementMod4 = (indexCell+ addOneToPlacement - (this.getNumCellsToFill() - dimensions[1])) % 4;
+			
+			if(placementMod4 == 0) {
+				this.oldTopMin[layerIndex] = this.minTopIndex;
+				this.minTopIndex = indexCell;
+			} else if(placementMod4 == 1) {
+				this.oldTopMax[layerIndex] = this.maxTopIndex;
+				this.maxTopIndex = indexCell;
+				
+			}
+			
+		}
+	}
 	//pre: getRingMod4(indexCell, rotation) returns -1:
 	public boolean isAcceptableTopOrBottomIndexForInbetweenLayer(int indexCell, int rotation) {
 		
@@ -571,7 +604,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		} else {
 			placementMod4 = (indexCell+ addOneToPlacement - (this.getNumCellsToFill() - dimensions[1])) % 4;
 			
-			//TODO: you will need to update this.minTopIndex and this.maxTopIndex
 			if(placementMod4 ==0 && indexCell < this.maxTopIndex) {
 				return true;
 			} else if(placementMod4 ==1 && indexCell > this.minTopIndex) {

@@ -15,10 +15,12 @@ public class ReallySimpleIntersectFinder6 {
 
 	public static void main(String[] args) {
 		
+		reallySimpleSearch(2, 161, 1);
+		
 		//reallySimpleSearch(2, 53, 1);
 		
 		//reallySimpleSearch(2, 29, 1);
-		reallySimpleSearch(2, 25, 1);
+		//reallySimpleSearch(2, 25, 1);
 		//reallySimpleSearch(3, 17, 1);
 		//reallySimpleSearch(8, 5, 1);
 		System.exit(1);

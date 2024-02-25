@@ -21,9 +21,11 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			
 			//String file1 = "D:\\output17x2x1_N=26Part2.txt";
 			//String file1 = "D:\\GrainedSearch_17x3x1.txt";
-			String file1 = "D:\\GrainedSearch_29_2_1.txt";
+			//String file1 = "D:\\GrainedSearch_29_2_1.txt";
 			//String file1 = "D:\\GrainedSearch_2_25_1.txt";
 
+			String file1 = "D:\\GrainedSearch53_2_1_fast.txt";
+			
 			int dimensionsToCheck[][] = null;
 			int areaToCheck = -1;
 			
