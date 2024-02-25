@@ -82,6 +82,14 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 
 		this.minTopIndex = 0;
 		this.maxTopIndex = Utils.getTotalArea(this.dimensions);
+
+		this.oldTopMin = new int[Utils.getTotalArea(this.dimensions)];
+		this.oldTopMax = new int[Utils.getTotalArea(this.dimensions)];
+		
+		//TODO: Specific to cuboids of the form Mx(4N+1)x1: (Make this not be used when dealing with Nx3x3)
+		if(bottomIndex % 4 != 0 || bottomIndex >= this.dimensions[1]) {
+			this.curState = setImpossibleForAnswerSheet();
+		}
 	}
 
 
@@ -159,7 +167,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	private int oldTopMax[];
 	//END TODO
 	
-	//private long DEBUG_LAYER_INDEX = 14;
 	
 	//BFS to just get it done badly:
 	//TODO: This could be so much faster
