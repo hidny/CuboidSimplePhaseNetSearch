@@ -66,6 +66,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	public void initializeNewBottomIndexAndRotation(int bottomIndex, int bottomRotationRelativeFlatMap) {
 		
 		
+		this.bottomIndex = bottomIndex;
 		this.topLeftGroundedIndex = bottomIndex;
 		this.topLeftGroundRotationRelativeFlatMap = bottomRotationRelativeFlatMap;
 
@@ -77,6 +78,10 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
 		tmpArray[bottomIndex] = true;
 		this.curState = convertBoolArrayToLongs(tmpArray);
+		
+
+		this.minTopIndex = 0;
+		this.maxTopIndex = Utils.getTotalArea(this.dimensions);
 	}
 
 
@@ -129,7 +134,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	private long debugBugFix = 0L;
 	
 
-	//TODO:
 	//
 	//input: index
 	private int indexToRing[];
@@ -142,6 +146,17 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	
 	//input: index and then rotation
 	private int ringMod4Lookup[][];
+	
+	
+	//TODO:
+	private int bottomIndex;
+	
+	private int minTopIndex;
+	private int maxTopIndex;
+	
+	//TOOD: use this...
+	private int oldTopMin[];
+	private int oldTopMax[];
 	//END TODO
 	
 	//private long DEBUG_LAYER_INDEX = 14;
@@ -296,6 +311,11 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				&& ringMod4AlreadySet[nextRingIndex] >=0
 				&& ringMod4Lookup[nextIndex][nextRot] != ringMod4AlreadySet[nextRingIndex]) {
 			
+			return false;
+		}
+		
+		if(getRingMod4(nextIndex, nextRot) == -1 
+				&& ! isAcceptableTopOrBottomIndexForInbetweenLayer(nextIndex, nextRot)) {
 			return false;
 		}
 		
@@ -512,6 +532,49 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 			//System.out.println();
 		}
 	}
+	
+	public boolean isTopOrBottomOfCuboid(int indexCell) {
+		return indexCell < dimensions[1] || indexCell >= this.getNumCellsToFill() - dimensions[1];
+	}
+	
+	//pre: getRingMod4(indexCell, rotation) returns -1:
+	public boolean isAcceptableTopOrBottomIndexForInbetweenLayer(int indexCell, int rotation) {
+		
+		if(rotation % 2 == 1) {
+			return false;
+		}
+		
+		
+		int placementMod4 = -1;
+		
+		int addOneToPlacement = 0;
+		if(rotation == 2) {
+			addOneToPlacement =1;
+		}
+		
+		if(indexCell < dimensions[1]) {
+			placementMod4 = (indexCell + addOneToPlacement) % 4;
+			
+			if(placementMod4 ==0 && indexCell < this.bottomIndex) {
+				return true;
+			} else if(placementMod4 ==1 && indexCell > this.bottomIndex) {
+				return true;
+			}
+			
+		} else {
+			placementMod4 = (indexCell+ addOneToPlacement - (this.getNumCellsToFill() - dimensions[1])) % 4;
+			
+			//TODO: you will need to update this.minTopIndex and this.maxTopIndex
+			if(placementMod4 ==0 && indexCell < this.maxTopIndex) {
+				return true;
+			} else if(placementMod4 ==1 && indexCell > this.minTopIndex) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	
 	private int getRingMod4(int indexCell, int rotation) {
 		

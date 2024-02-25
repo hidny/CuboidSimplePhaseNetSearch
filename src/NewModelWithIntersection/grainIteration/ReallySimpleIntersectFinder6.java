@@ -15,8 +15,10 @@ public class ReallySimpleIntersectFinder6 {
 
 	public static void main(String[] args) {
 		
-		reallySimpleSearch(2, 53, 1);
-		//reallySimpleSearch(2, 25, 1);
+		//reallySimpleSearch(2, 53, 1);
+		
+		//reallySimpleSearch(2, 29, 1);
+		reallySimpleSearch(2, 25, 1);
 		//reallySimpleSearch(3, 17, 1);
 		//reallySimpleSearch(8, 5, 1);
 		System.exit(1);
@@ -85,9 +87,15 @@ public class ReallySimpleIntersectFinder6 {
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnGrained cuboidToBuild) {
 		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild));
 	}
-	
+
+	public static long debugIt = 0;
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnGrained cuboidToBuild, int layerIndex, int numLayers) {
 
+		debugIt++;
+		
+		if(debugIt % 10000000L == 0) {
+			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+		}
 		long ret = 0;
 		
 		//cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
