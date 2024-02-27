@@ -22,9 +22,24 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			//String file1 = "D:\\output17x2x1_N=26Part2.txt";
 			//String file1 = "D:\\GrainedSearch_17x3x1.txt";
 			//String file1 = "D:\\GrainedSearch_29_2_1.txt";
-			//String file1 = "D:\\GrainedSearch_2_25_1.txt";
+			
+			//0 3-way solutions;
+			//String file1 = "D:\\GrainedSearch13_4_1.txt";
 
-			String file1 = "D:\\GrainedSearch53_2_1_fast.txt";
+			//String file1 = "D:\\GrainedSearch53_2_1_fast.txt";
+
+			//Promising...
+			//String file1 = "D:\\GrainedSearch29_3_1.txt";
+			
+			//String file1 = "D:\\GrainedSearch41_2_1.txt";
+			
+			//String file1 = "D:\\GrainedSearch17_4_1.txt";
+			
+			//String file1 = "D:\\GrainedSearch21_2_1.txt";
+			
+			//String file1 = "D:\\GrainedSearch33_2_1.txt";
+			
+			String file1 = "D:\\GrainedSearch41_2_1.txt";
 			
 			int dimensionsToCheck[][] = null;
 			int areaToCheck = -1;
@@ -45,7 +60,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 				if(tmp.toLowerCase().contains("solution code:")) {
 					
 					numSolutionsInFile++;
-					if(numSolutionsInFile % 1000 == 0) {
+					if(numSolutionsInFile % 100 == 0) {
 						System.out.println("Number of solutions in file processed: " + numSolutionsInFile);
 					}
 					
@@ -67,6 +82,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 						System.exit(1);
 					}
 					
+					/*
 					BasicUniqueCheckImproved.isUnique(makeCoordList(table), table);
 					
 					if(BasicUniqueCheckImproved.debugLastScore.compareTo(new BigInteger(solutionCodeString)) != 0) {
@@ -77,14 +93,18 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 						System.out.println();
 						System.exit(1);
 					}
-					
+					*/
 					boolean netToReplicate[][] = padBordersOfBoolTable(table);
 					
+					boolean solutionFound[] = new boolean[dimensionsToCheck.length];
 					int numCuboidsCoveredByNet = 0;
 					for(int i=0; i<dimensionsToCheck.length; i++) {
 						
 						if(ValidNetSolutionChecker.hasSolution(dimensionsToCheck[i], netToReplicate, false)) {
 							numCuboidsCoveredByNet++;
+							solutionFound[i] = true;
+						} else {
+							solutionFound[i] = false;
 						}
 					}
 					
@@ -106,18 +126,21 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 						boolean VERBOSE = true;
 						
 						for(int i=0; i<dimensionsToCheck.length; i++) {
-							if(ValidNetSolutionChecker.hasSolution(dimensionsToCheck[i], netToReplicate, false)) {
+							if(solutionFound[i]) {
 								System.out.println("Solution for: " + getDimensionsString(dimensionsToCheck[i]));
 								
 								ValidNetSolutionChecker.hasSolution(dimensionsToCheck[i], netToReplicate, VERBOSE);
 								
 								System.out.println();
-								numCuboidsCoveredByNet++;
 							}
 						}
 						
 						System.out.println();
-						
+					
+						if(numCuboidsCoveredByNet > 3) {
+							System.out.println("Goal Achieved!");
+							System.exit(1);
+						}
 					}
 					
 				}
