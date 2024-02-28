@@ -51,9 +51,52 @@ public class ValidNetSolutionChecker {
 		return hasSolution(dimensionsCuboid, startI, startJ, netToReplicate, verbose);
 	}
 	
+
+	private static int currentArea = -1;
+	private static boolean paperUsed[][] = null;
+	private static int indexCuboidOnPaper[][] = null;
+	private static Coord2D newPaperToDevelop[] = null;
+	private static Coord2D coord2DTable[][] = null;
+	
+	
+	public static void initModelForAreaIfApplicable(int area) {
+		
+		if(area != currentArea) {
+			
+			System.out.println("Reinit:");
+			currentArea = area;
+			
+			paperUsed = new boolean[2 * area][2 * area];
+			indexCuboidOnPaper= new int[2 * area][2 * area];
+			newPaperToDevelop = new Coord2D[area];
+			
+			coord2DTable = new Coord2D[2 * area][2 * area];
+			for(int i=0; i<coord2DTable.length; i++) {
+				for(int j=0; j<coord2DTable[0].length; j++) {
+					coord2DTable[i][j] = new Coord2D(i, j);
+				}
+			}
+			
+
+			for(int i=0; i<indexCuboidOnPaper.length; i++) {
+				for(int j=0; j<indexCuboidOnPaper[0].length; j++) {
+					paperUsed[i][j] = false;
+					indexCuboidOnPaper[i][j] = -1;
+				}
+			}
+			
+			for(int i=0; i<newPaperToDevelop.length; i++) {
+				newPaperToDevelop[i] = null;
+			}
+		}
+		
+	}
+	
 	private static boolean hasSolution(int cuboidDimensions[], int startI, int startJ, boolean netToReplicate[][], boolean verbose) {
 		
 		int areaToFill = Utils.getTotalArea(cuboidDimensions);
+		
+		initModelForAreaIfApplicable(areaToFill);
 		
 		CuboidToFoldOn cuboidToUse = null;
 		
@@ -66,36 +109,14 @@ public class ValidNetSolutionChecker {
 			cuboidHash.put(dimensionsInString, cuboidToUse);
 		}
 		cuboidToUse.resetState();
-
-		//TODO: We don't really need to redeclare this every time, but whatever:
-		Coord2D coord2DTable[][] = new Coord2D[2 * areaToFill][2 * areaToFill];
-		for(int i=0; i<coord2DTable.length; i++) {
-			for(int j=0; j<coord2DTable[0].length; j++) {
-				coord2DTable[i][j] = new Coord2D(i, j);
-			}
-		}
-		//END TODO
 		
 		Coord2D refreshCells[] = getListOfCellsToRefresh(cuboidToUse, netToReplicate);
-		
-		
-		boolean paperUsed[][] = new boolean[2 * areaToFill][2 * areaToFill];
-		int indexCuboidOnPaper[][] = new int[2 * areaToFill][2 * areaToFill];
-		
-		for(int i=0; i<indexCuboidOnPaper.length; i++) {
-			for(int j=0; j<indexCuboidOnPaper[0].length; j++) {
-				indexCuboidOnPaper[i][j] = -1;
-			}
-		}
-		
-		Coord2D newPaperToDevelop[] = new Coord2D[areaToFill];
-
-		
 		
 		for(int startIndex=0; startIndex<areaToFill; startIndex++) {
 			
 			for(int startRotation=0; startRotation<4; startRotation++) {
 
+				boolean foundIt = false;
 				if(isValidSetupAtIndexedStartLocationWithRotation(
 						cuboidDimensions,
 						startI,
@@ -113,7 +134,7 @@ public class ValidNetSolutionChecker {
 						//END refresh
 						verbose)
 				) {
-					return true;
+					foundIt = true;
 				}
 			
 				//Refresh:
@@ -126,6 +147,10 @@ public class ValidNetSolutionChecker {
 					paperUsed[curi][curj] = false;
 					newPaperToDevelop[i] = null;
 					
+				}
+				
+				if(foundIt) {
+					return true;
 				}
 				
 				//END refresh
