@@ -51,46 +51,9 @@ public class ValidNetSolutionChecker {
 		return hasSolution(dimensionsCuboid, startI, startJ, netToReplicate, verbose);
 	}
 	
-	private static boolean hasSolution(int dimensionsCuboid[], int startI, int startJ, boolean netToReplicate[][], boolean verbose) {
+	private static boolean hasSolution(int cuboidDimensions[], int startI, int startJ, boolean netToReplicate[][], boolean verbose) {
 		
-		int areaToFill = Utils.getTotalArea(dimensionsCuboid);
-		
-		for(int startIndex=0; startIndex<areaToFill; startIndex++) {
-			
-			for(int startRotation=0; startRotation<4; startRotation++) {
-
-				if(isValidSetupAtIndexedStartLocationWithRotation(
-						dimensionsCuboid,
-						startI,
-						startJ,
-						netToReplicate,
-						startIndex,
-						startRotation,
-						verbose)
-				) {
-					return true;
-				}
-			
-			} //End loop for each rotation
-			
-		} //End loop for each start position
-		
-
-		return false;
-	}
-
-	private static Hashtable<String, CuboidToFoldOn> cuboidHash = new Hashtable<String, CuboidToFoldOn>();
-	
-	private static boolean isValidSetupAtIndexedStartLocationWithRotation(
-			int cuboidDimensions[],
-			int startI,
-			int startJ,
-			boolean netToReplicate[][],
-			int cuboidStartIndex,
-			int rotation,
-			boolean verbose
-		) {
-	
+		int areaToFill = Utils.getTotalArea(cuboidDimensions);
 		
 		CuboidToFoldOn cuboidToUse = null;
 		
@@ -103,11 +66,21 @@ public class ValidNetSolutionChecker {
 			cuboidHash.put(dimensionsInString, cuboidToUse);
 		}
 		cuboidToUse.resetState();
+
+		//TODO: We don't really need to redeclare this every time, but whatever:
+		Coord2D coord2DTable[][] = new Coord2D[2 * areaToFill][2 * areaToFill];
+		for(int i=0; i<coord2DTable.length; i++) {
+			for(int j=0; j<coord2DTable[0].length; j++) {
+				coord2DTable[i][j] = new Coord2D(i, j);
+			}
+		}
+		//END TODO
 		
-		int totalArea = Utils.getTotalArea(cuboidToUse.getDimensions());
+		Coord2D refreshCells[] = getListOfCellsToRefresh(cuboidToUse, netToReplicate);
 		
-		boolean paperUsed[][] = new boolean[2 * totalArea][2 * totalArea];
-		int indexCuboidOnPaper[][] = new int[2 * totalArea][2 * totalArea];
+		
+		boolean paperUsed[][] = new boolean[2 * areaToFill][2 * areaToFill];
+		int indexCuboidOnPaper[][] = new int[2 * areaToFill][2 * areaToFill];
 		
 		for(int i=0; i<indexCuboidOnPaper.length; i++) {
 			for(int j=0; j<indexCuboidOnPaper[0].length; j++) {
@@ -115,16 +88,97 @@ public class ValidNetSolutionChecker {
 			}
 		}
 		
-		Coord2D newPaperToDevelop[] = new Coord2D[totalArea];
+		Coord2D newPaperToDevelop[] = new Coord2D[areaToFill];
 
-		//TODO: We don't really need to redeclare this every time, but whatever:
-		Coord2D coord2DTable[][] = new Coord2D[2 * totalArea][2 * totalArea];
-		for(int i=0; i<coord2DTable.length; i++) {
-			for(int j=0; j<coord2DTable[0].length; j++) {
-				coord2DTable[i][j] = new Coord2D(i, j);
+		
+		
+		for(int startIndex=0; startIndex<areaToFill; startIndex++) {
+			
+			for(int startRotation=0; startRotation<4; startRotation++) {
+
+				if(isValidSetupAtIndexedStartLocationWithRotation(
+						cuboidDimensions,
+						startI,
+						startJ,
+						netToReplicate,
+						startIndex,
+						startRotation,
+						
+						//refreshed variables
+						paperUsed,
+						newPaperToDevelop,
+						cuboidToUse,
+						coord2DTable,
+						indexCuboidOnPaper,
+						//END refresh
+						verbose)
+				) {
+					return true;
+				}
+			
+				//Refresh:
+
+				cuboidToUse.resetState();
+				for(int i=0; i<refreshCells.length; i++) {
+					int curi = refreshCells[i].i;
+					int curj = refreshCells[i].j;
+					indexCuboidOnPaper[curi][curj] = -1;
+					paperUsed[curi][curj] = false;
+					newPaperToDevelop[i] = null;
+					
+				}
+				
+				//END refresh
+				
+			} //End loop for each rotation
+			
+		} //End loop for each start position
+		
+
+		return false;
+	}
+	
+	
+	
+	public static Coord2D[] getListOfCellsToRefresh(CuboidToFoldOn cuboidToUse, boolean netToReplicate[][]) {
+		Coord2D ret[] = new Coord2D[cuboidToUse.getNumCellsToFill()];
+		
+		int curIndex = 0;
+		for(int i=0; i<netToReplicate.length; i++) {
+			for(int j=0; j<netToReplicate[0].length; j++) {
+				if(netToReplicate[i][j]) {
+					ret[curIndex] = new Coord2D(i, j);
+					curIndex++;
+				}
 			}
 		}
-		//END TODO
+		if(curIndex != ret.length) {
+			System.out.println("ERROR in getListOfCellsToRefresh!");
+			System.exit(1);
+		}
+		
+		return ret;
+	}
+
+	private static Hashtable<String, CuboidToFoldOn> cuboidHash = new Hashtable<String, CuboidToFoldOn>();
+	
+	private static boolean isValidSetupAtIndexedStartLocationWithRotation(
+			int cuboidDimensions[],
+			int startI,
+			int startJ,
+			boolean netToReplicate[][],
+			int cuboidStartIndex,
+			int rotation,
+			boolean paperUsed[][],
+			Coord2D newPaperToDevelop[],
+			CuboidToFoldOn cuboidToUse,
+			Coord2D coord2DTable[][],
+			int indexCuboidOnPaper[][],
+			boolean verbose
+		) {
+	
+		
+		
 		
 		paperUsed[startI][startJ] = true;
 		for(int k=0; k<newPaperToDevelop.length; k++) {
