@@ -36,6 +36,8 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			//String file1 = "D:\\GrainedSearch17_4_1.txt";
 			
 			//String file1 = "D:\\GrainedSearch21_2_1.txt";
+
+			String file1 = "D:\\GrainedSearch29_2_1.txt";
 			
 			//String file1 = "D:\\GrainedSearch33_2_1.txt";
 			
@@ -45,7 +47,15 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			
 			//String file1 = "D:\\GrainedSearch49_2_1.txt";
 
-			String file1 = "D:\\GrainedSearch53_2_1.txt";
+			//String file1 = "D:\\GrainedSearch53_2_1.txt";
+			
+			//String file1 = "D:\\GrainedSearch57_2_1.txt";
+			
+			//String file1 = "D:\\GrainedSearch61_2_1.txt";
+			
+			//String file1 = "D:\\GrainedSearch65_2_1.txt";
+			
+			//String file1 = "D:\\GrainedSearch69_2_1.txt";
 			
 			int dimensionsToCheck[][] = null;
 			int areaToCheck = -1;
@@ -237,6 +247,16 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 		int width = convertBoolArrayToInt(array, START_DIM_INDEX + BYTE_SIZE, START_DIM_INDEX + 2 * BYTE_SIZE);
 		
 		int startDataIndex = START_DIM_INDEX + 2*BYTE_SIZE;
+		
+
+		if(array[1] == false) {
+			START_DIM_INDEX = 3;
+			BYTE_SIZE = 8;
+			height = convertBoolArrayToInt(array, START_DIM_INDEX, START_DIM_INDEX + 2 * BYTE_SIZE);
+			width = convertBoolArrayToInt(array, START_DIM_INDEX + 2 * BYTE_SIZE, START_DIM_INDEX + 4 * BYTE_SIZE);
+			
+			startDataIndex = START_DIM_INDEX + 4*BYTE_SIZE;
+		}
 		
 		boolean ret[][] = new boolean[height][width];
 		
