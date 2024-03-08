@@ -28,9 +28,12 @@ public class ReallySimpleIntersectFinder6 {
 		//reallySimpleSearch(4, 13, 1);
 		//reallySimpleSearch(3, 29, 1);
 
-		//reallySimpleSearch(4, 17, 1);
+		//reallySimpleSearch(6, 17, 1);
 		
-		reallySimpleSearch(2, 29, 1);
+
+		reallySimpleSearch(4, 21, 1);
+		
+		//reallySimpleSearch(2, 29, 1);
 		//reallySimpleSearch(2, 33, 1);
 		//reallySimpleSearch(2, 37, 1);
 		//reallySimpleSearch(2, 41, 1);
