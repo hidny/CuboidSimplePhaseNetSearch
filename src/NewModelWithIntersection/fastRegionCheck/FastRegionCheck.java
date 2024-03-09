@@ -256,6 +256,7 @@ public class FastRegionCheck {
 					}
 					
 				}
+				System.out.println("Index: " + index);
 				System.out.println("Num split 1: " + stateConnected.size());
 				System.out.println("Num not split 1: " + stateSplits.size());
 				System.out.println();
