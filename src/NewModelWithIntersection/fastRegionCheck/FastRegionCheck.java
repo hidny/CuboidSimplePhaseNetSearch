@@ -52,6 +52,27 @@ public class FastRegionCheck {
 		for(int i=0; i<this.numLongsInState; i++) {
 			hash += preComputedCellsAroundCurLayerLongStateHashMult[topLeftIndex][topLeftRotationRelativeFlatMap][i]
 					* (preComputedCellsAroundCurLayerLongState[topLeftIndex][topLeftRotationRelativeFlatMap][i] & curState[i]);
+			
+			
+			//TODO: make this look smarter...
+			hash += preComputedCellsAroundCurLayerLongStateHashMult[topLeftIndex][topLeftRotationRelativeFlatMap][i]
+					* ((preComputedCellsAroundCurLayerLongState[topLeftIndex][topLeftRotationRelativeFlatMap][i] & curState[i]) >> 32);
+			
+		}
+		
+		return hash;
+	}
+	
+	public long getHashVerboseDebug(long curState[], int topLeftIndex, int topLeftRotationRelativeFlatMap) {
+		long hash = 0L;
+		
+		for(int i=0; i<this.numLongsInState; i++) {
+			System.out.println("i = "+ i + "   " + (preComputedCellsAroundCurLayerLongState[topLeftIndex][topLeftRotationRelativeFlatMap][i] & curState[i]));
+			
+			long tmp =preComputedCellsAroundCurLayerLongStateHashMult[topLeftIndex][topLeftRotationRelativeFlatMap][i]
+					* (preComputedCellsAroundCurLayerLongState[topLeftIndex][topLeftRotationRelativeFlatMap][i] & curState[i]);
+			System.out.println("Add: " + tmp);
+			hash += tmp;
 		}
 		
 		return hash;
@@ -229,95 +250,108 @@ public class FastRegionCheck {
 						stateSplits.add(stateIndex);
 					}
 					
-					
 				}
 				
-				//TODO: at this point, we need to determine:
-				// 1) preComputedCellsAroundCurLayerLongStateHashMult
+				boolean foundCombinationOfHashMultsThatWork = false;
 				
-				boolean isDone = false;
-				
-				for(int m=9; isDone == false; m++) {
+				for(int debugComboIndex = 0; foundCombinationOfHashMultsThatWork == false; debugComboIndex++) {
 					
-					boolean combo[] = new boolean[m + numLongsInState - 1];
-					for(int i=0; i<combo.length; i++) {
-						combo[i] = false;
-					}
-					for(int i=0; i<numLongsInState - 1; i++) {
-						combo[i] = true;
-					}
+					System.out.println("Debug combo index: " + debugComboIndex);
 
-					int debugComboIndex = 0;
+					preComputedCellsAroundCurLayerSplit[index][rotation] = new HashSet<Long>();
+					preComputedCellsAroundCurLayerDoNotSplit[index][rotation] = new HashSet<Long>();
 					
-					while(combo != null) {
+					
+					for(int j=0; j<numLongsInState; j++) {
+						preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j] = 1 + 5*j + debugComboIndex;
+					}
+					
+					boolean hashCollisionSoFar = false;
+					
+					for(int stateIndex = 0; stateIndex < numStates; stateIndex++) {
 						
-						System.out.println(debugComboIndex);
-
-						preComputedCellsAroundCurLayerSplit[index][rotation] = new HashSet<Long>();
-						preComputedCellsAroundCurLayerDoNotSplit[index][rotation] = new HashSet<Long>();
+						//SANITY:
+						long tmp[] = convertBoolArrayToLongs(convertStateNumToBoolArray(stateIndex, cellsAroundCurrentState));
 						
-						
-						int curIndex = 0;
-						for(int j=0; j<numLongsInState; j++) {
-							
-							preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j] = 1;
-							
-							while(curIndex < combo.length) {
-								
-								if(combo[curIndex] == false) {
-									preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j]++;
-								} else {
-									curIndex++;
-									break;
-								}
-								
-								curIndex++;
+						boolean allZeros = true;
+						for(int i=0; i<this.numLongsInState; i++) {
+							if((preComputedCellsAroundCurLayerLongState[index][rotation][i] & tmp[i]) != tmp[i]) {
+								System.out.println("Oops! tmp not in preComputedCellsAroundCurLayerLongState[index][rotation]!");
+								System.exit(1);
 							}
 							
-						}
-						
-						boolean hashCollision = false;
-						
-						for(int stateIndex = 0; stateIndex < numStates; stateIndex++) {
-						//TODO: check if good.
-							
-							long curHash = getHash(convertBoolArrayToLongs(convertStateNumToBoolArray(stateIndex, cellsAroundCurrentState)),
-									index,
-									rotation
-							);
-
-							if(stateSplits.contains(stateIndex)) {
-								preComputedCellsAroundCurLayerSplit[index][rotation].add(curHash);
-							} else {
-								preComputedCellsAroundCurLayerDoNotSplit[index][rotation].add(curHash);
-							}
-							
-							if(preComputedCellsAroundCurLayerSplit[index][rotation].contains(curHash)
-									&& preComputedCellsAroundCurLayerDoNotSplit[index][rotation].contains(curHash)) {
-									
-								System.out.println("HASH COLLISION (TRY THE NEXT ONE!) m =" + m);
-								System.out.println("Combo index: " + debugComboIndex);
-								for(int j=0; j<numLongsInState; j++) {
-									System.out.println(preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j]);
-								}
-								System.out.println();
-								hashCollision = true;
-								break;
+							if(tmp[i] != 0L) {
+								allZeros = false;
 							}
 						}
 						
-						if(hashCollision == false) {
-							isDone = true;
+						if(allZeros) {
+							System.out.println("All zeros for state: " + stateIndex);
+						}
+						//END SANITY
+						
+						long curHash = getHash(convertBoolArrayToLongs(
+											
+											reverseBoolArray(
+													convertStateNumToBoolArray(stateIndex, cellsAroundCurrentState)
+											)
+										), index, rotation);
+
+						if(curHash == 0) {
+							System.out.println("HASH ZERO for index " + index + " and rotation " + rotation + ". (TRY THE NEXT ONE!) debugComboIndex: " + debugComboIndex + " ( stateIndex: " + stateIndex + ", curHash: " + curHash + ")");
+							long tmp2[] = convertBoolArrayToLongs(convertStateNumToBoolArray(stateIndex, cellsAroundCurrentState));
+							for(int i=0; i<tmp2.length; i++) {
+								System.out.println("tmp2[" + i + "] = " + tmp2[i]);
+							}
+							System.out.println("Verbose:");
+							long tmpHash = getHashVerboseDebug(convertBoolArrayToLongs(
+									reverseBoolArray(
+											convertStateNumToBoolArray(stateIndex, cellsAroundCurrentState)
+									)
+								), index, rotation);
+							
+							if(tmpHash != 0) {
+								System.out.println("What?");
+								System.exit(1);
+							}
+						}
+						if(stateSplits.contains(stateIndex)) {
+							preComputedCellsAroundCurLayerSplit[index][rotation].add(curHash);
+						} else {
+							preComputedCellsAroundCurLayerDoNotSplit[index][rotation].add(curHash);
+						}
+						
+						if(preComputedCellsAroundCurLayerSplit[index][rotation].contains(curHash)
+								&& preComputedCellsAroundCurLayerDoNotSplit[index][rotation].contains(curHash)) {
+								
+							System.out.println("HASH COLLISION for index " + index + " and rotation " + rotation + ". (TRY THE NEXT ONE!) debugComboIndex: " + debugComboIndex + " ( stateIndex: " + stateIndex + ", curHash: " + curHash + ")");
+							for(int j=0; j<numLongsInState; j++) {
+								System.out.println(preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j]);
+							}
+							System.out.println();
+							System.out.println("---");
+							hashCollisionSoFar = true;
 							break;
 						}
-						
-						combo = Combination.getNextCombination(combo);
-						debugComboIndex++;
 					}
 					
+					if(hashCollisionSoFar == false) {
+						foundCombinationOfHashMultsThatWork = true;
+					}
 				}
+					
 			}
 		}
+	}
+	
+	public static boolean[] reverseBoolArray(boolean input[]) {
+		boolean output[] = new boolean[input.length];
+		
+		for(int i=0; i<input.length; i++) {
+			output[i] = ! input[i];
+			
+		}
+		return output;
 	}
 	
 	private boolean[] convertStateNumToBoolArray(int stateIndex, int cellsAroundCurrentState[]) {
