@@ -1,22 +1,31 @@
 package NewModelWithIntersection.fastRegionCheck;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;
+import Model.NeighbourGraphCreator;
 
 public class FastRegionCheck {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		
+		CoordWithRotationAndIndex neighbours[][] = NeighbourGraphCreator.initNeighbourhood(145, 5, 1, true);
+		
+		FastRegionCheck test = new FastRegionCheck(neighbours, new long[(neighbours.length / 64) + 1]);
+		
+		System.out.println("END");
 	}
 	
 	// Structure: [totalArea][NUM_ROTATION][NUM_CELLS_PER_LAYER];
 	
 	private CoordWithRotationAndIndex[][] neighbours;
-	private int preComputedCellsAroundCurLayer[][][];
 	private int numLongsInState;
+	
+	private int preComputedCellsAroundCurLayer[][][];
 
 	
 	//                 [totalArea][NUM_ROTATION][numLongsInState];
@@ -30,16 +39,22 @@ public class FastRegionCheck {
 	private HashSet <Long> preComputedCellsAroundCurLayerDoNotSplit[][];
 	
 	//TODO: Make this work:
-	public boolean regionSplit(int topLeftIndex, int topLeftRotationRelativeFlatMap) {
+	public boolean regionSplit(long curState[], int topLeftIndex, int topLeftRotationRelativeFlatMap) {
 		
+		
+		return preComputedCellsAroundCurLayerSplit[topLeftIndex][topLeftRotationRelativeFlatMap]
+				.contains(getHash(curState, topLeftIndex, topLeftRotationRelativeFlatMap));
+	}
+	
+	public long getHash(long curState[], int topLeftIndex, int topLeftRotationRelativeFlatMap) {
 		long hash = 0L;
 		
 		for(int i=0; i<this.numLongsInState; i++) {
 			hash += preComputedCellsAroundCurLayerLongStateHashMult[topLeftIndex][topLeftRotationRelativeFlatMap][i]
-					* preComputedCellsAroundCurLayerLongState[topLeftIndex][topLeftRotationRelativeFlatMap][i];
+					* (preComputedCellsAroundCurLayerLongState[topLeftIndex][topLeftRotationRelativeFlatMap][i] & curState[i]);
 		}
 		
-		return preComputedCellsAroundCurLayerSplit[topLeftIndex][topLeftRotationRelativeFlatMap].contains(hash);
+		return hash;
 	}
 	//END TODO
 	
@@ -57,99 +72,20 @@ public class FastRegionCheck {
 	public static final int LEFT = 3;
 
 	
-	//Step 3:
-	public void setupPreComputedHashsForRegions() {
+	public FastRegionCheck(CoordWithRotationAndIndex[][] neighbours, long curState[]) { 
 		
-		//TODO:
+		this.neighbours = neighbours;
+		this.numLongsInState = curState.length;
 		
-		//TODO: formula for getting 14:
-		
-		
-
-		for(int index=0; index<neighbours.length; index++) {
-			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
-
-
-				
-				int cellsAroundCurrentState[] = preComputedCellsAroundCurLayer[index][rotation];
-				int numStates = (int) Math.pow(2, cellsAroundCurrentState.length);
-				
-				HashSet <Integer> stateSplits = new HashSet<Integer>();
-				
-				for(int state = 0; state < numStates; state++) {
-					
-					int cur = state;
-					
-					boolean tmp[] = new boolean[neighbours.length];
-					for(int i=0; i<tmp.length; i++) {
-						tmp[i] = false;
-					}
-					
-					for(int j=0; j<cellsAroundCurrentState.length; j++) {
-						
-						if(cur % 2 == 1) {
-							tmp[cellsAroundCurrentState[j]] = true;
-						}
-						cur /= 2;
-					}
-					
-					
-					
-					//TODO: At this point, we have to figure out if it splits...
-					
-					//We do this by doing a BFS
-					
-					
-					
-				}
-				
-				//TODO: at this point, we need to determine:
-				// 1) preComputedCellsAroundCurLayerLongStateHashMult
-				
-				//We have to actively check for collisions and dodge them if possible.
-				
-				// 2) preComputedCellsAroundCurLayerSplit
-				// and optionally:
-				// 3) preComputedCellsAroundCurLayerDoNotSplit
-			}
-		}
-	}
-	
-	
-	
-	
-	//Step 2:
-	public void setupPreComputedCellsInLongArray() {
-		preComputedCellsAroundCurLayerLongState = new long[neighbours.length][NUM_ROTATIONS][numLongsInState];
-		preComputedCellsAroundCurLayerLongStateHashMult = new long[neighbours.length][NUM_ROTATIONS][numLongsInState];
-		
-		
-		for(int index=0; index<neighbours.length; index++) {
-			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
-				boolean tmp[] = new boolean[neighbours.length];
-				
-				for(int i=0; i<tmp.length; i++) {
-					tmp[i] = false;
-				}
-				
-				for(int i=0; i<preComputedCellsAroundCurLayer[index][rotation].length; i++) {
-					tmp[preComputedCellsAroundCurLayer[index][rotation][i]] = true;
-				}
-				
-				preComputedCellsAroundCurLayerLongState[index][rotation] = convertBoolArrayToLongs(tmp);
-				
-				for(int i=0; i<numLongsInState; i++) {
-					preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][i] = 1L;
-				}
-			}
-		}
-		
+		setupPreComputedCellsAroundCurLayer();
+		setupPreComputedCellsInLongArray();
+		setupPreComputedHashsForRegions();
 	}
 	
 	//Step 1:
-	public void setupPreComputedCellsAroundCurLayer() {
+	private void setupPreComputedCellsAroundCurLayer() {
 		
-		//preComputedCellsAroundCurLayer = new int[neighbours.length][NUM_ROTATIONS][];
+		preComputedCellsAroundCurLayer = new int[neighbours.length][NUM_ROTATIONS][];
 		
 		
 		for(int index=0; index<neighbours.length; index++) {
@@ -157,7 +93,7 @@ public class FastRegionCheck {
 				
 				int indexToAdd = 0;
 
-				//TODO: because it's on a cuboid, there might be repeat indexes...
+				//Because it's on a cuboid, there might be repeat indexes... but that's ok.
 				// For the 1st implementation, I'll just deal with it.
 				preComputedCellsAroundCurLayer[index][rotation] = new int[2 * (LAYER_WIDTH + 3)];
 				
@@ -232,8 +168,232 @@ public class FastRegionCheck {
 			
 		}
 	}
-	
 
+	//Step 2:
+	private void setupPreComputedCellsInLongArray() {
+		preComputedCellsAroundCurLayerLongState = new long[neighbours.length][NUM_ROTATIONS][numLongsInState];
+		preComputedCellsAroundCurLayerLongStateHashMult = new long[neighbours.length][NUM_ROTATIONS][numLongsInState];
+		
+		
+		for(int index=0; index<neighbours.length; index++) {
+			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
+				boolean tmp[] = new boolean[neighbours.length];
+				
+				for(int i=0; i<tmp.length; i++) {
+					tmp[i] = false;
+				}
+				
+				for(int i=0; i<preComputedCellsAroundCurLayer[index][rotation].length; i++) {
+					tmp[preComputedCellsAroundCurLayer[index][rotation][i]] = true;
+				}
+				
+				preComputedCellsAroundCurLayerLongState[index][rotation] = convertBoolArrayToLongs(tmp);
+				
+			}
+		}
+		
+	}
+
+	//Step 3:
+	private void setupPreComputedHashsForRegions() {
+		
+		//TODO:
+		
+		//TODO: formula for getting 14:
+		
+
+		preComputedCellsAroundCurLayerSplit = new HashSet[neighbours.length][NUM_ROTATIONS];
+		preComputedCellsAroundCurLayerDoNotSplit  = new HashSet[neighbours.length][NUM_ROTATIONS];
+
+		for(int index=0; index<neighbours.length; index++) {
+			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
+
+				
+				int cellsAroundCurrentState[] = preComputedCellsAroundCurLayer[index][rotation];
+				int numStates = (int) Math.pow(2, cellsAroundCurrentState.length);
+				
+				HashSet <Integer> stateSplits = new HashSet<Integer>();
+				HashSet <Integer> stateConnected = new HashSet<Integer>();
+				
+				for(int stateIndex = 0; stateIndex < numStates; stateIndex++) {
+					
+					
+					//Figure out if it splits
+					//by doing a BFS:
+					boolean fullyConnected = isFullyConnected(convertStateNumToBoolArray(stateIndex, cellsAroundCurrentState));
+					
+					if(fullyConnected) {
+						stateConnected.add(stateIndex);
+					} else {
+
+						stateSplits.add(stateIndex);
+					}
+					
+					
+				}
+				
+				//TODO: at this point, we need to determine:
+				// 1) preComputedCellsAroundCurLayerLongStateHashMult
+				
+				boolean isDone = false;
+				
+				for(int m=9; isDone == false; m++) {
+					
+					boolean combo[] = new boolean[m + numLongsInState - 1];
+					for(int i=0; i<combo.length; i++) {
+						combo[i] = false;
+					}
+					for(int i=0; i<numLongsInState - 1; i++) {
+						combo[i] = true;
+					}
+
+					int debugComboIndex = 0;
+					
+					while(combo != null) {
+						
+						System.out.println(debugComboIndex);
+
+						preComputedCellsAroundCurLayerSplit[index][rotation] = new HashSet<Long>();
+						preComputedCellsAroundCurLayerDoNotSplit[index][rotation] = new HashSet<Long>();
+						
+						
+						int curIndex = 0;
+						for(int j=0; j<numLongsInState; j++) {
+							
+							preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j] = 1;
+							
+							while(curIndex < combo.length) {
+								
+								if(combo[curIndex] == false) {
+									preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j]++;
+								} else {
+									curIndex++;
+									break;
+								}
+								
+								curIndex++;
+							}
+							
+						}
+						
+						boolean hashCollision = false;
+						
+						for(int stateIndex = 0; stateIndex < numStates; stateIndex++) {
+						//TODO: check if good.
+							
+							long curHash = getHash(convertBoolArrayToLongs(convertStateNumToBoolArray(stateIndex, cellsAroundCurrentState)),
+									index,
+									rotation
+							);
+
+							if(stateSplits.contains(stateIndex)) {
+								preComputedCellsAroundCurLayerSplit[index][rotation].add(curHash);
+							} else {
+								preComputedCellsAroundCurLayerDoNotSplit[index][rotation].add(curHash);
+							}
+							
+							if(preComputedCellsAroundCurLayerSplit[index][rotation].contains(curHash)
+									&& preComputedCellsAroundCurLayerDoNotSplit[index][rotation].contains(curHash)) {
+									
+								System.out.println("HASH COLLISION (TRY THE NEXT ONE!) m =" + m);
+								System.out.println("Combo index: " + debugComboIndex);
+								for(int j=0; j<numLongsInState; j++) {
+									System.out.println(preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j]);
+								}
+								System.out.println();
+								hashCollision = true;
+								break;
+							}
+						}
+						
+						if(hashCollision == false) {
+							isDone = true;
+							break;
+						}
+						
+						combo = Combination.getNextCombination(combo);
+						debugComboIndex++;
+					}
+					
+				}
+			}
+		}
+	}
+	
+	private boolean[] convertStateNumToBoolArray(int stateIndex, int cellsAroundCurrentState[]) {
+		
+		int cur = stateIndex;
+		boolean ret[] = new boolean[neighbours.length];
+		for(int i=0; i<ret.length; i++) {
+			ret[i] = false;
+		}
+		
+		for(int j=0; j<cellsAroundCurrentState.length; j++) {
+			
+			if(cur % 2 == 1) {
+				ret[cellsAroundCurrentState[j]] = true;
+			}
+			cur /= 2;
+		}
+		
+		
+		return ret;
+	}
+	
+	private boolean isFullyConnected(boolean state[]) {
+		
+		Queue <Integer> queue = new LinkedList<Integer>();
+		
+		int root = -1;
+		for(int i=0; i<state.length; i++) {
+			if(state[i]) {
+				root = i;
+				break;
+			}
+		}
+		
+		queue.add(root);
+		
+		boolean found[] = new boolean[state.length];
+		for(int i=0; i<state.length; i++) {
+			found[i] = false;
+		}
+		
+		while( ! queue.isEmpty()) {
+			
+			int cur = queue.remove();
+			if(cur == -1) {
+				System.out.println("WARNING: the state has no entries");
+				System.out.println("Might as well reture false.");
+				return false;
+			}
+			
+			for(int i=0; i<neighbours[cur].length; i++) {
+				int neighbour = neighbours[cur][i].getIndex();
+				
+				if(found[neighbour] == false) {
+					found[neighbour] = true;
+					queue.add(neighbour);
+					
+				}
+			}
+			
+		}
+		
+		//Check if fully connected:
+		boolean ret = true;
+		
+		for(int i=0; i<state.length; i++) {
+			if(state[i] && ! found[i]) {
+				ret = false;
+				break;
+			}
+		}
+		
+		return ret;
+	}
+	
+	
 
 	private Coord2D tryAttachCellInDir(int curIndex, int rotationRelativeFlatMap, int dir) {
 		CoordWithRotationAndIndex neighbours[] = this.neighbours[curIndex];
@@ -245,8 +405,6 @@ public class FastRegionCheck {
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
 	}
 	
-	
-
 	
 	public final int NUM_BITS_IN_LONG = 64;
 
