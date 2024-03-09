@@ -257,8 +257,8 @@ public class FastRegionCheck {
 					
 				}
 				System.out.println("Index: " + index);
-				System.out.println("Num split 1: " + stateConnected.size());
-				System.out.println("Num not split 1: " + stateSplits.size());
+				System.out.println("Num split 1: " + stateSplits.size());
+				System.out.println("Num not split 1: " + stateConnected.size());
 				System.out.println();
 				
 				
@@ -309,25 +309,7 @@ public class FastRegionCheck {
 											)
 										), index, rotation);
 
-						if(curHash == 0) {
-							//System.out.println("HASH ZERO for index " + index + " and rotation " + rotation + ". (TRY THE NEXT ONE!) debugComboIndex: " + debugComboIndex + " ( stateIndex: " + stateIndex + ", curHash: " + curHash + ")");
-							long tmp2[] = convertBoolArrayToLongs(convertStateNumToBoolArray(stateIndex, cellsAroundCurrentState));
-							/*for(int i=0; i<tmp2.length; i++) {
-								System.out.println("tmp2[" + i + "] = " + tmp2[i]);
-							}
-							
-							System.out.println("Verbose:");
-							long tmpHash = getHashVerboseDebug(convertBoolArrayToLongs(
-									reverseBoolArray(
-											convertStateNumToBoolArray(stateIndex, cellsAroundCurrentState)
-									)
-								), index, rotation);
-							
-							if(tmpHash != 0) {
-								System.out.println("What?");
-								System.exit(1);
-							}*/
-						}
+						
 						if(stateSplits.contains(stateIndex)) {
 							preComputedCellsAroundCurLayerSplitTmp[index][rotation].add(curHash);
 						} else {
