@@ -215,16 +215,67 @@ public class FastRegionCheck {
 		
 	}
 
+	public boolean[] resetBoolTable(boolean tmpBoolTable[], int preComputedCellsAroundCurLayerIndexRotation[], int stateNum) {
+		
+		int cur = stateNum;
+		for(int i=0; i<preComputedCellsAroundCurLayerIndexRotation.length; i++) {
+			
+			if(cur % 2 == 1) {
+				tmpBoolTable[preComputedCellsAroundCurLayerIndexRotation[i]] = true;
+			} else {
+				tmpBoolTable[preComputedCellsAroundCurLayerIndexRotation[i]] = false;
+				
+			}
+			cur /= 2;
+		}
+		
+		return tmpBoolTable;
+	}
+	
+	private int[][] getFlagsToChange(int cellsAroundCurrentState[]) {
+		
+		int ret[][] = new int[cellsAroundCurrentState.length][2];
+		
+		for(int i=0; i<cellsAroundCurrentState.length; i++) {
+			ret[i][0] = cellsAroundCurrentState[i] / NUM_BITS_IN_LONG;
+			
+			ret[i][1] = (NUM_BITS_IN_LONG - 1) - (cellsAroundCurrentState[i] % NUM_BITS_IN_LONG);
+		}
+		
+		return ret;
+	}
+	
+	private long[] updateCurStateWithStateIndex(long tmpCurState[], int flagsToChange[][], int stateNum) {
+
+		int cur = stateNum;
+		for(int i=0; i<flagsToChange.length; i++) {
+
+			tmpCurState[flagsToChange[i][0]] |= 1L << flagsToChange[i][1];
+			
+			if(cur % 2 == 1) {
+				//pass
+			} else {
+				tmpCurState[flagsToChange[i][0]] ^= 1L << flagsToChange[i][1];
+				
+			}
+			cur /= 2;
+		}
+		
+		return tmpCurState;
+	}
+	
 	//Step 3:
 	private void setupPreComputedHashsForRegions() {
-		
-		//TODO:
-		
-		//TODO: formula for getting 14:
 		
 
 		preComputedCellsAroundCurLayerSplitTmp = new HashSet[neighbours.length][NUM_ROTATIONS];
 		preComputedCellsAroundCurLayerDoNotSplit  = new HashSet[neighbours.length][NUM_ROTATIONS];
+		
+		//Made it mutable and slightly dangerous because I want it to go faster:
+		long tmpCurState[] = new long[this.numLongsInState];
+		boolean tmpBoolTable[] = new boolean[neighbours.length];
+		
+		
 
 		for(int index=0; index<neighbours.length; index++) {
 			
@@ -234,6 +285,12 @@ public class FastRegionCheck {
 			
 			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 
+				for(int i=0; i<this.numLongsInState; i++) {
+					tmpCurState[i] = -1L;
+				}
+				for(int i=0; i<tmpBoolTable.length; i++) {
+					tmpBoolTable[i] = false;
+				}
 				
 				int cellsAroundCurrentState[] = preComputedCellsAroundCurLayer[index][rotation];
 				int numStates = (int) Math.pow(2, cellsAroundCurrentState.length);
@@ -246,7 +303,10 @@ public class FastRegionCheck {
 					
 					//Figure out if it splits
 					//by doing a BFS:
-					boolean fullyConnected = isFullyConnected(convertStateNumToBoolArray(stateIndex, cellsAroundCurrentState), cellsAroundCurrentState);
+					boolean fullyConnected = isFullyConnected(
+							resetBoolTable(tmpBoolTable, preComputedCellsAroundCurLayer[index][rotation], stateIndex),
+							cellsAroundCurrentState
+							);
 					
 					if(fullyConnected) {
 						stateConnected.add(stateIndex);
@@ -261,6 +321,7 @@ public class FastRegionCheck {
 				System.out.println("Num not split 1: " + stateConnected.size());
 				System.out.println();
 				
+				int flagsToChange[][] = getFlagsToChange(preComputedCellsAroundCurLayer[index][rotation]);
 				
 				boolean foundCombinationOfHashMultsThatWork = false;
 				
@@ -282,32 +343,12 @@ public class FastRegionCheck {
 					
 					for(int stateIndex = 0; stateIndex < numStates; stateIndex++) {
 						
-						//SANITY:
-						long tmp[] = convertBoolArrayToLongs(convertStateNumToBoolArray(stateIndex, cellsAroundCurrentState));
 						
-						boolean allZeros = true;
-						for(int i=0; i<this.numLongsInState; i++) {
-							if((preComputedCellsAroundCurLayerLongState[index][rotation][i] & tmp[i]) != tmp[i]) {
-								System.out.println("Oops! tmp not in preComputedCellsAroundCurLayerLongState[index][rotation]!");
-								System.exit(1);
-							}
-							
-							if(tmp[i] != 0L) {
-								allZeros = false;
-							}
-						}
-						
-						if(stateIndex != 0 && allZeros) {
-							System.out.println("All zeros for state: " + stateIndex);
-						}
-						//END SANITY
-						
-						long curHash = getHash(convertBoolArrayToLongs(
-											
-											reverseBoolArray(
-													convertStateNumToBoolArray(stateIndex, cellsAroundCurrentState)
-											)
-										), index, rotation);
+						long curHash = getHash(
+								updateCurStateWithStateIndex(tmpCurState, flagsToChange, stateIndex),
+								index,
+								rotation
+							);
 
 						
 						if(stateSplits.contains(stateIndex)) {
@@ -345,36 +386,8 @@ public class FastRegionCheck {
 		}
 	}
 	
-	public static boolean[] reverseBoolArray(boolean input[]) {
-		boolean output[] = new boolean[input.length];
-		
-		for(int i=0; i<input.length; i++) {
-			output[i] = ! input[i];
-			
-		}
-		return output;
-	}
-	
-	private boolean[] convertStateNumToBoolArray(int stateIndex, int cellsAroundCurrentState[]) {
-		
-		int cur = stateIndex;
-		boolean ret[] = new boolean[neighbours.length];
-		for(int i=0; i<ret.length; i++) {
-			ret[i] = false;
-		}
-		
-		for(int j=0; j<cellsAroundCurrentState.length; j++) {
-			
-			if(cur % 2 == 1) {
-				ret[cellsAroundCurrentState[j]] = true;
-			}
-			cur /= 2;
-		}
-		
-		
-		return ret;
-	}
-	
+	//TODO: this function is inefficient. I should get rid of the need for the new array.
+	// It's probably fast enough though.
 	private boolean isFullyConnected(boolean state[], int cellsAroundCurrentState[]) {
 		
 		Queue <Integer> queue = new LinkedList<Integer>();
@@ -469,4 +482,5 @@ public class FastRegionCheck {
 		
 		return ret;
 	}
+	
 }
