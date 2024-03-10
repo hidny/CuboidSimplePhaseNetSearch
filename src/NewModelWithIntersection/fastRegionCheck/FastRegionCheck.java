@@ -390,6 +390,7 @@ public class FastRegionCheck {
 	// If it succeeds, the search returns true.
 	//I decided to mess with the input state table because I wanted
 	// to not bother with creating a new found array.
+	//LOL! I accidentally fixed a bug by making it more efficient!
 	private boolean isFullyConnected(boolean state[], int cellsAroundCurrentState[]) {
 		
 		Queue <Integer> queue = new LinkedList<Integer>();
