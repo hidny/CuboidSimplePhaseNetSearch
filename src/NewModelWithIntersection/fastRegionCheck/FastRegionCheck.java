@@ -264,6 +264,7 @@ public class FastRegionCheck {
 		return tmpCurState;
 	}
 	
+	int DEBUG_INTERVAL = 100;
 	//Step 3:
 	private void setupPreComputedHashsForRegions() {
 		
@@ -278,10 +279,6 @@ public class FastRegionCheck {
 		
 
 		for(int index=0; index<neighbours.length; index++) {
-			
-			if(index % 10 == 0) {
-				System.out.println("Up to index " + index);
-			}
 			
 			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 
@@ -316,10 +313,7 @@ public class FastRegionCheck {
 					}
 					
 				}
-				System.out.println("Index: " + index);
-				System.out.println("Num split 1: " + stateSplits.size());
-				System.out.println("Num not split 1: " + stateConnected.size());
-				System.out.println();
+				
 				
 				int flagsToChange[][] = getFlagsToChange(preComputedCellsAroundCurLayer[index][rotation]);
 				
@@ -336,7 +330,9 @@ public class FastRegionCheck {
 					
 					
 					for(int j=0; j<numLongsInState; j++) {
-						preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j] = 1 + 5*j + debugComboIndex;
+						//TODO: I had to play around with this. I don't know if this is 'random' enough to never find an infinite loop:
+						//The good news is, if it fails, there will be an infinite loop, and we'll know there's a problem. 
+						preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j] = 1 + 5*j*j + debugComboIndex;
 					}
 					
 					boolean hashCollisionSoFar = false;
@@ -349,7 +345,7 @@ public class FastRegionCheck {
 								index,
 								rotation
 							);
-
+						
 						
 						if(stateSplits.contains(stateIndex)) {
 							preComputedCellsAroundCurLayerSplitTmp[index][rotation].add(curHash);
@@ -360,13 +356,23 @@ public class FastRegionCheck {
 						if(preComputedCellsAroundCurLayerSplitTmp[index][rotation].contains(curHash)
 								&& preComputedCellsAroundCurLayerDoNotSplit[index][rotation].contains(curHash)) {
 								
-							/*System.out.println("HASH COLLISION for index " + index + " and rotation " + rotation + ". (TRY THE NEXT ONE!) debugComboIndex: " + debugComboIndex + " ( stateIndex: " + stateIndex + ", curHash: " + curHash + ")");
-							for(int j=0; j<numLongsInState; j++) {
+							System.out.println("HASH COLLISION for index " + index + " and rotation " + rotation + ". (TRY THE NEXT ONE!) debugComboIndex: " + debugComboIndex + " ( stateIndex: " + stateIndex + ", curHash: " + curHash + ")");
+							/*for(int j=0; j<numLongsInState; j++) {
 								System.out.println(preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j]);
+							}*/
+							for(int stateIndex2 = 0; stateIndex2 < numStates; stateIndex2++) {
+								if(getHash(
+										updateCurStateWithStateIndex(tmpCurState, flagsToChange, stateIndex2),
+										index,
+										rotation
+									) == curHash) {
+									System.out.println("Prev state: " + stateIndex2);
+								}
 							}
 							System.out.println();
 							System.out.println("---");
-							*/
+							//System.exit(1);
+							
 							hashCollisionSoFar = true;
 							break;
 						}
@@ -374,9 +380,14 @@ public class FastRegionCheck {
 					
 					if(hashCollisionSoFar == false) {
 						foundCombinationOfHashMultsThatWork = true;
-						System.out.println("Num split: " + preComputedCellsAroundCurLayerSplitTmp[index][rotation].size());
-						System.out.println("Num not split: " + preComputedCellsAroundCurLayerDoNotSplit[index][rotation].size());
-						System.out.println();
+						
+
+						if(index < 10 || index % DEBUG_INTERVAL == 0) {
+							System.out.println("Index: " + index);
+							System.out.println("Num split: " + preComputedCellsAroundCurLayerSplitTmp[index][rotation].size());
+							System.out.println("Num not split: " + preComputedCellsAroundCurLayerDoNotSplit[index][rotation].size());
+							System.out.println();
+						}
 						
 						preComputedCellsAroundCurLayerSplitTmp[index][rotation] = null;
 					}
