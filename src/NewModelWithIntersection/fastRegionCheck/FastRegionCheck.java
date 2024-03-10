@@ -386,8 +386,10 @@ public class FastRegionCheck {
 		}
 	}
 	
-	//TODO: this function is inefficient. I should get rid of the need for the new array.
-	// It's probably fast enough though.
+	//BFS search that also tries to set the input state to completely false.
+	// If it succeeds, the search returns true.
+	//I decided to mess with the input state table because I wanted
+	// to not bother with creating a new found array.
 	private boolean isFullyConnected(boolean state[], int cellsAroundCurrentState[]) {
 		
 		Queue <Integer> queue = new LinkedList<Integer>();
@@ -402,29 +404,23 @@ public class FastRegionCheck {
 			}
 		}
 		
-		queue.add(root);
-		
-		boolean found[] = new boolean[state.length];
-		for(int i=0; i<state.length; i++) {
-			found[i] = false;
+		if(root == -1) {
+			//Maybe I should try to remove this edge case?
+			//Nah...
+			return false;
 		}
+		queue.add(root);
+		state[root] = false;
 		
 		while( ! queue.isEmpty()) {
 			
 			int cur = queue.remove();
-			if(cur == -1) {
-				
-				//TODO: should I just ignore this, or maybe this is an edge case?
-				//System.out.println("WARNING: the state has no entries");
-				//System.out.println("Might as well reture false.");
-				return false;
-			}
 			
 			for(int i=0; i<neighbours[cur].length; i++) {
 				int neighbour = neighbours[cur][i].getIndex();
 				
-				if(state[neighbour] && found[neighbour] == false) {
-					found[neighbour] = true;
+				if(state[neighbour]) {
+					state[neighbour] = false;
 					queue.add(neighbour);
 					
 				}
@@ -435,8 +431,8 @@ public class FastRegionCheck {
 		//Check if fully connected:
 		boolean ret = true;
 		
-		for(int i=0; i<state.length; i++) {
-			if(state[i] && ! found[i]) {
+		for(int i=0; i<cellsAroundCurrentState.length; i++) {
+			if(state[cellsAroundCurrentState[i]]) {
 				ret = false;
 				break;
 			}
