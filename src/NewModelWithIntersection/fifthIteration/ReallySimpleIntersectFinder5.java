@@ -24,7 +24,7 @@ public class ReallySimpleIntersectFinder5 {
 
 		//N: 7
 		//6 solutions: (2 unique solutions)
-		//reallySimpleSearch(3, 3, 1);
+		reallySimpleSearch(3, 3, 1);
 		
 
 		//N: 8
@@ -162,8 +162,8 @@ Found 133 unique solution."
 		//reallySimpleSearch(9, 3, 2);
 		//System.exit(1);
 
-		reallySimpleSearch(12, 3, 1);
-		System.exit(1);
+		//reallySimpleSearch(12, 3, 1);
+		//System.exit(1);
 
 		// N = 26
 		//268 unique solution for 17x2x1

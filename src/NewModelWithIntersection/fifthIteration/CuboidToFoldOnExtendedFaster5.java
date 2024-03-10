@@ -8,6 +8,7 @@ import Model.CuboidToFoldOnInterface;
 import Model.DataModelViews;
 import Model.NeighbourGraphCreator;
 import Model.Utils;
+import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
 import NewModelWithIntersection.grainIteration.CuboidToFoldOnGrained;
 
 public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
@@ -17,6 +18,7 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 	
 	private int dimensions[] = new int[3];
 
+	private FastRegionCheck fastRegionCheck;
 	
 	public CuboidToFoldOnExtendedFaster5(int a, int b, int c) {
 		this(a, b, c, true, true);
@@ -37,6 +39,9 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 			setupAnswerSheetInBetweenLayers();
  			setupAnswerSheetForTopCell();
 		}
+		
+		//TODO: put this outside the constructor if possible.
+		fastRegionCheck = new FastRegionCheck(neighbours, curState);
 	}
 	
 	public int getNumCellsToFill() {
@@ -134,99 +139,19 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 		curState[1] = curState[1] | newLayerDetails[1];
 		curState[2] = curState[2] | newLayerDetails[2];
 		
-		//TODO: shortcut
-
-		long checkAroundNewLayer[] = preComputedPossiblyEmptyCellsAroundNewLayer[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
+		int tmp1 = newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
+		int tmp2 = newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
 		
-		if(((curState[0] & checkAroundNewLayer[0]) | (curState[1] & checkAroundNewLayer[1]) | (curState[2] & checkAroundNewLayer[2])) == 0L) {
-			
-			debugStop++;
-			
-			if(preComputedForceRegionSplitIfEmptyAroundNewLayer[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump]) {
-				//System.out.println(topLeftGroundRotationRelativeFlatMap);
-				//System.out.println(sideBump);
-				debugBugFix++;
-			} else {
-			
-				return false;
-			}
+		if(fastRegionCheck.regionSplit(curState, tmp1, tmp2)) {
+			System.out.println("test " + topLeftGroundedIndex + "," + topLeftGroundRotationRelativeFlatMap);
+			System.out.println("side bump: " + sideBump);
+			printCurrentStateOnOtherCuboidsFlatMap();
+			//System.exit(1);
+			return true;
+		} else {
+			return false;
 		}
 		
-		debugThru++;
-		
-		if(debugThru % 100000000L == 0L) {
-			System.out.println(debugThru + " goes thru while " + debugStop + " get stopped.");
-			System.out.println((100.0 * debugThru) / (1.0 * (debugThru + debugStop)) + "% thru rate");
-			System.out.println((100.0 * debugBugFix) / (1.0 * (debugThru + debugStop)) + "% debugBugFix rate");
-			System.out.println("Side bumps used:");
-			for(int i=0; i<currentLayerIndex; i++) {
-				System.out.println(prevSideBumps[i]);
-			}
-			System.out.println("END side bumps used");
-		}
-		
-		//TODO: 2nd shortcut:
-		// 1st shortcut didn't make it go faster...
-		//if(couldAlreadyDetermineSplit(cellsAroundNewLayer[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump][hashMap.get(hashkey)])) {
-			
-		//}
-		
-		//END TODO shortcut
-		
-		boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
-		
-		for(int i=0; i<tmpArray.length; i++) {
-			tmpArray[i] = isCellIoccupied(i);
-		}
-		
-		
-		
-		curState[0] = curState[0] ^ newLayerDetails[0];
-		curState[1] = curState[1] ^ newLayerDetails[1];
-		curState[2] = curState[2] ^ newLayerDetails[2];
-		
-		int firstUnoccupiedIndex = -1;
-		for(int i=0; i<tmpArray.length; i++) {
-			if(tmpArray[i] == false) {
-				firstUnoccupiedIndex = i;
-				break;
-			}
-		}
-
-		Queue<Integer> visited = new LinkedList<Integer>();
-		
-		boolean explored[] = new boolean[Utils.getTotalArea(this.dimensions)];
-		
-		explored[firstUnoccupiedIndex] = true;
-		visited.add(firstUnoccupiedIndex);
-		
-		Integer v;
-		
-		while( ! visited.isEmpty()) {
-			
-			v = visited.poll();
-			
-			for(int i=0; i<NUM_NEIGHBOURS; i++) {
-				
-				int neighbourIndex = this.neighbours[v.intValue()][i].getIndex();
-				
-				if( ! tmpArray[neighbourIndex] && ! explored[neighbourIndex]) {
-					explored[neighbourIndex] = true;
-					visited.add(neighbourIndex);
-				}
-				
-			}
-			
-		}
-
-		for(int i=0; i<tmpArray.length; i++) {
-			if( ! tmpArray[i] && ! explored[i]) {
-				
-				return true;
-			}
-		}
-
-		return false;
 	}
 	
 	public boolean isCellIoccupied(int i) {
@@ -239,6 +164,9 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 	public boolean isNewLayerValidSimpleFast(int sideBump) {
 	
 		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
+		
+
+		
 		
 		return ((curState[0] & tmp[0]) | (curState[1] & tmp[1]) | (curState[2] & tmp[2])) == 0L  && ! unoccupiedRegionSplit(tmp, sideBump);
 		

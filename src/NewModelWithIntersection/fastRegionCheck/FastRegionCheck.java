@@ -13,7 +13,7 @@ public class FastRegionCheck {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		CoordWithRotationAndIndex neighbours[][] = NeighbourGraphCreator.initNeighbourhood(1000, 5, 1, true);
+		CoordWithRotationAndIndex neighbours[][] = NeighbourGraphCreator.initNeighbourhood(27, 5, 1, true);
 		
 		FastRegionCheck test = new FastRegionCheck(neighbours, new long[(neighbours.length / 64) + 1]);
 		
@@ -382,12 +382,12 @@ public class FastRegionCheck {
 						foundCombinationOfHashMultsThatWork = true;
 						
 
-						if(index < 10 || index % DEBUG_INTERVAL == 0) {
+						/*if(index < 10 || index % DEBUG_INTERVAL == 0) {
 							System.out.println("Index: " + index);
 							System.out.println("Num split: " + preComputedCellsAroundCurLayerSplitTmp[index][rotation].size());
 							System.out.println("Num not split: " + preComputedCellsAroundCurLayerDoNotSplit[index][rotation].size());
 							System.out.println();
-						}
+						}*/
 						
 						preComputedCellsAroundCurLayerSplitTmp[index][rotation] = null;
 					}
