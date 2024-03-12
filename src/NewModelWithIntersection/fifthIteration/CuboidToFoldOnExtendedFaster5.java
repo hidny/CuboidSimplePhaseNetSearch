@@ -133,22 +133,42 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 	// then use a lookup-table to decide if the region split (use the lookup table associate with the grounded index and rotation for help)
 	public boolean unoccupiedRegionSplit(long newLayerDetails[], int sideBump) {
 		
-		
-
-		curState[0] = curState[0] | newLayerDetails[0];
-		curState[1] = curState[1] | newLayerDetails[1];
-		curState[2] = curState[2] | newLayerDetails[2];
-		
 		int tmp1 = newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
 		int tmp2 = newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
 		
-		if(fastRegionCheck.regionSplit(curState, tmp1, tmp2)) {
-			System.out.println("test " + topLeftGroundedIndex + "," + topLeftGroundRotationRelativeFlatMap);
+		if( fastRegionCheck.regionSplit(curState, tmp1, tmp2)) {
+			
+			System.out.println("test before: " + this.topLeftGroundedIndex + ", " + this.topLeftGroundRotationRelativeFlatMap);
+			System.out.println("test " + tmp1 + "," + tmp2);
 			System.out.println("side bump: " + sideBump);
-			printCurrentStateOnOtherCuboidsFlatMap();
+			long tmpHash = fastRegionCheck.getHash(curState, tmp1, tmp2);
+			System.out.println("hash: " + tmpHash);
+			
+			//printCurrentStateOnOtherCuboidsFlatMap();
+			if(tmpHash == 0) {
+				System.exit(1);
+			}
+			
+			System.out.println("Hello1");
+			System.out.println();
+			System.out.println();
+			if( ! fastRegionCheck.regionSplitDebug(curState, tmp1, tmp2)) {
+				System.out.println("OOPS! regionSplitDebug");
+				System.exit(1);
+			}
+			
+			if(tmp1 == 3 && tmp2 == 2 && this.topLeftGroundedIndex == 0 && this.topLeftGroundRotationRelativeFlatMap == 0) {
+				System.out.println("Debug");
+			}
 			//System.exit(1);
+			
+			//TODO: debug
+			//return false;
 			return true;
 		} else {
+			//System.out.println("Hello2");
+			//System.exit(1);
+			
 			return false;
 		}
 		
@@ -165,10 +185,7 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 	
 		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
 		
-
-		
-		
-		return ((curState[0] & tmp[0]) | (curState[1] & tmp[1]) | (curState[2] & tmp[2])) == 0L  && ! unoccupiedRegionSplit(tmp, sideBump);
+		return (((curState[0] & tmp[0]) | (curState[1] & tmp[1]) | (curState[2] & tmp[2])) == 0L)  && ! unoccupiedRegionSplit(tmp, sideBump);
 		
 	}
 	

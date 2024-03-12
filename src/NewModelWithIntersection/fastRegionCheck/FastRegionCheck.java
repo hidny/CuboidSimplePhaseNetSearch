@@ -46,6 +46,13 @@ public class FastRegionCheck {
 				.contains(getHash(curState, topLeftIndex, topLeftRotationRelativeFlatMap));
 	}
 	
+	public boolean regionSplitDebug(long curState[], int topLeftIndex, int topLeftRotationRelativeFlatMap) {
+		
+		
+		return preComputedCellsAroundCurLayerSplitTmp[topLeftIndex][topLeftRotationRelativeFlatMap]
+				.contains(getHash(curState, topLeftIndex, topLeftRotationRelativeFlatMap));
+	}
+	
 	public long getHash(long curState[], int topLeftIndex, int topLeftRotationRelativeFlatMap) {
 		long hash = 0L;
 		
@@ -254,17 +261,34 @@ public class FastRegionCheck {
 			
 			if(cur % 2 == 1) {
 				//pass
+
+				if( (tmpCurState[flagsToChange[i][0]] >> flagsToChange[i][1]) % 2 == 0) {
+					
+					System.out.println(flagsToChange[i][1]);
+					System.out.println("DOH 2!");
+					//System.exit(1);
+				} else {
+					//System.out.println("DOH3");
+				}
+				
 			} else {
 				tmpCurState[flagsToChange[i][0]] ^= 1L << flagsToChange[i][1];
 				
+
+				if((tmpCurState[flagsToChange[i][0]] & (1L << flagsToChange[i][1])) != 0 ) {
+					System.out.println("DOH!");
+					System.exit(1);
+				}
+				
 			}
+			
 			cur /= 2;
 		}
 		
 		return tmpCurState;
 	}
 	
-	int DEBUG_INTERVAL = 100;
+	int DEBUG_INTERVAL = 1;
 	//Step 3:
 	private void setupPreComputedHashsForRegions() {
 		
@@ -283,10 +307,10 @@ public class FastRegionCheck {
 			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 
 				for(int i=0; i<this.numLongsInState; i++) {
-					tmpCurState[i] = -1L;
+					tmpCurState[i] = 0L;
 				}
 				for(int i=0; i<tmpBoolTable.length; i++) {
-					tmpBoolTable[i] = false;
+					tmpBoolTable[i] = true;
 				}
 				
 				int cellsAroundCurrentState[] = preComputedCellsAroundCurLayer[index][rotation];
@@ -314,6 +338,42 @@ public class FastRegionCheck {
 					
 				}
 				
+				
+				boolean seemsOk = false;
+				for(int i=0; i<15; i++) {
+					int estimate = (i*(i+1) + 1) * ((int)Math.pow(2, 13 - i));
+					//System.out.println(estimate);
+					if(stateConnected.size() == estimate) {
+						seemsOk = true;
+					}
+					int estimate2 = (9*(9+1) + 1);
+					
+					//estimate2 += (9 * (9+1))/2 + 2;//TODO: why +2 instead of +1. I only did it because it matched...
+
+					estimate2 += 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 1;
+					//AHA: edge case 1: only hole is unfilled
+					estimate2 += 1;
+					estimate2 *= 8;
+					//System.out.println(estimate2/8);
+					
+					if(stateConnected.size() == estimate2) {
+						seemsOk = true;
+					}
+				}
+				if(seemsOk == false) {
+					System.out.println("WARNING: the count of connected seems wrong with " + stateConnected.size());
+					System.out.println("Div 8: " + (stateConnected.size()/8));
+					System.out.println("Index: " + index);
+					System.out.println("Rotation: " + rotation);
+					System.out.println("stateSplits: " + stateSplits.size());
+					System.out.println("cellsAroundCurrentState.length: " + cellsAroundCurrentState.length);
+					for(int i=0; i<cellsAroundCurrentState.length; i++) {
+						System.out.println(cellsAroundCurrentState[i]);
+					}
+					System.exit(1);
+				} else {
+					//System.out.println("OK");
+				}
 				
 				int flagsToChange[][] = getFlagsToChange(preComputedCellsAroundCurLayer[index][rotation]);
 				
@@ -346,6 +406,39 @@ public class FastRegionCheck {
 								rotation
 							);
 						
+						if(stateIndex == numStates - 1) {
+							
+							
+							boolean test[] = new boolean[neighbours.length];
+							//for(int i=0; i<test.length; i++) {
+							//	test[i] = true;
+							//}
+							for(int i=0; i<cellsAroundCurrentState.length; i++) {
+								test[cellsAroundCurrentState[i]] = true;
+								
+							}
+							
+							long testLong[] = convertBoolArrayToLongs(test);
+							
+							for(int i=0; i<testLong.length; i++) {
+								if(testLong[i] != tmpCurState[i]) {
+									System.out.println(testLong);
+									System.out.println("oops!");
+									System.out.println(testLong[i] + " vs " + tmpCurState[i]);
+									
+									System.out.println("ALT:");
+									System.out.println((testLong[i] ^ -1L) + " vs " + (tmpCurState[i]^ -1L));
+									System.exit(1);
+								} else {
+									//System.out.println("good");
+								}
+								
+								if(testLong[i] != preComputedCellsAroundCurLayerLongState[index][rotation][i]) {
+									System.out.println("hello test2");
+									System.exit(1);
+								}
+							}
+						}
 						
 						if(stateSplits.contains(stateIndex)) {
 							preComputedCellsAroundCurLayerSplitTmp[index][rotation].add(curHash);
@@ -355,7 +448,7 @@ public class FastRegionCheck {
 						
 						if(preComputedCellsAroundCurLayerSplitTmp[index][rotation].contains(curHash)
 								&& preComputedCellsAroundCurLayerDoNotSplit[index][rotation].contains(curHash)) {
-								
+							
 							System.out.println("HASH COLLISION for index " + index + " and rotation " + rotation + ". (TRY THE NEXT ONE!) debugComboIndex: " + debugComboIndex + " ( stateIndex: " + stateIndex + ", curHash: " + curHash + ")");
 							/*for(int j=0; j<numLongsInState; j++) {
 								System.out.println(preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j]);
@@ -384,12 +477,14 @@ public class FastRegionCheck {
 
 						/*if(index < 10 || index % DEBUG_INTERVAL == 0) {
 							System.out.println("Index: " + index);
+							System.out.println("Rotation: " + rotation);
 							System.out.println("Num split: " + preComputedCellsAroundCurLayerSplitTmp[index][rotation].size());
 							System.out.println("Num not split: " + preComputedCellsAroundCurLayerDoNotSplit[index][rotation].size());
 							System.out.println();
 						}*/
 						
-						preComputedCellsAroundCurLayerSplitTmp[index][rotation] = null;
+						//TODO: debug...
+						//preComputedCellsAroundCurLayerSplitTmp[index][rotation] = null;
 					}
 				}
 					
@@ -397,7 +492,7 @@ public class FastRegionCheck {
 		}
 	}
 	
-	//BFS search that also tries to set the input state to completely false.
+	//BFS search that also tries to set the input state to completely true.
 	// If it succeeds, the search returns true.
 	//I decided to mess with the input state table because I wanted
 	// to not bother with creating a new found array.
@@ -410,7 +505,7 @@ public class FastRegionCheck {
 		
 		for(int i=0; i<cellsAroundCurrentState.length; i++) {
 			
-			if(state[cellsAroundCurrentState[i]]) {
+			if( ! state[cellsAroundCurrentState[i]]) {
 				root = cellsAroundCurrentState[i];
 				break;
 			}
@@ -422,7 +517,7 @@ public class FastRegionCheck {
 			return false;
 		}
 		queue.add(root);
-		state[root] = false;
+		state[root] = true;
 		
 		while( ! queue.isEmpty()) {
 			
@@ -431,8 +526,8 @@ public class FastRegionCheck {
 			for(int i=0; i<neighbours[cur].length; i++) {
 				int neighbour = neighbours[cur][i].getIndex();
 				
-				if(state[neighbour]) {
-					state[neighbour] = false;
+				if( ! state[neighbour]) {
+					state[neighbour] = true;
 					queue.add(neighbour);
 					
 				}
@@ -444,7 +539,7 @@ public class FastRegionCheck {
 		boolean ret = true;
 		
 		for(int i=0; i<cellsAroundCurrentState.length; i++) {
-			if(state[cellsAroundCurrentState[i]]) {
+			if( ! state[cellsAroundCurrentState[i]]) {
 				ret = false;
 				break;
 			}
