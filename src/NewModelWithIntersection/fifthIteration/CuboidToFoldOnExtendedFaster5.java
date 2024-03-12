@@ -21,13 +21,23 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 	private FastRegionCheck fastRegionCheck;
 	
 	public CuboidToFoldOnExtendedFaster5(int a, int b, int c) {
-		this(a, b, c, true, true);
+		this(a, b, c, true, true, null);
 	}
 
-	public CuboidToFoldOnExtendedFaster5(int a, int b, int c, boolean verbose, boolean setup) {
+	public CuboidToFoldOnExtendedFaster5(int a, int b, int c, FastRegionCheck fastRegionCheck) {
+		this(a, b, c, true, true, fastRegionCheck);
+	}
+	
+	public CuboidToFoldOnExtendedFaster5(int a, int b, int c, boolean verbose, boolean setup, FastRegionCheck fastRegionCheck) {
 
 		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c, verbose);
-		
+
+		//TODO: put this outside the constructor if possible.
+		if(fastRegionCheck == null) {
+			this.fastRegionCheck = new FastRegionCheck(neighbours, curState);
+		} else {
+			this.fastRegionCheck = fastRegionCheck;
+		}
 		
 		dimensions[0] = a;
 		dimensions[1] = b;
@@ -40,8 +50,6 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
  			setupAnswerSheetForTopCell();
 		}
 		
-		//TODO: put this outside the constructor if possible.
-		fastRegionCheck = new FastRegionCheck(neighbours, curState);
 	}
 	
 	public int getNumCellsToFill() {
@@ -480,7 +488,11 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
 	}
 
-	//DEBUG PRINT STATE ON OTHER CUBOID:
+	public FastRegionCheck getFastRegionCheck() {
+		return fastRegionCheck;
+	}
+
+		//DEBUG PRINT STATE ON OTHER CUBOID:
 		public void printCurrentStateOnOtherCuboidsFlatMap() {
 			
 			CuboidToFoldOnExtendedFaster5 toPrint = new CuboidToFoldOnExtendedFaster5(
@@ -488,7 +500,8 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 					this.dimensions[1],
 					this.dimensions[2],
 					false,
-					false
+					false,
+					this.fastRegionCheck
 					);
 			
 			toPrint.initializeNewBottomIndexAndRotation(

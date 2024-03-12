@@ -95,6 +95,7 @@ public class FastRegionCheck {
 	
 	public FastRegionCheck(CoordWithRotationAndIndex[][] neighbours, long curState[]) { 
 		
+		System.out.println("Setting up fast region check. Please wait.");
 		this.neighbours = neighbours;
 		this.numLongsInState = curState.length;
 		

@@ -8,6 +8,7 @@ import GraphUtils.PivotCellDescription;
 import GraphUtils.PivotCellDescriptionForNx1x1;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
+import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
 import SolutionResolver.SolutionResolverInterface;
 import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
@@ -54,7 +55,7 @@ Found 133 unique solution."
 		
 		//N: 11
 		//2364 solutions: (591 unique solutions)
-		reallySimpleSearch(3, 5, 1);
+		//reallySimpleSearch(3, 5, 1);
 		
 		//74 solutions (19 unique solutions)
 		//reallySimpleSearch(7, 2, 1);
@@ -90,7 +91,7 @@ Found 133 unique solution."
 		// 60 solutions (17 unique) (7 minutes)
 		//reallySimpleSearch(8, 3, 1);
 		//114 solutions (29 unique)
-		//reallySimpleSearch(11, 2, 1);
+		reallySimpleSearch(11, 2, 1);
 		
 		//N: 19 (No luck)
 		// 8418 unique solution.
@@ -203,6 +204,8 @@ Found 133 unique solution."
 		
 		long ret = 0;
 		
+		FastRegionCheck fastRegionCheckSetup = cuboidToBuild.getFastRegionCheck();
+		
 		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
 			
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
@@ -212,8 +215,13 @@ Found 133 unique solution."
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
-			cuboidToBuild = new CuboidToFoldOnExtendedFaster5(a, b, c);
+			cuboidToBuild = new CuboidToFoldOnExtendedFaster5(a, b, c, fastRegionCheckSetup);
 			cuboidToBuild.initializeNewBottomIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation);
+			
+			if(fastRegionCheckSetup == null) {
+				System.out.println("oops");
+				System.exit(1);
+			}
 			
 			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
 			
@@ -257,6 +265,8 @@ Found 133 unique solution."
 							
 							System.out.println(reference.toString());
 							System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
+							
+							//TODO: this function is way too slow. What's going on?
 							cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
 						}
 						reference.removeCurrentTopLevel();

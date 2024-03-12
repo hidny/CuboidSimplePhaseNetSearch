@@ -38,7 +38,7 @@ public class ReallySimpleIntersectFinder3 {
 		
 
 		//N: 10
-		//498 solutions: (113 unique solutions)
+		//498 solutions: (133 unique solutions)
 		//reallySimpleSearch(3, 3, 2);
 		
 		
