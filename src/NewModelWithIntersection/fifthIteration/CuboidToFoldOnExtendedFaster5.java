@@ -134,18 +134,13 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 	public boolean unoccupiedRegionSplit(long newLayerDetails[], int sideBump) {
 		
 		
-
-		curState[0] = curState[0] | newLayerDetails[0];
-		curState[1] = curState[1] | newLayerDetails[1];
-		curState[2] = curState[2] | newLayerDetails[2];
-		
 		int tmp1 = newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
 		int tmp2 = newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
 		
 		if(fastRegionCheck.regionSplit(curState, tmp1, tmp2)) {
-			System.out.println("test " + topLeftGroundedIndex + "," + topLeftGroundRotationRelativeFlatMap);
-			System.out.println("side bump: " + sideBump);
-			printCurrentStateOnOtherCuboidsFlatMap();
+			//System.out.println("test " + topLeftGroundedIndex + "," + topLeftGroundRotationRelativeFlatMap);
+			//System.out.println("side bump: " + sideBump);
+			//printCurrentStateOnOtherCuboidsFlatMap();
 			//System.exit(1);
 			return true;
 		} else {
@@ -168,7 +163,7 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 
 		
 		
-		return ((curState[0] & tmp[0]) | (curState[1] & tmp[1]) | (curState[2] & tmp[2])) == 0L  && ! unoccupiedRegionSplit(tmp, sideBump);
+		return ((curState[0] & tmp[0]) | (curState[1] & tmp[1]) | (curState[2] & tmp[2])) == 0L && ! unoccupiedRegionSplit(tmp, sideBump);
 		
 	}
 	
