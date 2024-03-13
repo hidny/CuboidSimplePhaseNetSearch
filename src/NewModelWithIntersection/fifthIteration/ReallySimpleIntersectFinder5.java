@@ -175,7 +175,7 @@ Found 133 unique solution."
 
 		// N = 26
 		//268 unique solution for 17x2x1
-		//reallySimpleSearch(17, 2, 1);
+		reallySimpleSearch(17, 2, 1);
 		
 
 		//9,885,286 uniq solutions (and about 9,885,263 unique solutions after searching the cell left of 5x1 side)
@@ -253,9 +253,16 @@ Found 133 unique solution."
 		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild));
 	}
 	
+	public static final long DEBUG_MODULO =10000000L;
+	public static long debug = 0;
+	
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster5 cuboidToBuild, int layerIndex, int numLayers) {
 
 		long ret = 0;
+		if(debug % DEBUG_MODULO == 0) {
+			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+		}
+		debug++;
 		
 		if(layerIndex == numLayers) {
 			

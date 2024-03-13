@@ -315,7 +315,6 @@ public class FastRegionCheck {
 					
 				}
 				
-				
 				int flagsToChange[][] = getFlagsToChange(preComputedCellsAroundCurLayer[index][rotation]);
 				
 				boolean foundCombinationOfHashMultsThatWork = false;
@@ -411,7 +410,7 @@ public class FastRegionCheck {
 		
 		for(int i=0; i<cellsAroundCurrentState.length; i++) {
 			
-			if(state[cellsAroundCurrentState[i]]) {
+			if( ! state[cellsAroundCurrentState[i]]) {
 				root = cellsAroundCurrentState[i];
 				break;
 			}
@@ -423,7 +422,7 @@ public class FastRegionCheck {
 			return false;
 		}
 		queue.add(root);
-		state[root] = false;
+		state[root] = true;
 		
 		while( ! queue.isEmpty()) {
 			
@@ -432,8 +431,8 @@ public class FastRegionCheck {
 			for(int i=0; i<neighbours[cur].length; i++) {
 				int neighbour = neighbours[cur][i].getIndex();
 				
-				if(state[neighbour]) {
-					state[neighbour] = false;
+				if(! state[neighbour]) {
+					state[neighbour] = true;
 					queue.add(neighbour);
 					
 				}
@@ -445,7 +444,7 @@ public class FastRegionCheck {
 		boolean ret = true;
 		
 		for(int i=0; i<cellsAroundCurrentState.length; i++) {
-			if(state[cellsAroundCurrentState[i]]) {
+			if(! state[cellsAroundCurrentState[i]]) {
 				ret = false;
 				break;
 			}
