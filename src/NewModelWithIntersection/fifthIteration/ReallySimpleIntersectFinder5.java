@@ -91,12 +91,12 @@ Found 133 unique solution."
 		// 60 solutions (17 unique) (7 minutes)
 		//reallySimpleSearch(8, 3, 1);
 		//114 solutions (29 unique)
-		reallySimpleSearch(11, 2, 1);
+		//reallySimpleSearch(11, 2, 1);
 		
 		//N: 19 (No luck)
 		// 8418 unique solution.
 		//reallySimpleSearch(5, 3, 3);
-		// 102 different solutions and 27 uniq solutions
+		// 27 unique solutions
 		//reallySimpleSearch(7, 4, 1);
 		
 		//951 unique solution.
@@ -113,6 +113,7 @@ Found 133 unique solution."
 		//
 		
 		//N = 21
+		//Found 11 unique solution.
 		//reallySimpleSearch(10, 3, 1);
 
 		// N = 22
@@ -121,6 +122,7 @@ Found 133 unique solution."
 		//reallySimpleSearch(5, 5, 2);
 		
 
+		//Found 58891 unique solution.
 		//reallySimpleSearch(6, 3, 3);
 		
 		// N = 23 (4 other ones...)
@@ -136,16 +138,17 @@ Found 133 unique solution."
 		//System.exit(1);
 
 		 //7, 5, 1
-		//
+		//Found 1411798 unique solution.
 		//reallySimpleSearch(7, 5, 1);
-		 //11,3,1: (took about 20 hours)51 different solutions and  15 unique solution. 
+		
+		 //11,3,1: (took about 20 hours)51 different solutions and  15 unique solution. (Latest change: less than 2 hours)
 		//reallySimpleSearch(11, 3, 1);
 		
-		// 0 solutions? No!
+		// 
 		//reallySimpleSearch(15, 2, 1);
-		
-		//N=24:
 
+		//N=24:
+		//Found 6853 unique solution.
 		//reallySimpleSearch(9, 4, 1);
 		
 		
@@ -157,12 +160,16 @@ Found 133 unique solution."
 12 x 3 x 1: 102
 		 */
 
+		//Found 410329 unique solution.
 		//reallySimpleSearch(7, 3, 3);
 		//System.exit(1);
 
+		//Found 64 unique solution.
 		//reallySimpleSearch(9, 3, 2);
 		//System.exit(1);
 
+
+		//UP TO HERE:
 		//reallySimpleSearch(12, 3, 1);
 		//System.exit(1);
 
