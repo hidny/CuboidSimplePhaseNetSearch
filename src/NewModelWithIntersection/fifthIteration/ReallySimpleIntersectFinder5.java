@@ -86,7 +86,7 @@ Found 133 unique solution."
 		
 		
 		//N: 17
-		// 115268 solutions (28817 uniq solutions) (This took 19 minutes)
+		// 115268 solutions (28817 uniq solutions) (This took 40 seconds)
 		//reallySimpleSearch(5, 5, 1);
 		// 60 solutions (17 unique) (7 minutes)
 		//reallySimpleSearch(8, 3, 1);
@@ -96,7 +96,7 @@ Found 133 unique solution."
 		//N: 19 (No luck)
 		// 8418 unique solution.
 		//reallySimpleSearch(5, 3, 3);
-		// 27 unique solutions
+		// 27 unique solutions (under 80 seconds)
 		//reallySimpleSearch(7, 4, 1);
 		
 		//951 unique solution.
@@ -133,6 +133,7 @@ Found 133 unique solution."
 15 x 2 x 1: 94
 		 */
 		
+		
 		//5, 4, 3 118 different solutions and 61 unique solution.
 		//reallySimpleSearch(5, 4, 3);
 		//System.exit(1);
@@ -144,14 +145,15 @@ Found 133 unique solution."
 		 //11,3,1: (took about 20 hours)51 different solutions and  15 unique solution. (Latest change: less than 2 hours)
 		//reallySimpleSearch(11, 3, 1);
 		
-		// 
+		// Found 28 unique solution.
 		//reallySimpleSearch(15, 2, 1);
 
 		//N=24:
 		//Found 6853 unique solution.
 		//reallySimpleSearch(9, 4, 1);
 		
-		
+
+		//UP TO HERE:
 		
 		// N = 25
 		/*
@@ -170,19 +172,29 @@ Found 133 unique solution."
 
 
 		//UP TO HERE:
+		//28 unique solution.
 		//reallySimpleSearch(12, 3, 1);
 		//System.exit(1);
 
 		// N = 26
-		//268 unique solution for 17x2x1
-		reallySimpleSearch(17, 2, 1);
+		//268 unique solution for 17x2x1 (just over 16 minutes)
+		//reallySimpleSearch(17, 2, 1);
 		
 
 		//9,885,286 uniq solutions (and about 9,885,263 unique solutions after searching the cell left of 5x1 side)
 		//reallySimpleSearch(8, 5, 1);
 		
 		// N = 27
+		//Will need to optimize:
+		//reallySimpleSearch(13, 3, 1);
 		
+		//reallySimpleSearch(5, 5, 3);
+		
+		//reallySimpleSearch(7, 6, 1);
+		
+		//N = 28
+
+		reallySimpleSearch(8, 3, 3);
 		// N = 29 (5 other ones...)
 		
 		
@@ -253,7 +265,7 @@ Found 133 unique solution."
 		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild));
 	}
 	
-	public static final long DEBUG_MODULO =10000000L;
+	public static final long DEBUG_MODULO =10000000000L;
 	public static long debug = 0;
 	
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster5 cuboidToBuild, int layerIndex, int numLayers) {
