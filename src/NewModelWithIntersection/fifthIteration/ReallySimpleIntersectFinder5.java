@@ -188,14 +188,21 @@ Found 133 unique solution."
 		//Will need to optimize:
 		//reallySimpleSearch(13, 3, 1);
 		
+		//Found 154 unique solution.
 		//reallySimpleSearch(5, 5, 3);
 		
+		//Found 50 unique solution.
 		//reallySimpleSearch(7, 6, 1);
 		
 		//N = 28
 
-		reallySimpleSearch(8, 3, 3);
+		//Found 2870327 unique solution.
+		//reallySimpleSearch(8, 3, 3);
+		
 		// N = 29 (5 other ones...)
+		
+		//reallySimpleSearch(7, 5, 2);
+		reallySimpleSearch(11, 4, 1);
 		
 		
 	}

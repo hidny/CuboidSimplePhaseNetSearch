@@ -9,14 +9,13 @@ import Model.DataModelViews;
 import Model.NeighbourGraphCreator;
 import Model.Utils;
 import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
-import NewModelWithIntersection.grainIteration.CuboidToFoldOnGrained;
 
 public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 
 	
 	private CoordWithRotationAndIndex[][] neighbours;
 	
-	private int dimensions[] = new int[3];
+	public int dimensions[] = new int[3];
 
 	private FastRegionCheck fastRegionCheck;
 	
@@ -135,8 +134,7 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 	private long debugBugFix = 0L;
 	//private long DEBUG_LAYER_INDEX = 14;
 	
-	//BFS to just get it done badly:
-	//TODO: This could be so much faster
+	
 	// Filter the cells around the new layer and turn that into number (use the grounded index and rotation for help)
 	// then use a lookup-table to decide if the region split (use the lookup table associate with the grounded index and rotation for help)
 	public boolean unoccupiedRegionSplit(long newLayerDetails[], int sideBump) {

@@ -8,6 +8,7 @@ import Model.CuboidToFoldOnInterface;
 import Model.DataModelViews;
 import Model.NeighbourGraphCreator;
 import Model.Utils;
+import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
 
 public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 
@@ -16,12 +17,17 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 	
 	public int dimensions[] = new int[3];
 
-	public CuboidToFoldOnGrainedSpiral(int a, int b, int c) {
-		this(a, b, c, true, true);
+	private FastRegionCheck fastRegionCheck;
+	
+	public CuboidToFoldOnGrainedSpiral(int a, int b, int c, FastRegionCheck fastRegionCheck) {
+		this(a, b, c, true, true, fastRegionCheck);
 	}
-	public CuboidToFoldOnGrainedSpiral(int a, int b, int c, boolean verbose, boolean setup) {
+
+	
+	public CuboidToFoldOnGrainedSpiral(int a, int b, int c, boolean verbose, boolean setup, FastRegionCheck fastRegionCheck) {
 
 		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c, verbose);
+
 		
 		
 		dimensions[0] = a;
@@ -36,6 +42,13 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 		
 		curState = new long[numLongsToUse];
 		
+		//Hacky mechanism for not recalculating FastRegionCheck every time we construct CuboidToFoldOnGrainedSpiral:
+		if(fastRegionCheck == null) {
+			this.fastRegionCheck = new FastRegionCheck(neighbours, curState);
+		} else {
+			this.fastRegionCheck = fastRegionCheck;
+		}
+				
 		if(setup) {
 			setupAnswerSheetInBetweenLayers();
 			setupAnswerSheetForTopCell();
@@ -168,118 +181,26 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 	//END TODO
 	
 	
-	//BFS to just get it done badly:
-	//TODO: This could be so much faster
 	// Filter the cells around the new layer and turn that into number (use the grounded index and rotation for help)
 	// then use a lookup-table to decide if the region split (use the lookup table associate with the grounded index and rotation for help)
 	public boolean unoccupiedRegionSplit(long newLayerDetails[], int sideBump) {
 		
-		//TODO: does this need to go before curState[i] = curState[i] | newLayerDetails[i];
 		
-		//TODO newLayerDetails has to be right size
-		long checkAroundNewLayer[] = preComputedPossiblyEmptyCellsAroundNewLayer[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
+		int tmp1 = newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
+		int tmp2 = newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
 		
-		long collisionDetection = 0L;
-		for(int i=0; i<curState.length; i++) {
-			curState[i] = curState[i] | newLayerDetails[i];
-			
-			collisionDetection |= curState[i] & checkAroundNewLayer[i];
+		if(fastRegionCheck.regionSplit(curState, tmp1, tmp2)) {
+			//System.out.println("test " + topLeftGroundedIndex + "," + topLeftGroundRotationRelativeFlatMap);
+			//System.out.println("side bump: " + sideBump);
+			//printCurrentStateOnOtherCuboidsFlatMap();
+			//System.exit(1);
+			return true;
+		} else {
+			return false;
 		}
 		
-		//TODO: shortcut
-
-		
-		if(collisionDetection == 0L) {
-			
-			debugStop++;
-			
-			if(preComputedForceRegionSplitIfEmptyAroundNewLayer[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump]) {
-				//System.out.println(topLeftGroundRotationRelativeFlatMap);
-				//System.out.println(sideBump);
-				debugBugFix++;
-			} else {
-			
-				return false;
-			}
-		}
-		
-		debugThru++;
-		
-		if(debugThru % 100000000L == 0L) {
-			System.out.println(debugThru + " goes thru while " + debugStop + " get stopped.");
-			System.out.println((100.0 * debugThru) / (1.0 * (debugThru + debugStop)) + "% thru rate");
-			System.out.println((100.0 * debugBugFix) / (1.0 * (debugThru + debugStop)) + "% debugBugFix rate");
-			System.out.println("Side bumps used:");
-			for(int i=0; i<currentLayerIndex; i++) {
-				System.out.println(prevSideBumps[i]);
-			}
-			System.out.println("END side bumps used");
-		}
-		
-		//TODO: 2nd shortcut:
-		// 1st shortcut didn't make it go faster...
-		//if(couldAlreadyDetermineSplit(cellsAroundNewLayer[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump][hashMap.get(hashkey)])) {
-			
-		//}
-		
-		//END TODO shortcut
-		
-		boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
-		
-		for(int i=0; i<tmpArray.length; i++) {
-			tmpArray[i] = isCellIoccupied(i);
-		}
-		
-		
-		//TODO: Try to make this better... (See implement in simple phase nets)
-		for(int i=0; i<curState.length; i++) {
-			curState[i] = curState[i] ^ newLayerDetails[i];
-		}
-		
-		int firstUnoccupiedIndex = -1;
-		for(int i=0; i<tmpArray.length; i++) {
-			if(tmpArray[i] == false) {
-				firstUnoccupiedIndex = i;
-				break;
-			}
-		}
-
-		Queue<Integer> visited = new LinkedList<Integer>();
-		
-		boolean explored[] = new boolean[Utils.getTotalArea(this.dimensions)];
-		
-		explored[firstUnoccupiedIndex] = true;
-		visited.add(firstUnoccupiedIndex);
-		
-		Integer v;
-		
-		while( ! visited.isEmpty()) {
-			
-			v = visited.poll();
-			
-			for(int i=0; i<NUM_NEIGHBOURS; i++) {
-				
-				int neighbourIndex = this.neighbours[v.intValue()][i].getIndex();
-				
-				if( ! tmpArray[neighbourIndex] && ! explored[neighbourIndex]) {
-					explored[neighbourIndex] = true;
-					visited.add(neighbourIndex);
-				}
-				
-			}
-			
-		}
-
-		for(int i=0; i<tmpArray.length; i++) {
-			if( ! tmpArray[i] && ! explored[i]) {
-				
-				return true;
-			}
-		}
-
-		return false;
 	}
-	
+
 	public boolean isCellIoccupied(int i) {
 		int indexArray = i / NUM_BYTES_IN_LONG;
 		int bitShift = (NUM_BYTES_IN_LONG - 1) - i - indexArray * NUM_BYTES_IN_LONG;
@@ -932,7 +853,9 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
 	}
 
-	
+	public FastRegionCheck getFastRegionCheck() {
+		return fastRegionCheck;
+	}
 
 	//DEBUG PRINT STATE ON OTHER CUBOID:
 	public void printCurrentStateOnOtherCuboidsFlatMap() {
@@ -942,7 +865,8 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 				this.dimensions[1],
 				this.dimensions[2],
 				false,
-				false
+				false,
+				this.fastRegionCheck
 				);
 		
 		toPrint.initializeNewBottomIndexAndRotation(

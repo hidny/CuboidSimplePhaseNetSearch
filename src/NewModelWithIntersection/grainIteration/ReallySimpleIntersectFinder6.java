@@ -31,7 +31,7 @@ public class ReallySimpleIntersectFinder6 {
 		//reallySimpleSearch(6, 17, 1);
 		
 
-		reallySimpleSearch(4, 21, 1);
+		reallySimpleSearch(4, 53, 1);
 		
 		//reallySimpleSearch(2, 29, 1);
 		//reallySimpleSearch(2, 33, 1);

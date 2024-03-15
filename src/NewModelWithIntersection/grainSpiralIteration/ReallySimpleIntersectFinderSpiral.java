@@ -8,6 +8,7 @@ import GraphUtils.PivotCellDescription;
 import GraphUtils.PivotCellDescriptionForNx1x1;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
+import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
 import SolutionResolver.SolutionResolverInterface;
 import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
@@ -26,7 +27,13 @@ public class ReallySimpleIntersectFinderSpiral {
 		//reallySimpleSearch(20, 5, 1);
 		
 
-		reallySimpleSearch(6, 53, 1);
+		//reallySimpleSearch(6, 53, 1);
+		
+		//reallySimpleSearch(20, 53, 1);
+		
+		for(int i=5; i<53; i++) {
+			reallySimpleSearch(i, 53, 1);
+		}
 		
 		//Sunday Feb 25:
 		//reallySimpleSearch(4, 13, 1);
@@ -73,7 +80,9 @@ public class ReallySimpleIntersectFinderSpiral {
 		solutionResolver = new StandardResolverForSmallIntersectSolutions();
 		
 		
-		CuboidToFoldOnGrainedSpiral cuboidToBuild = new CuboidToFoldOnGrainedSpiral(a, b, c);
+		CuboidToFoldOnGrainedSpiral cuboidToBuild = new CuboidToFoldOnGrainedSpiral(a, b, c, null);
+		
+		FastRegionCheck fastRegionCheck = cuboidToBuild.getFastRegionCheck();
 		
 		if(cuboidToBuild.getNumCellsToFill() % 4 != 2) {
 			System.out.println("ERROR: trying to find intersect between Nx1x1 solution and a cuboid solution that doesn't have a surface area that matches any Nx1x1 cuboid.");
@@ -97,7 +106,7 @@ public class ReallySimpleIntersectFinderSpiral {
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
-			cuboidToBuild = new CuboidToFoldOnGrainedSpiral(a, b, c);
+			cuboidToBuild = new CuboidToFoldOnGrainedSpiral(a, b, c, fastRegionCheck);
 			cuboidToBuild.initializeNewBottomIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation);
 			
 			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
@@ -128,7 +137,8 @@ public class ReallySimpleIntersectFinderSpiral {
 
 		debugIt++;
 		
-		if(debugIt % 10000000L == 0) {
+		if(debugIt % 100000000L == 0) {
+			System.out.println("Debug print current state of search:");
 			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
 		}
 		long ret = 0;
