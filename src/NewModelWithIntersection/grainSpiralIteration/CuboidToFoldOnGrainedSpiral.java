@@ -243,28 +243,21 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 		}
 		
 		//TODO: Spiral the middle part:
-		if(nextRingIndex >=2 && nextRingIndex <= dimensions[0] - 3) {
-			if(nextRingIndex % 2 == 0) {
-				if(ringMod4Lookup[nextIndex][nextRot] != 0) {
-					//System.out.println("FALSE 1");
-					//System.exit(1);
-					return false;
-				}
-			} else {
-				if(ringMod4Lookup[nextIndex][nextRot] != 2) {
-					//System.out.println("FALSE 2");
-					//System.exit(1);
-					return false;
-				}
-			}
+		//For now, set it to 8:
+		if(sideBump !=8
+				&&
+				(this.topLeftGroundRotationRelativeFlatMap == 2 
+				&& nextRingIndex >= 1 
+				&& nextRingIndex < dimensions[0] - 2)
+				|| (this.topLeftGroundRotationRelativeFlatMap == 0
+						&& nextRingIndex >= 2 
+						&& nextRingIndex < dimensions[0] - 1)
+				) {
+			
+			return false;
+			
 		}
 		
-		//For now, let 8 be the magic number:
-		if(sideBump !=8 && nextRingIndex >=3 && nextRingIndex <= dimensions[0] - 4) {
-			//System.out.println("FALSE 3");
-			//System.exit(1);
-			return false;
-		}
 		//TODO: experiment with spiralling by 1 and 3 (Not just 2)
 		//END Spiral the middle part...
 		

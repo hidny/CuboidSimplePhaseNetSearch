@@ -325,6 +325,11 @@ public class FastRegionCheck {
 						System.out.println("Debug combo index: " + debugComboIndex + " for " + index + " and " + rotation + ".");
 					}
 					
+					if(debugComboIndex > 100000) {
+						System.out.println("ERROR: couldn't find unique hash combo in FastRegionCheck.");
+						System.exit(1);
+					}
+					
 					preComputedCellsAroundCurLayerSplitTmp[index][rotation] = new HashSet<Long>();
 					preComputedCellsAroundCurLayerDoNotSplit[index][rotation] = new HashSet<Long>();
 					
@@ -332,7 +337,7 @@ public class FastRegionCheck {
 					for(int j=0; j<numLongsInState; j++) {
 						//TODO: I had to play around with this. I don't know if this is 'random' enough to never find an infinite loop:
 						//The good news is, if it fails, there will be an infinite loop, and we'll know there's a problem. 
-						preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j] = 1 + 5*j*j + debugComboIndex;
+						preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j] = 1 + 5*j*j + debugComboIndex - j /6 -debugComboIndex / 7;
 					}
 					
 					boolean hashCollisionSoFar = false;

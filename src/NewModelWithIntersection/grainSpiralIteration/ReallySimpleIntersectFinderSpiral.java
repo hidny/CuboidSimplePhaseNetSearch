@@ -31,7 +31,7 @@ public class ReallySimpleIntersectFinderSpiral {
 		
 		//reallySimpleSearch(20, 53, 1);
 		
-		for(int i=5; i<53; i++) {
+		for(int i=1; i<53; i++) {
 			reallySimpleSearch(i, 53, 1);
 		}
 		
