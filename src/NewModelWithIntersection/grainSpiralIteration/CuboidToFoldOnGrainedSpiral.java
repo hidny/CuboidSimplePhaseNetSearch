@@ -161,7 +161,7 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 	
 	//check if ring is decided: (depth)
 	private int LayerIndexForRingDecided[];
-	
+	private int transitionBetweenRings[];
 	//The ring mod 4 to use
 	private int ringMod4AlreadySet[];
 	
@@ -231,7 +231,53 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 			return false;
 		}
 		
+		int prevRingIndex = indexToRing[this.topLeftGroundedIndex];
 		int nextRingIndex = indexToRing[nextIndex];
+		
+		if(prevRingIndex >= 0
+				&& nextRingIndex >= 0 ) {
+				//&& LayerIndexForRingDecided[prevRingIndex] >= 0 
+				//&& LayerIndexForRingDecided[nextRingIndex] >= 0
+			
+			if(Math.abs(prevRingIndex - nextRingIndex) != 1) {
+				System.out.println("ERROR!");
+				this.printCurrentStateOnOtherCuboidsFlatMap();
+				System.exit(1);
+			}
+		}
+		
+		int transitionIndex = Math.min(nextRingIndex, prevRingIndex);
+		
+		if(transitionIndex >= 0
+				&& transitionBetweenRings[transitionIndex] != sideBump
+				&& LayerIndexForRingDecided[prevRingIndex] >= 0 
+				&& LayerIndexForRingDecided[prevRingIndex] < currentLayerIndex
+				&& LayerIndexForRingDecided[nextRingIndex] >= 0 
+				&& LayerIndexForRingDecided[nextRingIndex] < currentLayerIndex) {
+			
+			return false;
+		}
+		
+		//Didn't fix it
+		/*if(transitionIndex != -1
+				&& transitionBetweenRings[transitionIndex] == sideBump
+				&& LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] >= 0 
+				&& LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] < currentLayerIndex
+				&& LayerIndexForRingDecided[nextRingIndex] >= 0 
+				&& LayerIndexForRingDecided[nextRingIndex] < currentLayerIndex) {
+			
+			System.out.println("Should be good.");
+			System.out.println("Side bump: " + sideBump);
+			System.out.println("currentLayerIndex: " + currentLayerIndex);
+			this.printCurrentStateOnOtherCuboidsFlatMap();
+			
+		}*/
+		
+		/*if(currentLayerIndex == 11) {
+			System.out.println("Debug");
+			System.exit(1);
+		}*/
+		
 		
 		if(nextRingIndex >=0
 				&& LayerIndexForRingDecided[nextRingIndex] >= 0 
@@ -242,21 +288,28 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 			return false;
 		}
 		
+		//TODO: this is causing problems:
 		//TODO: Spiral the middle part:
 		//For now, set it to 8:
-		if(sideBump !=8
+		//TODO: experiment with setting it to 7 and 9.
+		if(sideBump !=6
 				&&
-				(this.topLeftGroundRotationRelativeFlatMap == 2 
-				&& nextRingIndex >= 1 
-				&& nextRingIndex < dimensions[0] - 2)
-				|| (this.topLeftGroundRotationRelativeFlatMap == 0
-						&& nextRingIndex >= 2 
-						&& nextRingIndex < dimensions[0] - 1)
+				(
+					(nextRingIndex < prevRingIndex
+					&& nextRingIndex >= 2 
+					&& nextRingIndex < dimensions[0] - 2)
+					|| (nextRingIndex > prevRingIndex
+							&& nextRingIndex >= 3 
+							&& nextRingIndex < dimensions[0] - 1)
+					)
 				) {
 			
+			System.out.println("Transition Stop");
 			return false;
 			
 		}
+		
+		
 		
 		//TODO: experiment with spiralling by 1 and 3 (Not just 2)
 		//END Spiral the middle part...
@@ -285,13 +338,26 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 		prevSideBumps[currentLayerIndex] = sideBump;
 		currentLayerIndex++;
 		
+
+		int transitionIndex = Math.min(indexToRing[tmp1], indexToRing[this.topLeftGroundedIndex]);
+		
 		this.topLeftGroundedIndex = tmp1;
 		this.topLeftGroundRotationRelativeFlatMap = tmp2;
 		
 		if(indexToRing[this.topLeftGroundedIndex] >= 0
 				&& LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] == -1) {
+			
 			LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] = currentLayerIndex;
 			ringMod4AlreadySet[indexToRing[this.topLeftGroundedIndex]] = ringMod4Lookup[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap];
+			
+			if(transitionIndex != -1) {
+				
+				transitionBetweenRings[transitionIndex] = sideBump;
+				System.out.println("transition Index: " + transitionIndex);
+				for(int i=0; i<transitionBetweenRings.length; i++) {
+					System.out.println(transitionBetweenRings[i]);
+				}
+			}
 		}
 		
 		this.updateMinMaxTopIndexIfApplicable(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap, this.currentLayerIndex);
@@ -300,6 +366,7 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 			System.out.println("ERROR: DOH! this.minTopIndex > this.maxTopIndex");
 			System.exit(1);
 		}
+
 	}
 	
 	public void removePrevLayerFast() {
@@ -472,6 +539,8 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 		}
 		
 		LayerIndexForRingDecided = new int[dimensions[0]];
+
+		transitionBetweenRings = new int[dimensions[0] - 1];
 		ringMod4AlreadySet = new int[dimensions[0]];
 		
 		for(int i=0; i<LayerIndexForRingDecided.length; i++) {
@@ -936,10 +1005,17 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 		System.out.println("Location in ring mod 4:");
 		for(int i=0; i<this.currentLayerIndex; i++) {
 
-			char label = (char)( (i) + 'A');
+			char label = (char)( (i % 26) + 'A');
 			
 
 			String labelToUse = label + "" + label;
+			if(i > 26 ) {
+				labelToUse = label + "" + (i/26);
+			}
+			
+			if(i >= 26* 10) {
+				labelToUse = label + "" + (char)( ((i-10) / 26) + 'a');
+			}
 			
 			if(i < this.currentLayerIndex - 1) {
 				System.out.println(labelToUse + ": " + (this.ringMod4Lookup[this.prevGroundedIndexes[i + 1]][this.prevGroundedRotations[i + 1]]) + " (" + this.prevGroundedIndexes[i + 1] + ", " + this.prevGroundedRotations[i + 1] + ")");

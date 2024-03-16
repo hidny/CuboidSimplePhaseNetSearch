@@ -202,6 +202,8 @@ Found 133 unique solution."
 		// N = 29 (5 other ones...)
 		
 		//reallySimpleSearch(7, 5, 2);
+		
+		//Found 36 unique solution.
 		reallySimpleSearch(11, 4, 1);
 		
 		

@@ -31,7 +31,7 @@ public class ReallySimpleIntersectFinderSpiral {
 		
 		//reallySimpleSearch(20, 53, 1);
 		
-		for(int i=1; i<53; i++) {
+		for(int i=5; i<53; i++) {
 			reallySimpleSearch(i, 53, 1);
 		}
 		
@@ -101,6 +101,11 @@ public class ReallySimpleIntersectFinderSpiral {
 			
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
+			
+			//Only start from top:
+			if(otherCuboidStartIndex >= b) {
+				continue;
+			}
 			
 			System.out.println("Start recursion for other cuboid start index and rotation: (" + otherCuboidStartIndex + ", " + otherCuboidStartRotation + ")");
 			
