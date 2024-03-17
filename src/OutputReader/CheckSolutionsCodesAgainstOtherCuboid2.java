@@ -68,7 +68,11 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			//String file1 = "D:\\outputFor53x1x2.txt";
 			//String file1 = "D:\\outputFor14x13x1.txt";
 			
-			String file1 = "D:\\outputN=29_11_4_1.txt";
+			//String file1 = "D:\\outputN=29_11_4_1.txt";
+			
+			//String file1 = "D:\\output53x3x1withMx5x1.txt";
+			String file1 = "D:\\output53x4x1withMx5x1.txt";
+			
 			int dimensionsToCheck[][] = null;
 			int areaToCheck = -1;
 			
@@ -98,17 +102,16 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 					
 					boolean table[][] = convertSolutionCodeToTable(solutionCodeString);
 					
-					if(areaToCheck == -1) {
+					if(areaToCheck == -1 || areaToCheck != getNumCellsUsed(table) ) {
+						
+						if(areaToCheck != -1 && areaToCheck != getNumCellsUsed(table)) {
+							System.out.println("Change of dimensions!");
+							System.exit(1);
+						}
 						areaToCheck = getNumCellsUsed(table);
 						dimensionsToCheck = getSetOfDimensionsForSurfaceArea(areaToCheck);
 					}
 	
-					if(areaToCheck != getNumCellsUsed(table) ) {
-						System.out.println("The area of the last solution read in the file doesn't match the area of the dimensions to check!");
-						System.out.println("area in file: " + getNumCellsUsed(table));
-						System.out.println("Area to check: " + areaToCheck);
-						System.exit(1);
-					}
 					
 					/*
 					BasicUniqueCheckImproved.isUnique(makeCoordList(table), table);
@@ -122,6 +125,13 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 						System.exit(1);
 					}
 					*/
+					
+					System.out.println("Printing dimensions:");
+					for(int i=0; i<dimensionsToCheck.length; i++) {
+						System.out.println(dimensionsToCheck[i][0] + "x" + dimensionsToCheck[i][1] + "x" + dimensionsToCheck[i][2]);
+						
+					}
+					
 					boolean netToReplicate[][] = padBordersOfBoolTable(table);
 					
 					boolean solutionFound[] = new boolean[dimensionsToCheck.length];
@@ -129,12 +139,15 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 					for(int i=0; i<dimensionsToCheck.length; i++) {
 						
 						if(ValidNetSolutionChecker.hasSolution(dimensionsToCheck[i], netToReplicate, false)) {
+							System.out.println(dimensionsToCheck[i][0] + "x" + dimensionsToCheck[i][1] + "x" + dimensionsToCheck[i][2]);
 							numCuboidsCoveredByNet++;
 							solutionFound[i] = true;
 						} else {
 							solutionFound[i] = false;
 						}
 					}
+					
+					System.out.println("Num solutions: " + numCuboidsCoveredByNet);
 					
 					if(numCuboidsCoveredByNet >= 3) {
 						
@@ -196,14 +209,17 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 		ArrayList <String>list = new ArrayList <String>();
 		
 		for(int a=1; a<100; a++) {
-			for(int b=a; b<100; b++) {
-				for(int c=b; c<100; c++) {
+			for(int b=a; b<1000; b++) {
+				for(int c=b; true; c++) {
 					
 					int surfaceArea = 2 * (a*b + a*c + b*c);
 					
 					if(origSurfaceArea == surfaceArea) {
 						list.add(a + "," + b + "," + c);
+					} else if(surfaceArea > origSurfaceArea) {
+						break;
 					}
+					
 				}
 			}
 		}
