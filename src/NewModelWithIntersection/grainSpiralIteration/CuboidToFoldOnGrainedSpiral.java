@@ -18,16 +18,15 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 	public int dimensions[] = new int[3];
 
 	private FastRegionCheck fastRegionCheck;
-	
+
 	public CuboidToFoldOnGrainedSpiral(int a, int b, int c, FastRegionCheck fastRegionCheck) {
 		this(a, b, c, true, true, fastRegionCheck);
 	}
 
-	
+
 	public CuboidToFoldOnGrainedSpiral(int a, int b, int c, boolean verbose, boolean setup, FastRegionCheck fastRegionCheck) {
 
 		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c, verbose);
-
 		
 		
 		dimensions[0] = a;
@@ -925,7 +924,6 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 		//Set the grounded Mid indexes (do more later)
 		for(int i=0; i<this.currentLayerIndex; i++) {
 			
-			
 
 			String labelToUse = getLabel(i);
 			
@@ -982,7 +980,6 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 
 			
 			String labelToUse = getLabel(i);
-			
 			
 			if(i < this.currentLayerIndex - 1) {
 				System.out.println(labelToUse + ": " + (this.ringMod4Lookup[this.prevGroundedIndexes[i + 1]][this.prevGroundedRotations[i + 1]]) + " (" + this.prevGroundedIndexes[i + 1] + ", " + this.prevGroundedRotations[i + 1] + ")");

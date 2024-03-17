@@ -8,6 +8,7 @@ import GraphUtils.PivotCellDescription;
 import GraphUtils.PivotCellDescriptionForNx1x1;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
+import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
 import SolutionResolver.SolutionResolverInterface;
 import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
@@ -31,7 +32,7 @@ public class ReallySimpleIntersectFinder6 {
 		//reallySimpleSearch(6, 17, 1);
 		
 
-		reallySimpleSearch(4, 53, 1);
+		reallySimpleSearch(2, 53, 1);
 		
 		//reallySimpleSearch(2, 29, 1);
 		//reallySimpleSearch(2, 33, 1);
@@ -69,7 +70,9 @@ public class ReallySimpleIntersectFinder6 {
 		solutionResolver = new StandardResolverForSmallIntersectSolutions();
 		
 		
-		CuboidToFoldOnGrained cuboidToBuild = new CuboidToFoldOnGrained(a, b, c);
+		CuboidToFoldOnGrained cuboidToBuild = new CuboidToFoldOnGrained(a, b, c, null);
+		
+		FastRegionCheck fastRegionCheck = cuboidToBuild.getFastRegionCheck();
 		
 		if(cuboidToBuild.getNumCellsToFill() % 4 != 2) {
 			System.out.println("ERROR: trying to find intersect between Nx1x1 solution and a cuboid solution that doesn't have a surface area that matches any Nx1x1 cuboid.");
@@ -93,7 +96,7 @@ public class ReallySimpleIntersectFinder6 {
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
-			cuboidToBuild = new CuboidToFoldOnGrained(a, b, c);
+			cuboidToBuild = new CuboidToFoldOnGrained(a, b, c, fastRegionCheck);
 			cuboidToBuild.initializeNewBottomIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation);
 			
 			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
@@ -125,6 +128,7 @@ public class ReallySimpleIntersectFinder6 {
 		debugIt++;
 		
 		if(debugIt % 10000000L == 0) {
+			System.out.println("Debug print current state of search:");
 			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
 		}
 		long ret = 0;
