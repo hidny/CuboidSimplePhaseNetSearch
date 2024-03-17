@@ -78,7 +78,10 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 		prevGroundedIndexes = new int[DIM_N_OF_Nx1x1];
 		prevGroundedRotations = new int[DIM_N_OF_Nx1x1];
 		currentLayerIndex = 0;
-		
+		if(DIM_N_OF_Nx1x1 > 0) {
+			//Initialize so the debug print doesn't fail:
+			prevGroundedIndexes[0] = bottomIndex;
+		}
 		boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
 		tmpArray[bottomIndex] = true;
 		this.curState = convertBoolArrayToLongs(tmpArray);

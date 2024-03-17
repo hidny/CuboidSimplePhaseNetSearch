@@ -200,13 +200,19 @@ Found 133 unique solution."
 		//reallySimpleSearch(8, 3, 3);
 		
 		// N = 29 (5 other ones...)
-		
+		//Found 165 unique solution.
 		//reallySimpleSearch(7, 5, 2);
 		
 		//Found 36 unique solution.
-		reallySimpleSearch(11, 4, 1);
+		//reallySimpleSearch(11, 4, 1);
 		
 		
+		//Not done yet:
+		// N =30:
+		//reallySimpleSearch(7, 4, 3);
+		//reallySimpleSearch(11, 3, 2);
+		
+		reallySimpleSearch(5, 5, 5);
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
@@ -234,7 +240,7 @@ Found 133 unique solution."
 		
 		FastRegionCheck fastRegionCheckSetup = cuboidToBuild.getFastRegionCheck();
 		
-		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
+		for(int i=4; i<startingPointsAndRotationsToCheck.size(); i++) {
 			
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
@@ -274,7 +280,7 @@ Found 133 unique solution."
 		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild));
 	}
 	
-	public static final long DEBUG_MODULO =10000000000L;
+	public static final long DEBUG_MODULO =1000000000L;
 	public static long debug = 0;
 	
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster5 cuboidToBuild, int layerIndex, int numLayers) {
