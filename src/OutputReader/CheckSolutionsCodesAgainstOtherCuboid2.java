@@ -71,7 +71,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			//String file1 = "D:\\outputN=29_11_4_1.txt";
 			
 			//String file1 = "D:\\output53x3x1withMx5x1.txt";
-			String file1 = "D:\\output53x4x1withMx5x1.txt";
+			String file1 = "D:\\output53x3x1withMx5x1.txt";
 			
 			int dimensionsToCheck[][] = null;
 			int areaToCheck = -1;
@@ -176,6 +176,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 							}
 						}
 						
+						System.out.println("Number of 3-way solutions so far: " + numSoutionsFound);
 						System.out.println();
 					
 						if(numCuboidsCoveredByNet > 3) {
