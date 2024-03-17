@@ -12,7 +12,7 @@ import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
 import SolutionResolver.SolutionResolverInterface;
 import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
-public class ReallySimpleIntersectFinder6 {
+public class IntersectFinderWithMx5x1 {
 
 	public static void main(String[] args) {
 		
@@ -32,7 +32,7 @@ public class ReallySimpleIntersectFinder6 {
 		//reallySimpleSearch(6, 17, 1);
 		
 
-		reallySimpleSearch(2, 53, 1);
+		reallySimpleSearchWithMby5by1(4, 53, 1);
 		
 		//reallySimpleSearch(2, 29, 1);
 		//reallySimpleSearch(2, 33, 1);
@@ -64,7 +64,7 @@ public class ReallySimpleIntersectFinder6 {
 	
 	public static SolutionResolverInterface solutionResolver;
 
-	public static void reallySimpleSearch(int a, int b, int c) {
+	public static void reallySimpleSearchWithMby5by1(int a, int b, int c) {
 		
 		BasicUniqueCheckImproved.resetUniqList();
 		solutionResolver = new StandardResolverForSmallIntersectSolutions();
@@ -72,32 +72,66 @@ public class ReallySimpleIntersectFinder6 {
 		
 		CuboidToFoldOnGrained cuboidToBuild = new CuboidToFoldOnGrained(a, b, c, null);
 		
-		FastRegionCheck fastRegionCheck = cuboidToBuild.getFastRegionCheck();
 		
 		if(cuboidToBuild.getNumCellsToFill() % 4 != 2) {
 			System.out.println("ERROR: trying to find intersect between Nx1x1 solution and a cuboid solution that doesn't have a surface area that matches any Nx1x1 cuboid.");
 			return;
 		}
 		
-		int NofNx1x1Cuboid = getNumLayers(cuboidToBuild);
+		if(cuboidToBuild.getNumCellsToFill() % 12 != 10) {
+			System.out.println(cuboidToBuild.getNumCellsToFill());
+			System.out.println("ERROR: trying to find intersect between Mx5x1 solution and a cuboid solution that doesn't have a surface area that matches any Mx5x1 cuboid.");
+			return;
+		}
+		
+		int m = (cuboidToBuild.getNumCellsToFill() - 10) / 12;
+		CuboidToFoldOnGrained Mby5by1cuboidToBuild = new CuboidToFoldOnGrained(m, 5, 1, null);
+		int mby5by1StartRotations[] = new int[3];
+		mby5by1StartRotations[0] = 0;
+		//I'm not sure if 2 is needed, but it can't hurt:
+		mby5by1StartRotations[1] = 2;
+		mby5by1StartRotations[2] = 3;
+		
+		long ret = 0L;
+		for(int i=0; i<mby5by1StartRotations.length; i++) {
+			ret += reallySimpleSearchWithMby5by1StartingPoint(cuboidToBuild, Mby5by1cuboidToBuild, mby5by1StartRotations[i]);
+		}
 
+		System.out.println("Done");
+		System.out.println("Found " + ret + " different solutions if we ignore symmetric solutions");
+		System.out.println();
+		System.out.println("Done using the 2nd iteration (using pre-computed long arrays)");
+		System.out.println("Found " + BasicUniqueCheckImproved.uniqList.size() + " unique solution.");
+		
+		System.out.println("Done for " + a + "x" + b + "x" + c);
+	}
+	private static long reallySimpleSearchWithMby5by1StartingPoint(CuboidToFoldOnGrained cuboidToBuild, CuboidToFoldOnGrained cuboidToBuildMby5by1, int mby5by1StartRotation) {
+
+		int NofNx1x1Cuboid = getNumLayers(cuboidToBuild);
 		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(NofNx1x1Cuboid);
 
+		FastRegionCheck fastRegionCheck = cuboidToBuild.getFastRegionCheck();
+		FastRegionCheck fastRegionCheckMby5by1 = cuboidToBuildMby5by1.getFastRegionCheck();
+		
 		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForNx1x1.getUniqueRotationListsWithCellInfo(cuboidToBuild);
+		
+		int a = cuboidToBuild.dimensions[0];
+		int b = cuboidToBuild.dimensions[1];
+		int c = cuboidToBuild.dimensions[2];
+		
+		int m = (cuboidToBuild.getNumCellsToFill() - 10) / 12;
 		
 		long ret = 0;
 		
 		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
 			
-			
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
-			
+
 			//Only start from top:
 			if(otherCuboidStartIndex >= b) {
 				continue;
 			}
-			
 			System.out.println("Start recursion for other cuboid start index and rotation: (" + otherCuboidStartIndex + ", " + otherCuboidStartRotation + ")");
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
@@ -105,31 +139,30 @@ public class ReallySimpleIntersectFinder6 {
 			cuboidToBuild = new CuboidToFoldOnGrained(a, b, c, fastRegionCheck);
 			cuboidToBuild.initializeNewBottomIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation);
 			
-			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
+			cuboidToBuildMby5by1 = new CuboidToFoldOnGrained(m, 5, 1, fastRegionCheckMby5by1);
+			cuboidToBuildMby5by1.initializeNewBottomIndexAndRotation(0, mby5by1StartRotation);
+			
+			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, cuboidToBuildMby5by1);
 			
 			System.out.println("Done with trying to intersect 2nd cuboid that has a start index of " + otherCuboidStartIndex + " and a rotation index of " + otherCuboidStartRotation +".");
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
 		}
-		System.out.println("Done");
-		System.out.println("Found " + ret + " different solutions if we ignore symmetric solutions");
-		System.out.println();
-		System.out.println("Done using the 2nd iteration (using pre-computed long arrays)");
-		System.out.println("Found " + BasicUniqueCheckImproved.uniqList.size() + " unique solution.");
+		
+		return ret;
 
-		System.out.println("Done for " + a + "x" + b + "x" + c);
 	}
 	
 	public static int getNumLayers(CuboidToFoldOnGrained cuboidToBuild) {
 		return (cuboidToBuild.getNumCellsToFill() - 2) / 4;
 	}
 	
-	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnGrained cuboidToBuild) {
-		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild));
+	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnGrained cuboidToBuild, CuboidToFoldOnGrained cuboidToBuildMby5by1) {
+		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, cuboidToBuildMby5by1, 0, getNumLayers(cuboidToBuild));
 	}
 
 	public static long debugIt = 0;
-	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnGrained cuboidToBuild, int layerIndex, int numLayers) {
+	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnGrained cuboidToBuild, CuboidToFoldOnGrained cuboidToBuildMby5by1, int layerIndex, int numLayers) {
 
 		debugIt++;
 		
@@ -143,10 +176,11 @@ public class ReallySimpleIntersectFinder6 {
 
 		if(layerIndex == numLayers) {
 			
-			if(cuboidToBuild.isTopCellAbleToBeAddedFast()) {
+			if(cuboidToBuild.isTopCellAbleToBeAddedFast() && cuboidToBuildMby5by1.isTopCellAbleToBeAddedFast()) {
 
 				for(int sideBump=6; sideBump <10; sideBump++) {
-					if(cuboidToBuild.isTopCellAbleToBeAddedForSideBumpFast(sideBump)) {
+					if(cuboidToBuild.isTopCellAbleToBeAddedForSideBumpFast(sideBump)
+							&& cuboidToBuildMby5by1.isTopCellAbleToBeAddedForSideBumpFast(sideBump)) {
 						ret++;
 						
 						reference.addNextLevel(new Coord2D(0, sideBump), null);
@@ -182,13 +216,15 @@ public class ReallySimpleIntersectFinder6 {
 				break;
 			}
 			
-			if(cuboidToBuild.isNewLayerValidSimpleFast(sideBump)) {
+			if(cuboidToBuild.isNewLayerValidSimpleFast(sideBump) && cuboidToBuildMby5by1.isNewLayerValidSimpleFast(sideBump)) {
 				cuboidToBuild.addNewLayerFast(sideBump);
+				cuboidToBuildMby5by1.addNewLayerFast(sideBump);
 				reference.addNextLevel(new Coord2D(0, sideBump), null);
 
-				ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndex + 1, numLayers);
+				ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, cuboidToBuildMby5by1, layerIndex + 1, numLayers);
 	
 				cuboidToBuild.removePrevLayerFast();
+				cuboidToBuildMby5by1.removePrevLayerFast();
 				reference.removeCurrentTopLevel();
 			}
 		}
