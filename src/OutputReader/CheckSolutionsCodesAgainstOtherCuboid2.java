@@ -71,7 +71,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			//String file1 = "D:\\outputN=29_11_4_1.txt";
 			
 			//String file1 = "D:\\output53x3x1withMx5x1.txt";
-			String file1 = "D:\\output53x3x1withMx5x1.txt";
+			String file1 = "D:\\outputSprialFor_ix53x1.txt";
 			
 			int dimensionsToCheck[][] = null;
 			int areaToCheck = -1;
@@ -106,7 +106,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 						
 						if(areaToCheck != -1 && areaToCheck != getNumCellsUsed(table)) {
 							System.out.println("Change of dimensions!");
-							System.exit(1);
+							//System.exit(1);
 						}
 						areaToCheck = getNumCellsUsed(table);
 						dimensionsToCheck = getSetOfDimensionsForSurfaceArea(areaToCheck);
@@ -209,8 +209,11 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 		
 		ArrayList <String>list = new ArrayList <String>();
 		
-		for(int a=1; a<100; a++) {
-			for(int b=a; b<1000; b++) {
+		int maxA = 2 + (int)Math.cbrt(origSurfaceArea);
+		
+		for(int a=1; a<maxA; a++) {
+			int maxB = 2 + (int)Math.sqrt(1 + (origSurfaceArea / a));
+			for(int b=a; b<maxB; b++) {
 				for(int c=b; true; c++) {
 					
 					int surfaceArea = 2 * (a*b + a*c + b*c);

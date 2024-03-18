@@ -271,7 +271,7 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 		//TODO: Spiral the middle part:
 		//For now, set it to 8:
 		//TODO: experiment with setting it to 7 and 9.
-		if(sideBump !=7
+		if(sideBump != 7
 				&&
 				(
 					(nextRingIndex < prevRingIndex
@@ -288,6 +288,11 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 			
 		}
 		
+		//TODO: delete this
+		//if(sideBump != 7 && currentLayerIndex > 1) {
+		//	return false;
+		//}
+		//END TODO
 		
 		
 		//TODO: experiment with spiralling by 1 and 3 (Not just 2)
