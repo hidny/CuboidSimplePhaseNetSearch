@@ -7,8 +7,11 @@ import Model.CuboidToFoldOnInterface;
 
 public class PivotCellDescriptionForNx1x1 {
 
-	
 	public static ArrayList<PivotCellDescription> getUniqueRotationListsWithCellInfo(CuboidToFoldOnInterface exampleCuboid) {
+		return getUniqueRotationListsWithCellInfo(exampleCuboid, true);
+	}
+	
+	public static ArrayList<PivotCellDescription> getUniqueRotationListsWithCellInfo(CuboidToFoldOnInterface exampleCuboid, boolean verbose) {
 
 		ArrayList<PivotCellDescription> listPivots = PivotCellDescription.getUniqueRotationListsWithCellInfo(exampleCuboid, false);
 		ArrayList<PivotCellDescription> ret = new ArrayList<PivotCellDescription>();
@@ -30,10 +33,11 @@ public class PivotCellDescriptionForNx1x1 {
 			}
 		}
 
-		System.out.println("Num unique pivot locations: " + ret.size());
-		System.out.println("Total area multiplied by 4 rotations: " + (4 * Model.Utils.getTotalArea(exampleCuboid.getDimensions())));
-		System.out.println();
-		
+		if(verbose) {
+			System.out.println("Num unique pivot locations: " + ret.size());
+			System.out.println("Total area multiplied by 4 rotations: " + (4 * Model.Utils.getTotalArea(exampleCuboid.getDimensions())));
+			System.out.println();
+		}
 
 		System.out.println("Unique rotation lists:");
 		for(int i=0; i<ret.size(); i++) {

@@ -233,18 +233,30 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 		int prevRingIndex = indexToRing[this.topLeftGroundedIndex];
 		int nextRingIndex = indexToRing[nextIndex];
 		
-		if(prevRingIndex >= 0
-				&& nextRingIndex >= 0 ) {
-				//&& LayerIndexForRingDecided[prevRingIndex] >= 0 
-				//&& LayerIndexForRingDecided[nextRingIndex] >= 0
-			
-			if(Math.abs(prevRingIndex - nextRingIndex) != 1) {
-				System.out.println("ERROR!");
-				this.printCurrentStateOnOtherCuboidsFlatMap();
-				System.exit(1);
+		
+		if(			(nextRingIndex < prevRingIndex
+					&& nextRingIndex >= 1 
+					&& nextRingIndex < dimensions[0] - 2)
+					|| 
+					(nextRingIndex > prevRingIndex
+					&& nextRingIndex >= 2 
+					&& nextRingIndex < dimensions[0] - 1
+					)
+			) {
+
+
+			//TODO: Spiral the middle part:
+			//For now, set it to 8:
+			//TODO: experiment with setting it to 7 and 9.
+			if(sideBump != 7 ) {
+				
+				return false;
+				
+			} else {
+				return true;
 			}
 		}
-		
+				
 		int transitionIndex = Math.min(nextRingIndex, prevRingIndex);
 		
 		if(transitionIndex >= 0
@@ -267,26 +279,7 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 			return false;
 		}
 		
-		//TODO: this is causing problems:
-		//TODO: Spiral the middle part:
-		//For now, set it to 8:
-		//TODO: experiment with setting it to 7 and 9.
-		if(sideBump != 7
-				&&
-				(
-					(nextRingIndex < prevRingIndex
-					&& nextRingIndex >= 1 
-					&& nextRingIndex < dimensions[0] - 2)
-					|| 
-					(nextRingIndex > prevRingIndex
-					&& nextRingIndex >= 2 
-					&& nextRingIndex < dimensions[0] - 1)
-					)
-				) {
-			
-			return false;
-			
-		}
+		
 		
 		//TODO: delete this
 		//if(sideBump != 7 && currentLayerIndex > 1) {
@@ -974,13 +967,14 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 			labels[curTopIndex] = "To";
 		}
 
+		/*
 		System.out.println(DataModelViews.getFlatNumberingView(this.dimensions[0],
 				this.dimensions[1],
 				this.dimensions[2],
 				labels));
+		*/
 		
-		
-		System.out.println("Location in ring mod 4:");
+		/*System.out.println("Location in ring mod 4:");
 		for(int i=0; i<this.currentLayerIndex; i++) {
 
 			
@@ -993,7 +987,7 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 				System.out.println(labelToUse + ": " + (this.ringMod4Lookup[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap]) + " (" + this.topLeftGroundedIndex + ", " + this.topLeftGroundRotationRelativeFlatMap + ")");
 
 			}
-		}
+		}*/
 	}
 
 	private String getLabel(int layerIndex) {

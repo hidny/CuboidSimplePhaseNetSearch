@@ -392,6 +392,27 @@ public class Nx1x1CuboidToFold {
 		
 		return ret;
 	}
+	public String toCondensedString() {
+		
+		String ret = "";
+
+		ret += "Net:\n";
+		
+		boolean net[][] = setupBoolArrayNet();
+		
+		for(int i=0; i<net.length; i++) {
+			
+			int revIndex = net.length - 2 - i;
+			if(revIndex >= 0 && revIndex < optionUsedPerLevel.length) {
+				ret += "  (sideBump: " + sideBump[revIndex] + ")";
+			}
+			ret += "\n";
+		}
+		ret += "\n";
+		ret += "\n";
+		
+		return ret;
+	}
 	
 	public int getAmountSpaceLeftOfBottom() {
 		int ret = 0;

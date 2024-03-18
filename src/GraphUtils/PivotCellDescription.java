@@ -130,24 +130,32 @@ Cell and rotation: 4 and 1
 		
 		ArrayList<PivotCellDescription> listPivots = new ArrayList<PivotCellDescription>();
 		
-		System.out.println("Get arrays created:");
+		if(verbose) {
+			System.out.println("Get arrays created:");
+		}
 		for(int i=0; i<Model.Utils.getTotalArea(exampleCuboid.getDimensions()); i++) {
 			
-			System.out.println("Cell index " + i + ":");
+			if(verbose) {
+				System.out.println("Cell index " + i + ":");
+			}
+			
 			for(int j=0; j<NUM_ROTATIONS; j++) {
 				//System.out.println("Rotation: " + j + ":");
 				PivotCellDescription tmp = new PivotCellDescription(exampleCuboid, i, j);
 			
 				listPivots.add(tmp);
 			
-				for(int k=0; k<tmp.lengthsAroundCell.length; k++) {
-					System.out.print(tmp.lengthsAroundCell[k] + ", ");
+				if(verbose) {
+					for(int k=0; k<tmp.lengthsAroundCell.length; k++) {
+						System.out.print(tmp.lengthsAroundCell[k] + ", ");
+					}
+					System.out.println();
 				}
+			}
+			if(verbose) {
+				System.out.println();
 				System.out.println();
 			}
-			System.out.println();
-			System.out.println();
-			
 		}
 		
 		

@@ -73,8 +73,12 @@ public class IntersectFinderwithMx5x1Spiral {
 		// Ryuhei mentioned this one for some reason...
 		//reallySimpleSearchWithMby5by1(14, 13, 1);
 		
-		for(int i=1; i<60; i++) {
-			reallySimpleSearchWithMby5by1(i, 53, 1);
+		//for(int i=1; i<60; i++) {
+		//	reallySimpleSearchWithMby5by1(i, 53, 1);
+		//}
+		
+		for(int i=2; i<19; i++) {
+			reallySimpleSearchWithMby5by1(i, 89, 1);
 		}
 		// N = 27
 		
@@ -135,7 +139,7 @@ public class IntersectFinderwithMx5x1Spiral {
 		FastRegionCheck fastRegionCheck = cuboidToBuild.getFastRegionCheck();
 		FastRegionCheck fastRegionCheckMby5by1 = cuboidToBuildMby5by1.getFastRegionCheck();
 		
-		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForNx1x1.getUniqueRotationListsWithCellInfo(cuboidToBuild);
+		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForNx1x1.getUniqueRotationListsWithCellInfo(cuboidToBuild, false);
 		
 		int a = cuboidToBuild.dimensions[0];
 		int b = cuboidToBuild.dimensions[1];
@@ -187,7 +191,7 @@ public class IntersectFinderwithMx5x1Spiral {
 
 		debugIt++;
 		
-		if(debugIt % 10000000L == 0) {
+		if(debugIt % 200000000L == 0) {
 			System.out.println("Debug print current state of search:");
 			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
 		}
@@ -209,7 +213,7 @@ public class IntersectFinderwithMx5x1Spiral {
 							System.out.println("Unique solution found");
 							System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 							
-							System.out.println(reference.toString());
+							System.out.println(reference.toCondensedString());
 							System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
 							
 							cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();

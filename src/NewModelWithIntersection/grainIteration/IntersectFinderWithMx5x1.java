@@ -32,7 +32,7 @@ public class IntersectFinderWithMx5x1 {
 		//reallySimpleSearch(6, 17, 1);
 		
 
-		reallySimpleSearchWithMby5by1(7, 53, 1);
+		//reallySimpleSearchWithMby5by1(7, 53, 1);
 		
 		//reallySimpleSearch(2, 29, 1);
 		//reallySimpleSearch(2, 33, 1);
