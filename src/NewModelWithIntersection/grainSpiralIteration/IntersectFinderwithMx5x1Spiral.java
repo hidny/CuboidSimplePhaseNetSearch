@@ -77,10 +77,14 @@ public class IntersectFinderwithMx5x1Spiral {
 		//	reallySimpleSearchWithMby5by1(i, 53, 1);
 		//}
 		
-		for(int i=2; i<19; i++) {
+		/*for(int i=2; i<19; i++) {
+			reallySimpleSearchWithMby5by1(i, 89, 1);
+		}*/
+		for(int i=19; i<40; i++) {
 			reallySimpleSearchWithMby5by1(i, 89, 1);
 		}
 		// N = 27
+		//TODO: try 19 to 23...
 		
 		// N = 29 (5 other ones...)
 		

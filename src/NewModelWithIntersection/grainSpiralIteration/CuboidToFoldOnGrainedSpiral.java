@@ -233,7 +233,7 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 		int prevRingIndex = indexToRing[this.topLeftGroundedIndex];
 		int nextRingIndex = indexToRing[nextIndex];
 		
-		
+		/*//Much more slack:
 		if(			(nextRingIndex < prevRingIndex
 					&& nextRingIndex >= 1 
 					&& nextRingIndex < dimensions[0] - 2)
@@ -241,6 +241,17 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 					(nextRingIndex > prevRingIndex
 					&& nextRingIndex >= 2 
 					&& nextRingIndex < dimensions[0] - 1
+					)
+			) {
+		 */
+		//TODO: maybe give it more slack?
+		if(			(nextRingIndex < prevRingIndex
+					&& nextRingIndex >= 0 
+					&& nextRingIndex < dimensions[0] - 1)
+					|| 
+					(nextRingIndex > prevRingIndex
+					&& nextRingIndex >= 1 
+					&& nextRingIndex < dimensions[0]
 					)
 			) {
 
