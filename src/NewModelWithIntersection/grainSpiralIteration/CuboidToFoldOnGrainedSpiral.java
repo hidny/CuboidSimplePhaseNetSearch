@@ -207,6 +207,24 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 		return ((1L << bitShift) & this.curState[indexArray]) != 0L;
 	}
 	
+	public static int getAltNextRingIndexForHeight(int currentLayerIndex, int height) {
+		
+		return getAltPrevRingIndexForHeight(currentLayerIndex + 1, height);
+	}
+
+	public static int getAltPrevRingIndexForHeight(int currentLayerIndex, int height) {
+		
+		int prevRingIndexAlt = (currentLayerIndex % (2*(height + 1))) - 1;
+		
+		if(prevRingIndexAlt > height) {
+			prevRingIndexAlt = 2*height - prevRingIndexAlt;
+		
+		} else if(prevRingIndexAlt == height) {
+			prevRingIndexAlt = -1;
+		}
+		return prevRingIndexAlt;
+	}
+	
 	public boolean isNewLayerValidSimpleFast(int sideBump) {
 	
 		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
@@ -234,23 +252,10 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 		int nextRingIndex = indexToRing[nextIndex];
 		
 		
-		int nextRingIndexAlt = (this.currentLayerIndex + 1) % (2*dimensions[0] + 2) - 1;
+		int nextRingIndexAlt = getAltNextRingIndexForHeight(this.currentLayerIndex, dimensions[0]);
 
-		if(nextRingIndexAlt > dimensions[0]) {
-			nextRingIndexAlt = 2*dimensions[0] - nextRingIndexAlt;
-
-		} else if(nextRingIndexAlt == dimensions[0]) {
-			nextRingIndexAlt = -1;
-		}
-
-		int prevRingIndexAlt = (this.currentLayerIndex) % (2*dimensions[0] + 2) - 1;
+		int prevRingIndexAlt = getAltPrevRingIndexForHeight(this.currentLayerIndex, dimensions[0]);
 		
-		if(prevRingIndexAlt > dimensions[0]) {
-			prevRingIndexAlt = 2*dimensions[0] - prevRingIndexAlt;
-		
-		} else if(prevRingIndexAlt == dimensions[0]) {
-			prevRingIndexAlt = -1;
-		}
 		
 		if(nextRingIndexAlt != nextRingIndex || prevRingIndexAlt != prevRingIndex) {
 			System.out.println("Bad indexes:");
