@@ -70,8 +70,11 @@ public class ReallySimpleIntersectFinderSpiral {
 		//System.exit(1);
 		
 		// Ryuhei mentioned this one for some reason...
-		reallySimpleSearch(14, 13, 1);
+		//reallySimpleSearch(14, 13, 1);
 		
+		for(int i=2; i<25; i++) {
+			reallySimpleSearch(i, 17, 1);
+		}
 		// N = 27
 		
 		// N = 29 (5 other ones...)

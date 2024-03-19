@@ -233,6 +233,35 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 		int prevRingIndex = indexToRing[this.topLeftGroundedIndex];
 		int nextRingIndex = indexToRing[nextIndex];
 		
+		
+		int nextRingIndexAlt = (this.currentLayerIndex + 1) % (2*dimensions[0] + 2) - 1;
+
+		if(nextRingIndexAlt > dimensions[0]) {
+			nextRingIndexAlt = 2*dimensions[0] - nextRingIndexAlt;
+
+		} else if(nextRingIndexAlt == dimensions[0]) {
+			nextRingIndexAlt = -1;
+		}
+
+		int prevRingIndexAlt = (this.currentLayerIndex) % (2*dimensions[0] + 2) - 1;
+		
+		if(prevRingIndexAlt > dimensions[0]) {
+			prevRingIndexAlt = 2*dimensions[0] - prevRingIndexAlt;
+		
+		} else if(prevRingIndexAlt == dimensions[0]) {
+			prevRingIndexAlt = -1;
+		}
+		
+		if(nextRingIndexAlt != nextRingIndex || prevRingIndexAlt != prevRingIndex) {
+			System.out.println("Bad indexes:");
+			System.out.println("Layer index: " + this.currentLayerIndex);
+			System.out.println(nextRingIndexAlt + "vs " + nextRingIndex);
+			System.out.println(prevRingIndexAlt + "vs " + prevRingIndex);
+			System.out.println("ERROR: oops!");
+			System.exit(1);
+		}
+		
+		
 		/*//Much more slack:
 		if(			(nextRingIndex < prevRingIndex
 					&& nextRingIndex >= 1 
