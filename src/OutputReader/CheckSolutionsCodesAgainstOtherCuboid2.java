@@ -75,7 +75,9 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			
 			//String file1 = "D:\\outputSprialFor_ix89x1_side_bump7.txt";
 			
-			String file1 = "D:\\outputSprialFor_ix89x1_side_bump7.txt";
+			//String file1 = "D:\\outputSprialFor_ix89x1_side_bump7.txt";
+			
+			String file1 = "D:\\output3x17x1withMx5x1.txt";
 			int dimensionsToCheck[][] = null;
 			int areaToCheck = -1;
 			

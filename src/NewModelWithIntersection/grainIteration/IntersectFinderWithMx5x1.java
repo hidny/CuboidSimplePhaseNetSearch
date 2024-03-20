@@ -16,44 +16,16 @@ public class IntersectFinderWithMx5x1 {
 
 	public static void main(String[] args) {
 		
-		//reallySimpleSearch(2, 161, 1);
-		
-		//reallySimpleSearch(2, 53, 1);
-		
-		//reallySimpleSearch(2, 29, 1);
-		//reallySimpleSearch(2, 25, 1);
-		//reallySimpleSearch(3, 17, 1);
-		//reallySimpleSearch(8, 5, 1);
-		
-		//Sunday Feb 25:
-		//reallySimpleSearch(4, 13, 1);
-		//reallySimpleSearch(3, 29, 1);
-
-		//reallySimpleSearch(6, 17, 1);
-		
 
 		//reallySimpleSearchWithMby5by1(7, 53, 1);
 		
-		//reallySimpleSearch(2, 29, 1);
-		//reallySimpleSearch(2, 33, 1);
-		//reallySimpleSearch(2, 37, 1);
-		//reallySimpleSearch(2, 41, 1);
-		
-		//reallySimpleSearch(2, 45, 1);
-		
-		//reallySimpleSearch(2, 49, 1);
-		//reallySimpleSearch(2, 53, 1);
-		
-		//reallySimpleSearch(2, 57, 1);
-		
-		//reallySimpleSearch(2, 61, 1);
-		//reallySimpleSearch(2, 65, 1);
-
-		//reallySimpleSearch(2, 69, 1);
-		
-		//reallySimpleSearch(2, 73, 1);
-		//System.exit(1);
-		
+		// N/A (1)
+		// 15
+		// 161
+		// 1387
+		// N/A (5)
+		// 82794
+		//reallySimpleSearchWithMby5by1(6, 17, 1);
 		
 		// N = 27
 		

@@ -256,6 +256,10 @@ public class CuboidToFoldOnGrainedSpiral  implements CuboidToFoldOnInterface {
 
 		int prevRingIndexAlt = getAltPrevRingIndexForHeight(this.currentLayerIndex, dimensions[0]);
 		
+		//TODO: also add the 17 transition:
+		int ratio = (dimensions[1] + 1) / (17 + 1);
+		int alt17Height = ratio * (dimensions[0] + 1) - 1; 
+		
 		
 		if(nextRingIndexAlt != nextRingIndex || prevRingIndexAlt != prevRingIndex) {
 			System.out.println("Bad indexes:");

@@ -58,6 +58,11 @@ public class FastRegionCheck {
 			hash += preComputedCellsAroundCurLayerLongStateHashMult[topLeftIndex][topLeftRotationRelativeFlatMap][i]
 					* ((preComputedCellsAroundCurLayerLongState[topLeftIndex][topLeftRotationRelativeFlatMap][i] & curState[i]) >> 32);
 			
+			hash += preComputedCellsAroundCurLayerLongStateHashMult[topLeftIndex][topLeftRotationRelativeFlatMap][i]
+					* ((preComputedCellsAroundCurLayerLongState[topLeftIndex][topLeftRotationRelativeFlatMap][i] & curState[i]) >> 48);
+
+			hash += preComputedCellsAroundCurLayerLongStateHashMult[topLeftIndex][topLeftRotationRelativeFlatMap][i]
+					* ((preComputedCellsAroundCurLayerLongState[topLeftIndex][topLeftRotationRelativeFlatMap][i] & curState[i]) >> 49);
 		}
 		
 		return hash;
@@ -321,8 +326,11 @@ public class FastRegionCheck {
 				
 				for(int debugComboIndex = 0; foundCombinationOfHashMultsThatWork == false; debugComboIndex++) {
 					
-					if(debugComboIndex > 10 && debugComboIndex % 1000 == 1) {
+					if(debugComboIndex > 10 && debugComboIndex % 1000 == 200) {
 						System.out.println("Debug combo index: " + debugComboIndex + " for " + index + " and " + rotation + ".");
+						for(int j=0; j<numLongsInState; j++) {
+							System.out.println(preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j]);
+						}
 					}
 					
 					if(debugComboIndex > 100000) {
@@ -337,7 +345,10 @@ public class FastRegionCheck {
 					for(int j=0; j<numLongsInState; j++) {
 						//TODO: I had to play around with this. I don't know if this is 'random' enough to never find an infinite loop:
 						//The good news is, if it fails, there will be an infinite loop, and we'll know there's a problem. 
-						preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j] = 1 + 5*j*j + debugComboIndex - j /6 -debugComboIndex / 7 - 3 * debugComboIndex / 11 - 3*j/9;
+						preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j] = 1 + j + Math.abs((3 + 3*j*j + debugComboIndex - j /6 -debugComboIndex / 7 - 3 * debugComboIndex / 11  - debugComboIndex / 17 - 19 *j) % 47)
+																									+ 17 + debugComboIndex;
+						//preComputedCellsAroundCurLayerLongStateHashMult[index][rotation][j] = 1 + j + debugComboIndex;
+
 					}
 					
 					boolean hashCollisionSoFar = false;

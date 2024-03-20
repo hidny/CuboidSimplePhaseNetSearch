@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import Coord.Coord2D;
 import DupRemover.BasicUniqueCheckImproved;
 import GraphUtils.PivotCellDescription;
-import GraphUtils.PivotCellDescriptionForNx1x1;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
 import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
@@ -80,9 +79,15 @@ public class IntersectFinderwithMx5x1Spiral {
 		/*for(int i=2; i<19; i++) {
 			reallySimpleSearchWithMby5by1(i, 89, 1);
 		}*/
-		for(int i=19; i<40; i++) {
+		/*for(int i=19; i<40; i++) {
 			reallySimpleSearchWithMby5by1(i, 89, 1);
+		}*/
+		
+
+		for(int i=2; i<55; i++) {
+			reallySimpleSearchWithMby5by1(i, 17, 1);
 		}
+		
 		// N = 27
 		//TODO: try 19 to 23...
 		
@@ -143,7 +148,7 @@ public class IntersectFinderwithMx5x1Spiral {
 		FastRegionCheck fastRegionCheck = cuboidToBuild.getFastRegionCheck();
 		FastRegionCheck fastRegionCheckMby5by1 = cuboidToBuildMby5by1.getFastRegionCheck();
 		
-		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForNx1x1.getUniqueRotationListsWithCellInfo(cuboidToBuild, false);
+		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescription.getUniqueRotationListsWithCellInfo(cuboidToBuild, false);
 		
 		int a = cuboidToBuild.dimensions[0];
 		int b = cuboidToBuild.dimensions[1];
@@ -159,9 +164,17 @@ public class IntersectFinderwithMx5x1Spiral {
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
 
 			//Only start from top:
+			if(otherCuboidStartIndex % 4 != 0) {
+				continue;
+			}
+			if(otherCuboidStartIndex > 0 && otherCuboidStartRotation % 2 != 0) {
+				continue;
+			}
+			//Only start from top:
 			if(otherCuboidStartIndex >= b) {
 				continue;
 			}
+			
 			System.out.println("Start recursion for other cuboid start index and rotation: (" + otherCuboidStartIndex + ", " + otherCuboidStartRotation + ")");
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());

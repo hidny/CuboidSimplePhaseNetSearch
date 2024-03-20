@@ -72,9 +72,25 @@ public class ReallySimpleIntersectFinderSpiral {
 		// Ryuhei mentioned this one for some reason...
 		//reallySimpleSearch(14, 13, 1);
 		
-		for(int i=2; i<25; i++) {
+		/*for(int i=4; i<27; i++) {
+			reallySimpleSearch(i, 89, 1);
+		}
+		for(int i=2; i<4; i++) {
+			reallySimpleSearch(i, 89, 1);
+		}
+		*/
+		/*for(int i=2; i<27; i++) {
+			reallySimpleSearch(i, 53, 1);
+		}*/
+		
+		/*for(int i=27; i<55; i++) {
+			reallySimpleSearch(i, 53, 1);
+		}*/
+		
+		for(int i=2; i<55; i++) {
 			reallySimpleSearch(i, 17, 1);
 		}
+		
 		// N = 27
 		
 		// N = 29 (5 other ones...)
@@ -103,7 +119,7 @@ public class ReallySimpleIntersectFinderSpiral {
 
 		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(NofNx1x1Cuboid);
 
-		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForNx1x1.getUniqueRotationListsWithCellInfo(cuboidToBuild, false);
+		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescription.getUniqueRotationListsWithCellInfo(cuboidToBuild, false);
 		
 		long ret = 0;
 		
@@ -112,6 +128,12 @@ public class ReallySimpleIntersectFinderSpiral {
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
 			
+			if(otherCuboidStartIndex % 4 != 0) {
+				continue;
+			}
+			if(otherCuboidStartIndex > 0 && otherCuboidStartRotation % 2 != 0) {
+				continue;
+			}
 			//Only start from top:
 			if(otherCuboidStartIndex >= b) {
 				continue;

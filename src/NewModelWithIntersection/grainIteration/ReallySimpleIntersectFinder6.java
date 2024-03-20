@@ -32,7 +32,7 @@ public class ReallySimpleIntersectFinder6 {
 		//reallySimpleSearch(6, 17, 1);
 		
 
-		reallySimpleSearch(2, 53, 1);
+		//reallySimpleSearch(2, 53, 1);
 		
 		//reallySimpleSearch(2, 29, 1);
 		//reallySimpleSearch(2, 33, 1);
@@ -54,6 +54,9 @@ public class ReallySimpleIntersectFinder6 {
 		//reallySimpleSearch(2, 73, 1);
 		//System.exit(1);
 		
+		//reallySimpleSearch(6, 17, 1);
+		
+		reallySimpleSearch(2, 53, 1);
 		
 		// N = 27
 		

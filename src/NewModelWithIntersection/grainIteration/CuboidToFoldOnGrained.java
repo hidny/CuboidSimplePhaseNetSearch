@@ -207,6 +207,66 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		return ((1L << bitShift) & this.curState[indexArray]) != 0L;
 	}
 	
+	public static int getAltNextRingIndexForHeight(int currentLayerIndex, int height) {
+		
+		return getAltCurRingIndexForHeight(currentLayerIndex + 1, height);
+	}
+
+	public static int getAltCurRingIndexForHeight(int currentLayerIndex, int height) {
+		
+		int prevRingIndexAlt = (currentLayerIndex % (2*(height + 1))) - 1;
+		
+		if(prevRingIndexAlt > height) {
+			prevRingIndexAlt = 2*height - prevRingIndexAlt;
+		
+		} else if(prevRingIndexAlt == height) {
+			prevRingIndexAlt = -1;
+		}
+		return prevRingIndexAlt;
+	}
+	
+	public boolean isNewLayerValidForOtherMinNxMx1(int m, int sideBump) {
+		
+		//TODO: also add the 17 transition:
+		
+		//int ratio = (dimensions[1] + 1) / (m + 1);
+		//int altHeight = ratio * (dimensions[0] + 1) - 1; 
+		
+		//General formula based on last 2 lines:
+		int altHeight = ((dimensions[1] + 1) * (dimensions[0] + 1)) / (m + 1) - 1;
+		
+		int nextRingIndexAlt = getAltNextRingIndexForHeight(this.currentLayerIndex, altHeight);
+		int prevRingIndexAlt = getAltCurRingIndexForHeight(this.currentLayerIndex, altHeight);
+		
+		int transitionIndex = Math.min(nextRingIndexAlt, prevRingIndexAlt);
+		
+		if(this.currentLayerIndex > altHeight
+				&& transitionIndex != -1) {
+			//I'm confused...
+			
+			/*
+			if((this.currentLayerIndex / this.dimensions[0]) % 2 == 1) {
+				transitionIndex = transitionBetweenRings.length - 1 - (transitionIndex % this.dimensions[0]);
+				System.out.println("Case 1");
+			} else {
+				System.out.println("Case 2: " + transitionIndex);
+				transitionIndex = transitionIndex % this.dimensions[0];
+			}
+			
+			if(transitionIndex == 1) {
+				System.out.println("Debug");
+			}
+			*/
+			
+			//System.out.println(this.currentLayerIndex + " vs " + (1 + transitionIndex));
+			if(this.prevSideBumps[ 1 + transitionIndex] != sideBump) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	public boolean isNewLayerValidSimpleFast(int sideBump) {
 	
 		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
@@ -243,6 +303,10 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				this.printCurrentStateOnOtherCuboidsFlatMap();
 				System.exit(1);
 			}
+		}
+		
+		if(isNewLayerValidForOtherMinNxMx1(5, sideBump) == false) {
+			return false;
 		}
 		
 		int transitionIndex = Math.min(nextRingIndex, prevRingIndex);
