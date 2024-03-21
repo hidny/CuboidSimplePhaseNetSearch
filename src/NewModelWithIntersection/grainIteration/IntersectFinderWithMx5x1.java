@@ -101,9 +101,17 @@ public class IntersectFinderWithMx5x1 {
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
 
 			//Only start from top:
+			if(otherCuboidStartIndex % 4 != 0) {
+				continue;
+			}
+			if(otherCuboidStartIndex > 0 && otherCuboidStartRotation % 2 != 0) {
+				continue;
+			}
+			//Only start from top:
 			if(otherCuboidStartIndex >= b) {
 				continue;
 			}
+			
 			System.out.println("Start recursion for other cuboid start index and rotation: (" + otherCuboidStartIndex + ", " + otherCuboidStartRotation + ")");
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());

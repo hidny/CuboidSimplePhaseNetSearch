@@ -77,7 +77,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			
 			//String file1 = "D:\\outputSprialFor_ix89x1_side_bump7.txt";
 			
-			String file1 = "D:\\output3x17x1withMx5x1.txt";
+			String file1 = "D:\\GrainedSearch2_53_1B.txt";
 			int dimensionsToCheck[][] = null;
 			int areaToCheck = -1;
 			
@@ -136,6 +136,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 						System.out.println(dimensionsToCheck[i][0] + "x" + dimensionsToCheck[i][1] + "x" + dimensionsToCheck[i][2]);
 						
 					}
+					System.out.println("Done printing dimensions.");
 					
 					boolean netToReplicate[][] = padBordersOfBoolTable(table);
 					

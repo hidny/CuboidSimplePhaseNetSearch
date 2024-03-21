@@ -54,10 +54,19 @@ public class ReallySimpleIntersectFinder6 {
 		//reallySimpleSearch(2, 73, 1);
 		//System.exit(1);
 		
-		//reallySimpleSearch(6, 17, 1);
+		//reallySimpleSearch(2, 17, 1);
 		
-		reallySimpleSearch(2, 53, 1);
+		//reallySimpleSearch(8, 53, 1);
 		
+		//reallySimpleSearch(6, 53, 1);
+		
+		//reallySimpleSearch(2, 209, 1);
+		//reallySimpleSearch(11, 53, 1);
+		
+		//reallySimpleSearch(10, 89, 1);
+		reallySimpleSearch(16, 53, 1);
+
+		//reallySimpleSearch(14, 13, 1);
 		// N = 27
 		
 		// N = 29 (5 other ones...)
@@ -96,6 +105,13 @@ public class ReallySimpleIntersectFinder6 {
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
 			
+			//Only start from top:
+			if(otherCuboidStartIndex % 4 != 0) {
+				continue;
+			}
+			if(otherCuboidStartIndex > 0 && otherCuboidStartRotation % 2 != 0) {
+				continue;
+			}
 			//Only start from top:
 			if(otherCuboidStartIndex >= b) {
 				continue;

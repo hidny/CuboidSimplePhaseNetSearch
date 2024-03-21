@@ -240,6 +240,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		
 		int transitionIndex = Math.min(nextRingIndexAlt, prevRingIndexAlt);
 		
+		
+		
 		if(this.currentLayerIndex > altHeight
 				&& transitionIndex != -1) {
 			//I'm confused...
@@ -308,6 +310,23 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		if(isNewLayerValidForOtherMinNxMx1(5, sideBump) == false) {
 			return false;
 		}
+
+		//if(isNewLayerValidForOtherMinNxMx1(29, sideBump) == false) {
+		//	return false;
+		//}
+		/*
+		 * 
+		if(isNewLayerValidForOtherMinNxMx1(41, sideBump) == false) {
+			return false;
+		}
+		 */
+		//if(isNewLayerValidForOtherMinNxMx1(9, sideBump) == false) {
+		//	return false;
+		//}
+		
+		if(isNewLayerValidForOtherMinNxMx1(17, sideBump) == false) {
+			return false;
+		}
 		
 		int transitionIndex = Math.min(nextRingIndex, prevRingIndex);
 		
@@ -335,6 +354,29 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				&& ! isAcceptableTopOrBottomIndexForInbetweenLayer(nextIndex, nextRot)) {
 			return false;
 		}
+
+		//TODO: speculating:
+		int m = 5;
+		if((dimensions[1] + 1) % (m + 1) == 0
+				&& m < dimensions[1] 
+				&& this.currentLayerIndex > dimensions[0]/2) {
+			//int nextRingIndex = getAltNextRingIndexForHeight(this.currentLayerIndex, dimensions[0]);
+			//int prevRingIndex = getAltCurRingIndexForHeight(this.currentLayerIndex, dimensions[0]);
+			
+			if(transitionIndex >= 0) {
+				int testTransitionIndex = dimensions[0] - 1 - Math.min(nextRingIndex, prevRingIndex);
+				
+				if(this.currentLayerIndex > testTransitionIndex) {
+					
+					if(this.prevSideBumps[testTransitionIndex] != sideBump) {
+						//System.out.println("TEST");
+						return false;
+					}
+				}
+			}
+		}
+		//It works! Now add another one that also mirrors the side bumps of the middle height...
+		//END TODO
 		
 		return ! unoccupiedRegionSplit(tmp, sideBump);
 		
