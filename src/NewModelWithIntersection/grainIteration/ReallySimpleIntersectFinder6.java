@@ -64,9 +64,11 @@ public class ReallySimpleIntersectFinder6 {
 		//reallySimpleSearch(11, 53, 1);
 		
 		//reallySimpleSearch(10, 89, 1);
-		reallySimpleSearch(16, 53, 1);
+		//reallySimpleSearch(4, 53, 1);
 
-		//reallySimpleSearch(14, 13, 1);
+		reallySimpleSearch(14, 13, 1);
+		
+		//reallySimpleSearch(6, 17, 1);
 		// N = 27
 		
 		// N = 29 (5 other ones...)
