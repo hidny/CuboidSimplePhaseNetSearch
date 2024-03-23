@@ -77,7 +77,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			
 			//String file1 = "D:\\outputSprialFor_ix89x1_side_bump7.txt";
 			
-			String file1 = "D:\\GrainedSearch2_53_1B.txt";
+			String file1 = "D:\\test_new_optimization_7_17_1.txt";
 			int dimensionsToCheck[][] = null;
 			int areaToCheck = -1;
 			
@@ -163,14 +163,14 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 
 						numSoutionsFound++;
 						
-						if(isRotationallySymmetric(table)) {
-							System.out.println("This net is rotationally symmetric!");
-						}
+						//if(isRotationallySymmetric(table)) {
+						//	System.out.println("This net is rotationally symmetric!");
+						//}
 
-						System.out.println("Printing just the fold without indexes:");
-						Utils.printFold(table);
+						//System.out.println("Printing just the fold without indexes:");
+						//Utils.printFold(table);
 						
-						boolean VERBOSE = true;
+						boolean VERBOSE = false;
 						
 						for(int i=0; i<dimensionsToCheck.length; i++) {
 							if(solutionFound[i]) {
@@ -189,6 +189,9 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 							System.out.println("Goal Achieved!");
 							System.exit(1);
 						}
+					} else {
+						System.out.println("WARNING: found non-solution");
+						System.exit(1);
 					}
 					
 				}

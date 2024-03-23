@@ -66,14 +66,17 @@ public class ReallySimpleIntersectFinder6 {
 		//reallySimpleSearch(10, 89, 1);
 		//reallySimpleSearch(4, 53, 1);
 
-		reallySimpleSearch(14, 13, 1);
+		//reallySimpleSearch(14, 13, 1);
 		
 		//reallySimpleSearch(6, 17, 1);
 		// N = 27
 		
 		// N = 29 (5 other ones...)
 		
+		//reallySimpleSearch(4, 125, 1);
 		
+		//613862 for 7, 17, 1
+		reallySimpleSearch(7, 17, 1);
 	}
 	
 	public static SolutionResolverInterface solutionResolver;

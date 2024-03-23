@@ -120,13 +120,14 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		//TODO: make this a param?
 		
 		//Test 53
-		//int otherWidthsToConsider[] = new int[] {5, 17, 53};
+		//int otherWidthsToConsider[] = new int[] {5, 41, 209};
+		//int otherWidthsToConsider[] = new int[] {41, 209};
 		
 		//Ryuhei's idea:
-		int otherWidthsToConsider[] = new int[] {5, 9, 13};
+		//int otherWidthsToConsider[] = new int[] {5, 9, 13};
 		
 		//Test standard:
-		//int otherWidthsToConsider[] = new int[] {5, 17};
+		int otherWidthsToConsider[] = new int[] {5, 17};
 		
 		System.out.println("Starting initializeForcedRepetition()");
 		while(progress == true) {
