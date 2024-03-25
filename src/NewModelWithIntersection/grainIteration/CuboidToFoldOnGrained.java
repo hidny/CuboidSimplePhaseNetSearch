@@ -413,7 +413,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 						System.out.println("FALSE transitionTopOrBottomSide");
 						
 						//1387 orig vs 831 when false. It's not working...
-						return false;
+						//return false;
 					}
 					
 				} else {
@@ -424,6 +424,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 						System.out.println("TODO: figure it out! Maybe it's the 2nd iteration or something?");
 						System.out.println("this.currentLayerIndex: " + this.currentLayerIndex);
 						System.out.println("transitionTopOrBottomSide[0][" + this.topLeftGroundedIndex + "] = -1");
+						
+						System.out.println("Next Index: " + nextIndex);
 						
 						//AHA: index 16 is missing for some reason!
 						System.exit(1);
@@ -447,6 +449,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 						}
 					}
 
+					//tmpIndexRotTop[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap] = true;
 					
 					
 					for(int i=this.topLeftGroundedIndex + 1; i<this.dimensions[1]; i = i + 4) {
@@ -457,8 +460,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 					}
 					System.out.println("this.topLeftGroundedIndex: " + this.topLeftGroundedIndex);
 					for(int i=this.topLeftGroundedIndex - 1; i>=0; i = i - 4) {
-						tmpIndexRotTop[i-3][2] = true;
-						tmpIndexRotTop[i][0] = true;
+						tmpIndexRotTop[i-3][0] = true;
+						tmpIndexRotTop[i][2] = true;
 					}
 					
 					for(int i=0; i<tmpIndexRotTop.length; i++) {
@@ -497,8 +500,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 											
 											tmpIndexRot1stRing[flippedIndexAndRotation.i][flippedIndexAndRotation.j] = true;
 											//tmpIndexRot1stRing[i][r] = true;
-											System.out.println("index: " + i + " and rotation " + r);
-											System.out.println("Flipped index: " + flippedIndexAndRotation.i + " and rotation " + flippedIndexAndRotation.j);
+											//System.out.println("index: " + i + " and rotation " + r);
+											//System.out.println("Flipped index: " + flippedIndexAndRotation.i + " and rotation " + flippedIndexAndRotation.j);
 										}
 									}
 								}
@@ -667,6 +670,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 							System.out.println("transitionTopOrBottomSide[0][" + i + "] = " + transitionTopOrBottomSide[0][i]);
 						}
 					}
+					
 					//System.exit(1);
 					
 					//transitionTopOrBottomSide[0][i] = newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]
@@ -962,8 +966,28 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 			
 		}
 	}
+	
+	//TODO: maybe delete this function soon.
 	//pre: getRingMod4(indexCell, rotation) returns -1:
 	public boolean isAcceptableTopOrBottomIndexForInbetweenLayer(int indexCell, int rotation) {
+		
+		
+		//TODO: clumsy check
+		Coord2D neighbour = this.tryAttachCellInDir(indexCell, rotation, RIGHT);
+		if(indexToRing[neighbour.i] >=0) {
+			return false;
+		}
+		neighbour = this.tryAttachCellInDir(neighbour.i, neighbour.j, RIGHT);
+		if(indexToRing[neighbour.i] >=0) {
+			return false;
+		}
+		neighbour = this.tryAttachCellInDir(neighbour.i, neighbour.j, RIGHT);
+		if(indexToRing[neighbour.i] >=0) {
+			return false;
+		}
+
+		//END TODO: clumsy check
+		
 		
 		if(rotation % 2 == 1) {
 			return false;

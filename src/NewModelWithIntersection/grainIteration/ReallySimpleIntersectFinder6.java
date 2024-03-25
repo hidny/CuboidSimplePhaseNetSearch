@@ -76,6 +76,10 @@ public class ReallySimpleIntersectFinder6 {
 		//reallySimpleSearch(4, 125, 1);
 		
 		//613862 for 7, 17, 1
+		
+		// 4 for 2, 17, 1
+		// I'm missing solutions...
+		// 637 for 4, 17, 1
 		reallySimpleSearch(4, 17, 1);
 	}
 	
