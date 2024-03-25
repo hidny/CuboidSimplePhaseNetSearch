@@ -57,6 +57,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 			System.out.println("ERROR: For now, the grained cuboids must be the form: mx(4m+1)x1");
 			System.exit(1);
 		}
+		
+		//System.exit(1);
 	}
 	
 	public int getNumCellsToFill() {
@@ -252,6 +254,11 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	private int oldTopMin[];
 	private int oldTopMax[];
 	
+	// 1st []: 0 or 1 (0 is main and 1 is alt)
+	// 2nd []: index of cur index
+	// Not currently used: 3rd []: rotation of cur index (probably not needed)
+	// result: index where we allowed to land on
+	private int transitionTopOrBottomSide[][];
 	
 	// Filter the cells around the new layer and turn that into number (use the grounded index and rotation for help)
 	// then use a lookup-table to decide if the region split (use the lookup table associate with the grounded index and rotation for help)
@@ -369,6 +376,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		int prevRingIndex = indexToRing[this.topLeftGroundedIndex];
 		int nextRingIndex = indexToRing[nextIndex];
 		
+
+		
 		if(nextRingIndex >=0
 				&& LayerIndexForRingDecided[nextRingIndex] >= 0 
 				&& LayerIndexForRingDecided[nextRingIndex] < currentLayerIndex
@@ -389,9 +398,301 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				&& sideBump != prevSideBumps[forcedRepetition[this.currentLayerIndex]]) {
 			return false;
 		}
+		
+
+		//transitionTopOrBottomSide
+		int transitionIndex = Math.min(prevRingIndex, nextRingIndex);
+		if(transitionIndex == -1) {
+			
+			if(transitionIndex == -1 && Math.max(prevRingIndex, nextRingIndex) == 0) {
+				//TOP one
+				if(transitionTopOrBottomSide[0][this.topLeftGroundedIndex] != -1) {
+
+					if(transitionTopOrBottomSide[0][this.topLeftGroundedIndex] != nextIndex) {
+					
+						System.out.println("FALSE transitionTopOrBottomSide");
+						
+						//1387 orig vs 831 when false. It's not working...
+						return false;
+					}
+					
+				} else {
+					if(this.currentLayerIndex > 0) {
+					
+						System.out.println("ERROR:");
+						this.printCurrentStateOnOtherCuboidsFlatMap();
+						System.out.println("TODO: figure it out! Maybe it's the 2nd iteration or something?");
+						System.out.println("this.currentLayerIndex: " + this.currentLayerIndex);
+						System.out.println("transitionTopOrBottomSide[0][" + this.topLeftGroundedIndex + "] = -1");
+						
+						//AHA: index 16 is missing for some reason!
+						System.exit(1);
+					}
+				}
+				
+				if(this.currentLayerIndex <= 1){
+					//Figure this out...
+					//TODO: this is complicated! Put it into its own class!
+					
+					//Idea: After the first layer is set, we should know the rules for how the transitions going from top to 1st ring
+					// work and vice-versa:
+					int ringMod4 = ringMod4Lookup[nextIndex][nextRot];
+					
+					boolean tmpIndexRotTop[][] = new boolean[this.getNumCellsToFill()][NUM_ROTATIONS];
+					boolean tmpIndexRot1stRing[][] = new boolean[this.getNumCellsToFill()][NUM_ROTATIONS];
+					for(int i=0; i<tmpIndexRotTop.length; i++) {
+						for(int j=0; j<tmpIndexRotTop[0].length; j++) {
+							tmpIndexRotTop[i][j] = false;
+							tmpIndexRot1stRing[i][j] = false;
+						}
+					}
+
+					
+					
+					for(int i=this.topLeftGroundedIndex + 1; i<this.dimensions[1]; i = i + 4) {
+						//TODO:
+						tmpIndexRotTop[i][0] = true;
+						tmpIndexRotTop[i+3][2] = true;
+						
+					}
+					System.out.println("this.topLeftGroundedIndex: " + this.topLeftGroundedIndex);
+					for(int i=this.topLeftGroundedIndex - 1; i>=0; i = i - 4) {
+						tmpIndexRotTop[i-3][2] = true;
+						tmpIndexRotTop[i][0] = true;
+					}
+					
+					for(int i=0; i<tmpIndexRotTop.length; i++) {
+						for(int r=0; r<NUM_ROTATIONS; r++) {
+							if(tmpIndexRotTop[i][r]) {
+								System.out.println("tmpIndexRotTop[" + i +"][" + r + "] = true");
+							}
+						}
+					}
+					
+					int curRingMod4 = ringMod4Lookup[nextIndex][nextRot];
+					if(indexToRing[nextIndex] != 0) {
+						System.out.println("DOH! indexToRing[nextIndex] should be 0 while setting up transitionTopOrBottomSide for top side. Error number: " + indexToRing[nextIndex]);
+						System.exit(1);
+					}
+					
+					System.out.println("Test transitionTopOrBottomSide:");
+					System.out.println("Side Bump: " + sideBump);
+					
+					for(int i=0; i<this.getNumCellsToFill(); i++) {
+						
+						if(indexToRing[i] == 0) {
+							
+							for(int r=0; r<NUM_ROTATIONS; r++) {
+								if(ringMod4Lookup[i][r] == curRingMod4) {
+									
+									for(int tmpSideBump=3; tmpSideBump<=9; tmpSideBump++) {
+										if(newGroundedIndexAbove[i][r][tmpSideBump] >= 0
+											&& newGroundedRotationAbove[i][r][tmpSideBump] >= 0
+												&& tmpIndexRotTop[newGroundedIndexAbove[i][r][tmpSideBump]][newGroundedRotationAbove[i][r][tmpSideBump]]) {
+											tmpIndexRot1stRing[i][r] = true;
+											
+											
+											Coord2D flippedIndexAndRotation = topLeftIndexRotAfter180Flip1x4layer(i, r);
+											
+											
+											tmpIndexRot1stRing[flippedIndexAndRotation.i][flippedIndexAndRotation.j] = true;
+											//tmpIndexRot1stRing[i][r] = true;
+											System.out.println("index: " + i + " and rotation " + r);
+											System.out.println("Flipped index: " + flippedIndexAndRotation.i + " and rotation " + flippedIndexAndRotation.j);
+										}
+									}
+								}
+							}
+						}
+					}
+					
+					System.out.println("------------");
+					
+					for(int i=0; i<tmpIndexRot1stRing.length; i++) {
+						for(int r=0; r<NUM_ROTATIONS; r++) {
+							if(tmpIndexRot1stRing[i][r]) {
+								System.out.println("tmpIndexRot1stRing[" + i +"][" + r + "] = true");
+							}
+						}
+					}
+					
+					
+					// TODO!
+					
+					//boolean tmpIndexRotTopUsed[][] = new boolean[this.getNumCellsToFill()][NUM_ROTATIONS];
+					boolean tmpIndexRot1stRingUsed[][] = new boolean[this.getNumCellsToFill()][NUM_ROTATIONS];
+					for(int i=0; i<tmpIndexRot1stRingUsed.length; i++) {
+						for(int j=0; j<tmpIndexRot1stRingUsed[0].length; j++) {
+							//tmpIndexRotTopUsed[i][j] = false;
+							tmpIndexRot1stRingUsed[i][j] = false;
+						}
+					}
+					
+					//this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap
+					//Probably not needed, but whatever:
+					//tmpIndexRotTopUsed[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap] = true;
+					
+					
+					transitionTopOrBottomSide = new int[2][getNumCellsToFill()];
+					for(int i=0; i<transitionTopOrBottomSide.length; i++) {
+						
+						if( i < this.dimensions[1] || this.indexToRing[i] == 0) {
+							for(int j=0; j<transitionTopOrBottomSide[i].length; j++) {
+								transitionTopOrBottomSide[i][j] = -1;	
+							}
+						}
+					}
+					
+
+					tmpIndexRot1stRingUsed[nextIndex][nextRot] = true;
+					
+					transitionTopOrBottomSide[0][this.topLeftGroundedIndex] = nextIndex;
+					//transitionTopOrBottomSide[0][nextIndex] = this.topLeftGroundedIndex;
+
+
+					Coord2D flippedIndexAndRotationTopStart = topLeftIndexRotAfter180Flip1x4layer(0, this.topLeftGroundedIndex);
+					
+					Coord2D flippedIndexAndRotationRingStart = topLeftIndexRotAfter180Flip1x4layer(
+							nextIndex,
+							nextRot);
+
+					transitionTopOrBottomSide[0][flippedIndexAndRotationRingStart.i] = flippedIndexAndRotationTopStart.i;
+					//transitionTopOrBottomSide[0][flippedIndexAndRotationTopStart.i] = flippedIndexAndRotationRingStart.i;
+					
+
+					tmpIndexRot1stRingUsed[flippedIndexAndRotationRingStart.i][flippedIndexAndRotationRingStart.j] = true;
+					
+					boolean curProgress = true;
+					while(curProgress == true) {
+						
+						curProgress = false;
+						
+						//ADD transitionTopOrBottomSide
+						for(int i=0; i<tmpIndexRot1stRingUsed.length; i++) {
+							for(int j=0; j<tmpIndexRot1stRingUsed[0].length; j++) {
+	
+								if(tmpIndexRotTop[i][j] == true) {
+									
+									for(int tmpSideBump=3; tmpSideBump<=9; tmpSideBump++) {
+										/*
+										 * 
+			int nextIndex = newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
+			int nextRot = newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
+										 */
+										if(newGroundedIndexAbove[i][j][tmpSideBump] < 0) {
+											continue;
+										}
+										
+	
+										if( i == 4 && j == 2 && tmpSideBump == 3) {
+											System.out.println("DEBUG!");
+										}
+										
+										if(tmpIndexRot1stRing
+												[newGroundedIndexAbove[i][j][tmpSideBump]]
+												[newGroundedRotationAbove[i][j][tmpSideBump]] == true
+												&&
+												(	
+													(
+													tmpIndexRot1stRingUsed
+													[newGroundedIndexAbove[i][j][tmpSideBump]]
+													[newGroundedRotationAbove[i][j][tmpSideBump]] == false
+													
+													&& tmpSideBump == 6
+													)
+												||
+												tmpIndexRot1stRingUsed
+													[newGroundedIndexAbove[i][j][tmpSideBump]]
+													[newGroundedRotationAbove[i][j][tmpSideBump]] == true
+													
+												)
+											) {
+											
+											//if( i == 16 && j == 2 && tmpSideBump == 6) {
+											//	System.out.println("DEBUG!");
+											//}
+											//Going for it!
+											for(int tmpSideBump2=3; tmpSideBump2<=9; tmpSideBump2++) {
+												
+												if(newGroundedIndexAbove[i][j][tmpSideBump2] < 0) {
+													continue;
+												}
+												
+												if(
+														tmpIndexRot1stRing
+														[newGroundedIndexAbove[i][j][tmpSideBump2]]
+														[newGroundedRotationAbove[i][j][tmpSideBump2]] == true
+													&&
+														tmpIndexRot1stRingUsed
+														[newGroundedIndexAbove[i][j][tmpSideBump2]]
+														[newGroundedRotationAbove[i][j][tmpSideBump2]] == false) {
+													
+													
+													curProgress = true;
+													//tmpIndexRotTopUsed[i][j] = true;
+													
+													tmpIndexRot1stRingUsed
+													[newGroundedIndexAbove[i][j][tmpSideBump2]]
+													[newGroundedRotationAbove[i][j][tmpSideBump2]] = true;
+													
+													
+													transitionTopOrBottomSide[0][i] = newGroundedIndexAbove[i][j][tmpSideBump2];
+													//transitionTopOrBottomSide[0][newGroundedIndexAbove[i][j][tmpSideBump2]] = i;
+	
+	
+													Coord2D flippedIndexAndRotationTop = topLeftIndexRotAfter180Flip1x4layer(i, j);
+													
+													Coord2D flippedIndexAndRotationRing = topLeftIndexRotAfter180Flip1x4layer(
+															newGroundedIndexAbove[i][j][tmpSideBump2],
+															newGroundedRotationAbove[i][j][tmpSideBump2]);
+	
+													transitionTopOrBottomSide[0][flippedIndexAndRotationRing.i] = flippedIndexAndRotationTop.i;
+													//transitionTopOrBottomSide[0][flippedIndexAndRotationTop.i] = flippedIndexAndRotationRing.i;
+													
+													//tmpIndexRotTopUsed[flippedIndexAndRotationTop.i][flippedIndexAndRotationTop.j] = true;
+													tmpIndexRot1stRingUsed[flippedIndexAndRotationRing.i][flippedIndexAndRotationRing.j] = true;
+													
+												}
+											}
+										}
+									}
+								}
+							}
+						} //END ADD transitionTopOrBottomSide
+					}
+					
+					System.out.println("Checking the transitionTopOrBottomSide setup:");
+					for(int i=0; i<transitionTopOrBottomSide[0].length; i++) {
+						if(transitionTopOrBottomSide[0][i] != -1) {
+							System.out.println("transitionTopOrBottomSide[0][" + i + "] = " + transitionTopOrBottomSide[0][i]);
+						}
+					}
+					//System.exit(1);
+					
+					//transitionTopOrBottomSide[0][i] = newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]
+
+
+					//END TODO: this is complicated! Put it into its own class!
+				}
+			} else {
+				
+			}
+		}
 		//END TODO
 		return ! unoccupiedRegionSplit(tmp, sideBump);
 		
+	}
+	
+	public Coord2D topLeftIndexRotAfter180Flip1x4layer(int index, int rotation) {
+		Coord2D flippedIndexAndRotation = new Coord2D(index, rotation);
+		
+		for(int j=0; j<4 - 1; j++) {
+			flippedIndexAndRotation = tryAttachCellInDir(flippedIndexAndRotation.i, flippedIndexAndRotation.j, RIGHT);
+		}
+		
+		int flipRotation = (flippedIndexAndRotation.j + NUM_ROTATIONS/2) % NUM_ROTATIONS;
+		
+		return new Coord2D(flippedIndexAndRotation.i, flipRotation);
 	}
 	
 	public void addNewLayerFast(int sideBump) {
@@ -426,6 +727,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				transitionBetweenRings[transitionIndex] = sideBump;
 			}
 		}
+		
 		
 		this.updateMinMaxTopIndexIfApplicable(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap, this.currentLayerIndex);
 		
@@ -625,6 +927,13 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				}
 			}
 			//System.out.println();
+		}
+		
+		transitionTopOrBottomSide = new int[2][getNumCellsToFill()];
+		for(int i=0; i<transitionTopOrBottomSide.length; i++) {
+			for(int j=0; j<transitionTopOrBottomSide[i].length; j++) {
+				transitionTopOrBottomSide[i][j] = -1;	
+			}
 		}
 	}
 	
