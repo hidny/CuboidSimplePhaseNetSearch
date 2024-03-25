@@ -412,7 +412,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 					
 						System.out.println("FALSE transitionTopOrBottomSide");
 						
-						//1387 orig vs 831 when false. It's not working...
+						//1387 orig vs 637 when false. It's not working...
 						//return false;
 					}
 					
