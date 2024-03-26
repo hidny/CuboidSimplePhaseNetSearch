@@ -129,8 +129,10 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		//int otherWidthsToConsider[] = new int[] {5, 9, 13};
 		
 		//Test standard:
-		int otherWidthsToConsider[] = new int[] {5, 17};
-		
+		//int otherWidthsToConsider[] = new int[] {5, 17};
+		//int otherWidthsToConsider[] = new int[] {5};
+		int otherWidthsToConsider[] = new int[] {5, 29};
+
 		System.out.println("Starting initializeForcedRepetition()");
 		while(progress == true) {
 			
@@ -410,7 +412,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 
 					if(transitionTopOrBottomSide[0][this.topLeftGroundedIndex] != nextIndex) {
 					
-						System.out.println("FALSE transitionTopOrBottomSide");
+						//System.out.println("FALSE transitionTopOrBottomSide");
 						
 						//1387 orig vs 637 when false. It's not working...
 						return false;
@@ -687,6 +689,98 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				}
 			} else {
 				
+				if(Math.max(prevRingIndex, nextRingIndex) != dimensions[0] - 1) {
+					System.out.println("OOPS! Math.max(prevRingIndex, nextRingIndex) != dimensions[0] - 1");
+					System.exit(1);
+				}
+				if(this.currentLayerIndex == dimensions[0]) {
+					
+					//TODO: Copy/paste code
+					
+					boolean tmpIndexRotBottom[][] = new boolean[this.getNumCellsToFill()][NUM_ROTATIONS];
+					boolean tmpIndexRotLastRing[][] = new boolean[this.getNumCellsToFill()][NUM_ROTATIONS];
+					for(int i=0; i<tmpIndexRotBottom.length; i++) {
+						for(int j=0; j<tmpIndexRotBottom[0].length; j++) {
+							tmpIndexRotBottom[i][j] = false;
+							tmpIndexRotLastRing[i][j] = false;
+						}
+					}
+
+					//tmpIndexRotTop[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap] = true;
+					
+					for(int i=this.getNumCellsToFill() -1; indexToRing[i] == -1; i=i-4) {
+						
+						//System.out.println(i);
+						tmpIndexRotBottom[i-1][0] = true;
+						tmpIndexRotBottom[i][0] = true;
+						
+					}
+					
+					System.out.println("TEST:");
+					for(int i=0; i<tmpIndexRotBottom.length; i++) {
+						for(int r=0; r<NUM_ROTATIONS; r++) {
+							if(tmpIndexRotBottom[i][r]) {
+								System.out.println("tmpIndexRotBottom[" + i +"][" + r + "] = true");
+							}
+						}
+					}
+					
+					int curRingMod4 = ringMod4Lookup[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap];
+					if(indexToRing[this.topLeftGroundedIndex] != dimensions[0] - 1) {
+						System.out.println("DOH! indexToRing[nextIndex] should be (dimensions[0] - 1) while setting up transitionTopOrBottomSide for bottom side. Error number: " + indexToRing[nextIndex]);
+						System.exit(1);
+					}
+					
+					System.out.println("Test transitionTopOrBottomSide:");
+					System.out.println("Side Bump: " + sideBump);
+					
+					//END TODO: Copy/paste code
+					
+					//TODO: copy/paste code again
+					
+					for(int i=0; i<this.getNumCellsToFill(); i++) {
+						
+						if(indexToRing[i] == dimensions[0] - 1) {
+							
+							for(int r=0; r<NUM_ROTATIONS; r++) {
+								if(ringMod4Lookup[i][r] == curRingMod4) {
+									
+									for(int tmpSideBump=3; tmpSideBump<=9; tmpSideBump++) {
+										if(newGroundedIndexAbove[i][r][tmpSideBump] >= 0
+											&& newGroundedRotationAbove[i][r][tmpSideBump] >= 0
+												&& tmpIndexRotBottom[newGroundedIndexAbove[i][r][tmpSideBump]][newGroundedRotationAbove[i][r][tmpSideBump]]) {
+											tmpIndexRotLastRing[i][r] = true;
+											
+											System.out.println("test i and r: " + i + ", " + r);
+											Coord2D flippedIndexAndRotation = topLeftIndexRotAfter180Flip1x4layer(i, r);
+											
+											
+											tmpIndexRotLastRing[flippedIndexAndRotation.i][flippedIndexAndRotation.j] = true;
+											System.out.println("test2 i and r: " + flippedIndexAndRotation.i + ", " + flippedIndexAndRotation.j);
+											
+										}
+									}
+								}
+							}
+						}
+					}
+					
+					System.out.println("------------");
+					
+					for(int i=0; i<tmpIndexRotLastRing.length; i++) {
+						for(int r=0; r<NUM_ROTATIONS; r++) {
+							if(tmpIndexRotLastRing[i][r]) {
+								System.out.println("tmpIndexRotLastRing[" + i +"][" + r + "] = true");
+							}
+						}
+					}
+
+					System.exit(1);
+					
+					//END TODO: copy/paste code again
+				} else {
+					
+				}
 			}
 		}
 		//END TODO
