@@ -406,20 +406,19 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 			
 			if(transitionIndex == -1 && Math.max(prevRingIndex, nextRingIndex) == 0) {
 				//TOP one
-				if(transitionTopOrBottomSide[0][this.topLeftGroundedIndex] != -1) {
+				if(this.currentLayerIndex > 0 && transitionTopOrBottomSide[0][this.topLeftGroundedIndex] != -1) {
 
 					if(transitionTopOrBottomSide[0][this.topLeftGroundedIndex] != nextIndex) {
 					
 						System.out.println("FALSE transitionTopOrBottomSide");
 						
 						//1387 orig vs 637 when false. It's not working...
-						//return false;
+						return false;
 					}
 					
-				} else {
-					if(this.currentLayerIndex > 0) {
+				} else if(this.currentLayerIndex > 0) {
 					
-						System.out.println("ERROR:");
+						System.out.println("ERROR: transitionTopOrBottomSide[0][this.topLeftGroundedIndex] not set when it should be set.");
 						this.printCurrentStateOnOtherCuboidsFlatMap();
 						System.out.println("TODO: figure it out! Maybe it's the 2nd iteration or something?");
 						System.out.println("this.currentLayerIndex: " + this.currentLayerIndex);
@@ -429,16 +428,14 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 						
 						//AHA: index 16 is missing for some reason!
 						System.exit(1);
-					}
 				}
 				
-				if(this.currentLayerIndex <= 1){
+				if(this.currentLayerIndex == 0){
 					//Figure this out...
 					//TODO: this is complicated! Put it into its own class!
 					
 					//Idea: After the first layer is set, we should know the rules for how the transitions going from top to 1st ring
 					// work and vice-versa:
-					int ringMod4 = ringMod4Lookup[nextIndex][nextRot];
 					
 					boolean tmpIndexRotTop[][] = new boolean[this.getNumCellsToFill()][NUM_ROTATIONS];
 					boolean tmpIndexRot1stRing[][] = new boolean[this.getNumCellsToFill()][NUM_ROTATIONS];
@@ -551,9 +548,9 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 					
 					transitionTopOrBottomSide[0][this.topLeftGroundedIndex] = nextIndex;
 					//transitionTopOrBottomSide[0][nextIndex] = this.topLeftGroundedIndex;
+					System.out.println("transitionTopOrBottomSide 1: " +nextIndex + "(" + this.topLeftGroundedIndex + ")");
 
-
-					Coord2D flippedIndexAndRotationTopStart = topLeftIndexRotAfter180Flip1x4layer(0, this.topLeftGroundedIndex);
+					Coord2D flippedIndexAndRotationTopStart = topLeftIndexRotAfter180Flip1x4layer(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap);
 					
 					Coord2D flippedIndexAndRotationRingStart = topLeftIndexRotAfter180Flip1x4layer(
 							nextIndex,
@@ -561,7 +558,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 
 					transitionTopOrBottomSide[0][flippedIndexAndRotationRingStart.i] = flippedIndexAndRotationTopStart.i;
 					//transitionTopOrBottomSide[0][flippedIndexAndRotationTopStart.i] = flippedIndexAndRotationRingStart.i;
-					
+
+					System.out.println("transitionTopOrBottomSide 2: " +flippedIndexAndRotationTopStart.i  + "(" + flippedIndexAndRotationRingStart.i + ")");
 
 					tmpIndexRot1stRingUsed[flippedIndexAndRotationRingStart.i][flippedIndexAndRotationRingStart.j] = true;
 					
@@ -587,8 +585,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 										}
 										
 	
-										if( i == 4 && j == 2 && tmpSideBump == 3) {
-											System.out.println("DEBUG!");
+										if( i == 60 && j == 0 ) {
+											System.out.println("DEBUG3!");
 										}
 										
 										if(tmpIndexRot1stRing
@@ -641,7 +639,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 													
 													transitionTopOrBottomSide[0][i] = newGroundedIndexAbove[i][j][tmpSideBump2];
 													//transitionTopOrBottomSide[0][newGroundedIndexAbove[i][j][tmpSideBump2]] = i;
-	
+
+													System.out.println("transitionTopOrBottomSide 3: " +newGroundedIndexAbove[i][j][tmpSideBump2]);
 	
 													Coord2D flippedIndexAndRotationTop = topLeftIndexRotAfter180Flip1x4layer(i, j);
 													
@@ -649,12 +648,20 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 															newGroundedIndexAbove[i][j][tmpSideBump2],
 															newGroundedRotationAbove[i][j][tmpSideBump2]);
 	
+													if(flippedIndexAndRotationRing.i == 60) {
+														System.out.println("DEBUG");
+													}
+													System.out.println("transitionTopOrBottomSide 4: " + flippedIndexAndRotationTop.i);
+													
 													transitionTopOrBottomSide[0][flippedIndexAndRotationRing.i] = flippedIndexAndRotationTop.i;
 													//transitionTopOrBottomSide[0][flippedIndexAndRotationTop.i] = flippedIndexAndRotationRing.i;
 													
 													//tmpIndexRotTopUsed[flippedIndexAndRotationTop.i][flippedIndexAndRotationTop.j] = true;
 													tmpIndexRot1stRingUsed[flippedIndexAndRotationRing.i][flippedIndexAndRotationRing.j] = true;
-													
+
+													if(i == 60) {
+														System.out.println("DEBUG2");
+													}
 												}
 											}
 										}

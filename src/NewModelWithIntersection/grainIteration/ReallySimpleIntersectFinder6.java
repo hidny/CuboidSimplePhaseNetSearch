@@ -80,7 +80,8 @@ public class ReallySimpleIntersectFinder6 {
 		// 4 for 2, 17, 1
 		// I'm missing solutions...
 		// 637 for 4, 17, 1
-		reallySimpleSearch(4, 17, 1);
+		//15, 161, 1387, x, 
+		reallySimpleSearch(6, 17, 1);
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
