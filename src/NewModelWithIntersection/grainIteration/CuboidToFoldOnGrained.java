@@ -9,6 +9,7 @@ import Model.DataModelViews;
 import Model.NeighbourGraphCreator;
 import Model.Utils;
 import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
+import NewModelWithIntersection.topAndBottomTransitionList.TopAndBottomTransitionList;
 
 public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 
@@ -708,13 +709,26 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 
 					//tmpIndexRotTop[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap] = true;
 					
-					for(int i=this.getNumCellsToFill() -1; indexToRing[i] == -1; i=i-4) {
+					for(int i=this.getNumCellsToFill() - this.dimensions[1]; i<this.getNumCellsToFill() - 1; i=i+4) {
 						
+						if(indexToRing[i] != -1 || indexToRing[i+1] != -1 || indexToRing[i+2] != -1 || indexToRing[i+3] != -1 ||indexToRing[i+4] != -1) {
+							System.out.println("ERROR: unexpected index in setup tmpIndexRotBottom");
+							System.out.println("Index: " + i);
+							System.exit(1);
+						}
 						//System.out.println(i);
-						tmpIndexRotBottom[i-1][0] = true;
 						tmpIndexRotBottom[i][0] = true;
+						tmpIndexRotBottom[i+1][0] = true;
 						
+						tmpIndexRotBottom[i+3][2] = true;
+						tmpIndexRotBottom[i+4][2] = true;
 					}
+					
+					//Set the last ones to true just in case it ends at the very right:
+					tmpIndexRotBottom[this.getNumCellsToFill() - 1][0] = true;
+					tmpIndexRotBottom[this.getNumCellsToFill() - 1][2] = true;
+					
+					
 					
 					System.out.println("TEST:");
 					for(int i=0; i<tmpIndexRotBottom.length; i++) {
@@ -775,7 +789,69 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 						}
 					}
 
+					
+					if(neighbours.length != this.getNumCellsToFill()) {
+						System.out.println("DOH!");
+						System.exit(1);
+					}
+					
+					//this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap
+					
+					transitionTopOrBottomSide = TopAndBottomTransitionList.addBottomTransitionsBottom2Mod4(
+							neighbours,
+							tmpIndexRotLastRing,
+							tmpIndexRotBottom,
+							newGroundedIndexAbove,
+							newGroundedRotationAbove,
+							transitionTopOrBottomSide,
+							this.getNumCellsToFill() - this.dimensions[1],
+							this.topLeftGroundedIndex,
+							this.topLeftGroundRotationRelativeFlatMap
+					);
+					
+
+					transitionTopOrBottomSide = TopAndBottomTransitionList.addBottomTransitionsBottom1Mod4(
+							neighbours,
+							tmpIndexRotLastRing,
+							tmpIndexRotBottom,
+							newGroundedIndexAbove,
+							newGroundedRotationAbove,
+							transitionTopOrBottomSide,
+							this.getNumCellsToFill() - 1,
+							this.topLeftGroundedIndex,
+							this.topLeftGroundRotationRelativeFlatMap
+					);
+					
+					int sumIndex0 = 0;
+					int sumIndex1 = 0;
+					System.out.println("Checking the transitionTopOrBottomSide setup 2:");
+					for(int i=0; i<transitionTopOrBottomSide[0].length; i++) {
+						if(transitionTopOrBottomSide[0][i] != -1) {
+							System.out.println("transitionTopOrBottomSide[0][" + i + "] = " + transitionTopOrBottomSide[0][i]);
+							sumIndex0++;
+						}
+					}
+					
+					System.out.println("Checking the transitionTopOrBottomSide setup with 2nd option:");
+					for(int i=0; i<transitionTopOrBottomSide[0].length; i++) {
+						if(transitionTopOrBottomSide[1][i] != -1) {
+							System.out.println("transitionTopOrBottomSide[1][" + i + "] = " + transitionTopOrBottomSide[1][i]);
+							sumIndex1++;
+						}
+					}
+					
+					if(sumIndex1 * 2 != sumIndex0) {
+						System.out.println("Warning; transition counts don't make sense?");
+						
+						
+					}
+					System.out.println("Transition count index 0: " + sumIndex0);
+					System.out.println("Transition count index 1: " + sumIndex1);
+					
 					System.exit(1);
+					
+					
+					
 					
 					//END TODO: copy/paste code again
 				} else {
