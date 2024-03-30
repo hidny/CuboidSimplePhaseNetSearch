@@ -75,13 +75,13 @@ public class TopAndBottomTransitionList {
 			int outputBottomIndexMod4onRot0
 	) {
 		
-		for(int i=0; i<tmpIndexRotBottom.length; i++) {
+		/*for(int i=0; i<tmpIndexRotBottom.length; i++) {
 			for(int j=0; j<tmpIndexRotBottom[0].length; j++) {
 				if(tmpIndexRotBottom[i][j]) {
 					System.out.println("hello tmpIndexRotBottom[" + i + "][" + j + "] = " + tmpIndexRotBottom[i][j]);
 				}
 			}
-		}
+		}*/
 
 
 		boolean tmpIndexRotLastRingUsed[][] = new boolean[neighbours.length][NUM_ROTATIONS];
@@ -111,10 +111,11 @@ public class TopAndBottomTransitionList {
 			for(int i=0; i<tmpIndexRotLastRingUsed.length; i++) {
 				for(int j=0; j<tmpIndexRotLastRingUsed[0].length; j++) {
 	
-					if(tmpIndexRotBottom[i][j] == true ) {
+					/*if(tmpIndexRotBottom[i][j] == true ) {
 						System.out.println("March 29-2 test " + i + ", " + j);
 						System.out.println("outputBottomIndexMod4onRot0: " +outputBottomIndexMod4onRot0);
-					}
+					}*/
+					
 					if(tmpIndexRotBottom[i][j] == true 
 							&& (  		(i % 4 == outputBottomIndexMod4onRot0 && j==0)
 									||  (i % 4 == (outputBottomIndexMod4onRot0 + 3)%4 && j==2)
@@ -138,7 +139,8 @@ public class TopAndBottomTransitionList {
 						
 						//System.out.println("STOP");
 						//System.exit(1);
-						System.out.println("TEST " + i + ", " + j + " (" + outputBottomIndexMod4onRot0 + " mod 4)");
+						//System.out.println("TEST " + i + ", " + j + " (" + outputBottomIndexMod4onRot0 + " mod 4)");
+
 						for(int tmpSideBump=3; tmpSideBump<=9; tmpSideBump++) {
 							/*
 							 * 
