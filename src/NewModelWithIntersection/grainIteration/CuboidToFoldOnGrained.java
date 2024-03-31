@@ -130,9 +130,9 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		//int otherWidthsToConsider[] = new int[] {5, 9, 13};
 		
 		//Test standard:
-		//int otherWidthsToConsider[] = new int[] {5, 17};
+		int otherWidthsToConsider[] = new int[] {5, 17};
 		//int otherWidthsToConsider[] = new int[] {5};
-		int otherWidthsToConsider[] = new int[] {5, 29};
+		//int otherWidthsToConsider[] = new int[] {5, 29};
 
 		System.out.println("Starting initializeForcedRepetition()");
 		while(progress == true) {
@@ -224,7 +224,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	private int topLeftGroundRotationRelativeFlatMap = 0;
 	
 	private int prevSideBumps[];
-	private int prevGroundedIndexes[];
+	int prevGroundedIndexes[];
 	private int prevGroundedRotations[];
 	private int currentLayerIndex;
 	private int forcedRepetition[];
@@ -694,7 +694,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 						}
 					}
 					
-					TopAndBottomTransitionList.refreshTransitionListForBottom(
+					transitionTopOrBottomSide = TopAndBottomTransitionList.refreshTransitionListForBottom(
 							indexToRing,
 							transitionTopOrBottomSide);
 
@@ -721,14 +721,14 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 					
 					
 					
-					/*System.out.println("TEST:");
+					System.out.println("TEST:");
 					for(int i=0; i<tmpIndexRotBottom.length; i++) {
 						for(int r=0; r<NUM_ROTATIONS; r++) {
 							if(tmpIndexRotBottom[i][r]) {
 								System.out.println("tmpIndexRotBottom[" + i +"][" + r + "] = true");
 							}
 						}
-					}*/
+					}
 					
 					int curRingMod4 = ringMod4Lookup[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap];
 					if(indexToRing[this.topLeftGroundedIndex] != dimensions[0] - 1) {
@@ -756,12 +756,12 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 												&& tmpIndexRotBottom[newGroundedIndexAbove[i][r][tmpSideBump]][newGroundedRotationAbove[i][r][tmpSideBump]]) {
 											tmpIndexRotLastRing[i][r] = true;
 											
-											//System.out.println("test i and r: " + i + ", " + r);
+											System.out.println("test i and r: " + i + ", " + r);
 											Coord2D flippedIndexAndRotation = topLeftIndexRotAfter180Flip1x4layer(i, r);
 											
 											
 											tmpIndexRotLastRing[flippedIndexAndRotation.i][flippedIndexAndRotation.j] = true;
-											//System.out.println("test2 i and r: " + flippedIndexAndRotation.i + ", " + flippedIndexAndRotation.j);
+											System.out.println("test2 i and r: " + flippedIndexAndRotation.i + ", " + flippedIndexAndRotation.j);
 											
 										}
 									}
@@ -813,12 +813,28 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 							this.topLeftGroundRotationRelativeFlatMap
 					);
 					
+					
+					System.out.println("START: " + this.topLeftGroundedIndex);
+					System.out.println("Bottom cell: " + this.topLeftGroundedIndex);
+					System.out.println("Bottom cell Continuation 1: " + transitionTopOrBottomSide[0][nextIndex]);
+					System.out.println("Bottom cell Continuation 2: " + transitionTopOrBottomSide[1][nextIndex]);
+					System.out.println("Next index: " + nextIndex);
+					System.out.println("Next Rotatation: " + nextRot);
+					
 					int sumIndex0 = 0;
 					int sumIndex1 = 0;
 					System.out.println("Checking the transitionTopOrBottomSide setup 2:");
 					for(int i=0; i<transitionTopOrBottomSide[0].length; i++) {
+						
+						
 						if(transitionTopOrBottomSide[0][i] != -1) {
-							System.out.println("transitionTopOrBottomSide[0][" + i + "] = " + transitionTopOrBottomSide[0][i]);
+							if(indexToRing[i] > 0 || indexToRing[transitionTopOrBottomSide[0][i]] > 0) {
+								System.out.println("Bottom transitionTopOrBottomSide[0][" + i + "] = " + transitionTopOrBottomSide[0][i]);
+							} else {
+								System.out.println("TOP transitionTopOrBottomSide[0][" + i + "] = " + transitionTopOrBottomSide[0][i]);
+								
+							}
+							
 							sumIndex0++;
 						}
 					}
@@ -837,14 +853,38 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 					System.out.println("Transition count index 0: " + sumIndex0);
 					System.out.println("Transition count index 1: " + sumIndex1);
 					
-					System.exit(1);
+					//System.exit(1);
 					
 					
 					
 					
-					//END TODO: copy/paste code again
-				} else {
 					
+					
+					//END TODO: copy/paste code again	
+					
+					//BOTTOM one
+				} else if(this.currentLayerIndex < this.getNumCellsToFill() - 1
+						    && this.currentLayerIndex > dimensions[0] 
+							&& transitionTopOrBottomSide[0][this.topLeftGroundedIndex] != nextIndex
+							&& transitionTopOrBottomSide[1][this.topLeftGroundedIndex] != nextIndex
+						) {
+						
+							System.out.println("FALSE transitionTopOrBottomSide");
+							System.out.println("this.currentLayerIndex: " + this.currentLayerIndex);
+							System.out.println("START: " + this.topLeftGroundedIndex);
+							System.out.println("Continuation 1: " + transitionTopOrBottomSide[0][this.topLeftGroundedIndex]);
+							System.out.println("Continuation 2: " + transitionTopOrBottomSide[1][this.topLeftGroundedIndex]);
+							System.out.println("Next index: " + nextIndex);
+							System.out.println("Next Rotatation: " + nextRot);
+							//1387 orig vs 637 when false. It's not working...
+							//return false;
+							
+							System.out.println("Prev ground indexes:");
+							for(int j=0; j<this.currentLayerIndex; j++) {
+								System.out.println(this.prevGroundedIndexes[j]);
+							}
+							System.out.println("------------");
+
 				}
 			}
 		}

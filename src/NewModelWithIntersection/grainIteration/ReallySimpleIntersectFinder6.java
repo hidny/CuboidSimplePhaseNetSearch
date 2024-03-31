@@ -81,7 +81,9 @@ public class ReallySimpleIntersectFinder6 {
 		// I'm missing solutions...
 		// 637 for 4, 17, 1
 		//15, 161, 1387, x, 
-		reallySimpleSearch(2, 149, 1);
+		//reallySimpleSearch(2, 149, 1);
+		
+		reallySimpleSearch(3, 17, 1);
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
@@ -180,6 +182,13 @@ public class ReallySimpleIntersectFinder6 {
 						
 						reference.addNextLevel(new Coord2D(0, sideBump), null);
 						if(BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
+							
+							System.out.println("Prev ground indexes:");
+							for(int j=0; j<layerIndex; j++) {
+								System.out.println(cuboidToBuild.prevGroundedIndexes[j]);
+							}
+							System.out.println("------------");
+							
 							System.out.println("Unique solution found");
 							System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 							

@@ -14,15 +14,16 @@ public class TopAndBottomTransitionList {
 			int indexToRing[],
 			int transitionTopOrBottomSide[][]) {
 		
-		for(int i=0; i<transitionTopOrBottomSide.length; i++) {
-			for(int j=0; j<transitionTopOrBottomSide[0].length; j++) {
+		for(int solType=0; solType<transitionTopOrBottomSide.length; solType++) {
+			for(int cellIndex=0; cellIndex<transitionTopOrBottomSide[0].length; cellIndex++) {
 				
-				if(transitionTopOrBottomSide[i][j] != -1) {
+				if(transitionTopOrBottomSide[solType][cellIndex] != -1) {
 					
-					if(indexToRing[i] > 0 
-							|| indexToRing[transitionTopOrBottomSide[i][j]] > 0
+					if(indexToRing[cellIndex] > 0 
+							|| indexToRing[transitionTopOrBottomSide[solType][cellIndex]] > 0
 							) {
-						transitionTopOrBottomSide[i][j] = -1;
+						transitionTopOrBottomSide[solType][cellIndex] = -1;
+						System.out.println("reset transitionTopOrBottomSide: " + solType + ", " + cellIndex);
 					}
 					
 				}
@@ -131,6 +132,9 @@ public class TopAndBottomTransitionList {
 			
 			//ADD transitionTopOrBottomSide
 			for(int i=0; i<tmpIndexRotLastRingUsed.length; i++) {
+				if( i == edgeSquareOnBottom) {
+					continue;
+				}
 				for(int j=0; j<tmpIndexRotLastRingUsed[0].length; j++) {
 	
 					/*if(tmpIndexRotBottom[i][j] == true ) {
@@ -141,23 +145,9 @@ public class TopAndBottomTransitionList {
 					if(tmpIndexRotBottom[i][j] == true 
 							&& (  		(i % 4 == outputBottomIndexMod4onRot0 && j==0)
 									||  (i % 4 == (outputBottomIndexMod4onRot0 + 3)%4 && j==2)
-									||   i == edgeSquareOnBottom
 								)
 						) {
 						
-						if(i < neighbours.length - 1
-								&& i == edgeSquareOnBottom
-								&& ((i % 4 == outputBottomIndexMod4onRot0 && j==0)
-										||  (i % 4 == (outputBottomIndexMod4onRot0 + 3)%4 && j==2)
-								)
-							) {
-
-							System.out.println("ERROR: unexpected edge square in addBottomTransitions");
-							System.out.println(i);
-							System.out.println(outputBottomIndexMod4onRot0);
-							System.out.println(j);
-							System.exit(1);
-						}
 						
 						//System.out.println("STOP");
 						//System.exit(1);
@@ -192,13 +182,6 @@ public class TopAndBottomTransitionList {
 										[newGroundedRotationAbove[i][j][tmpSideBump]] == false
 										
 										&& tmpSideBump == 6
-										)
-									||	
-										(
-										tmpIndexRotLastRingUsed
-										[newGroundedIndexAbove[i][j][tmpSideBump]]
-										[newGroundedRotationAbove[i][j][tmpSideBump]] == false
-										&& i == edgeSquareOnBottom
 										)
 									||
 									tmpIndexRotLastRingUsed
