@@ -693,6 +693,10 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 							tmpIndexRotLastRing[i][j] = false;
 						}
 					}
+					
+					TopAndBottomTransitionList.refreshTransitionListForBottom(
+							indexToRing,
+							transitionTopOrBottomSide);
 
 					//tmpIndexRotTop[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap] = true;
 					
@@ -827,11 +831,9 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 						}
 					}
 					
-					if(sumIndex1 * 2 != sumIndex0) {
-						System.out.println("Warning; transition counts don't make sense?");
-						
-						
-					}
+					//if(sumIndex1 * 2 != sumIndex0) {
+					//	System.out.println("Warning; transition counts don't make sense?");	
+					//}
 					System.out.println("Transition count index 0: " + sumIndex0);
 					System.out.println("Transition count index 1: " + sumIndex1);
 					

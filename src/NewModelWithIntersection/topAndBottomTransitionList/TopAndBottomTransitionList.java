@@ -9,6 +9,28 @@ public class TopAndBottomTransitionList {
 		// TODO Auto-generated method stub
 
 	}
+
+	public static int[][] refreshTransitionListForBottom(
+			int indexToRing[],
+			int transitionTopOrBottomSide[][]) {
+		
+		for(int i=0; i<transitionTopOrBottomSide.length; i++) {
+			for(int j=0; j<transitionTopOrBottomSide[0].length; j++) {
+				
+				if(transitionTopOrBottomSide[i][j] != -1) {
+					
+					if(indexToRing[i] > 0 
+							|| indexToRing[transitionTopOrBottomSide[i][j]] > 0
+							) {
+						transitionTopOrBottomSide[i][j] = -1;
+					}
+					
+				}
+			}
+		}
+		
+		return transitionTopOrBottomSide;
+	}
 	
 	public static int[][] addBottomTransitionsBottom2Mod4(
 			CoordWithRotationAndIndex neighbours[][],
