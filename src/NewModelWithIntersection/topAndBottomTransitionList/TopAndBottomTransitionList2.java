@@ -140,6 +140,11 @@ public class TopAndBottomTransitionList2 {
 		Coord2D curIndexFromTopOrBottomInput =  firstIndexFromTopOrBottomInput;
 		Coord2D curIndexFirstOrLastRing =  firstIndexGoingToFirstOrLastRingInput;
 		
+		if(curIndexFromTopOrBottomInput.j % 2 != 0) {
+			System.out.println("AHH. Fix edge case with 1x1 square");
+			System.exit(1);
+		}
+		
 		do {
 			ret[curIndexFromTopOrBottomInput.i] = curIndexFirstOrLastRing.i;
 			
