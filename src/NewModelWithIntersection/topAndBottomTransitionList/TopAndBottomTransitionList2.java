@@ -8,9 +8,6 @@ public class TopAndBottomTransitionList2 {
 	public static int[] addBottomTransitionsBottom(
 			int dimensions[],
 			CoordWithRotationAndIndex neighbours[][],
-			int newGroundedIndexAbove[][][],
-			int newGroundedRotationAbove[][][],
-			int bottomOrTopCellIndex,
 			Coord2D firstIndexFromTopOrBottomInput,
 			Coord2D firstIndexGoingToFirstOrLastRingInput,
 			int indexToRing[],
@@ -70,9 +67,6 @@ public class TopAndBottomTransitionList2 {
 		return addBottomTransitionsBottomByGoingAround(
 				dimensions,
 				neighbours,
-				newGroundedIndexAbove,
-				newGroundedRotationAbove,
-				bottomOrTopCellIndex,
 				adjustedTopBottomCoord,
 				firstIndexGoingToFirstOrLastRingToUse,
 				indexToRing,
@@ -132,13 +126,9 @@ public class TopAndBottomTransitionList2 {
 		return dimensions[1] < firstIndexFromTopOrBottom.i;
 	}
 	
-	
 	private static int[] addBottomTransitionsBottomByGoingAround(
 			int dimensions[],
 			CoordWithRotationAndIndex neighbours[][],
-			int newGroundedIndexAbove[][][],
-			int newGroundedRotationAbove[][][],
-			int bottomOrTopCellIndex,
 			Coord2D firstIndexFromTopOrBottomInput,
 			Coord2D firstIndexGoingToFirstOrLastRingInput,
 			int indexToRing[],
@@ -187,7 +177,7 @@ public class TopAndBottomTransitionList2 {
 		) {
 		
 		if(curIndexFromTopOrBottomInput.i == index1x1Cell) {
-			//TODO
+
 			Coord2D cellToRight = tryAttachCellInDir(neighbours, curIndexFromTopOrBottomInput.i, curIndexFromTopOrBottomInput.j, RIGHT);
 
 			Coord2D ret = curIndexFromTopOrBottomInput;
@@ -235,11 +225,8 @@ public class TopAndBottomTransitionList2 {
 				return ret;
 			} else {
 				
-				//TODO: find the correct rotation of 1x1?
-				//or:
-				// It doesn't matter if it's wrong!
-				//Just say the check doesn't apply to 1x1 to 4x1 layer transitions.
-				
+				//Note the the rotation of the 1x1 cell just needs to be convinient for the algo,
+				// it doesn't need to be 'right'.
 				ret = new Coord2D(ret.i, (ret.j + 2) % NUM_ROTATIONS);
 			
 				return ret;
@@ -285,71 +272,3 @@ public class TopAndBottomTransitionList2 {
 	}
 	
 }
-
-
-/*
-private static boolean is1x1LeftOfCell(
-		CoordWithRotationAndIndex neighbours[][],
-		int dimensions[],
-		Coord2D firstIndexFromTopOrBottom,
-		int indexToRing[]
-		) {
-	
-	int numCells = getNumCells(dimensions);
-	
-
-	Coord2D tmp1 = firstIndexFromTopOrBottom;
-
-	if(tmp1.j == 2) {
-		//Flip it:
-		tmp1 = new Coord2D(tmp1.i + 1, 0);
-	}
-	
-	if(numCells - dimensions[1] <= firstIndexFromTopOrBottom.i) {
-		
-		
-		while(tmp1.i < numCells && indexToRing[tmp1.i] != -1) {
-			for(int j=0; j<4; j++) {
-				tmp1 = tryAttachCellInDir(neighbours, tmp1.i, tmp1.j, RIGHT);
-			}
-		}
-		
-		if(tmp1.i == numCells) {
-			return true;
-		} else {
-			return false;
-		}
-		
-	} else {
-		
-		while(tmp1.i > 0 && indexToRing[tmp1.i] != -1) {
-			for(int j=0; j<4; j++) {
-				tmp1 = tryAttachCellInDir(neighbours, tmp1.i, tmp1.j, LEFT);
-			}
-		}
-		
-		if(tmp1.i == 0) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-}
-*/
-
-//Feasibility doesn't matter here:
-/*boolean feasibleSoFar = false;
-
-for(int sideBump = 3; sideBump<=9; sideBump++) {
-	//newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]
-	if(newGroundedIndexAbove[adjustedCoord.i][adjustedCoord.j][sideBump] == firstIndexGoingToFirstOrLastRingToUse.i
-		&& newGroundedRotationAbove[adjustedCoord.i][adjustedCoord.j][sideBump] == firstIndexGoingToFirstOrLastRingToUse.j) {
-		feasibleSoFar = true;
-	}
-}
-
-int ret[] = new int[getNumCells(dimensions)];
-if(feasibleSoFar) {
-	//TODO: search subtask
-	
-}*/
