@@ -11,7 +11,8 @@ public class TopAndBottomTransitionList2 {
 			Coord2D firstIndexFromTopOrBottomInput,
 			Coord2D firstIndexGoingToFirstOrLastRingInput,
 			int indexToRing[],
-			boolean put1x1OnOtherSide
+			boolean put1x1OnOtherSide,
+			int offsetRingTransitionOtherSide
 	) {
 		
 		if(indexToRing[firstIndexFromTopOrBottomInput.i] != -1) {
@@ -45,14 +46,15 @@ public class TopAndBottomTransitionList2 {
 			if(is1x1LeftOfCell2(neighbours, dimensions, firstIndexFromTopOrBottomToUse)) {
 				
 				//Adjust Coord to put 1x1 cell on the right
-				adjustedTopBottomCoord = new Coord2D(firstIndexFromTopOrBottomToUse.i - 1, firstIndexFromTopOrBottomToUse.j);
+				adjustedTopBottomCoord = new Coord2D(firstIndexFromTopOrBottomToUse.i - 1, firstIndexFromTopOrBottomToUse.j, offsetRingTransitionOtherSide);
 	
 			} else {
 				
 				//Adjust Coord to put 1x1 cell on the left:
-				adjustedTopBottomCoord = new Coord2D(firstIndexFromTopOrBottomToUse.i + 1, firstIndexFromTopOrBottomToUse.j);
+				adjustedTopBottomCoord = new Coord2D(firstIndexFromTopOrBottomToUse.i + 1, firstIndexFromTopOrBottomToUse.j, offsetRingTransitionOtherSide);
 				
 			}
+			
 		} else {
 			
 			adjustedTopBottomCoord = firstIndexFromTopOrBottomToUse;
@@ -70,7 +72,8 @@ public class TopAndBottomTransitionList2 {
 				adjustedTopBottomCoord,
 				firstIndexGoingToFirstOrLastRingToUse,
 				indexToRing,
-				index1x1Cell
+				index1x1Cell,
+				0
 		);
 		
 	}
@@ -132,7 +135,8 @@ public class TopAndBottomTransitionList2 {
 			Coord2D firstIndexFromTopOrBottomInput,
 			Coord2D firstIndexGoingToFirstOrLastRingInput,
 			int indexToRing[],
-			int index1x1Cell
+			int index1x1Cell,
+			int offsetRingTransitionOtherSide
 	) {
 		
 		int ret[] = new int[getNumCells(dimensions)];
@@ -144,6 +148,18 @@ public class TopAndBottomTransitionList2 {
 			System.out.println("AHH. Fix edge case with 1x1 square");
 			System.exit(1);
 		}
+		
+		//Adjust the initial ring transition according to an offset:
+		for(int i=0; i<Math.abs(offsetRingTransitionOtherSide); i++) {
+			for(int j=0; j<4; j++) {
+				if(offsetRingTransitionOtherSide > 0) {
+					curIndexFirstOrLastRing = tryAttachCellInDir(neighbours, curIndexFirstOrLastRing.i, curIndexFirstOrLastRing.j, RIGHT);
+				} else {
+					curIndexFirstOrLastRing = tryAttachCellInDir(neighbours, curIndexFirstOrLastRing.i, curIndexFirstOrLastRing.j, LEFT);
+				}
+			}
+		}
+
 		
 		do {
 			ret[curIndexFromTopOrBottomInput.i] = curIndexFirstOrLastRing.i;
