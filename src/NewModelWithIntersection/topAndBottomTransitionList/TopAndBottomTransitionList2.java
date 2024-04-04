@@ -46,12 +46,12 @@ public class TopAndBottomTransitionList2 {
 			if(is1x1LeftOfCell2(neighbours, dimensions, firstIndexFromTopOrBottomToUse)) {
 				
 				//Adjust Coord to put 1x1 cell on the right
-				adjustedTopBottomCoord = new Coord2D(firstIndexFromTopOrBottomToUse.i - 1, firstIndexFromTopOrBottomToUse.j, offsetRingTransitionOtherSide);
+				adjustedTopBottomCoord = new Coord2D(firstIndexFromTopOrBottomToUse.i - 1, firstIndexFromTopOrBottomToUse.j);
 	
 			} else {
 				
 				//Adjust Coord to put 1x1 cell on the left:
-				adjustedTopBottomCoord = new Coord2D(firstIndexFromTopOrBottomToUse.i + 1, firstIndexFromTopOrBottomToUse.j, offsetRingTransitionOtherSide);
+				adjustedTopBottomCoord = new Coord2D(firstIndexFromTopOrBottomToUse.i + 1, firstIndexFromTopOrBottomToUse.j);
 				
 			}
 			
@@ -73,7 +73,7 @@ public class TopAndBottomTransitionList2 {
 				firstIndexGoingToFirstOrLastRingToUse,
 				indexToRing,
 				index1x1Cell,
-				0
+				offsetRingTransitionOtherSide
 		);
 		
 	}
