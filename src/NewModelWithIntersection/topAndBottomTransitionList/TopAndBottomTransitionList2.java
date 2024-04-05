@@ -141,6 +141,10 @@ public class TopAndBottomTransitionList2 {
 		
 		int ret[] = new int[getNumCells(dimensions)];
 		
+		for(int i=0; i<ret.length; i++) {
+			ret[i] = -1;
+		}
+		
 		Coord2D curIndexFromTopOrBottomInput =  firstIndexFromTopOrBottomInput;
 		Coord2D curIndexFirstOrLastRing =  firstIndexGoingToFirstOrLastRingInput;
 		
@@ -163,6 +167,7 @@ public class TopAndBottomTransitionList2 {
 		
 		do {
 			ret[curIndexFromTopOrBottomInput.i] = curIndexFirstOrLastRing.i;
+			System.out.println(curIndexFromTopOrBottomInput.i + " to " + curIndexFirstOrLastRing.i);
 			
 			ret[topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFirstOrLastRing.i, curIndexFirstOrLastRing.j).i] =
 					topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFromTopOrBottomInput.i, curIndexFromTopOrBottomInput.j).i;
@@ -177,15 +182,11 @@ public class TopAndBottomTransitionList2 {
 					indexToRing,
 					index1x1Cell);
 			
-		} while(curIndexFromTopOrBottomInput.i != firstIndexFromTopOrBottomInput.i
-				&& curIndexFirstOrLastRing.i != curIndexFirstOrLastRing.i
-				&& curIndexFirstOrLastRing.j != curIndexFirstOrLastRing.j);
+		} while(! (curIndexFromTopOrBottomInput.i == firstIndexFromTopOrBottomInput.i
+				&& curIndexFirstOrLastRing.i == curIndexFirstOrLastRing.i
+				&& curIndexFirstOrLastRing.j == curIndexFirstOrLastRing.j)
+				);
 		
-		if(index1x1Cell != curIndexFromTopOrBottomInput.i
-				&& curIndexFromTopOrBottomInput.j != firstIndexFromTopOrBottomInput.j) {
-			System.out.println("ERROR: unexpected rotation in: addBottomTransitionsBottomByGoingAround");
-			System.exit(1);
-		}
 		
 		return ret;
 	}
@@ -197,30 +198,30 @@ public class TopAndBottomTransitionList2 {
 			int index1x1Cell
 		) {
 		
+
+		System.out.println("DEBUG: " + curIndexFromTopOrBottomInput.i + ", " + curIndexFromTopOrBottomInput.j);
+		
+		Coord2D ret = curIndexFromTopOrBottomInput;
+		
+		
 		if(curIndexFromTopOrBottomInput.i == index1x1Cell) {
-
+			
 			Coord2D cellToRight = tryAttachCellInDir(neighbours, curIndexFromTopOrBottomInput.i, curIndexFromTopOrBottomInput.j, RIGHT);
-
-			Coord2D ret = curIndexFromTopOrBottomInput;
 			
 			if(indexToRing[cellToRight.i] != -1) {
-				
-				for(int j=0; j<4; j++) {
-					ret = tryAttachCellInDir(neighbours, ret.i, ret.j, RIGHT);
-				}
-			} else {
 				int rotation = (curIndexFromTopOrBottomInput.j + 1) % NUM_ROTATIONS;
 				if(rotation % 2 == 1) {
 					rotation = (rotation + 1) % NUM_ROTATIONS;
 				}
 				ret = new Coord2D(curIndexFromTopOrBottomInput.i, rotation);
 				
-				ret = tryAttachCellInDir(neighbours, ret.i, ret.j, RIGHT);
-				
 			}
 			
+			ret = tryAttachCellInDir(neighbours, ret.i, ret.j, RIGHT);
+		
+			
 			if(indexToRing[ret.i] != -1) {
-				System.out.println("ERROR: I messed up getNextTopBottomIndex!");
+				System.out.println("ERROR: I messed up getNextTopBottomIndex! (" + ret.i + ")");
 				System.exit(1);
 			}
 			
@@ -228,30 +229,30 @@ public class TopAndBottomTransitionList2 {
 			
 		} else {
 			
-			Coord2D cellToRight = tryAttachCellInDir(neighbours, curIndexFromTopOrBottomInput.i, curIndexFromTopOrBottomInput.j, RIGHT);
-
-			Coord2D ret = curIndexFromTopOrBottomInput;
+			Coord2D cellToRight = curIndexFromTopOrBottomInput;
+			boolean outOfBounds = false;
+			for(int j=0; j<4; j++) {
+				cellToRight = tryAttachCellInDir(neighbours, cellToRight.i, cellToRight.j, RIGHT);
+				if(indexToRing[cellToRight.i] != -1) {
+					outOfBounds = true;
+				}
+			}
 			
-			if(indexToRing[cellToRight.i] != -1) {
+			
+			
+			if(outOfBounds) {
 				
 				ret = topLeftIndexRotAfter180Flip1x4layer(neighbours, ret.i, ret.j);
 				return ret;
-			}
-			
-			for(int j=0; j<4; j++) {
-				ret = tryAttachCellInDir(neighbours, ret.i, ret.j, RIGHT);
-			}
-			
-			if(ret.i != index1x1Cell) {
-				return ret;
 			} else {
-				
-				//Note the the rotation of the 1x1 cell just needs to be convinient for the algo,
-				// it doesn't need to be 'right'.
-				ret = new Coord2D(ret.i, (ret.j + 2) % NUM_ROTATIONS);
 			
+				for(int j=0; j<4; j++) {
+					ret = tryAttachCellInDir(neighbours, ret.i, ret.j, RIGHT);
+				}
+				
 				return ret;
 			}
+			
 		}
 		
 	}

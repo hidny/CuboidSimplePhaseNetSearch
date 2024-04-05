@@ -10,6 +10,7 @@ import Model.NeighbourGraphCreator;
 import Model.Utils;
 import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
 import NewModelWithIntersection.topAndBottomTransitionList.TopAndBottomTransitionList;
+import NewModelWithIntersection.topAndBottomTransitionList.TopAndBottomTransitionList2;
 
 public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 
@@ -18,14 +19,12 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	
 	public int dimensions[] = new int[3];
 
-	private FastRegionCheck fastRegionCheck;
-
-	public CuboidToFoldOnGrained(int a, int b, int c, FastRegionCheck fastRegionCheck) {
-		this(a, b, c, true, true, fastRegionCheck);
+	public CuboidToFoldOnGrained(int a, int b, int c) {
+		this(a, b, c, true, true);
 	}
 
 
-	public CuboidToFoldOnGrained(int a, int b, int c, boolean verbose, boolean setup, FastRegionCheck fastRegionCheck) {
+	public CuboidToFoldOnGrained(int a, int b, int c, boolean verbose, boolean setup) {
 
 		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c, verbose);
 		
@@ -42,12 +41,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		
 		curState = new long[numLongsToUse];
 		
-		//Hacky mechanism for not recalculating FastRegionCheck every time we construct CuboidToFoldOnGrained:
-		if(fastRegionCheck == null) {
-			this.fastRegionCheck = new FastRegionCheck(neighbours, curState);
-		} else {
-			this.fastRegionCheck = fastRegionCheck;
-		}
 				
 		if(setup) {
 			setupAnswerSheetInBetweenLayers();
@@ -263,25 +256,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	// result: index where we allowed to land on
 	private int transitionTopOrBottomSide[][];
 	
-	// Filter the cells around the new layer and turn that into number (use the grounded index and rotation for help)
-	// then use a lookup-table to decide if the region split (use the lookup table associate with the grounded index and rotation for help)
-	public boolean unoccupiedRegionSplit(long newLayerDetails[], int sideBump) {
-		
-		
-		int tmp1 = newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
-		int tmp2 = newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
-		
-		if(fastRegionCheck.regionSplit(curState, tmp1, tmp2)) {
-			//System.out.println("test " + topLeftGroundedIndex + "," + topLeftGroundRotationRelativeFlatMap);
-			//System.out.println("side bump: " + sideBump);
-			//printCurrentStateOnOtherCuboidsFlatMap();
-			//System.exit(1);
-			return true;
-		} else {
-			return false;
-		}
-		
-	}
+
 
 	public boolean isCellIoccupied(int i) {
 		int indexArray = i / NUM_BYTES_IN_LONG;
@@ -434,6 +409,27 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				}
 				
 				if(this.currentLayerIndex == 0){
+					
+
+					System.out.println("testing 2nd attempt");
+					
+					int transitions0[] = TopAndBottomTransitionList2.addBottomTransitionsBottom(dimensions,
+							neighbours,
+							new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap),
+							new Coord2D(newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump],
+									    newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]
+							),
+							indexToRing,
+							false,
+							0);
+					
+					for(int i=0; i<transitions0.length; i++) {
+						if(transitions0[i] != -1) {
+							System.out.println("transitions0[" + i + "] = " + transitions0[i]);
+						}
+					}
+					System.exit(1);
+					
 					//Figure this out...
 					//TODO: this is complicated! Put it into its own class!
 					
@@ -889,7 +885,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 			}
 		}
 		//END TODO
-		return ! unoccupiedRegionSplit(tmp, sideBump);
+		return true;
 		
 	}
 	
@@ -1521,10 +1517,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
 	}
 
-	public FastRegionCheck getFastRegionCheck() {
-		return fastRegionCheck;
-	}
-
 	//DEBUG PRINT STATE ON OTHER CUBOID:
 	public void printCurrentStateOnOtherCuboidsFlatMap() {
 		
@@ -1533,8 +1525,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				this.dimensions[1],
 				this.dimensions[2],
 				false,
-				false,
-				this.fastRegionCheck
+				false
 				);
 		
 		toPrint.initializeNewBottomIndexAndRotation(

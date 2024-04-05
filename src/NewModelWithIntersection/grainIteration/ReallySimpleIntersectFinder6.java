@@ -94,9 +94,8 @@ public class ReallySimpleIntersectFinder6 {
 		solutionResolver = new StandardResolverForSmallIntersectSolutions();
 		
 		
-		CuboidToFoldOnGrained cuboidToBuild = new CuboidToFoldOnGrained(a, b, c, null);
+		CuboidToFoldOnGrained cuboidToBuild = new CuboidToFoldOnGrained(a, b, c);
 		
-		FastRegionCheck fastRegionCheck = cuboidToBuild.getFastRegionCheck();
 		
 		if(cuboidToBuild.getNumCellsToFill() % 4 != 2) {
 			System.out.println("ERROR: trying to find intersect between Nx1x1 solution and a cuboid solution that doesn't have a surface area that matches any Nx1x1 cuboid.");
@@ -133,7 +132,7 @@ public class ReallySimpleIntersectFinder6 {
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
-			cuboidToBuild = new CuboidToFoldOnGrained(a, b, c, fastRegionCheck);
+			cuboidToBuild = new CuboidToFoldOnGrained(a, b, c);
 			cuboidToBuild.initializeNewBottomIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation);
 			
 			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);

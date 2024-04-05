@@ -42,7 +42,7 @@ public class IntersectFinderWithMx5x1 {
 		solutionResolver = new StandardResolverForSmallIntersectSolutions();
 		
 		
-		CuboidToFoldOnGrained cuboidToBuild = new CuboidToFoldOnGrained(a, b, c, null);
+		CuboidToFoldOnGrained cuboidToBuild = new CuboidToFoldOnGrained(a, b, c);
 		
 		
 		if(cuboidToBuild.getNumCellsToFill() % 4 != 2) {
@@ -57,7 +57,7 @@ public class IntersectFinderWithMx5x1 {
 		}
 		
 		int m = (cuboidToBuild.getNumCellsToFill() - 10) / 12;
-		CuboidToFoldOnGrained Mby5by1cuboidToBuild = new CuboidToFoldOnGrained(m, 5, 1, null);
+		CuboidToFoldOnGrained Mby5by1cuboidToBuild = new CuboidToFoldOnGrained(m, 5, 1);
 		int mby5by1StartRotations[] = new int[3];
 		mby5by1StartRotations[0] = 0;
 		//I'm not sure if 2 is needed, but it can't hurt:
@@ -82,8 +82,6 @@ public class IntersectFinderWithMx5x1 {
 		int NofNx1x1Cuboid = getNumLayers(cuboidToBuild);
 		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(NofNx1x1Cuboid);
 
-		FastRegionCheck fastRegionCheck = cuboidToBuild.getFastRegionCheck();
-		FastRegionCheck fastRegionCheckMby5by1 = cuboidToBuildMby5by1.getFastRegionCheck();
 		
 		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForNx1x1.getUniqueRotationListsWithCellInfo(cuboidToBuild);
 		
@@ -116,10 +114,10 @@ public class IntersectFinderWithMx5x1 {
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
-			cuboidToBuild = new CuboidToFoldOnGrained(a, b, c, fastRegionCheck);
+			cuboidToBuild = new CuboidToFoldOnGrained(a, b, c);
 			cuboidToBuild.initializeNewBottomIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation);
 			
-			cuboidToBuildMby5by1 = new CuboidToFoldOnGrained(m, 5, 1, fastRegionCheckMby5by1);
+			cuboidToBuildMby5by1 = new CuboidToFoldOnGrained(m, 5, 1);
 			cuboidToBuildMby5by1.initializeNewBottomIndexAndRotation(0, mby5by1StartRotation);
 			
 			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, cuboidToBuildMby5by1);
