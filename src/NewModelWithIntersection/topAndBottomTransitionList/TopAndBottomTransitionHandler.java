@@ -12,9 +12,11 @@ public class TopAndBottomTransitionHandler {
 	
 	private int transitionsTop[][][];
 	private int topTransitionListIndex[] = new int[2];
+	private int topTransitionIndexSet[] = new int[2];
 	
 	private int transitionsBottom[][][];
 	private int bottomTransitionListIndex[] = new int[2];
+	private int bottomTransitionIndexSet[] = new int[2];
 
 	
 	
@@ -50,6 +52,8 @@ public class TopAndBottomTransitionHandler {
 
 			topTransitionListIndex[0] = -1;
 			topTransitionListIndex[1] = -1;
+			topTransitionIndexSet[0] = -1;
+			topTransitionIndexSet[1] = -1;
 			
 		} else if(currentLayerIndex == dimensions[0] - 1) {
 			
@@ -62,6 +66,10 @@ public class TopAndBottomTransitionHandler {
 			);
 			bottomTransitionListIndex[0] = -1;
 			bottomTransitionListIndex[1] = -1;
+			
+			bottomTransitionIndexSet[0] = -1;
+			bottomTransitionIndexSet[1] = -1;
+			
 			
 		}
 		
@@ -78,10 +86,12 @@ public class TopAndBottomTransitionHandler {
 		if(maxRingIndex == 0) {
 			
 			boolean ret =  isTransitionValid(
+					currentLayerIndex,
 					currentIndexRotation,
 					nextIndexRotation,
 					transitionsTop,
-					topTransitionListIndex
+					topTransitionListIndex,
+					topTransitionIndexSet
 				);
 
 			//TODO: make sure the state is updated
@@ -90,10 +100,12 @@ public class TopAndBottomTransitionHandler {
 		} else {
 
 			boolean ret = isTransitionValid(
+					currentLayerIndex,
 					currentIndexRotation,
 					nextIndexRotation,
 					transitionsBottom,
-					bottomTransitionListIndex
+					bottomTransitionListIndex,
+					bottomTransitionIndexSet
 				);
 
 			//TODO: make sure the state is updated
@@ -143,21 +155,30 @@ public class TopAndBottomTransitionHandler {
 	
 
 	private static boolean isTransitionValid(
+			int currentLayerIndex,
 			Coord2D currentIndexRotation,
 			Coord2D nextIndexRotation,
 			int transitionsTopOrBottom[][][],
-			int topTransitionListIndexTopOrBottom[]
+			int topTransitionListIndexTopOrBottom[],
+			int transitionIndexSet[]
 		) {
 		
 		for(int i=0; i<transitionsTopOrBottom.length; i++) {
 			for(int j=0; j<transitionsTopOrBottom[i].length; j++) {
 				
-				if(topTransitionListIndexTopOrBottom[i] == j || topTransitionListIndexTopOrBottom[i] == -1 ) {
+				if(topTransitionListIndexTopOrBottom[i] == j 
+						|| topTransitionListIndexTopOrBottom[i] == -1
+						|| transitionIndexSet[i] == -1
+						|| transitionIndexSet[i] >= currentLayerIndex) {
 					
 					if(transitionsTopOrBottom[i][j][currentIndexRotation.i] == nextIndexRotation.i) {
 						
-						topTransitionListIndexTopOrBottom[i] = j;
-						
+						if(topTransitionListIndexTopOrBottom[i] == -1
+								|| transitionIndexSet[i] >= currentLayerIndex) {
+							
+							topTransitionListIndexTopOrBottom[i] = j;
+							transitionIndexSet[i] = currentLayerIndex;
+						}
 						return true;
 						
 					}
