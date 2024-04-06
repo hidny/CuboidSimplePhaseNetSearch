@@ -5,39 +5,46 @@ import Coord.CoordWithRotationAndIndex;
 
 public class TopAndBottomTransitionList2 {
 	
-	public static int[] addBottomTransitionsBottom(
+	public static int[] addBottomTransitionsTopBottom(
 			int dimensions[],
 			CoordWithRotationAndIndex neighbours[][],
-			Coord2D firstIndexFromTopOrBottomInput,
-			Coord2D firstIndexGoingToFirstOrLastRingInput,
+			Coord2D currentIndexRotation,
+			Coord2D nextIndexRotation,
 			int indexToRing[],
 			boolean put1x1OnOtherSide,
 			int offsetRingTransitionOtherSide
 	) {
 		
-		if(indexToRing[firstIndexFromTopOrBottomInput.i] != -1) {
-			System.out.println("ERROR: indexToRing should be -1");
-			System.exit(1);
-		}
-
-		if(indexToRing[firstIndexGoingToFirstOrLastRingInput.i] == -1) {
-			System.out.println("ERROR: firstIndexGoingToFirstOrLastRingInput should not be -1");
+		if(! (indexToRing[currentIndexRotation.i] == -1 ^ indexToRing[nextIndexRotation.i] == -1)) {
+			System.out.println("ERROR: addBottomTransitionsTopBottom should have one index on top/bottom and one index not on top/bottom");
 			System.exit(1);
 		}
 		
-		Coord2D firstIndexFromTopOrBottomToUse = firstIndexFromTopOrBottomInput;
-		Coord2D firstIndexGoingToFirstOrLastRingToUse = firstIndexGoingToFirstOrLastRingInput;
+		Coord2D firstIndexFromTopOrBottomToUse = null;
+		Coord2D firstIndexGoingToFirstOrLastRingToUse = null;
+		if(indexToRing[currentIndexRotation.i] == -1) {
+			firstIndexFromTopOrBottomToUse = currentIndexRotation;
+			firstIndexGoingToFirstOrLastRingToUse = nextIndexRotation;
+			
+		} else if(indexToRing[nextIndexRotation.i] == -1){
+			firstIndexFromTopOrBottomToUse = nextIndexRotation;
+			firstIndexGoingToFirstOrLastRingToUse = currentIndexRotation;
+			
+		} else {
+			System.out.println("ERROR: addBottomTransitionsTopBottom should have one index on top/bottom and one index not on top/bottom. (2)");
+			System.exit(1);
+		}
 		
 		if(firstIndexGoingToFirstOrLastRingToUse.j == 0) {
 			firstIndexFromTopOrBottomToUse = topLeftIndexRotAfter180Flip1x4layer(
 					neighbours, 
-					firstIndexFromTopOrBottomInput.i, 
-					firstIndexFromTopOrBottomInput.j);
+					currentIndexRotation.i, 
+					currentIndexRotation.j);
 			
 			firstIndexGoingToFirstOrLastRingToUse = topLeftIndexRotAfter180Flip1x4layer(
 					neighbours, 
-					firstIndexGoingToFirstOrLastRingInput.i, 
-					firstIndexGoingToFirstOrLastRingInput.j);
+					nextIndexRotation.i, 
+					nextIndexRotation.j);
 		}
 
 		Coord2D adjustedTopBottomCoord = null;

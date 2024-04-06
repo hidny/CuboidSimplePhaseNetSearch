@@ -9,6 +9,7 @@ import Model.DataModelViews;
 import Model.NeighbourGraphCreator;
 import Model.Utils;
 import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
+import NewModelWithIntersection.topAndBottomTransitionList.TopAndBottomTransitionHandler;
 import NewModelWithIntersection.topAndBottomTransitionList.TopAndBottomTransitionList;
 import NewModelWithIntersection.topAndBottomTransitionList.TopAndBottomTransitionList2;
 
@@ -328,6 +329,9 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		return true;
 	}
 	
+	//TODO: don't make this static:
+	public static TopAndBottomTransitionHandler topAndBottomHandler = new TopAndBottomTransitionHandler();
+	
 	public boolean isNewLayerValidSimpleFast(int sideBump) {
 	
 		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
@@ -413,7 +417,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 
 					System.out.println("testing 2nd attempt");
 					
-					int transitions0[] = TopAndBottomTransitionList2.addBottomTransitionsBottom(dimensions,
+					int transitions0[] = TopAndBottomTransitionList2.addBottomTransitionsTopBottom(dimensions,
 							neighbours,
 							new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap),
 							new Coord2D(newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump],
@@ -430,7 +434,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 					}
 					
 					System.out.println("Try another set:");
-					int transitions1[] = TopAndBottomTransitionList2.addBottomTransitionsBottom(dimensions,
+					int transitions1[] = TopAndBottomTransitionList2.addBottomTransitionsTopBottom(dimensions,
 							neighbours,
 							new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap),
 							new Coord2D(newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump],
@@ -445,6 +449,19 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 							System.out.println("transitions1[" + i + "] = " + transitions1[i]);
 						}
 					}
+					
+					System.out.println("-----------------------------Try handler");
+					
+					topAndBottomHandler.isTopBottomTranstionsPossiblyFine(
+							currentLayerIndex,
+							dimensions,
+							neighbours,
+							new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap),
+							new Coord2D(newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump],
+									    newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]
+							),
+							indexToRing
+						);
 					
 					System.exit(1);
 					
