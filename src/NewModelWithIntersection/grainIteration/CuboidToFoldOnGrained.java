@@ -428,6 +428,24 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 							System.out.println("transitions0[" + i + "] = " + transitions0[i]);
 						}
 					}
+					
+					System.out.println("Try another set:");
+					int transitions1[] = TopAndBottomTransitionList2.addBottomTransitionsBottom(dimensions,
+							neighbours,
+							new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap),
+							new Coord2D(newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump],
+									    newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]
+							),
+							indexToRing,
+							true,
+							1);
+
+					for(int i=0; i<transitions1.length; i++) {
+						if(transitions1[i] != -1) {
+							System.out.println("transitions1[" + i + "] = " + transitions1[i]);
+						}
+					}
+					
 					System.exit(1);
 					
 					//Figure this out...

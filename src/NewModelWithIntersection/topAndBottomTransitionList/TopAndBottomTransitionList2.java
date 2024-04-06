@@ -169,8 +169,15 @@ public class TopAndBottomTransitionList2 {
 			ret[curIndexFromTopOrBottomInput.i] = curIndexFirstOrLastRing.i;
 			System.out.println(curIndexFromTopOrBottomInput.i + " to " + curIndexFirstOrLastRing.i);
 			
-			ret[topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFirstOrLastRing.i, curIndexFirstOrLastRing.j).i] =
-					topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFromTopOrBottomInput.i, curIndexFromTopOrBottomInput.j).i;
+			if(curIndexFromTopOrBottomInput.i != index1x1Cell) {
+				//1x4 on ring attaches to 1x4 on top/bottom side:
+				ret[topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFirstOrLastRing.i, curIndexFirstOrLastRing.j).i] =
+						topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFromTopOrBottomInput.i, curIndexFromTopOrBottomInput.j).i;
+			} else {
+				//1x4 on ring attaches to 1x1:
+				ret[topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFirstOrLastRing.i, curIndexFirstOrLastRing.j).i] =
+						curIndexFromTopOrBottomInput.i;
+			}
 			
 			for(int j=0; j<4; j++) {
 				curIndexFirstOrLastRing = tryAttachCellInDir(neighbours, curIndexFirstOrLastRing.i, curIndexFirstOrLastRing.j, RIGHT);
