@@ -22,12 +22,13 @@ public class TopAndBottomTransitionList2 {
 		
 		Coord2D firstIndexFromTopOrBottomToUse = null;
 		Coord2D firstIndexGoingToFirstOrLastRingToUse = null;
+
 		if(indexToRing[currentIndexRotation.i] == -1) {
+			
 			firstIndexFromTopOrBottomToUse = currentIndexRotation;
 			firstIndexGoingToFirstOrLastRingToUse = nextIndexRotation;
 			
 		} else if(indexToRing[nextIndexRotation.i] == -1){
-			
 			
 			firstIndexFromTopOrBottomToUse = topLeftIndexRotAfter180Flip1x4layer(
 					neighbours, 
@@ -47,7 +48,7 @@ public class TopAndBottomTransitionList2 {
 			System.exit(1);
 		}
 		
-		Coord2D adjustedTopBottomCoord = null;
+		Coord2D adjustedTopBottomCoord = firstIndexFromTopOrBottomToUse;
 		
 		if(put1x1OnOtherSide) {
 			if(is1x1LeftOfCell2(neighbours, dimensions, firstIndexFromTopOrBottomToUse)) {
@@ -64,9 +65,6 @@ public class TopAndBottomTransitionList2 {
 				
 			}
 			
-		} else {
-			
-			adjustedTopBottomCoord = firstIndexFromTopOrBottomToUse;
 		}
 		
 		int index1x1Cell = getIndex1x1Cell(

@@ -76,7 +76,7 @@ public class TopAndBottomTransitionHandler {
 			//printTransitionLists();
 			System.out.println("Debug");
 			System.out.println("Details:");
-			printTransitionListsDetails();
+			debugPrintTransitionListsDetails();
 			
 			System.out.println("Transition used at the bottom:");
 			System.out.println(currentIndexRotation.i + ", " + currentIndexRotation.j);
@@ -198,10 +198,13 @@ public class TopAndBottomTransitionHandler {
 		return false;
 	}
 	
-	public void printTransitionLists() {
+	
+	//Debug functions:
+	
+	public void debugPrintTransitionLists() {
 		
 		System.out.println("Top transitions:");
-		printTopOrBottomTransitions(
+		debugPrintTopOrBottomTransitions(
 				transitionsTop,
 				topTransitionListIndex,
 				topTransitionIndexSet
@@ -209,7 +212,7 @@ public class TopAndBottomTransitionHandler {
 		
 		System.out.println();
 		System.out.println("Bottom transitions:");
-		printTopOrBottomTransitions(
+		debugPrintTopOrBottomTransitions(
 				transitionsBottom,
 				bottomTransitionListIndex,
 				bottomTransitionIndexSet
@@ -219,7 +222,7 @@ public class TopAndBottomTransitionHandler {
 		
 	}
 	
-	private void printTopOrBottomTransitions(
+	private void debugPrintTopOrBottomTransitions(
 			int transitionsTopOrBottom[][][],
 			int topTransitionListIndexTopOrBottom[],
 			int transitionIndexSet[]
@@ -250,10 +253,10 @@ public class TopAndBottomTransitionHandler {
 	
 
 
-	public void printTransitionListsDetails() {
+	public void debugPrintTransitionListsDetails() {
 		
 		System.out.println("Top transitions details:");
-		printTopOrBottomTransitionsDetails(
+		debugPrintTopOrBottomTransitionsDetails(
 				transitionsTop,
 				topTransitionListIndex,
 				topTransitionIndexSet
@@ -261,7 +264,7 @@ public class TopAndBottomTransitionHandler {
 		
 		System.out.println();
 		System.out.println("Bottom transitions details:");
-		printTopOrBottomTransitionsDetails(
+		debugPrintTopOrBottomTransitionsDetails(
 				transitionsBottom,
 				bottomTransitionListIndex,
 				bottomTransitionIndexSet
@@ -271,7 +274,7 @@ public class TopAndBottomTransitionHandler {
 		
 	}
 	
-	private void printTopOrBottomTransitionsDetails(
+	private void debugPrintTopOrBottomTransitionsDetails(
 			int transitionsTopOrBottom[][][],
 			int topTransitionListIndexTopOrBottom[],
 			int transitionIndexSet[]

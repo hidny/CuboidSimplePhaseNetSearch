@@ -323,7 +323,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	public static TopAndBottomTransitionHandler topAndBottomHandler = new TopAndBottomTransitionHandler();
 	
 	public void printTopAndBottomHandlerDebug() {
-		topAndBottomHandler.printTransitionLists();
+		topAndBottomHandler.debugPrintTransitionLists();
 	}
 	
 	public boolean isNewLayerValidSimpleFast(int sideBump) {
