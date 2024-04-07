@@ -33,11 +33,13 @@ public class TopAndBottomTransitionHandler {
 				                    indexToRing[nextIndexRotation.i]);
 		
 		if(minRingIndex >= 0) {
-			System.out.println("ERROR: calling TopAndBottomTransitionHandler when the current and next index don't touch the top or bottom");
-			System.exit(1);
+			return true;
 		}
 		
-		System.out.println("testing 2nd attempt");
+		//System.out.println("testing 2nd attempt");
+		
+		//System.out.println("currentLayerIndex: " + currentLayerIndex);
+		//System.out.println("Target currentLayerIndex: " + (dimensions[0] - 1));
 		
 		//Check for initialization:
 		if(currentLayerIndex == 0) {
@@ -55,7 +57,7 @@ public class TopAndBottomTransitionHandler {
 			topTransitionIndexSet[0] = -1;
 			topTransitionIndexSet[1] = -1;
 			
-		} else if(currentLayerIndex == dimensions[0] - 1) {
+		} else if(currentLayerIndex == dimensions[0]) {
 			
 			transitionsBottom = initializeTransitionLists(
 					dimensions,
@@ -70,22 +72,26 @@ public class TopAndBottomTransitionHandler {
 			bottomTransitionIndexSet[0] = -1;
 			bottomTransitionIndexSet[1] = -1;
 			
+
+			//printTransitionLists();
+			System.out.println("Debug");
+			System.out.println("Details:");
+			printTransitionListsDetails();
 			
+			System.out.println("Transition used at the bottom:");
+			System.out.println(currentIndexRotation.i + ", " + currentIndexRotation.j);
+			System.out.println(nextIndexRotation.i + ", " + nextIndexRotation.j);
+			//System.exit(1);
 		}
 		
-		//Find the valid transition:
-		
-		System.out.println("TODO");
-		
-		System.exit(1);
+		//Find the valid transition
 
-
-		int maxRingIndex = Math.min(indexToRing[currentIndexRotation.i],
+		int maxRingIndex = Math.max(indexToRing[currentIndexRotation.i],
                 indexToRing[nextIndexRotation.i]);
 
 		if(maxRingIndex == 0) {
 			
-			boolean ret =  isTransitionValid(
+			boolean ret = isTransitionValid(
 					currentLayerIndex,
 					currentIndexRotation,
 					nextIndexRotation,
@@ -98,6 +104,8 @@ public class TopAndBottomTransitionHandler {
 			return ret;
 			
 		} else {
+			
+			System.out.println("maxRingIndex: " + maxRingIndex);
 
 			boolean ret = isTransitionValid(
 					currentLayerIndex,
@@ -139,7 +147,7 @@ public class TopAndBottomTransitionHandler {
 			
 				boolean useAtl = (i == 1);
 				
-				ret[i][j] = TopAndBottomTransitionList2.addBottomTransitionsTopBottom(dimensions,
+				ret[i][j] = TopAndBottomTransitionList2.addTransitionsTopBottom(dimensions,
 						neighbours,
 						currentIndexRotation,
 						nextIndexRotation,
@@ -188,6 +196,108 @@ public class TopAndBottomTransitionHandler {
 			}
 		}
 		return false;
+	}
+	
+	public void printTransitionLists() {
+		
+		System.out.println("Top transitions:");
+		printTopOrBottomTransitions(
+				transitionsTop,
+				topTransitionListIndex,
+				topTransitionIndexSet
+			);
+		
+		System.out.println();
+		System.out.println("Bottom transitions:");
+		printTopOrBottomTransitions(
+				transitionsBottom,
+				bottomTransitionListIndex,
+				bottomTransitionIndexSet
+			);
+		
+		
+		
+	}
+	
+	private void printTopOrBottomTransitions(
+			int transitionsTopOrBottom[][][],
+			int topTransitionListIndexTopOrBottom[],
+			int transitionIndexSet[]
+		) {
+		
+		for(int i=0; i<transitionsTopOrBottom.length; i++) {
+			
+			System.out.println("Transition list index: " + i);
+			System.out.println("transitionIndexSet[" + i +"] = " + transitionIndexSet[i]);
+			
+			for(int j=0; j<transitionsTopOrBottom[i].length; j++) {
+				
+				if(topTransitionListIndexTopOrBottom[i] == j) {
+					
+					for(int k=0; k<transitionsTopOrBottom[i][j].length; k++) {
+						
+						if(transitionsTopOrBottom[i][j][k] != -1) {
+							System.out.println("Transition " + k + ": " + transitionsTopOrBottom[i][j][k]);
+						}
+					}
+					
+				}
+				
+			}
+			System.out.println();
+		}
+	}
+	
+
+
+	public void printTransitionListsDetails() {
+		
+		System.out.println("Top transitions details:");
+		printTopOrBottomTransitionsDetails(
+				transitionsTop,
+				topTransitionListIndex,
+				topTransitionIndexSet
+			);
+		
+		System.out.println();
+		System.out.println("Bottom transitions details:");
+		printTopOrBottomTransitionsDetails(
+				transitionsBottom,
+				bottomTransitionListIndex,
+				bottomTransitionIndexSet
+			);
+		
+		
+		
+	}
+	
+	private void printTopOrBottomTransitionsDetails(
+			int transitionsTopOrBottom[][][],
+			int topTransitionListIndexTopOrBottom[],
+			int transitionIndexSet[]
+		) {
+		
+		for(int i=0; i<transitionsTopOrBottom.length; i++) {
+			
+			System.out.println("Transition list index: " + i);
+			System.out.println("transitionIndexSet[" + i +"] = " + transitionIndexSet[i]);
+			
+			for(int j=0; j<transitionsTopOrBottom[i].length; j++) {
+				
+				System.out.println();
+				System.out.println("j = " + j + ":");
+					
+				for(int k=0; k<transitionsTopOrBottom[i][j].length; k++) {
+					
+					if(transitionsTopOrBottom[i][j][k] != -1) {
+						System.out.println("Transition for list " + j + ":" + k + ": " + transitionsTopOrBottom[i][j][k]);
+					}
+					}
+					
+				
+			}
+			System.out.println();
+		}
 	}
 	
 }

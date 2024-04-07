@@ -5,7 +5,7 @@ import Coord.CoordWithRotationAndIndex;
 
 public class TopAndBottomTransitionList2 {
 	
-	public static int[] addBottomTransitionsTopBottom(
+	public static int[] addTransitionsTopBottom(
 			int dimensions[],
 			CoordWithRotationAndIndex neighbours[][],
 			Coord2D currentIndexRotation,
@@ -27,26 +27,26 @@ public class TopAndBottomTransitionList2 {
 			firstIndexGoingToFirstOrLastRingToUse = nextIndexRotation;
 			
 		} else if(indexToRing[nextIndexRotation.i] == -1){
-			firstIndexFromTopOrBottomToUse = nextIndexRotation;
-			firstIndexGoingToFirstOrLastRingToUse = currentIndexRotation;
+			
+			
+			firstIndexFromTopOrBottomToUse = topLeftIndexRotAfter180Flip1x4layer(
+					neighbours, 
+					nextIndexRotation.i, 
+					nextIndexRotation.j);
+			
+			firstIndexGoingToFirstOrLastRingToUse = topLeftIndexRotAfter180Flip1x4layer(
+					neighbours, 
+					currentIndexRotation.i, 
+					currentIndexRotation.j);
+			
+			System.out.println("New: " + firstIndexFromTopOrBottomToUse.i + " to " + firstIndexGoingToFirstOrLastRingToUse.i);
+			System.out.println("Rots should be 0: " + firstIndexFromTopOrBottomToUse.j + " to " + firstIndexGoingToFirstOrLastRingToUse.j);
 			
 		} else {
 			System.out.println("ERROR: addBottomTransitionsTopBottom should have one index on top/bottom and one index not on top/bottom. (2)");
 			System.exit(1);
 		}
 		
-		if(firstIndexGoingToFirstOrLastRingToUse.j == 0) {
-			firstIndexFromTopOrBottomToUse = topLeftIndexRotAfter180Flip1x4layer(
-					neighbours, 
-					currentIndexRotation.i, 
-					currentIndexRotation.j);
-			
-			firstIndexGoingToFirstOrLastRingToUse = topLeftIndexRotAfter180Flip1x4layer(
-					neighbours, 
-					nextIndexRotation.i, 
-					nextIndexRotation.j);
-		}
-
 		Coord2D adjustedTopBottomCoord = null;
 		
 		if(put1x1OnOtherSide) {
@@ -54,11 +54,13 @@ public class TopAndBottomTransitionList2 {
 				
 				//Adjust Coord to put 1x1 cell on the right
 				adjustedTopBottomCoord = new Coord2D(firstIndexFromTopOrBottomToUse.i - 1, firstIndexFromTopOrBottomToUse.j);
+				System.out.println("new first index: " + adjustedTopBottomCoord.i);
 	
 			} else {
 				
 				//Adjust Coord to put 1x1 cell on the left:
 				adjustedTopBottomCoord = new Coord2D(firstIndexFromTopOrBottomToUse.i + 1, firstIndexFromTopOrBottomToUse.j);
+				System.out.println("new first index: " + adjustedTopBottomCoord.i);
 				
 			}
 			
@@ -156,8 +158,7 @@ public class TopAndBottomTransitionList2 {
 		Coord2D curIndexFirstOrLastRing =  firstIndexGoingToFirstOrLastRingInput;
 		
 		if(curIndexFromTopOrBottomInput.j % 2 != 0) {
-			System.out.println("AHH. Fix edge case with 1x1 square");
-			System.exit(1);
+			curIndexFromTopOrBottomInput = new Coord2D(curIndexFromTopOrBottomInput.i, (curIndexFromTopOrBottomInput.j + 1) %4);
 		}
 		
 		//Adjust the initial ring transition according to an offset:
@@ -178,8 +179,19 @@ public class TopAndBottomTransitionList2 {
 			
 			if(curIndexFromTopOrBottomInput.i != index1x1Cell) {
 				//1x4 on ring attaches to 1x4 on top/bottom side:
+				
 				ret[topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFirstOrLastRing.i, curIndexFirstOrLastRing.j).i] =
 						topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFromTopOrBottomInput.i, curIndexFromTopOrBottomInput.j).i;
+				
+				System.out.println("other way:");
+				System.out.println(topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFirstOrLastRing.i, curIndexFirstOrLastRing.j).i
+						+ " to " + topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFromTopOrBottomInput.i, curIndexFromTopOrBottomInput.j).i);
+				
+				System.out.println("curIndexFirstOrLastRing.j = " + curIndexFirstOrLastRing.j);
+				System.out.println("curIndexFromTopOrBottomInput.j = " + curIndexFromTopOrBottomInput.j);
+				
+				System.out.println("----");
+				
 			} else {
 				//1x4 on ring attaches to 1x1:
 				ret[topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFirstOrLastRing.i, curIndexFirstOrLastRing.j).i] =
@@ -213,8 +225,6 @@ public class TopAndBottomTransitionList2 {
 		) {
 		
 
-		System.out.println("DEBUG: " + curIndexFromTopOrBottomInput.i + ", " + curIndexFromTopOrBottomInput.j);
-		
 		Coord2D ret = curIndexFromTopOrBottomInput;
 		
 		

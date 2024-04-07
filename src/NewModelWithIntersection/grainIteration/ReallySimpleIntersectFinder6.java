@@ -195,6 +195,9 @@ public class ReallySimpleIntersectFinder6 {
 							System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
 							
 							cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+							
+							System.out.println("Debugging transition handler for top and bottom:");
+							cuboidToBuild.printTopAndBottomHandlerDebug();
 						}
 						reference.removeCurrentTopLevel();
 					}
