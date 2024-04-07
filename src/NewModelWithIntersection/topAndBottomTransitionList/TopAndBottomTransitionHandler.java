@@ -6,9 +6,20 @@ import Model.Utils;
 
 public class TopAndBottomTransitionHandler {
 
-	public TopAndBottomTransitionHandler() {
-		
-	}
+	//This class will handle the surprisingly complicated logic of 
+	// knowing whether a transition between the 1st/Last Ring and the top/bottom side is plausible.
+	// The logic is simple with pen and paper, but hard to write in code. This took 2 weeks of trial and error.
+
+	// The solution I went with might be a bit too clever:
+	// Because I can't be bothered to figure out how to 
+	// correctly resolve a possible off-by-one error with the transition list between the 1st/last Ring and the top/bottom sides,
+	// I asked the algorithm to do it for me by offering 3 possible transition lists and asking the algo to go with the first transition list that works.
+	// LOL! This is dirty even for me!
+	// The first one is where the off-by-one error is -1,
+	// the second one is where the off-by-one error is 0 (or there isn't any),
+	// the third one is where the off-by-one error is +1.
+	
+	//All I have to do is make sure an off-by-two+ error won't happen, which seems reasonable in my head, but I think this will need some pen and paper proof.
 	
 	private int transitionsTop[][][];
 	private int topTransitionListIndex[] = new int[2];
@@ -140,12 +151,15 @@ public class TopAndBottomTransitionHandler {
 			System.out.println();
 			System.out.println("i = " + i + ":");
 			System.out.println();
+			
+
 			for(int j=0; j<ret[0].length; j++) {
 
 				System.out.println();
 				System.out.println("j = " + j + ":");
 			
 				boolean useAtl = (i == 1);
+				
 				
 				ret[i][j] = TopAndBottomTransitionList2.addTransitionsTopBottom(dimensions,
 						neighbours,
