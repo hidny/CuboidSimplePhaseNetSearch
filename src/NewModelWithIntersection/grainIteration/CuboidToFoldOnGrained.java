@@ -50,8 +50,14 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 			System.exit(1);
 		}
 		
-		//System.exit(1);
+
+		this.topAndBottomHandler = new TopAndBottomTransitionHandler();
+		
+		
 	}
+	
+	private TopAndBottomTransitionHandler topAndBottomHandler = new TopAndBottomTransitionHandler();
+	
 	
 	public int getNumCellsToFill() {
 		return Utils.getTotalArea(this.dimensions);
@@ -319,9 +325,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		return true;
 	}
 	
-	//TODO: don't make this static:
-	public static TopAndBottomTransitionHandler topAndBottomHandler = new TopAndBottomTransitionHandler();
-	
 	public void printTopAndBottomHandlerDebug() {
 		topAndBottomHandler.debugPrintTransitionLists();
 	}
@@ -368,8 +371,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 			return false;
 		}
 		
-		//TODO:
-		//Improved spec:
+		
 		if(forcedRepetition[this.currentLayerIndex] < this.currentLayerIndex
 				&& sideBump != prevSideBumps[forcedRepetition[this.currentLayerIndex]]) {
 			return false;
@@ -387,24 +389,11 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				indexToRing
 			)) {
 			
-			System.out.println("TODO: return false at currentLayerIndex = " + currentLayerIndex);
 			return false;
 		}
-		//END TODO
+		
 		return true;
 		
-	}
-	
-	public Coord2D topLeftIndexRotAfter180Flip1x4layer(int index, int rotation) {
-		Coord2D flippedIndexAndRotation = new Coord2D(index, rotation);
-		
-		for(int j=0; j<4 - 1; j++) {
-			flippedIndexAndRotation = tryAttachCellInDir(flippedIndexAndRotation.i, flippedIndexAndRotation.j, RIGHT);
-		}
-		
-		int flipRotation = (flippedIndexAndRotation.j + NUM_ROTATIONS/2) % NUM_ROTATIONS;
-		
-		return new Coord2D(flippedIndexAndRotation.i, flipRotation);
 	}
 	
 	public void addNewLayerFast(int sideBump) {
@@ -668,12 +657,11 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		}
 	}
 	
-	//TODO: maybe delete this function soon.
+	//Pre: it's not the first 1x1 cell or the last 1x1 cell
 	//pre: getRingMod4(indexCell, rotation) returns -1:
 	public boolean isAcceptableTopOrBottomIndexForInbetweenLayer(int indexCell, int rotation) {
 		
 		
-		//TODO: clumsy check
 		Coord2D neighbour = this.tryAttachCellInDir(indexCell, rotation, RIGHT);
 		if(indexToRing[neighbour.i] >=0) {
 			return false;
@@ -686,8 +674,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		if(indexToRing[neighbour.i] >=0) {
 			return false;
 		}
-
-		//END TODO: clumsy check
 		
 		
 		if(rotation % 2 == 1) {

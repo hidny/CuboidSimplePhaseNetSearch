@@ -83,7 +83,7 @@ public class ReallySimpleIntersectFinder6 {
 		//15, 161, 1387, x, 
 		//reallySimpleSearch(2, 149, 1);
 		
-		reallySimpleSearch(3, 17, 1);
+		reallySimpleSearch(4, 17, 1);
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
