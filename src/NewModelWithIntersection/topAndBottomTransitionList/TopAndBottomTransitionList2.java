@@ -40,8 +40,8 @@ public class TopAndBottomTransitionList2 {
 					currentIndexRotation.i, 
 					currentIndexRotation.j);
 			
-			System.out.println("New: " + firstIndexFromTopOrBottomToUse.i + " to " + firstIndexGoingToFirstOrLastRingToUse.i);
-			System.out.println("Rots should be 0: " + firstIndexFromTopOrBottomToUse.j + " to " + firstIndexGoingToFirstOrLastRingToUse.j);
+			//System.out.println("New: " + firstIndexFromTopOrBottomToUse.i + " to " + firstIndexGoingToFirstOrLastRingToUse.i);
+			//System.out.println("Rots should be 0: " + firstIndexFromTopOrBottomToUse.j + " to " + firstIndexGoingToFirstOrLastRingToUse.j);
 			
 		} else {
 			System.out.println("ERROR: addBottomTransitionsTopBottom should have one index on top/bottom and one index not on top/bottom. (2)");
@@ -55,13 +55,13 @@ public class TopAndBottomTransitionList2 {
 				
 				//Adjust Coord to put 1x1 cell on the right
 				adjustedTopBottomCoord = new Coord2D(firstIndexFromTopOrBottomToUse.i - 1, firstIndexFromTopOrBottomToUse.j);
-				System.out.println("new first index: " + adjustedTopBottomCoord.i);
+				//System.out.println("new first index: " + adjustedTopBottomCoord.i);
 	
 			} else {
 				
 				//Adjust Coord to put 1x1 cell on the left:
 				adjustedTopBottomCoord = new Coord2D(firstIndexFromTopOrBottomToUse.i + 1, firstIndexFromTopOrBottomToUse.j);
-				System.out.println("new first index: " + adjustedTopBottomCoord.i);
+				//System.out.println("new first index: " + adjustedTopBottomCoord.i);
 				
 			}
 			
@@ -173,7 +173,7 @@ public class TopAndBottomTransitionList2 {
 		
 		do {
 			ret[curIndexFromTopOrBottomInput.i] = curIndexFirstOrLastRing.i;
-			System.out.println(curIndexFromTopOrBottomInput.i + " to " + curIndexFirstOrLastRing.i);
+			//System.out.println(curIndexFromTopOrBottomInput.i + " to " + curIndexFirstOrLastRing.i);
 			
 			if(curIndexFromTopOrBottomInput.i != index1x1Cell) {
 				//1x4 on ring attaches to 1x4 on top/bottom side:
@@ -181,14 +181,14 @@ public class TopAndBottomTransitionList2 {
 				ret[topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFirstOrLastRing.i, curIndexFirstOrLastRing.j).i] =
 						topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFromTopOrBottomInput.i, curIndexFromTopOrBottomInput.j).i;
 				
-				System.out.println("other way:");
-				System.out.println(topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFirstOrLastRing.i, curIndexFirstOrLastRing.j).i
-						+ " to " + topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFromTopOrBottomInput.i, curIndexFromTopOrBottomInput.j).i);
+				//System.out.println("other way:");
+				//System.out.println(topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFirstOrLastRing.i, curIndexFirstOrLastRing.j).i
+				//		+ " to " + topLeftIndexRotAfter180Flip1x4layer(neighbours, curIndexFromTopOrBottomInput.i, curIndexFromTopOrBottomInput.j).i);
 				
-				System.out.println("curIndexFirstOrLastRing.j = " + curIndexFirstOrLastRing.j);
-				System.out.println("curIndexFromTopOrBottomInput.j = " + curIndexFromTopOrBottomInput.j);
+				//System.out.println("curIndexFirstOrLastRing.j = " + curIndexFirstOrLastRing.j);
+				//System.out.println("curIndexFromTopOrBottomInput.j = " + curIndexFromTopOrBottomInput.j);
 				
-				System.out.println("----");
+				//System.out.println("----");
 				
 			} else {
 				//1x4 on ring attaches to 1x1:
