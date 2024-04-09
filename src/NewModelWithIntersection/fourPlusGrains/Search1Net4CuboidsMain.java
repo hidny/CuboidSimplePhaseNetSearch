@@ -44,7 +44,11 @@ public class Search1Net4CuboidsMain {
 		System.out.println(width0 + "," + width1 + "," + width2 + "," + width3);
 		
 
-		int h3 = 2 * oddA * oddB * oddC;
+		//TODO: I'll need to change the data model to accomodate this: 
+		// int h3 = 2 * oddA * oddB * oddC;
+		
+		//For now, hope for luck
+		int h3 = 20;
 		int h2 = (h3 + 1) * oddC - 1;
 		int h1 = (h2 + 1) * oddB - 1;
 		int h0 = (h1 + 1) * oddA - 1;
@@ -64,9 +68,13 @@ public class Search1Net4CuboidsMain {
 		
 		sanityTestCuboids(cuboid1, cuboid2, cuboid3, cuboid4);
 		
+		//searchTupleInner(cuboid1, cuboid2, cuboid3, cuboid4);
 		
+		//TODO: just call IntersectFor4GrainedCuboidsdFinder
+		IntersectFor4GrainedCuboidsdFinder.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid3, cuboid4);
 		
 	}
+	
 	
 	public static void sanityTestCuboids(int cuboid1[], int cuboid2[], int cuboid3[], int cuboid4[]) {
 		int area1 = Utils.getTotalArea(cuboid1);
