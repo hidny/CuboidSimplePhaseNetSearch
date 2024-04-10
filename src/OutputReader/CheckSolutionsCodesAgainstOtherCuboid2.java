@@ -77,7 +77,9 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			
 			//String file1 = "D:\\outputSprialFor_ix89x1_side_bump7.txt";
 			
-			String file1 = "D:\\test_new_optimization_7_17_1.txt";
+			//String file1 = "D:\\test_new_optimization_7_17_1.txt";
+			
+			String file1 = "D:\\searchFor4cuboids.txt";
 			int dimensionsToCheck[][] = null;
 			int areaToCheck = -1;
 			
@@ -228,7 +230,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 					int surfaceArea = 2 * (a*b + a*c + b*c);
 					
 					if(origSurfaceArea == surfaceArea) {
-						list.add(a + "," + b + "," + c);
+						list.add(c + "," + b + "," + a);
 					} else if(surfaceArea > origSurfaceArea) {
 						break;
 					}

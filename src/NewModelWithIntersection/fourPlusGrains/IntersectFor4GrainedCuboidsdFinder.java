@@ -32,7 +32,6 @@ public class IntersectFor4GrainedCuboidsdFinder {
 			return;
 		}
 		
-		System.out.println("DEBUG!");
 		int NofNx1x1Cuboid = getNumLayers(cuboidToBuild);
 
 		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(NofNx1x1Cuboid);

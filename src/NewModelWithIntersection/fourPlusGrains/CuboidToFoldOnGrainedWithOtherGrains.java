@@ -336,7 +336,6 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 
 	public boolean isNewLayerValidSimpleFast(int sideBump) {
 
-		//System.out.println("hello-2");
 		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
 
 		if (newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump] < 0) {
@@ -367,12 +366,11 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 			return false;
 		}
 
-		//System.out.println("hello-1");
 		//Twist condition:
 		if(Math.min(prevRingIndex, nextRingIndex) >= 0 && this.currentLayerIndex < this.dimensions[0]) {
 
 			//System.out.println("hello0");
-			System.out.println(this.sumTwistByDepth[this.currentLayerIndex] + " vs " + this.twistRequest);
+			//System.out.println(this.sumTwistByDepth[this.currentLayerIndex] + " vs " + this.twistRequest);
 			
 			if(this.sumTwistByDepth[this.currentLayerIndex] == this.twistRequest
 					&& sideBump != 6) {
@@ -384,7 +382,7 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 				//System.out.println("hello2");
 				return false;
 				
-			} else if( sideBump != 8 ){
+			} else if(this.sumTwistByDepth[this.currentLayerIndex] + 1 < this.twistRequest && sideBump != 8 ){
 				//System.out.println("hello3");
 				return false;
 			}

@@ -21,14 +21,16 @@ public class CuboidToFoldOn implements CuboidToFoldOnInterface {
 	public CuboidToFoldOn(int a, int b, int c) {
 
 		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c, true);
-		
+
 		cellsUsed = new boolean[Utils.getTotalArea(a, b, c)];
+
 		rotationPaperRelativeToCuboidFlatMap = new int[Utils.getTotalArea(a, b, c)];
-		
+
 		for(int i=0; i<cellsUsed.length; i++) {
 			cellsUsed[i] = false;
 			rotationPaperRelativeToCuboidFlatMap[i] = -1;
 		}
+
 		
 		dimensions[0] = a;
 		dimensions[1] = b;

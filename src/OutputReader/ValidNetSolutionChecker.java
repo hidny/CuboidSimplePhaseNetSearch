@@ -67,10 +67,16 @@ public class ValidNetSolutionChecker {
 			currentArea = area;
 			
 			paperUsed = new boolean[2 * area][2 * area];
+			//System.out.println("PAPER USED OK");
+			
 			indexCuboidOnPaper= new int[2 * area][2 * area];
+			//System.out.println("indexCuboidOnPaper USED OK");
+			
 			newPaperToDevelop = new Coord2D[area];
 			
 			coord2DTable = new Coord2D[2 * area][2 * area];
+			//System.out.println("Coord2D USED OK");
+
 			for(int i=0; i<coord2DTable.length; i++) {
 				for(int j=0; j<coord2DTable[0].length; j++) {
 					coord2DTable[i][j] = new Coord2D(i, j);
@@ -111,9 +117,9 @@ public class ValidNetSolutionChecker {
 		cuboidToUse.resetState();
 		
 		Coord2D refreshCells[] = getListOfCellsToRefresh(cuboidToUse, netToReplicate);
-		
+
 		for(int startIndex=0; startIndex<areaToFill; startIndex++) {
-			
+
 			for(int startRotation=0; startRotation<4; startRotation++) {
 
 				boolean foundIt = false;
@@ -156,9 +162,9 @@ public class ValidNetSolutionChecker {
 				//END refresh
 				
 			} //End loop for each rotation
-			
+
 		} //End loop for each start position
-		
+
 
 		return false;
 	}

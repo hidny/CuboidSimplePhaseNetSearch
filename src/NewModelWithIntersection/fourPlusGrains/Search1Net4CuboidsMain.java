@@ -71,8 +71,9 @@ public class Search1Net4CuboidsMain {
 		//searchTupleInner(cuboid1, cuboid2, cuboid3, cuboid4);
 		
 		//TODO: just call IntersectFor4GrainedCuboidsdFinder
-		IntersectFor4GrainedCuboidsdFinder.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid3, cuboid4);
+		IntersectFor4GrainedCuboidsdFinder.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid3, cuboid3);
 		
+		System.exit(1);
 	}
 	
 	
