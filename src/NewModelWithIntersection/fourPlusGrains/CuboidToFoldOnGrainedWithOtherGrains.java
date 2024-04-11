@@ -225,7 +225,7 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 	private int newGroundedRotationAbove[][][];
 
 	private long answerSheetForTopCell[][][][];
-	private long answerSheetForTopCellAnySideBump[][][];
+	//private long answerSheetForTopCellAnySideBump[][][];
 
 	private long preComputedPossiblyEmptyCellsAroundNewLayer[][][][];
 	private boolean preComputedForceRegionSplitIfEmptyAroundNewLayer[][][];
@@ -495,7 +495,7 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 	// pre: The only cell left is top cell:
 	public boolean isTopCellAbleToBeAddedFast() {
 
-		long tmp[] = answerSheetForTopCellAnySideBump[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap];
+		long tmp[] = answerSheetForTopCellAnySideBump(topLeftGroundedIndex, topLeftGroundRotationRelativeFlatMap);
 
 		long collisionNumber = 0;
 
@@ -914,12 +914,43 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 		return convertBoolArrayToLongs(output);
 	}
 
+	public long[] answerSheetForTopCellAnySideBump(int index, int rotation) {
+		
+		boolean tmpArrayForAnySideBump[] = new boolean[Utils.getTotalArea(this.dimensions)];
+
+		for (int sideBump = 0; sideBump < NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
+
+			Coord2D cur = new Coord2D(index, rotation);
+			// Go to right until there's a cell above:
+
+			int leftMostRelativeTopLeftGrounded = sideBump - 6;
+
+			if (leftMostRelativeTopLeftGrounded >= 0 && leftMostRelativeTopLeftGrounded < 4) {
+
+				boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
+
+				for (int i = 0; i < leftMostRelativeTopLeftGrounded; i++) {
+
+					cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+				}
+
+				Coord2D cellAbove = tryAttachCellInDir(cur.i, cur.j, ABOVE);
+
+				tmpArray[cellAbove.i] = true;
+				tmpArrayForAnySideBump[cellAbove.i] = true;
+
+
+			}
+		}
+
+		return convertBoolArrayToLongs(tmpArrayForAnySideBump);
+	}
+	
 	public void setupAnswerSheetForTopCell() {
 
 		answerSheetForTopCell = new long[Utils
 				.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][numLongsToUse];
-		answerSheetForTopCellAnySideBump = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][numLongsToUse];
-
+		
 		for (int index = 0; index < Utils.getTotalArea(this.dimensions); index++) {
 			for (int rotation = 0; rotation < NUM_ROTATIONS; rotation++) {
 
@@ -953,8 +984,6 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 						answerSheetForTopCell[index][rotation][sideBump] = setImpossibleForTopAnswerSheet();
 					}
 				}
-
-				answerSheetForTopCellAnySideBump[index][rotation] = convertBoolArrayToLongs(tmpArrayForAnySideBump);
 			}
 		}
 
