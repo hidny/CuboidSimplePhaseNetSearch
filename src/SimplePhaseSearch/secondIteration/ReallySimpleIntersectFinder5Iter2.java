@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import DupRemover.BasicUniqueCheckImproved;
 import GraphUtils.PivotCellDescription;
-import GraphUtils.PivotCellDescriptionForNx1x1;
+import GraphUtils.PivotCellDescriptionForSimplePhase;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
 
@@ -180,7 +180,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 			return;
 		}
 
-		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForNx1x1.getUniqueRotationListsWithCellInfo(cuboidToBuild);
+		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForSimplePhase.getUniqueRotationListsWithCellInfo(cuboidToBuild);
 		
 		long ret = 0;
 		

@@ -58,6 +58,10 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 		}
 
 		this.topAndBottomHandler = new TopAndBottomTransitionHandler();
+		
+
+		forcedRepetition = new int[DIM_N_OF_Nx1x1 + 2];
+		initializeForcedRepetition();
 
 	}
 
@@ -93,7 +97,6 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 		prevGroundedIndexes = new int[DIM_N_OF_Nx1x1];
 		prevGroundedRotations = new int[DIM_N_OF_Nx1x1];
 
-		forcedRepetition = new int[DIM_N_OF_Nx1x1 + 2];
 		currentLayerIndex = 0;
 
 		boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
@@ -112,7 +115,6 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 			this.curState = setImpossibleForAnswerSheet();
 		}
 
-		initializeForcedRepetition();
 		
 		this.twistRequest = twist;
 		this.sumTwistByDepth = new int[this.dimensions[0]];
@@ -219,7 +221,7 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 
 	private int DIM_N_OF_Nx1x1;
 
-	private long answerSheet[][][][];
+	//private long answerSheet[][][][];
 	private int newGroundedIndexAbove[][][];
 	private int newGroundedRotationAbove[][][];
 
@@ -329,7 +331,7 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 
 	public boolean isNewLayerValidSimpleFast(int sideBump) {
 
-		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
+		long tmp[] = getAnswerSheet(topLeftGroundedIndex, topLeftGroundRotationRelativeFlatMap, sideBump);
 
 		if (newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump] < 0) {
 			return false;
@@ -412,7 +414,7 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 	}
 
 	public void addNewLayerFast(int sideBump) {
-		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
+		long tmp[] = getAnswerSheet(topLeftGroundedIndex, topLeftGroundRotationRelativeFlatMap, sideBump);
 
 		for (int i = 0; i < curState.length; i++) {
 			curState[i] = curState[i] | tmp[i];
@@ -477,7 +479,7 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 		this.topLeftGroundRotationRelativeFlatMap = prevGroundedRotations[currentLayerIndex];
 		int sideBumpToCancel = prevSideBumps[currentLayerIndex];
 
-		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBumpToCancel];
+		long tmp[] = getAnswerSheet(topLeftGroundedIndex, topLeftGroundRotationRelativeFlatMap, sideBumpToCancel);
 
 		for (int i = 0; i < curState.length; i++) {
 			curState[i] = curState[i] ^ tmp[i];
@@ -514,10 +516,81 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 
 	int ROTATION_AGAINST_GRAIN = 1;
 
+	private long[] getAnswerSheet(int index, int rotation, int sideBump) {
+		
+		boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
+
+		int leftMostRelativeTopLeftGrounded = sideBump - 6;
+
+		if (leftMostRelativeTopLeftGrounded < -3 || leftMostRelativeTopLeftGrounded > 3) {
+
+			return setImpossibleForAnswerSheet();
+		}
+
+		for (int i = 0; i < tmpArray.length; i++) {
+			tmpArray[i] = false;
+		}
+
+		Coord2D nextGounded = null;
+
+		if (leftMostRelativeTopLeftGrounded <= 0) {
+
+			Coord2D aboveGroundedTopLeft = tryAttachCellInDir(index, rotation, ABOVE);
+
+			tmpArray[aboveGroundedTopLeft.i] = true;
+
+			Coord2D cur = aboveGroundedTopLeft;
+			// Go to left:
+			for (int i = 0; i > leftMostRelativeTopLeftGrounded; i--) {
+				cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+				tmpArray[cur.i] = true;
+			}
+
+			nextGounded = cur;
+
+			cur = aboveGroundedTopLeft;
+			// Go to right:
+			for (int i = 0; i < leftMostRelativeTopLeftGrounded + 3; i++) {
+
+				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+				tmpArray[cur.i] = true;
+			}
+
+		} else {
+
+			Coord2D cur = new Coord2D(index, rotation);
+			// Go to right until there's a cell above:
+
+			for (int i = 0; i < leftMostRelativeTopLeftGrounded; i++) {
+				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+			}
+
+			Coord2D cellAbove = tryAttachCellInDir(cur.i, cur.j, ABOVE);
+
+			nextGounded = cellAbove;
+			
+			tmpArray[cellAbove.i] = true;
+
+			cur = cellAbove;
+			// Go to right:
+			for (int i = 0; i < 3; i++) {
+				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+				tmpArray[cur.i] = true;
+			}
+
+		}
+
+		if (nextGounded.j % 2 == ROTATION_AGAINST_GRAIN) {
+
+			return setImpossibleForAnswerSheet();
+		} else {
+			return convertBoolArrayToLongs(tmpArray);
+		}
+
+	}
 	private void setupAnswerSheetInBetweenLayers() {
 
-		answerSheet = new long[Utils
-				.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][numLongsToUse];
+		
 		newGroundedRotationAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 		newGroundedIndexAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 
@@ -533,7 +606,6 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 
 					if (leftMostRelativeTopLeftGrounded < -3 || leftMostRelativeTopLeftGrounded > 3) {
 
-						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
 						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
 						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;
 						continue;
@@ -594,14 +666,12 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 
 					if (nextGounded.j % 2 == ROTATION_AGAINST_GRAIN) {
 
-						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
 						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
 						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;
 						continue;
 					}
 
-					answerSheet[index][rotation][sideBump] = convertBoolArrayToLongs(tmpArray);
-
+					
 					newGroundedIndexAbove[index][rotation][sideBump] = nextGounded.i;
 					newGroundedRotationAbove[index][rotation][sideBump] = nextGounded.j;
 				}

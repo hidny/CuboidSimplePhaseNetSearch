@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import Coord.Coord2D;
 import DupRemover.BasicUniqueCheckImproved;
 import GraphUtils.PivotCellDescription;
-import GraphUtils.PivotCellDescriptionForNx1x1;
+import GraphUtils.PivotCellDescriptionForSimplePhase;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
 import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
@@ -83,7 +83,7 @@ public class IntersectFinderWithMx5x1 {
 		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(NofNx1x1Cuboid);
 
 		
-		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForNx1x1.getUniqueRotationListsWithCellInfo(cuboidToBuild);
+		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForSimplePhase.getUniqueRotationListsWithCellInfo(cuboidToBuild);
 		
 		int a = cuboidToBuild.dimensions[0];
 		int b = cuboidToBuild.dimensions[1];

@@ -48,7 +48,12 @@ public class Search1Net4CuboidsMain {
 		// int h3 = 2 * oddA * oddB * oddC;
 		
 		//For now, hope for luck
-		int h3 = 20;
+		//Testing:
+		//int h3 = 20;
+		
+		//Actual:
+		int h3 = 2 * width3;
+
 		int h2 = (h3 + 1) * oddC - 1;
 		int h1 = (h2 + 1) * oddB - 1;
 		int h0 = (h1 + 1) * oddA - 1;
@@ -71,9 +76,10 @@ public class Search1Net4CuboidsMain {
 		//searchTupleInner(cuboid1, cuboid2, cuboid3, cuboid4);
 		
 		//TODO: just call IntersectFor4GrainedCuboidsdFinder
-		IntersectFor4GrainedCuboidsdFinder.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid3, cuboid3);
+		//IntersectFor4GrainedCuboidsdFinder.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid3, cuboid3);
+		IntersectFor4GrainedCuboidsdFinder.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid3, cuboid4);
 		
-		System.exit(1);
+		//System.exit(1);
 	}
 	
 	

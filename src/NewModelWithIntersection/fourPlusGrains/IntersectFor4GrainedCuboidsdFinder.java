@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import Coord.Coord2D;
 import DupRemover.BasicUniqueCheckImproved;
 import GraphUtils.PivotCellDescription;
-import GraphUtils.PivotCellDescriptionForNx1x1;
+import GraphUtils.PivotCellDescriptionForGrained;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
 import SolutionResolver.SolutionResolverInterface;
@@ -36,9 +36,12 @@ public class IntersectFor4GrainedCuboidsdFinder {
 
 		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(NofNx1x1Cuboid);
 
-		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForNx1x1.getUniqueRotationListsWithCellInfo(cuboidToBuild);
+		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForGrained.getUniqueRotationListsWithCellInfo(cuboidToBuild);
 		
 		long ret = 0;
+
+		cuboidToBuild = new CuboidToFoldOnGrainedWithOtherGrains(cuboid1, cuboid2, cuboid3, cuboid4);
+
 		
 		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
 			
@@ -62,10 +65,7 @@ public class IntersectFor4GrainedCuboidsdFinder {
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
-			//TODO: Do I really need to reinit?
-			//Maybe I can skip the setup?
-			cuboidToBuild = new CuboidToFoldOnGrainedWithOtherGrains(cuboid1, cuboid2, cuboid3, cuboid4);
-			//END TODO
+			
 			
 			// It should be 2 * (largestWidth + 1)
 			for(int j=0; j< 2 * (largestWidth + 1); j++) {

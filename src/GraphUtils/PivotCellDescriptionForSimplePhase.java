@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import Model.CuboidToFoldOn;
 import Model.CuboidToFoldOnInterface;
 
-public class PivotCellDescriptionForNx1x1 {
+public class PivotCellDescriptionForSimplePhase {
 
 	public static ArrayList<PivotCellDescription> getUniqueRotationListsWithCellInfo(CuboidToFoldOnInterface exampleCuboid) {
 		return getUniqueRotationListsWithCellInfo(exampleCuboid, true);
@@ -22,7 +22,7 @@ public class PivotCellDescriptionForNx1x1 {
 			boolean noMatchYet = true;
 			
 			for(int j=i-1; j>=0; j--) {
-				if(rotationArrayMatchesForNx1x1(listPivots.get(i), listPivots.get(j))) {
+				if(rotationArrayMatchesForSimplePhase(listPivots.get(i), listPivots.get(j))) {
 					noMatchYet = false;
 					break;
 				}
@@ -55,7 +55,7 @@ public class PivotCellDescriptionForNx1x1 {
 		return ret;
 	}
 
-	private static boolean rotationArrayMatchesForNx1x1(PivotCellDescription desc1, PivotCellDescription desc2) {
+	private static boolean rotationArrayMatchesForSimplePhase(PivotCellDescription desc1, PivotCellDescription desc2) {
 		
 		boolean unreflectedMatchesSoFar = true;
 		for(int i=0; i<desc1.lengthsAroundCell.length; i++) {

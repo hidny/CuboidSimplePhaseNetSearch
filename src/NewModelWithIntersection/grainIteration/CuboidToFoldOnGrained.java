@@ -53,7 +53,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 
 		this.topAndBottomHandler = new TopAndBottomTransitionHandler();
 		
-		
+
+		initializeForcedRepetition();
 	}
 	
 	private TopAndBottomTransitionHandler topAndBottomHandler = new TopAndBottomTransitionHandler();
@@ -105,7 +106,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 			this.curState = setImpossibleForAnswerSheet();
 		}
 		
-		initializeForcedRepetition();
 	}
 	
 	
