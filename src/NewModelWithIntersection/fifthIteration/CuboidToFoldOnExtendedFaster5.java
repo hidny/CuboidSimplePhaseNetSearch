@@ -1,6 +1,4 @@
 package NewModelWithIntersection.fifthIteration;
-import java.util.LinkedList;
-import java.util.Queue;
 
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;
@@ -9,11 +7,12 @@ import Model.DataModelViews;
 import Model.NeighbourGraphCreator;
 import Model.Utils;
 import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
+import NewModelWithIntersection.filterOutTwoTops.FilterOutTwoTops;
 
 public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 
 	
-	private CoordWithRotationAndIndex[][] neighbours;
+	public CoordWithRotationAndIndex[][] neighbours;
 	
 	public int dimensions[] = new int[3];
 
@@ -122,7 +121,7 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 
 
 	//State variables:
-	private long curState[] = new long[NUM_LONGS_TO_USE];
+	public long curState[] = new long[NUM_LONGS_TO_USE];
 
 	private int topLeftGroundedIndex = 0;
 	private int topLeftGroundRotationRelativeFlatMap = 0;
@@ -168,7 +167,7 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 	public boolean isNewLayerValidSimpleFast(int sideBump) {
 	
 		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
-		
+	
 		return ((curState[0] & tmp[0]) | (curState[1] & tmp[1]) | (curState[2] & tmp[2])) == 0L && ! unoccupiedRegionSplit(tmp, sideBump);
 		
 	}
@@ -189,6 +188,7 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 		
 		this.topLeftGroundedIndex = tmp1;
 		this.topLeftGroundRotationRelativeFlatMap = tmp2;
+		
 		
 		
 	}

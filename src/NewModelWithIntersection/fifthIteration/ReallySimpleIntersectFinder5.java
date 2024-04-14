@@ -9,6 +9,7 @@ import GraphUtils.PivotCellDescriptionForSimplePhase;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
 import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
+import NewModelWithIntersection.filterOutTwoTops.FilterOutTwoTops;
 import SolutionResolver.SolutionResolverInterface;
 import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
@@ -88,6 +89,8 @@ Found 133 unique solution."
 		//N: 17
 		// 115268 solutions (28817 uniq solutions) (This took 40 seconds)
 		//reallySimpleSearch(5, 5, 1);
+		
+		//TODO: up to here...
 		// 60 solutions (17 unique) (7 minutes)
 		//reallySimpleSearch(8, 3, 1);
 		//114 solutions (29 unique)
@@ -212,7 +215,8 @@ Found 133 unique solution."
 		//reallySimpleSearch(7, 4, 3);
 		//reallySimpleSearch(11, 3, 2);
 		
-		reallySimpleSearch(5, 5, 5);
+		
+		//reallySimpleSearch(5, 5, 5);
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
@@ -240,7 +244,7 @@ Found 133 unique solution."
 		
 		FastRegionCheck fastRegionCheckSetup = cuboidToBuild.getFastRegionCheck();
 		
-		for(int i=4; i<startingPointsAndRotationsToCheck.size(); i++) {
+		for(int i=0; i<startingPointsAndRotationsToCheck.size(); i++) {
 			
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
@@ -280,7 +284,7 @@ Found 133 unique solution."
 		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild));
 	}
 	
-	public static final long DEBUG_MODULO =1000000000L;
+	public static final long DEBUG_MODULO =100000000L;
 	public static long debug = 0;
 	
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster5 cuboidToBuild, int layerIndex, int numLayers) {
@@ -337,8 +341,12 @@ Found 133 unique solution."
 				cuboidToBuild.addNewLayerFast(sideBump);
 				reference.addNextLevel(new Coord2D(0, sideBump), null);
 
-				ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndex + 1, numLayers);
-	
+				if( ! FilterOutTwoTops.shouldFilterOutTwoTops(cuboidToBuild.neighbours, cuboidToBuild.curState)) {
+					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndex + 1, numLayers);
+					
+				}
+				
+				
 				cuboidToBuild.removePrevLayerFast();
 				reference.removeCurrentTopLevel();
 			}
