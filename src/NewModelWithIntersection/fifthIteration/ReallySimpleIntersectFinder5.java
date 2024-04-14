@@ -64,7 +64,7 @@ Found 133 unique solution."
 		
 		//N: 13
 		//680 solutions: (175 unique soltions)
-		//reallySimpleSearch(3, 3, 3);
+		reallySimpleSearch(3, 3, 3);
 		
 		//20 solutions: (6 unique solutions)
 		//reallySimpleSearch(6, 3, 1);
@@ -341,7 +341,8 @@ Found 133 unique solution."
 				cuboidToBuild.addNewLayerFast(sideBump);
 				reference.addNextLevel(new Coord2D(0, sideBump), null);
 
-				if( ! FilterOutTwoTops.shouldFilterOutTwoTops(cuboidToBuild.neighbours, cuboidToBuild.curState)) {
+				
+				if( ! cuboidToBuild.filterOutTowTopsFaster.shouldFilterOutTwoTops(cuboidToBuild.neighbours, cuboidToBuild.curState)) {
 					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndex + 1, numLayers);
 					
 				}

@@ -8,6 +8,7 @@ import Model.NeighbourGraphCreator;
 import Model.Utils;
 import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
 import NewModelWithIntersection.filterOutTwoTops.FilterOutTwoTops;
+import NewModelWithIntersection.filterOutTwoTops.FilterOutTwoTopsFaster;
 
 public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 
@@ -17,6 +18,8 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 	public int dimensions[] = new int[3];
 
 	private FastRegionCheck fastRegionCheck;
+	
+	public FilterOutTwoTopsFaster filterOutTowTopsFaster;
 	
 	public CuboidToFoldOnExtendedFaster5(int a, int b, int c) {
 		this(a, b, c, true, true, null);
@@ -48,6 +51,7 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
  			setupAnswerSheetForTopCell();
 		}
 		
+		filterOutTowTopsFaster = new FilterOutTwoTopsFaster(neighbours);
 	}
 	
 	public int getNumCellsToFill() {

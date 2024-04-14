@@ -5,27 +5,32 @@ import Coord.CoordWithRotationAndIndex;
 
 public class FilterOutTwoTopsFaster {
 
-	private long multiplesForIndexUpDown[][];
+	//private long multiplesForIndexUpDown[][];
 
-	private long multiplesForIndexRightLeft[][];
+	//private long multiplesForIndexRightLeft[][];
+	
+	private int listGoingUpDownByIndex[][];
+	private int listGoingRightLeftByIndex[][];
 	
 	public FilterOutTwoTopsFaster(CoordWithRotationAndIndex[][] allNeighbours) {
+		
+		listGoingUpDownByIndex = new int[allNeighbours.length][];
+		listGoingRightLeftByIndex = new int[allNeighbours.length][];
+		
 		
 		for(int rotation = 0; rotation<2; rotation++) {
 			for(int index = 0; index < allNeighbours.length; index++) {
 				
 				int indexes[] = new int[7];
 				
-				int indexOnList = 0;
-				
-				indexes[0] = index;
-				indexOnList++;
+				int middleIndexInList = 3;
+				indexes[middleIndexInList] = index;
 				
 				Coord2D start = new Coord2D(index, rotation);
 				
 				Coord2D nextIndex = start;
 				
-				for(int j=0; j<4-1; j++) {
+				for(int j=middleIndexInList-1; j>=0; j--) {
 					nextIndex = tryAttachCellInDir(
 							allNeighbours,
 							nextIndex.i,
@@ -33,12 +38,11 @@ public class FilterOutTwoTopsFaster {
 							ABOVE
 						);
 					
-					indexes[indexOnList] = nextIndex.i;
-					indexOnList++;
+					indexes[j] = nextIndex.i;
 				}
 				
 				nextIndex = start;
-				for(int j=0; j<4-1; j++) {
+				for(int j=middleIndexInList+1; j<indexes.length; j++) {
 					nextIndex = tryAttachCellInDir(
 							allNeighbours,
 							nextIndex.i,
@@ -46,12 +50,18 @@ public class FilterOutTwoTopsFaster {
 							BELOW
 						);
 					
-					indexes[indexOnList] = nextIndex.i;
-					indexOnList++;
+					indexes[j] = nextIndex.i;
 				}
 				
+				if(rotation == 0) {
+					listGoingUpDownByIndex[index] = indexes;
+				} else if(rotation == 1) {
+					listGoingRightLeftByIndex[index] = indexes;
+					
+				}
 				
-				//TODO: setup check...
+				//TODO: later: maybe it a hash like in fastRegionCheck
+				
 			}
 		}
 		
@@ -62,7 +72,7 @@ public class FilterOutTwoTopsFaster {
 	public static final int ABOVE = 0;
 	public static final int BELOW = 2;
 	
-	public static boolean shouldFilterOutTwoTops(CoordWithRotationAndIndex[][] allNeighbours, long curState[]) {
+	public boolean shouldFilterOutTwoTops(CoordWithRotationAndIndex[][] allNeighbours, long curState[]) {
 	
 		//System.out.println("---------------");
 		boolean array[] = new boolean[allNeighbours.length];
@@ -76,63 +86,36 @@ public class FilterOutTwoTopsFaster {
 			
 			if(! array[index]) {
 				
+				int listToUse[];
 				boolean foundLine = false;
+				
 				for(int rotation = 0; rotation<2; rotation++) {
 					
-					int numAligned = 1;
-					
-					Coord2D start = new Coord2D(index, rotation);
-					
-					Coord2D nextIndex = start;
-
-					//Go dir 1:
-					do {
-						nextIndex = tryAttachCellInDir(
-								allNeighbours,
-								nextIndex.i,
-								nextIndex.j,
-								ABOVE
-							);
+					if(rotation == 0) {
+						listToUse = listGoingUpDownByIndex[index];
+					} else {
+						listToUse = listGoingRightLeftByIndex[index];
 						
-						
-						if(! array[nextIndex.i]) {
-							numAligned++;
-						}
-						
-					} while(numAligned < 4 && ! array[nextIndex.i]);
-					
-					if(numAligned == 4) {
-						//Good
-						foundLine = true;
-						break;
 					}
 					
+					int numInARow = 0;
 					
-					nextIndex = start;
-					
-					//Go dir 1:
-					do {
-						nextIndex = tryAttachCellInDir(
-								allNeighbours,
-								nextIndex.i,
-								nextIndex.j,
-								BELOW
-							);
+					for(int i=0; i<listToUse.length; i++) {
 						
-						if(! array[nextIndex.i]) {
-							numAligned++;
+						if( ! array[listToUse[i]]) {
+							numInARow++;
+
+							if( numInARow == 4 ) {
+								foundLine = true;
+							}
+							
+							
+						} else {
+							numInARow = 0;
 						}
-						
-					} while(numAligned < 4 && ! array[nextIndex.i]);
-					
-					if(numAligned >= 4) {
-						//Good
-						foundLine = true;
-						break;
-					} else {
-						// no luck
 					}
 				}
+				
 				
 				if(foundLine == false) {
 					numTops++;
@@ -149,6 +132,18 @@ public class FilterOutTwoTopsFaster {
 		return numTops > 1;
 	}
 	
+
+	
+	public static final int NUM_BYTES_IN_LONG = 64;
+	
+	private static boolean isCellIoccupied(int i, long curState[]) {
+		int indexArray = i / NUM_BYTES_IN_LONG;
+		int bitShift = (NUM_BYTES_IN_LONG - 1) - i - indexArray * NUM_BYTES_IN_LONG;
+		
+		return ((1L << bitShift) & curState[indexArray]) != 0L;
+	}
+	
+	//Step only done during pre-processing:
 	private static Coord2D tryAttachCellInDir(
 			CoordWithRotationAndIndex[][] allNeighbours,
 			int curIndex,
@@ -165,13 +160,4 @@ public class FilterOutTwoTopsFaster {
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
 	}
 	
-	
-	public static final int NUM_BYTES_IN_LONG = 64;
-	
-	private static boolean isCellIoccupied(int i, long curState[]) {
-		int indexArray = i / NUM_BYTES_IN_LONG;
-		int bitShift = (NUM_BYTES_IN_LONG - 1) - i - indexArray * NUM_BYTES_IN_LONG;
-		
-		return ((1L << bitShift) & curState[indexArray]) != 0L;
-	}
 }
