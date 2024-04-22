@@ -64,7 +64,7 @@ Found 133 unique solution."
 		
 		//N: 13
 		//680 solutions: (175 unique soltions)
-		//reallySimpleSearch(3, 3, 3);
+		reallySimpleSearch(3, 3, 3);
 		
 		//20 solutions: (6 unique solutions)
 		//reallySimpleSearch(6, 3, 1);
@@ -122,7 +122,7 @@ Found 133 unique solution."
 		// N = 22
 		//{5, 5, 2}, {6, 3, 3}
 		// 24 uniq solutions
-		reallySimpleSearch(5, 5, 2);
+		//reallySimpleSearch(5, 5, 2);
 		
 
 		//Found 58891 unique solution.
@@ -281,13 +281,14 @@ Found 133 unique solution."
 	}
 	
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster5 cuboidToBuild) {
-		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild));
+		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild), false);
 	}
 	
 	public static final long DEBUG_MODULO =100000000L;
 	public static long debug = 0;
+
 	
-	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster5 cuboidToBuild, int layerIndex, int numLayers) {
+	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnExtendedFaster5 cuboidToBuild, int layerIndex, int numLayers, boolean debugNope) {
 
 		long ret = 0;
 		if(debug % DEBUG_MODULO == 0) {
@@ -313,6 +314,10 @@ Found 133 unique solution."
 							
 							//TODO: this function is way too slow. What's going on?
 							cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+							
+							if(debugNope) {
+								System.out.println("NOPE!");
+							}
 						}
 						reference.removeCurrentTopLevel();
 					}
@@ -342,8 +347,22 @@ Found 133 unique solution."
 				reference.addNextLevel(new Coord2D(0, sideBump), null);
 
 				
-				if( cuboidToBuild.filterOutTwoTopsFaster2.isPossibleAfterBasicDeduction(cuboidToBuild.curState)) {
-					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndex + 1, numLayers);
+				if( cuboidToBuild.filterOutTwoTopsFaster4.isPossibleAfterBasicDeduction(cuboidToBuild.curState)) {
+					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndex + 1, numLayers, debugNope);
+				} else {
+					if(debugNope == false) {
+						System.out.println("Nope at layerIndex: " + layerIndex + " debug: " + debug);
+					}
+					if(debug == 99313) {
+						System.out.println("Debug state:");
+						cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+						System.out.println("Debug here");
+						cuboidToBuild.filterOutTwoTopsFaster4.isPossibleAfterBasicDeduction(cuboidToBuild.curState);
+						System.out.println("END DEBUG");
+					}
+					
+					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndex + 1, numLayers, true);
+						
 				}
 				
 				
