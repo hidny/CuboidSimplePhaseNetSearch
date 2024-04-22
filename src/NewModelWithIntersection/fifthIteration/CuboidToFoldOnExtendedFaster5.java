@@ -9,6 +9,7 @@ import Model.Utils;
 import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
 import NewModelWithIntersection.filterOutTwoTops.FilterOutTwoTops;
 import NewModelWithIntersection.filterOutTwoTops.FilterOutTwoTopsFaster;
+import NewModelWithIntersection.filterOutTwoTops.FilterOutTwoTopsFaster2;
 
 public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 
@@ -19,7 +20,7 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
 
 	private FastRegionCheck fastRegionCheck;
 	
-	public FilterOutTwoTopsFaster filterOutTowTopsFaster;
+	public FilterOutTwoTopsFaster2 filterOutTwoTopsFaster2;
 	
 	public CuboidToFoldOnExtendedFaster5(int a, int b, int c) {
 		this(a, b, c, true, true, null);
@@ -51,7 +52,7 @@ public class CuboidToFoldOnExtendedFaster5  implements CuboidToFoldOnInterface {
  			setupAnswerSheetForTopCell();
 		}
 		
-		filterOutTowTopsFaster = new FilterOutTwoTopsFaster(neighbours);
+		filterOutTwoTopsFaster2 = new FilterOutTwoTopsFaster2(neighbours);
 	}
 	
 	public int getNumCellsToFill() {

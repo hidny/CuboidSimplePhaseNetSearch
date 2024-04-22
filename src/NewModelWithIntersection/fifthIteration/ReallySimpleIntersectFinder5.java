@@ -64,7 +64,7 @@ Found 133 unique solution."
 		
 		//N: 13
 		//680 solutions: (175 unique soltions)
-		reallySimpleSearch(3, 3, 3);
+		//reallySimpleSearch(3, 3, 3);
 		
 		//20 solutions: (6 unique solutions)
 		//reallySimpleSearch(6, 3, 1);
@@ -122,7 +122,7 @@ Found 133 unique solution."
 		// N = 22
 		//{5, 5, 2}, {6, 3, 3}
 		// 24 uniq solutions
-		//reallySimpleSearch(5, 5, 2);
+		reallySimpleSearch(5, 5, 2);
 		
 
 		//Found 58891 unique solution.
@@ -342,9 +342,8 @@ Found 133 unique solution."
 				reference.addNextLevel(new Coord2D(0, sideBump), null);
 
 				
-				if( ! cuboidToBuild.filterOutTowTopsFaster.shouldFilterOutTwoTops(cuboidToBuild.neighbours, cuboidToBuild.curState)) {
+				if( cuboidToBuild.filterOutTwoTopsFaster2.isPossibleAfterBasicDeduction(cuboidToBuild.curState)) {
 					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndex + 1, numLayers);
-					
 				}
 				
 				
