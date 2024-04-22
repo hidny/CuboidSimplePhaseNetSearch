@@ -11,6 +11,12 @@ public class FilterOutTwoTopsFaster4 {
 	
 	private int listGoingUpDownByIndex[][];
 	private int listGoingRightLeftByIndex[][];
+
+	//TODO: use this to fix bug!
+	private boolean isElementOfListTwistedGoingUpDownByIndex[][];
+	private boolean isElementOfListTwistedGoingRightLeftByIndex[][];
+	//END TODO: use this to fix bug!
+	
 	private int numCells;
 	
 	public FilterOutTwoTopsFaster4(CoordWithRotationAndIndex[][] allNeighbours) {
@@ -171,7 +177,6 @@ public class FilterOutTwoTopsFaster4 {
 	public static final int MULT_WAYS = 2;
 	
 	public boolean isTopPossibleAfterBasicDeduction(long curState[], int topIndex) {
-		//TODO
 		//System.out.println("---------------");
 		boolean array[] = new boolean[numCells];
 
@@ -323,7 +328,8 @@ public class FilterOutTwoTopsFaster4 {
 			}//END INDEX LOOP
 			
 			
-			//TODO: check for split, and if split, make sure all regions are of size = 0 mod 4 
+			//TODO: check for split, and if split, make sure all regions are of size = 0 mod 4
+			//TODO: use BFS search from prev file.
 			
 		}//END PROGRESS LOOP
 		
