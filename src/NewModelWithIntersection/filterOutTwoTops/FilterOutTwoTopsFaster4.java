@@ -24,15 +24,20 @@ public class FilterOutTwoTopsFaster4 {
 		this.numCells = allNeighbours.length;
 		listGoingUpDownByIndex = new int[allNeighbours.length][];
 		listGoingRightLeftByIndex = new int[allNeighbours.length][];
+
+		isElementOfListTwistedGoingUpDownByIndex = new boolean[allNeighbours.length][];
+		isElementOfListTwistedGoingRightLeftByIndex = new boolean[allNeighbours.length][];
 		
 		
 		for(int rotation = 0; rotation<2; rotation++) {
 			for(int index = 0; index < allNeighbours.length; index++) {
 				
 				int indexes[] = new int[7];
+				boolean twisted90deg[] = new boolean[7];
 				
 				int middleIndexInList = 3;
 				indexes[middleIndexInList] = index;
+				twisted90deg[middleIndexInList] = false;
 				
 				Coord2D start = new Coord2D(index, rotation);
 				
@@ -47,6 +52,8 @@ public class FilterOutTwoTopsFaster4 {
 						);
 					
 					indexes[j] = nextIndex.i;
+					twisted90deg[j] = ((nextIndex.j % 2) != rotation);
+					
 				}
 				
 				nextIndex = start;
@@ -59,12 +66,15 @@ public class FilterOutTwoTopsFaster4 {
 						);
 					
 					indexes[j] = nextIndex.i;
+					twisted90deg[j] = ((nextIndex.j % 2) != rotation);
 				}
 				
 				if(rotation == 0) {
 					listGoingUpDownByIndex[index] = indexes;
+					isElementOfListTwistedGoingUpDownByIndex[index] = twisted90deg;
 				} else if(rotation == 1) {
 					listGoingRightLeftByIndex[index] = indexes;
+					isElementOfListTwistedGoingRightLeftByIndex[index] = twisted90deg;
 					
 				}
 				
@@ -103,7 +113,6 @@ public class FilterOutTwoTopsFaster4 {
 						listToUse = listGoingUpDownByIndex[index];
 					} else {
 						listToUse = listGoingRightLeftByIndex[index];
-						
 					}
 					
 					int numInARow = 0;
@@ -205,8 +214,6 @@ public class FilterOutTwoTopsFaster4 {
 			
 			for(int index=0; index<array.length; index++) {
 
-
-				
 				for(int rotation = 0; rotation<2; rotation++) {
 
 					if(array[index]) {
@@ -214,6 +221,7 @@ public class FilterOutTwoTopsFaster4 {
 					}
 
 					int listToUse[];
+					boolean shouldTwistFromMiddleCell[];
 					int possibilityListToUse[];
 					int otherPossibilityList[];
 					boolean foundLine = false;
@@ -223,17 +231,24 @@ public class FilterOutTwoTopsFaster4 {
 						listToUse = listGoingUpDownByIndex[index];
 						possibilityListToUse = possibilityLayerGoingUpDown;
 						otherPossibilityList = possibilityLayerGoingLeftRight;
+
+						shouldTwistFromMiddleCell = isElementOfListTwistedGoingUpDownByIndex[index];
+						
 					} else {
 						listToUse = listGoingRightLeftByIndex[index];
 						possibilityListToUse = possibilityLayerGoingLeftRight;
 						otherPossibilityList = possibilityLayerGoingUpDown;
+
+						shouldTwistFromMiddleCell = isElementOfListTwistedGoingRightLeftByIndex[index];
 					}
 					
 					int numInARow = 0;
 					
 					for(int i=0; i<listToUse.length; i++) {
 						
-						if( possibilityListToUse[listToUse[i]] != NO_WAY) {
+						if( (shouldTwistFromMiddleCell[i] == false && possibilityListToUse[listToUse[i]] != NO_WAY)
+							|| (shouldTwistFromMiddleCell[i] == true && otherPossibilityList[listToUse[i]] != NO_WAY)
+								) {
 							numInARow++;
 
 							if( numInARow == 4 ) {
@@ -271,6 +286,7 @@ public class FilterOutTwoTopsFaster4 {
 							
 							possibilityListToUse[index] = ONE_WAY;
 							
+							
 							if(otherPossibilityList[index] == NO_WAY) {
 								
 								boolean sanityCheckOnlyOneUpdate = false;
@@ -278,7 +294,9 @@ public class FilterOutTwoTopsFaster4 {
 								
 								for(int i=0; i<listToUse.length; i++) {
 									
-									if( possibilityListToUse[listToUse[i]] != NO_WAY) {
+									if( (shouldTwistFromMiddleCell[i] == false && possibilityListToUse[listToUse[i]] != NO_WAY)
+											|| (shouldTwistFromMiddleCell[i] == true && otherPossibilityList[listToUse[i]] != NO_WAY)
+										) {
 										numInARow++;
 			
 										if( numInARow == 4 ) {

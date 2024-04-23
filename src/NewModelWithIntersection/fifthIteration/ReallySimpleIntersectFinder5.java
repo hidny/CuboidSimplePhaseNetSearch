@@ -350,7 +350,7 @@ Found 133 unique solution."
 				if( cuboidToBuild.filterOutTwoTopsFaster4.isPossibleAfterBasicDeduction(cuboidToBuild.curState)) {
 					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndex + 1, numLayers, debugNope);
 				} else {
-					if(debugNope == false) {
+					/*if(debugNope == false) {
 						System.out.println("Nope at layerIndex: " + layerIndex + " debug: " + debug);
 					}
 					if(debug == 99313) {
@@ -362,7 +362,7 @@ Found 133 unique solution."
 					}
 					
 					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndex + 1, numLayers, true);
-						
+					*/
 				}
 				
 				
