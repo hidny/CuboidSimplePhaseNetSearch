@@ -5,11 +5,7 @@ import java.util.Queue;
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;
 import Model.CuboidToFoldOn;
-import Model.NeighbourGraphCreator;
 import Model.Utils;
-import NewModel.firstIteration.Nx1x1CuboidToFold;
-import NewModel.thirdIteration.Nx1x1StackTransitionTracker2;
-import NewModelWithIntersection.filterOutTwoTops.FilterOutTwoTops;
 
 public class CuboidToFoldOnExtendedFaster3 extends CuboidToFoldOn {
 

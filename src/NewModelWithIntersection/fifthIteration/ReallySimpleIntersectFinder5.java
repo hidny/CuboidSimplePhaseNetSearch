@@ -9,7 +9,6 @@ import GraphUtils.PivotCellDescriptionForSimplePhase;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
 import NewModelWithIntersection.fastRegionCheck.FastRegionCheck;
-import NewModelWithIntersection.filterOutTwoTops.FilterOutTwoTops;
 import SolutionResolver.SolutionResolverInterface;
 import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
@@ -64,7 +63,7 @@ Found 133 unique solution."
 		
 		//N: 13
 		//680 solutions: (175 unique soltions)
-		reallySimpleSearch(3, 3, 3);
+		//reallySimpleSearch(3, 3, 3);
 		
 		//20 solutions: (6 unique solutions)
 		//reallySimpleSearch(6, 3, 1);
@@ -102,9 +101,11 @@ Found 133 unique solution."
 		// 27 unique solutions (under 80 seconds)
 		//reallySimpleSearch(7, 4, 1);
 		
+		
 		//951 unique solution.
 		//reallySimpleSearch(9, 3, 1);
 		//
+		//UP TO HERE: April 23rd
 		
 		//N: 20
 		// Found 202106 unique solution.
@@ -156,7 +157,6 @@ Found 133 unique solution."
 		//reallySimpleSearch(9, 4, 1);
 		
 
-		//UP TO HERE:
 		
 		// N = 25
 		/*
@@ -174,7 +174,6 @@ Found 133 unique solution."
 		//System.exit(1);
 
 
-		//UP TO HERE:
 		//28 unique solution.
 		//reallySimpleSearch(12, 3, 1);
 		//System.exit(1);
@@ -188,7 +187,7 @@ Found 133 unique solution."
 		//reallySimpleSearch(8, 5, 1);
 		
 		// N = 27
-		//Will need to optimize:
+		//1310 unique solution
 		//reallySimpleSearch(13, 3, 1);
 		
 		//Found 154 unique solution.
@@ -217,6 +216,13 @@ Found 133 unique solution."
 		
 		
 		//reallySimpleSearch(5, 5, 5);
+		
+		//for(int j=13; j<20; j++) {
+		//	reallySimpleSearch(j, 3, 1);
+		//}
+		
+		//
+		reallySimpleSearch(9, 3, 2);
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
@@ -284,7 +290,7 @@ Found 133 unique solution."
 		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild), false);
 	}
 	
-	public static final long DEBUG_MODULO =100000000L;
+	public static final long DEBUG_MODULO =100000L;
 	public static long debug = 0;
 
 	
@@ -349,20 +355,6 @@ Found 133 unique solution."
 				
 				if( cuboidToBuild.filterOutTwoTopsFaster4.isPossibleAfterBasicDeduction(cuboidToBuild.curState)) {
 					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndex + 1, numLayers, debugNope);
-				} else {
-					/*if(debugNope == false) {
-						System.out.println("Nope at layerIndex: " + layerIndex + " debug: " + debug);
-					}
-					if(debug == 99313) {
-						System.out.println("Debug state:");
-						cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
-						System.out.println("Debug here");
-						cuboidToBuild.filterOutTwoTopsFaster4.isPossibleAfterBasicDeduction(cuboidToBuild.curState);
-						System.out.println("END DEBUG");
-					}
-					
-					ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild, layerIndex + 1, numLayers, true);
-					*/
 				}
 				
 				

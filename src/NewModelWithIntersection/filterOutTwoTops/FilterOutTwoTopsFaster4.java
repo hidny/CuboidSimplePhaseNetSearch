@@ -1,23 +1,22 @@
 package NewModelWithIntersection.filterOutTwoTops;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;
 
 public class FilterOutTwoTopsFaster4 {
-
-	//private long multiplesForIndexUpDown[][];
-
-	//private long multiplesForIndexRightLeft[][];
 	
 	private int listGoingUpDownByIndex[][];
 	private int listGoingRightLeftByIndex[][];
 
-	//TODO: use this to fix bug!
 	private boolean isElementOfListTwistedGoingUpDownByIndex[][];
 	private boolean isElementOfListTwistedGoingRightLeftByIndex[][];
-	//END TODO: use this to fix bug!
 	
 	private int numCells;
+	
+	private CoordWithRotationAndIndex[][] allNeighbours;
 	
 	public FilterOutTwoTopsFaster4(CoordWithRotationAndIndex[][] allNeighbours) {
 		
@@ -28,6 +27,7 @@ public class FilterOutTwoTopsFaster4 {
 		isElementOfListTwistedGoingUpDownByIndex = new boolean[allNeighbours.length][];
 		isElementOfListTwistedGoingRightLeftByIndex = new boolean[allNeighbours.length][];
 		
+		this.allNeighbours = allNeighbours;
 		
 		for(int rotation = 0; rotation<2; rotation++) {
 			for(int index = 0; index < allNeighbours.length; index++) {
@@ -78,8 +78,6 @@ public class FilterOutTwoTopsFaster4 {
 					
 				}
 				
-				//TODO: later: maybe it a hash like in fastRegionCheck
-				
 			}
 		}
 		
@@ -92,7 +90,6 @@ public class FilterOutTwoTopsFaster4 {
 	
 	public boolean shouldFilterOutTwoTops(long curState[]) {
 	
-		//System.out.println("---------------");
 		boolean array[] = new boolean[numCells];
 		
 		for(int i=0; i<array.length; i++) {
@@ -186,7 +183,6 @@ public class FilterOutTwoTopsFaster4 {
 	public static final int MULT_WAYS = 2;
 	
 	public boolean isTopPossibleAfterBasicDeduction(long curState[], int topIndex) {
-		//System.out.println("---------------");
 		boolean array[] = new boolean[numCells];
 
 		int possibilityLayerGoingUpDown[] = new int[this.numCells];
@@ -346,13 +342,57 @@ public class FilterOutTwoTopsFaster4 {
 			}//END INDEX LOOP
 			
 			
-			//TODO: check for split, and if split, make sure all regions are of size = 0 mod 4
-			//TODO: use BFS search from prev file.
 			
 		}//END PROGRESS LOOP
 		
 		
+		//TODO: check for split, and if split, make sure all regions are of size = 0 mod 4
+		//TODO: use BFS search from prev file.
+		
+		for(int i=0; i<array.length; i++) {
+			
+			if(array[i] == false) {
+				if(regionIsCorrectSize(array, allNeighbours, i) == false) {
+					//System.out.println("BAD REGION SIZE");
+					return false;
+				}
+			}
+		}
+		
 		return true;
+	}
+	
+	//TODO: revive the custom queue... it's somewhere in git.
+	//private CoordWithRotationAndIndex[][] allNeighbours
+	public static boolean regionIsCorrectSize(boolean array[], CoordWithRotationAndIndex[][] allNeighbours, int startIndex) {
+		
+		int numFound = 0;
+		Queue<Integer> queue = new LinkedList<Integer>();
+		
+		array[startIndex] = true;
+		numFound++;
+		queue.add(startIndex);
+		
+		while(queue.isEmpty() == false) {
+			int nextIndex = queue.remove();
+			
+			for(int i=0; i<allNeighbours[nextIndex].length; i++) {
+				
+				int neighbourIndex = allNeighbours[nextIndex][i].getIndex();
+				if(array[neighbourIndex] == false) {
+					
+					array[neighbourIndex] = true;
+					numFound++;
+					queue.add(neighbourIndex);
+				}
+			}
+		}
+		
+		if(numFound % 4 == 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public static final int TOP_INDEX_UNKNOWN = -1;
