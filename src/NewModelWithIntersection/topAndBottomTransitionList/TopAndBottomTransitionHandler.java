@@ -194,15 +194,13 @@ public class TopAndBottomTransitionHandler {
 			int transitionIndexSet[]
 		) {
 		
-		//Debug:
-		// Refresh transitionIndexSet
+		// Refresh transitionIndexSet:
 		if(currentLayerIndex <= transitionIndexSet[0]) {
 			transitionIndexSet[0] = -1;
 		}
 		if(currentLayerIndex <= transitionIndexSet[1]) {
 			transitionIndexSet[1] = -1;
 		}
-		//End debug.
 		
 		for(int i=0; i<transitionsTopOrBottom.length; i++) {
 			for(int j=0; j<transitionsTopOrBottom[i].length; j++) {
