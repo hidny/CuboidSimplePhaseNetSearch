@@ -76,15 +76,18 @@ public class ReallySimpleIntersectFinder6Grained {
 		
 		//613862 for 7, 17, 1
 		
-		// 4 for 2, 17, 1
-		// I'm missing solutions...
-		// 637 for 4, 17, 1
 		//15, 161, 1387, x, 
 		//reallySimpleSearch(2, 149, 1);
 		
 		//reallySimpleSearch(4, 17, 1);
 		
 		reallySimpleSearch(2, 17, 1);
+		//15 (2)
+		//161 (3)
+		//1387 (4)
+		//10884 (5)
+		
+		
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
