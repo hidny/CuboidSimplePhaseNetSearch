@@ -54,6 +54,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		this.topAndBottomHandler = new TopAndBottomTransitionHandler();
 		
 
+		forcedRepetition = new int[DIM_N_OF_Nx1x1 + 2];
 		initializeForcedRepetition();
 	}
 	
@@ -87,7 +88,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		prevGroundedIndexes = new int[DIM_N_OF_Nx1x1];
 		prevGroundedRotations = new int[DIM_N_OF_Nx1x1];
 		
-		forcedRepetition = new int[DIM_N_OF_Nx1x1 + 2];
 		currentLayerIndex = 0;
 		
 		boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
@@ -209,9 +209,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	private long answerSheetForTopCell[][][][];
 	private long answerSheetForTopCellAnySideBump[][][];
 
-	private long preComputedPossiblyEmptyCellsAroundNewLayer[][][][];
-	private boolean preComputedForceRegionSplitIfEmptyAroundNewLayer[][][];
-
+	
 
 	//State variables:
 	private static int numLongsToUse;
@@ -220,7 +218,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	private int topLeftGroundedIndex = 0;
 	private int topLeftGroundRotationRelativeFlatMap = 0;
 	
-	private int prevSideBumps[];
+	public int prevSideBumps[];
 	public int prevGroundedIndexes[];
 	private int prevGroundedRotations[];
 	private int currentLayerIndex;
@@ -376,7 +374,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				&& sideBump != prevSideBumps[forcedRepetition[this.currentLayerIndex]]) {
 			return false;
 		}
-		
+
 		
 		if( ! topAndBottomHandler.isTopBottomTranstionsPossiblyFine(
 				currentLayerIndex,
@@ -388,7 +386,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				),
 				indexToRing
 			)) {
-			
 			return false;
 		}
 		
@@ -501,9 +498,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		newGroundedRotationAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 		newGroundedIndexAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 		
-		preComputedPossiblyEmptyCellsAroundNewLayer = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][numLongsToUse];
-		preComputedForceRegionSplitIfEmptyAroundNewLayer = new boolean[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
-
+		
 		for(int index=0; index<Utils.getTotalArea(this.dimensions); index++) {
 			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
 				
@@ -586,8 +581,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 					
 					
 					answerSheet[index][rotation][sideBump] = convertBoolArrayToLongs(tmpArray);
-					preComputedPossiblyEmptyCellsAroundNewLayer[index][rotation][sideBump]  = getPossiblyEmptyCellsAroundNewLayer(tmpArray, index, rotation);
-					preComputedForceRegionSplitIfEmptyAroundNewLayer[index][rotation][sideBump]  = checkPreComputedForceRegionSplitIfEmptyAroundNewLayer(tmpArray, index, rotation);
 					
 					newGroundedIndexAbove[index][rotation][sideBump] = nextGounded.i;
 					newGroundedRotationAbove[index][rotation][sideBump] = nextGounded.j;
@@ -762,74 +755,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		}
 	}
 	
-	boolean checkPreComputedForceRegionSplitIfEmptyAroundNewLayer(boolean newLayerArray[], int prevGroundIndex, int prevGroundRotation) {
-		
-		//TODO: copy/paste code (1)
-		//preComputedForceRegionSplitIfEmptyAroundNewLayer
-		boolean tmpArray[] = new boolean[newLayerArray.length];
-		
-		//Get the bool array with the new layer indexes true:
-		for(int i=0; i<tmpArray.length; i++) {
-			tmpArray[i] = newLayerArray[i];
-		}
-		
-		
-		//Set the prev layer's indexes to true:
-		Coord2D cur = new Coord2D(prevGroundIndex, prevGroundRotation);
-		
-		for(int i=0; i<NUM_ROTATIONS; i++) {
-			tmpArray[cur.i] = true;
-			cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);	
-		}
-		//END TODO: copy/paste code
-		
-		
-		//TODO: copy/paste code (2)
-		int firstUnoccupiedIndex = -1;
-		for(int i=0; i<tmpArray.length; i++) {
-			if(tmpArray[i] == false) {
-				firstUnoccupiedIndex = i;
-				break;
-			}
-		}
-
-		Queue<Integer> visited = new LinkedList<Integer>();
-		
-		boolean explored[] = new boolean[Utils.getTotalArea(this.dimensions)];
-		
-		explored[firstUnoccupiedIndex] = true;
-		visited.add(firstUnoccupiedIndex);
-		
-		Integer v;
-		
-		while( ! visited.isEmpty()) {
-			
-			v = visited.poll();
-			
-			for(int i=0; i<NUM_NEIGHBOURS; i++) {
-				
-				int neighbourIndex = this.neighbours[v.intValue()][i].getIndex();
-				
-				if( ! tmpArray[neighbourIndex] && ! explored[neighbourIndex]) {
-					explored[neighbourIndex] = true;
-					visited.add(neighbourIndex);
-				}
-				
-			}
-			
-		}
-
-		for(int i=0; i<tmpArray.length; i++) {
-			if( ! tmpArray[i] && ! explored[i]) {
-				
-				return true;
-			}
-		}
-
-		return false;
-		//END TODO copy/paste code
-		
-	}
 	
 	private long[] getPossiblyEmptyCellsAroundNewLayer(boolean newLayerArray[], int prevGroundIndex, int prevGroundRotation) {
 		

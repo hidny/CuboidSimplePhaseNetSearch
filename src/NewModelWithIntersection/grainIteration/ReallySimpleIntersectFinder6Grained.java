@@ -11,7 +11,7 @@ import NewModel.firstIteration.Nx1x1CuboidToFold;
 import SolutionResolver.SolutionResolverInterface;
 import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
-public class ReallySimpleIntersectFinder6 {
+public class ReallySimpleIntersectFinder6Grained {
 
 	public static void main(String[] args) {
 		
@@ -82,7 +82,9 @@ public class ReallySimpleIntersectFinder6 {
 		//15, 161, 1387, x, 
 		//reallySimpleSearch(2, 149, 1);
 		
-		reallySimpleSearch(4, 17, 1);
+		//reallySimpleSearch(4, 17, 1);
+		
+		reallySimpleSearch(2, 17, 1);
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
@@ -126,6 +128,9 @@ public class ReallySimpleIntersectFinder6 {
 			if(otherCuboidStartIndex >= b) {
 				continue;
 			}
+			//if(otherCuboidStartIndex != 0) {
+			//	continue;
+			//}
 			
 			System.out.println("Start recursion for other cuboid start index and rotation: (" + otherCuboidStartIndex + ", " + otherCuboidStartRotation + ")");
 			
@@ -157,9 +162,38 @@ public class ReallySimpleIntersectFinder6 {
 		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild));
 	}
 
+	public static void debugSideBumps(CuboidToFoldOnGrained cuboidToBuild, int layerIndex, int sideBumpTest[]) {
+		
+		if(layerIndex != sideBumpTest.length) {
+			return;
+		}
+		
+		boolean goodSoFar = true;
+		for(int i=0; i<sideBumpTest.length; i++) {
+			if(cuboidToBuild.prevSideBumps[i] != sideBumpTest[i]) {
+				goodSoFar = false;
+			}
+			//System.out.println(cuboidToBuild.prevSideBumps[i]);
+		}
+		//System.out.println();
+		
+		if(goodSoFar) {
+			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+			System.out.println("Layer index: " + layerIndex);
+			//System.exit(1);
+		}
+		
+	}
 	public static long debugIt = 0;
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnGrained cuboidToBuild, int layerIndex, int numLayers) {
 
+		int hello[] = cuboidToBuild.prevGroundedIndexes;
+		
+		//debugSideBumps(cuboidToBuild, layerIndex, new int[] {6, 7, 9, 8, 7, 8, 9, 7});
+		debugSideBumps(cuboidToBuild, layerIndex, new int[] {6, 7, 9, 8, 7, 8, 9, 7});
+		
+		debugSideBumps(cuboidToBuild, layerIndex, new int[] {6, 7, 9, 8, 7, 8, 9, 7, 6, 7, 7});
+		
 		debugIt++;
 		
 		if(debugIt % 10000000L == 0) {
@@ -185,6 +219,8 @@ public class ReallySimpleIntersectFinder6 {
 							for(int j=0; j<layerIndex; j++) {
 								System.out.println(cuboidToBuild.prevGroundedIndexes[j]);
 							}
+							System.out.println("------------");
+							System.out.println("------------");
 							System.out.println("------------");
 							
 							System.out.println("Unique solution found");
