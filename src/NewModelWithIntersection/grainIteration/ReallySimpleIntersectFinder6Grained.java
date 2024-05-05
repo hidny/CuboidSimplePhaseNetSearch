@@ -81,7 +81,7 @@ public class ReallySimpleIntersectFinder6Grained {
 		
 		//reallySimpleSearch(4, 17, 1);
 		
-		reallySimpleSearch(7, 17, 1);
+		reallySimpleSearch(2, 17, 1);
 		//15 (2)
 		//161 (3)
 		//1387 (4)
@@ -133,9 +133,9 @@ public class ReallySimpleIntersectFinder6Grained {
 			if(otherCuboidStartIndex >= b) {
 				continue;
 			}
-			//if(otherCuboidStartIndex != 0) {
-			//	continue;
-			//}
+			if(otherCuboidStartIndex != 0) {
+				continue;
+			}
 			
 			System.out.println("Start recursion for other cuboid start index and rotation: (" + otherCuboidStartIndex + ", " + otherCuboidStartRotation + ")");
 			

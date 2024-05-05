@@ -133,7 +133,7 @@ public class IntersectFor4GrainedCuboidsdFinder {
 							System.out.println("Debugging transition handler for top and bottom:");
 							cuboidToBuild.printTopAndBottomHandlerDebug();
 							
-							System.exit(1);
+							//System.exit(1);
 						}
 						reference.removeCurrentTopLevel();
 					}

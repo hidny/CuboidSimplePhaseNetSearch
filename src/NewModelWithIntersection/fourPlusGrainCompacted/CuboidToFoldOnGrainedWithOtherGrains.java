@@ -1,8 +1,5 @@
 package NewModelWithIntersection.fourPlusGrainCompacted;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;
 import Model.CuboidToFoldOnInterface;
@@ -25,7 +22,6 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 	private int cuboid3[];
 	private int cuboid4[];
 	
-
 	public CuboidToFoldOnGrainedWithOtherGrains(int cuboid1[], int cuboid2[], int cuboid3[], int cuboid4[],
 			boolean verbose) {
 
@@ -123,7 +119,7 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 		this.oldTopMin = new int[Utils.getTotalArea(this.dimensions)];
 		this.oldTopMax = new int[Utils.getTotalArea(this.dimensions)];
 
-		// TODO: Specific to cuboids of the form Mx(4N+1)x1: (Make this not be used when
+		// TODO: Currently, it's specific to cuboids of the form Mx(4N+1)x1: (TODO: Make this not be used when
 		// dealing with Nx3x3)
 		if (bottomIndex % 4 != 0 || bottomIndex >= this.dimensions[1]) {
 			this.curState = setImpossibleForAnswerSheet();
@@ -231,10 +227,15 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 
 	private int DIM_N_OF_Nx1x1;
 
-	//private long answerSheet[][][][];
+	private long answerSheet[][][][]; //TODO
 	private int newGroundedIndexAbove[][][];
 	private int newGroundedRotationAbove[][][];
 
+
+	private long answerSheetForTopCell[][][][]; //TODO
+	private long answerSheetForTopCellAnySideBump[][][]; //TODO
+
+	
 	// State variables:
 	private static int numLongsToUse;
 	private long curState[];
@@ -476,6 +477,7 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 
 		return collisionNumber != 0;
 	}
+	
 
 	// pre: The only cell left is top cell:
 	public boolean isTopCellAbleToBeAddedForSideBumpFast(int sideBump) {
@@ -494,74 +496,7 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 
 	private long[] getAnswerSheet(int index, int rotation, int sideBump) {
 		
-		boolean tmpArray[] = new boolean[Utils.getTotalArea(this.dimensions)];
-
-		int leftMostRelativeTopLeftGrounded = sideBump - 6;
-
-		if (leftMostRelativeTopLeftGrounded < -3 || leftMostRelativeTopLeftGrounded > 3) {
-
-			return setImpossibleForAnswerSheet();
-		}
-
-		for (int i = 0; i < tmpArray.length; i++) {
-			tmpArray[i] = false;
-		}
-
-		Coord2D nextGounded = null;
-
-		if (leftMostRelativeTopLeftGrounded <= 0) {
-
-			Coord2D aboveGroundedTopLeft = tryAttachCellInDir(index, rotation, ABOVE);
-
-			tmpArray[aboveGroundedTopLeft.i] = true;
-
-			Coord2D cur = aboveGroundedTopLeft;
-			// Go to left:
-			for (int i = 0; i > leftMostRelativeTopLeftGrounded; i--) {
-				cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
-				tmpArray[cur.i] = true;
-			}
-
-			nextGounded = cur;
-
-			cur = aboveGroundedTopLeft;
-			// Go to right:
-			for (int i = 0; i < leftMostRelativeTopLeftGrounded + 3; i++) {
-
-				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
-				tmpArray[cur.i] = true;
-			}
-
-		} else {
-
-			Coord2D cur = new Coord2D(index, rotation);
-			// Go to right until there's a cell above:
-
-			for (int i = 0; i < leftMostRelativeTopLeftGrounded; i++) {
-				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
-			}
-
-			Coord2D cellAbove = tryAttachCellInDir(cur.i, cur.j, ABOVE);
-
-			nextGounded = cellAbove;
-			
-			tmpArray[cellAbove.i] = true;
-
-			cur = cellAbove;
-			// Go to right:
-			for (int i = 0; i < 3; i++) {
-				cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
-				tmpArray[cur.i] = true;
-			}
-
-		}
-
-		if (nextGounded.j % 2 == ROTATION_AGAINST_GRAIN) {
-
-			return setImpossibleForAnswerSheet();
-		} else {
-			return convertBoolArrayToLongs(tmpArray);
-		}
+		return answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
 
 	}
 	private void setupAnswerSheetInBetweenLayers() {
@@ -591,6 +526,7 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 		}
 		
 		
+		answerSheet = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][numLongsToUse];
 		newGroundedRotationAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 		newGroundedIndexAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 
@@ -605,7 +541,8 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 					int leftMostRelativeTopLeftGrounded = sideBump - 6;
 
 					if (leftMostRelativeTopLeftGrounded < -3 || leftMostRelativeTopLeftGrounded > 3) {
-
+						
+						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
 						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
 						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;
 						continue;
@@ -666,12 +603,13 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 
 					if (nextGounded.j % 2 == ROTATION_AGAINST_GRAIN) {
 
+						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
 						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
 						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;
 						continue;
 					}
 
-					
+					answerSheet[index][rotation][sideBump] = convertBoolArrayToLongs(tmpArray);
 					newGroundedIndexAbove[index][rotation][sideBump] = nextGounded.i;
 					newGroundedRotationAbove[index][rotation][sideBump] = nextGounded.j;
 					
@@ -696,6 +634,16 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 
 							newGroundedIndexAbove[index][rotation][sideBump] = currentLandingOnNextRingIndex.i;
 							newGroundedRotationAbove[index][rotation][sideBump] = currentLandingOnNextRingIndex.j;
+							
+							tmpArray = new boolean[Utils.getTotalArea(this.dimensions)];
+							
+							Coord2D cur = new Coord2D(currentLandingOnNextRingIndex.i, currentLandingOnNextRingIndex.j);
+							
+							for(int i=0; i<4; i++) {
+								tmpArray[cur.i] = true;
+								cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+							}
+							answerSheet[index][rotation][sideBump] = convertBoolArrayToLongs(tmpArray);
 						}
 						
 					}
