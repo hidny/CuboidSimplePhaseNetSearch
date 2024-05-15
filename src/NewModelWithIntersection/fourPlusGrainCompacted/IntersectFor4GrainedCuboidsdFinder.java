@@ -67,7 +67,9 @@ public class IntersectFor4GrainedCuboidsdFinder {
 			
 			// It should be 2 * (largestWidth + 1)
 			for(int j=0; j< 2 * (largestWidth + 1); j++) {
-				System.out.println("Trying with twist amount: " + j);
+				if(j % 100 == 0) {
+					System.out.println("Trying with twist amount: " + j);
+				}
 				cuboidToBuild.initializeNewBottomIndexAndRotationAndBetweenLayerTwist(otherCuboidStartIndex, otherCuboidStartRotation, j);
 				ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
 			}
@@ -97,7 +99,7 @@ public class IntersectFor4GrainedCuboidsdFinder {
 
 		debugIt++;
 		
-		if(debugIt % 10L == 0) {
+		if(debugIt % 10000000L == 0) {
 			System.out.println("Debug print current state of search:");
 			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
 		}
@@ -133,7 +135,21 @@ public class IntersectFor4GrainedCuboidsdFinder {
 							System.out.println("Debugging transition handler for top and bottom:");
 							cuboidToBuild.printTopAndBottomHandlerDebug();
 							
-							//System.exit(1);
+							boolean stopIt = true;
+							for(int i=0; i<cuboidToBuild.getOtherWidthsToConsider().length; i++) {
+								for(int j=i+1; i<cuboidToBuild.getOtherWidthsToConsider().length; i++) {
+									
+									if(cuboidToBuild.getOtherWidthsToConsider()[i] == cuboidToBuild.getOtherWidthsToConsider()[j]) {
+										stopIt = false;
+									}
+								}
+							}
+							if(stopIt) {
+								System.exit(1);
+							}
+
+							//TODO delete
+							System.exit(1);
 						}
 						reference.removeCurrentTopLevel();
 					}

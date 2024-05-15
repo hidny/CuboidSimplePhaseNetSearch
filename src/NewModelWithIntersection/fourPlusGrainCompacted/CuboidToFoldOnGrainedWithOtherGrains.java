@@ -51,6 +51,10 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 		numLongsToUse = (int) Math.floor(Utils.getTotalArea(this.dimensions) / 64) + 1;
 		System.out.println(Utils.getTotalArea(this.dimensions));
 		System.out.println("Num longs to use: " + numLongsToUse);
+		
+		for(int i=0; i<this.getOtherWidthsToConsider().length; i++) {
+			System.out.println("width " + i + ": " + this.getOtherWidthsToConsider()[i]);
+		}
 
 		curState = new long[numLongsToUse];
 
@@ -129,7 +133,7 @@ public class CuboidToFoldOnGrainedWithOtherGrains implements CuboidToFoldOnInter
 		
 	}
 	
-	private int[] getOtherWidthsToConsider() {
+	public int[] getOtherWidthsToConsider() {
 		
 		int ret[] = new int[3];
 		

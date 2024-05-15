@@ -69,21 +69,21 @@ public class Search1Net4CuboidsCompactMain {
 		
 		//TODO: test area...
 		
-		int cuboid1[] = new int[] {h0 , width0, 1};
-		int cuboid2[] = new int[] {h1 , width1, 1};
-		int cuboid3[] = new int[] {h2 , width2, 1};
-		int cuboid4[] = new int[] {h3 , width3, 1};
+		int cuboid1[] = new int[] {h0, width0, 1};
+		int cuboid2[] = new int[] {h1, width1, 1};
+		int cuboid3[] = new int[] {h2, width2, 1};
+		int cuboid4[] = new int[] {h3, width3, 1};
 		
 		sanityTestCuboids(cuboid1, cuboid2, cuboid3, cuboid4);
 		
-		//IntersectFor4GrainedCuboidsdFinder.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid3, cuboid4);
+		IntersectFor4GrainedCuboidsdFinder.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid3, cuboid4);
 		
 		//TODO:
 		//I deleted cuboid3 because I just want to make sure it works:
-		IntersectFor4GrainedCuboidsdFinder.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid2, cuboid4);
+		//IntersectFor4GrainedCuboidsdFinder.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid2, cuboid4);
 		//It doesn't work...
 		
-		System.exit(1);
+		//System.exit(1);
 	}
 	
 	
