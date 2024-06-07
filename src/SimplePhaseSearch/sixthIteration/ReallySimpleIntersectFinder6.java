@@ -38,7 +38,7 @@ public class ReallySimpleIntersectFinder6 {
 
 		//N: 10
 		//Found 158 unique solutions
-		reallySimpleSearch(3, 3, 2);
+		//reallySimpleSearch(3, 3, 2);
 		
 		
 		//N: 11
@@ -68,7 +68,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		
 		//Found 355 unique solutions (40 seconds on oct 14th)
-		reallySimpleSearch(9, 2, 1);
+		//reallySimpleSearch(9, 2, 1);
 
 		//N:15
 		//Found 507 unique solution. (6 minutes and 36 seconds on oct 14th)
@@ -111,6 +111,10 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//
 
 		//--------
+		// N = 21
+		//reallySimpleSearch(10, 3, 1);
+		
+		//--------
 		// N = 22
 		//{5, 5, 2}, {6, 3, 3)
 
@@ -119,7 +123,8 @@ Current UTC timestamp in milliseconds: 1675458353391
 
 		//Found 105801 unique solution. (Ran from Oct 12th 9pm to Oct 18th, 7 pm) (or about 6 days)
 		//reallySimpleSearch(6, 3, 3);
-		
+
+		//--------
 		// N = 23 (4 other ones...)
 		/*
 		 * 5 x 4 x 3: 94
@@ -144,7 +149,12 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(15, 2, 1);
 		
 
-		
+		//--------
+		// N = 24
+		reallySimpleSearch(9, 4, 1);
+		System.exit(1);
+
+		//--------
 		// N = 25
 		/*
 7 x 3 x 3: 102

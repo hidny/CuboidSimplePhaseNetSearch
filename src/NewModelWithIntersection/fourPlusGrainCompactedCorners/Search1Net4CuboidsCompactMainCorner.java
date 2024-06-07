@@ -1,8 +1,8 @@
-package NewModelWithIntersection.fourPlusGrainCompacted;
+package NewModelWithIntersection.fourPlusGrainCompactedCorners;
 
 import Model.Utils;
 
-public class Search1Net4CuboidsCompactMain {
+public class Search1Net4CuboidsCompactMainCorner {
 
 	public static void main(String[] args) {
 
@@ -14,7 +14,8 @@ public class Search1Net4CuboidsCompactMain {
 	public static void search() {
 		
 		int it = 0;
-		for(int sum = 0; sum < 10; sum++) {
+		//sum =0 to9 incl checked
+		for(int sum = 10; sum < 15; sum++) {
 			for(int a = 1; a< sum; a++) {
 				for(int b=1; a + b < sum; b++) {
 					
@@ -76,11 +77,11 @@ public class Search1Net4CuboidsCompactMain {
 		
 		sanityTestCuboids(cuboid1, cuboid2, cuboid3, cuboid4);
 		
-		//IntersectFor4GrainedCuboidsdFinder.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid3, cuboid4);
+		IntersectFor4GrainedCuboidsdFinderCorner.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid3, cuboid4);
 		
 		//TODO:
 		//I deleted cuboid3 because I just want to make sure it works:
-		IntersectFor4GrainedCuboidsdFinder.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid2, cuboid4);
+		//IntersectFor4GrainedCuboidsdFinderCorner.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid2, cuboid4);
 		//It doesn't work...
 		
 		//System.exit(1);

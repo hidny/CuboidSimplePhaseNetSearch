@@ -11,7 +11,7 @@ import NewModel.firstIteration.Nx1x1CuboidToFold;
 public class ReallySimpleIntersectFinder5Iter5 {
 
 	public static void main(String[] args) {
-
+		System.out.println("Simple phase search:");
 		//N:6 1 1: 223160
 		//reallySimpleSearch(6, 1, 1);
 
@@ -49,7 +49,8 @@ Final number of unique solutions: 1401
 Current UTC timestamp in milliseconds: 1675458353391
 
 		 */
-		reallySimpleSearch(5, 3, 1);
+		
+		//reallySimpleSearch(5, 3, 1);
 
 		//Found 54 unique solutions
 		//reallySimpleSearch(7, 2, 1);
@@ -77,11 +78,17 @@ Current UTC timestamp in milliseconds: 1675458353391
 		//reallySimpleSearch(5, 3, 2);
 
 		//Found 31 unique solutions (almost 11 minutes 20 seconds on oct 14th) (14 minutes on nov 4th...)
+
 		//reallySimpleSearch(7, 3, 1);
+		
+		//N=16
+		//Found 1365 unique solution.
+		//reallySimpleSearch(4, 3, 3);
 
 		//N: 17
-		//Found  unique solutions
+		//Found 124822 unique solution.
 		//reallySimpleSearch(5, 5, 1);
+		//System.exit(1);
 
 		//Found 54 unique solutions ( just over 2 hours on oct 12th and 1 hour and 34 minutes on oct 14th) (Only 14 minutes on Nov 4th)
 		//reallySimpleSearch(8, 3, 1);
@@ -98,11 +105,13 @@ Current UTC timestamp in milliseconds: 1675458353391
 		
 		//Found  unique solutions
 		//reallySimpleSearch(9, 3, 1);
+		//System.exit(1);
 
 		//N: 20
 		//Found  unique solution
 		//reallySimpleSearch(6, 5, 1);
-
+		//System.exit(1);
+		
 		//Found 581 unique solution. (Almost 28 hours) (I got 581 in 8 hours and 20 minutes on October 28th)
 		//reallySimpleSearch(7, 3, 2);
 		
@@ -131,18 +140,20 @@ Current UTC timestamp in milliseconds: 1675458353391
 		 //11,3,1:
 		//5, 4, 3
 
+		
 		//Found  unique solutions
 		//reallySimpleSearch(5, 4, 3);
-
 		//Found  unique solutions
 		//reallySimpleSearch(7, 5, 1);
 
 		//Found  unique solutions
-		//reallySimpleSearch(11, 3, 1);
+		reallySimpleSearch(11, 3, 1);
+		System.exit(1);
 		
 		//Found 150 unique solution. (14 hours and 32 minutes on October 16th)
 		//reallySimpleSearch(15, 2, 1);
-		
+
+		//System.exit(1);
 
 		
 		// N = 25
@@ -216,6 +227,9 @@ Current UTC timestamp in milliseconds: 1675458353391
 		System.out.println();
 		System.out.println("Done using the 2nd iteration (using pre-computed long arrays)");
 		System.out.println("Found " + BasicUniqueCheckImproved.uniqList.size() + " unique solution.");
+		
+
+		System.out.println("Done Simple phase search for " + a + "x" + b + "x" + c);
 
 	}
 	

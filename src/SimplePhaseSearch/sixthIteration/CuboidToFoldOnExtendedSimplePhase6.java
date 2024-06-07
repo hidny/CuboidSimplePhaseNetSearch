@@ -1641,7 +1641,7 @@ public class CuboidToFoldOnExtendedSimplePhase6  implements CuboidToFoldOnInterf
 						//System.out.println(dimensions[0]);
 						//System.out.println(dimensions[1]);
 						//System.out.println(dimensions[2]);
-						System.out.println(getNumLayers() + ", " + numLayersToGoThrough + ", " + curLayerIndex + "( " + this.groundedIndexMid + ", " + this.groundRotationRelativeFlatMapMid + ")");
+						System.out.println("Solve net in opposite direction! Stats: " + getNumLayers() + ", " + numLayersToGoThrough + ", " + curLayerIndex + "( " + this.groundedIndexMid + ", " + this.groundRotationRelativeFlatMapMid + ")");
 						
 						return true;
 					}

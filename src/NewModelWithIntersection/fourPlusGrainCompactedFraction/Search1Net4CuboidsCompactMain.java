@@ -1,4 +1,4 @@
-package NewModelWithIntersection.fourPlusGrainCompacted;
+package NewModelWithIntersection.fourPlusGrainCompactedFraction;
 
 import Model.Utils;
 
@@ -80,7 +80,9 @@ public class Search1Net4CuboidsCompactMain {
 		
 		//TODO:
 		//I deleted cuboid3 because I just want to make sure it works:
-		IntersectFor4GrainedCuboidsdFinder.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid2, cuboid4);
+		for(int k=2; k<=2; k++) {
+			IntersectFor4GrainedCuboidsdFinder.findIntersectFor4GrainedCuboidsFinder(cuboid1, cuboid2, cuboid2, cuboid4, k);
+		}
 		//It doesn't work...
 		
 		//System.exit(1);
