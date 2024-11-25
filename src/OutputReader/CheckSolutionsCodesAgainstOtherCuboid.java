@@ -306,7 +306,10 @@ public class CheckSolutionsCodesAgainstOtherCuboid {
 			//Getting answer for area of 106:
 			
 			//String file1 = "D:\\output17x2x1_N=26Part2.txt";
-			String file1 = "D:\\GrainedSearch_17x2x1.txt";
+			
+			//String file1 = "D:\\GrainedSearch_17x2x1.txt";
+
+			String file1 = "D:\\outputAug8th17x2x1.txt";
 			
 			int dimensionsCuboidToCheck[] = new int[]{8, 5, 1};
 			

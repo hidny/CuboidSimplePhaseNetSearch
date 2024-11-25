@@ -151,8 +151,8 @@ Current UTC timestamp in milliseconds: 1675458353391
 
 		//--------
 		// N = 24
-		reallySimpleSearch(9, 4, 1);
-		System.exit(1);
+		//reallySimpleSearch(9, 4, 1);
+		//System.exit(1);
 
 		//--------
 		// N = 25
@@ -173,7 +173,7 @@ Current UTC timestamp in milliseconds: 1675458353391
 		// N = 26
 
 		//Found 674 unique solutions (took 2 days and 7 hours starting on Nov 5th)
-		//reallySimpleSearch(17, 2, 1);
+		reallySimpleSearch(17, 2, 1);
 
 		//Found  unique solutions
 		//reallySimpleSearch(8, 5, 1);

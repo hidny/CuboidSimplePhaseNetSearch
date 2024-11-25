@@ -21,7 +21,7 @@ public class ReallySimpleIntersectFinder5 {
 		//reallySimpleSearch(5, 1, 1);
 		
 		//26 solutions: (7 unique solutions)
-		//reallySimpleSearch(3, 2, 1);
+		reallySimpleSearch(3, 2, 1);
 
 		//N: 7
 		//6 solutions: (2 unique solutions)
@@ -222,7 +222,7 @@ Found 133 unique solution."
 		//}
 		
 		//
-		reallySimpleSearch(9, 3, 2);
+		//reallySimpleSearch(9, 3, 2);
 	}
 	
 	public static SolutionResolverInterface solutionResolver;

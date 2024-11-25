@@ -80,6 +80,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			//String file1 = "D:\\test_new_optimization_7_17_1.txt";
 			
 			String file1 = "D:\\searchFor4cuboids.txt";
+			
 			int dimensionsToCheck[][] = null;
 			int areaToCheck = -1;
 			
