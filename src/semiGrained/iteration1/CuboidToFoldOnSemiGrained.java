@@ -197,6 +197,10 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		
 		if(prevRingIndexAlt > height + 2) {
 			prevRingIndexAlt = 2*height - prevRingIndexAlt;
+			
+			if(prevRingIndexAlt < 0) {
+				prevRingIndexAlt = -1;
+			}
 		
 		} else if(prevRingIndexAlt >= height && prevRingIndexAlt <= height + 2) {
 			prevRingIndexAlt = -1;
@@ -820,6 +824,9 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 					int prevRingIndexAlt = getAltCurRingIndexForHeight(j, altHeight);
 
 					int transitionIndex = Math.min(nextRingIndexAlt, prevRingIndexAlt);
+					
+					System.out.println("j, transitionIndex: (" + j + ", "+ transitionIndex + ")");
+					System.out.println("nextRingIndexAlt, prevRingIndexAlt: (" + nextRingIndexAlt + ", "+ prevRingIndexAlt + ")");
 
 					if (transitionIndex > 0
 							&& transitionIndex < dimensions[0] - 2
@@ -827,7 +834,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 					) {
 
 						if (Math.abs(prevRingIndexAlt - nextRingIndexAlt) != 1) {
-							System.out.println("ERROR in initializeForcedRepetition!");
+							System.out.println("ERROR in initializeForcedRepetition! 22");
 							System.exit(1);
 						}
 
@@ -849,6 +856,8 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			System.out.println("forcedRepetion[" + i + "] = " + forcedRepetition[i]);
 		}
 
+		//TODO: keep testing...
+		//System.exit(1);
 	}
 	
 	
