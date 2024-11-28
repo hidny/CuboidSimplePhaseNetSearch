@@ -53,6 +53,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		
 
 		forcedRepetition = new int[DIM_N_OF_Nx1x1 + 2];
+		initializeForcedRepetition();
 	}
 	
 	private TopAndBottomTransitionHandler topAndBottomHandler = new TopAndBottomTransitionHandler();
@@ -192,7 +193,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		
 		int layeringPerim = 2*(height + 3);
 		
-		int prevRingIndexAlt = ((currentLayerIndex-1 + layeringPerim) % (layeringPerim)) - 3;
+		int prevRingIndexAlt = ((currentLayerIndex-1 + layeringPerim) % (layeringPerim));
 		
 		if(prevRingIndexAlt > height + 2) {
 			prevRingIndexAlt = 2*height - prevRingIndexAlt;
@@ -274,33 +275,33 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			return false;
 		}
 
-		/*
 		int prevRingIndex = indexToRing[this.topLeftGroundedIndex];
 		int nextRingIndex = indexToRing[nextIndex];
 		
-
+		// Make sure the bottom index is on the right location of the grained ring (mod 4)
 		if(nextRingIndex >=1 && nextRingIndex < dimensions[0] - 1
-				&& LayerIndexForRingDecided[nextRingIndex] >= 0 
+				&& LayerIndexForRingDecided[nextRingIndex] >= 0
 				&& LayerIndexForRingDecided[nextRingIndex] < currentLayerIndex
 				&& ringMod4AlreadySet[nextRingIndex] >=0
 				&& ringMod4Lookup[nextIndex][nextRot] != ringMod4AlreadySet[nextRingIndex]) {
 			
 			return false;
 		}
-		
+
+		/*
 		// TODO: what does this even do?
 		//if(getRingMod4(nextIndex, nextRot) == -1 
 		//		&& ! isAcceptableTopOrBottomIndexForInbetweenLayer(nextIndex, nextRot)) {
 		//	return false;
 		//}
-		
+		*/
 		
 		if(forcedRepetition[this.currentLayerIndex] < this.currentLayerIndex
 				&& sideBump != prevSideBumps[forcedRepetition[this.currentLayerIndex]]) {
 			return false;
 		}
 
-		
+		/*
 		if( ! topAndBottomHandler.isTopBottomTranstionsPossiblyFine(
 				currentLayerIndex,
 				dimensions,
@@ -778,6 +779,78 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		
 	}
 
+	public static int[] getOtherWidthsToConsider() {
+		//TODO: make this malleable:
+		return new int[] {3};
+	}
+	
+	private void initializeForcedRepetition() {
+
+		for (int i = 0; i < forcedRepetition.length; i++) {
+			forcedRepetition[i] = i;
+		}
+
+		boolean progress = true;
+
+		int otherWidthsToConsider[] = getOtherWidthsToConsider();
+		
+		System.out.println("Other widths to consider:");
+		for(int i=0; i<otherWidthsToConsider.length; i++) {
+			System.out.println(otherWidthsToConsider[i]);
+		}
+
+		System.out.println("Starting initializeForcedRepetition()");
+		while (progress == true) {
+
+			progress = false;
+
+			for (int i = 0; i < otherWidthsToConsider.length; i++) {
+
+				if (((dimensions[1] + 3) * (dimensions[0] + 3)) % (otherWidthsToConsider[i] + 3) != 0) {
+					System.out.println("ERROR in initializeForcedRepetition: unexpected forced width of "
+							+ otherWidthsToConsider[i]);
+					System.exit(1);
+				}
+				int altHeight = ((dimensions[1] + 3) * (dimensions[0] + 3)) / (otherWidthsToConsider[i] + 3) - 3;
+				System.out.println("Alt height: " + altHeight);
+
+				for (int j = 0; j < forcedRepetition.length; j++) {
+
+					int nextRingIndexAlt = getAltNextRingIndexForHeight(j, altHeight);
+					int prevRingIndexAlt = getAltCurRingIndexForHeight(j, altHeight);
+
+					int transitionIndex = Math.min(nextRingIndexAlt, prevRingIndexAlt);
+
+					if (transitionIndex > 0
+							&& transitionIndex < dimensions[0] - 2
+							&& forcedRepetition[j] != forcedRepetition[transitionIndex + 1]
+					) {
+
+						if (Math.abs(prevRingIndexAlt - nextRingIndexAlt) != 1) {
+							System.out.println("ERROR in initializeForcedRepetition!");
+							System.exit(1);
+						}
+
+						int loweredIndex = Math.min(forcedRepetition[transitionIndex + 1], forcedRepetition[j]);
+						forcedRepetition[j] = loweredIndex;
+						forcedRepetition[transitionIndex + 1] = loweredIndex;
+
+						progress = true;
+					}
+				}
+
+			}
+
+			// Get alt heights...
+			// getAltCurRingIndexForHeight(int currentLayerIndex, int height)
+		}
+
+		for (int i = 0; i < forcedRepetition.length; i++) {
+			System.out.println("forcedRepetion[" + i + "] = " + forcedRepetition[i]);
+		}
+
+	}
+	
 	
 	private long[] convertBoolArrayToLongs(boolean tmpArray[]) {
 		

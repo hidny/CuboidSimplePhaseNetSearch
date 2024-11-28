@@ -35,8 +35,11 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 		//Done for 5x3x3
 		// (expected about 8,418)
 		
+		
 		//Found 58799 unique solution.
 		//Done for 6x3x3
+		//Took 33 minutes
+		
 		// Expected close to 58,891
 	}
 	
