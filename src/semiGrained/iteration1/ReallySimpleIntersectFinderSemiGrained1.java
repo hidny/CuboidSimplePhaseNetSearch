@@ -40,6 +40,10 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 		//Done for 6x3x3
 		//Took 33 minutes
 		
+		//Done using the 2nd iteration (using pre-computed long arrays)
+		//Found 58799 unique solution.
+		//Took 1 minute
+		
 		// Expected close to 58,891
 	}
 	
@@ -76,6 +80,12 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 			
 			int otherCuboidStartIndex =startingPointsAndRotationsToCheck.get(i).getCellIndex();
 			int otherCuboidStartRotation = startingPointsAndRotationsToCheck.get(i).getRotationRelativeToCuboidMap();
+			
+			//Only start from ring index 0 and rotation 2 for Mx(3+4M)x3
+			if(cuboidToBuild.getIndexToRingIndex(otherCuboidStartIndex) != 0
+					|| otherCuboidStartRotation != 2) {
+				continue;
+			}
 			
 			System.out.println("Start recursion for other cuboid start index and rotation: (" + otherCuboidStartIndex + ", " + otherCuboidStartRotation + ")");
 			
