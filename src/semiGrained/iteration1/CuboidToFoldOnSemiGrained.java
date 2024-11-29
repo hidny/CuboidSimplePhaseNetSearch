@@ -583,7 +583,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			if(isWithinGrainedRing(neighbour.i)) {
 				return false;
 			}
-			neighbour = this.tryAttachCellInDir(indexCell, rotation, RIGHT);
+			neighbour = this.tryAttachCellInDir(neighbour.i, neighbour.j, RIGHT);
 		}
 		
 		return true;

@@ -14,12 +14,12 @@ import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
 public class ReallySimpleIntersectFinderSemiGrained1 {
 
-	public static boolean VERBOSE = true;
+	public static boolean VERBOSE = false;
 	
 	public static void main(String[] args) {
 		
 		
-		reallySimpleSearch(6, 3, 3);
+		reallySimpleSearch(8, 3, 3);
 		
 		//Found 0 unique solution.
 		//Done for 1x3x3
@@ -180,9 +180,9 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 						reference.removeCurrentTopLevel();
 					}
 				}
-				System.out.println("----");
 				
 				if(ret > 0 && VERBOSE) {
+					System.out.println("----");
 					System.out.println("Found " + ret + " places for top from this net:");
 					
 					//TODO: Make a debug function:
