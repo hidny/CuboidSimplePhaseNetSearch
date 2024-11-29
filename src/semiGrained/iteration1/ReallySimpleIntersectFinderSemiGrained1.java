@@ -14,10 +14,12 @@ import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
 public class ReallySimpleIntersectFinderSemiGrained1 {
 
+	public static boolean VERBOSE = false;
+	
 	public static void main(String[] args) {
 		
 		
-		reallySimpleSearch(6, 3, 3);
+		reallySimpleSearch(5, 3, 3);
 		
 		//Found 2 unique solution.
 		//Done for 1x3x3
@@ -45,6 +47,17 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 		//Took 1 minute
 		
 		// Expected close to 58,891
+		
+		//Found 410031 unique solution.
+		//Done for 7x3x3
+		//Took 13 minutes
+		//(Expected about 410,329)
+		
+		//Found 2870223 unique solution.
+		//Done for 8x3x3
+		//Took 16 minutes with verbose off.
+		//(Expected about 2,870,327)
+		
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
@@ -142,22 +155,29 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 						reference.addNextLevel(new Coord2D(0, sideBump), null);
 						if(BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
 							
-							System.out.println("Prev ground indexes:");
-							for(int j=0; j<layerIndex; j++) {
-								System.out.println(cuboidToBuild.prevGroundedIndexes[j]);
+							if(VERBOSE) {
+								System.out.println("Prev ground indexes:");
+								for(int j=0; j<layerIndex; j++) {
+									System.out.println(cuboidToBuild.prevGroundedIndexes[j]);
+								}
+								System.out.println("------------");
+								System.out.println("------------");
+								System.out.println("------------");
+								
+								System.out.println("Unique solution found");
+								System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
+								
+								System.out.println(reference.toString());
+								System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
+								
+								cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+								
+							} else {
+								if(BasicUniqueCheckImproved.uniqList.size() % 10000 == 0) {
+									System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
+									
+								}
 							}
-							System.out.println("------------");
-							System.out.println("------------");
-							System.out.println("------------");
-							
-							System.out.println("Unique solution found");
-							System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
-							
-							System.out.println(reference.toString());
-							System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
-							
-							cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
-							
 							//TODO:
 							//System.out.println("Debugging transition handler for top and bottom:");
 							//cuboidToBuild.printTopAndBottomHandlerDebug();
@@ -166,7 +186,7 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 					}
 				}
 				
-				if(ret > 0) {
+				if(ret > 0 && VERBOSE) {
 					System.out.println("Found " + ret + " places for top from this net:");
 					
 					//TODO: Make a debug function:

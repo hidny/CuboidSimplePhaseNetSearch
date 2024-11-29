@@ -196,7 +196,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		int prevRingIndexAlt = ((currentLayerIndex-1 + layeringPerim) % (layeringPerim));
 		
 		if(prevRingIndexAlt > height + 2) {
-			prevRingIndexAlt = 2*height - prevRingIndexAlt;
+			prevRingIndexAlt = layeringPerim - 6 - prevRingIndexAlt;
 			
 			if(prevRingIndexAlt < 0) {
 				prevRingIndexAlt = -1;
@@ -208,6 +208,8 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		return prevRingIndexAlt;
 	}
 	
+	//TODO Nov 28: try to avoid using this function while dealing with multiple semi-grained cuboids
+	//
 	public boolean isNewLayerValidForOtherMinNxMx1(int m, int sideBump) {
 		
 		//TODO: also add the 17 transition:
@@ -229,19 +231,8 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				&& transitionIndex != -1) {
 			//I'm confused...
 			
-			/*
-			if((this.currentLayerIndex / this.dimensions[0]) % 2 == 1) {
-				transitionIndex = transitionBetweenRings.length - 1 - (transitionIndex % this.dimensions[0]);
-				System.out.println("Case 1");
-			} else {
-				System.out.println("Case 2: " + transitionIndex);
-				transitionIndex = transitionIndex % this.dimensions[0];
-			}
-			
-			if(transitionIndex == 1) {
-				System.out.println("Debug");
-			}
-			*/
+			//TODO: Nov 28:
+			// There should be a condition involving the other constraint (even if it's not really used)
 			
 			//System.out.println(this.currentLayerIndex + " vs " + (1 + transitionIndex));
 			if(this.prevSideBumps[ 1 + transitionIndex] != sideBump) {
@@ -305,6 +296,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			return false;
 		}
 
+		//TODO: Nov 28: change this to isGrainedRingToNonGrainedRingPossiblyFine
 		/*
 		if( ! topAndBottomHandler.isTopBottomTranstionsPossiblyFine(
 				currentLayerIndex,
@@ -319,6 +311,14 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			return false;
 		}
 		*/
+		
+		//TODO: Nov 28: Add: is layer onTopOrBottom Possibly fine (Only works for (4M+3) where M> 0 for the bottom part...
+		//Condition: rotation 0 or 2, and correct placement mod 4 depending on where bottom 1x1 and top 1x1 cell is.
+		// For Top: leave 2 possibilities until it's been 'decided'
+		
+		//TODO: elsewhere...
+		//TODO:  Nov 28:Add region check on the between layers on top and top, top + 1st ring.
+		//TODO:  Nov 28:Make any layer touching the 2nd ring or 2nd last ring illegal.
 		return true;
 		
 	}
