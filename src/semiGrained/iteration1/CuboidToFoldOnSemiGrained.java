@@ -32,7 +32,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		DIM_N_OF_Nx1x1 = (Utils.getTotalArea(this.dimensions)-2) / 4;
 		
 		numLongsToUse = (int) Math.floor(Utils.getTotalArea(this.dimensions) / 64) + 1;
-		System.out.println(Utils.getTotalArea(this.dimensions));
+		System.out.println("Total area of CuboidToFoldOnSemiGrained: " + Utils.getTotalArea(this.dimensions));
 		System.out.println("Num longs to use: " + numLongsToUse);
 		
 		curState = new long[numLongsToUse];
@@ -49,11 +49,12 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		}
 		
 
-		this.topAndBottomHandler = new TopAndBottomTransitionHandler();
+		if(setup) {
+			this.topAndBottomHandler = new TopAndBottomTransitionHandler();
 		
-
-		forcedRepetition = new int[DIM_N_OF_Nx1x1 + 2];
-		initializeForcedRepetition();
+			forcedRepetition = new int[DIM_N_OF_Nx1x1 + 2];
+			initializeForcedRepetition();
+		}
 	}
 	
 	private TopAndBottomTransitionHandler topAndBottomHandler = new TopAndBottomTransitionHandler();
@@ -1000,8 +1001,8 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				this.dimensions[2],
 				labels));
 		
-		
-		System.out.println("Location in ring mod 4:");
+
+		/*System.out.println("Location in ring mod 4:");
 		for(int i=0; i<this.currentLayerIndex; i++) {
 
 			
@@ -1014,7 +1015,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				System.out.println(labelToUse + ": " + (this.ringMod4Lookup[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap]) + " (" + this.topLeftGroundedIndex + ", " + this.topLeftGroundRotationRelativeFlatMap + ")");
 
 			}
-		}
+		}*/
 	}
 
 	private String getLabel(int layerIndex) {

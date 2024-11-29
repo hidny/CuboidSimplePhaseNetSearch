@@ -14,7 +14,7 @@ import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
 public class ReallySimpleIntersectFinderSemiGrained1 {
 
-	public static boolean VERBOSE = false;
+	public static boolean VERBOSE = true;
 	
 	public static void main(String[] args) {
 		
@@ -156,21 +156,18 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 						if(BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
 							
 							if(VERBOSE) {
-								System.out.println("Prev ground indexes:");
-								for(int j=0; j<layerIndex; j++) {
-									System.out.println(cuboidToBuild.prevGroundedIndexes[j]);
-								}
-								System.out.println("------------");
-								System.out.println("------------");
-								System.out.println("------------");
 								
 								System.out.println("Unique solution found");
 								System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
 								
+								cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+
 								System.out.println(reference.toString());
 								System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
 								
-								cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+								//TODO:
+								//System.out.println("Debugging transition handler for top and bottom:");
+								//cuboidToBuild.printTopAndBottomHandlerDebug();
 								
 							} else {
 								if(BasicUniqueCheckImproved.uniqList.size() % 10000 == 0) {
@@ -178,13 +175,12 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 									
 								}
 							}
-							//TODO:
-							//System.out.println("Debugging transition handler for top and bottom:");
-							//cuboidToBuild.printTopAndBottomHandlerDebug();
+							
 						}
 						reference.removeCurrentTopLevel();
 					}
 				}
+				System.out.println("----");
 				
 				if(ret > 0 && VERBOSE) {
 					System.out.println("Found " + ret + " places for top from this net:");
