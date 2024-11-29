@@ -19,21 +19,21 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 	public static void main(String[] args) {
 		
 		
-		reallySimpleSearch(5, 3, 3);
+		reallySimpleSearch(6, 3, 3);
 		
-		//Found 2 unique solution.
+		//Found 0 unique solution.
 		//Done for 1x3x3
 		
-		//Found 123 unique solution. (TODO: id the 10 missing solutions and see if there's a bug)
+		//Found 31 unique solution.
 		//Done for 2x3x3
 		
 		//Found N/A unique solution.
 		//Done for 3x3x3
 		
-		//Found 1273 unique solution.
+		//Found 1231 unique solution.
 		//Done for 4x3x3
 		
-		//Found 8403 unique solution.
+		//Found 8399 unique solution.
 		//Done for 5x3x3
 		// (expected about 8,418)
 		

@@ -98,7 +98,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		this.oldTopMin = new int[Utils.getTotalArea(this.dimensions)];
 		this.oldTopMax = new int[Utils.getTotalArea(this.dimensions)];
 		
-		//TODO: Specify 1st ring...
+		//Specify 1st ring:
 		if(getIndexToRingIndex(this.bottomIndex) != 0) {
 			this.curState = setImpossibleForAnswerSheet();
 		}
@@ -517,14 +517,22 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 						
 					}
 					
-					int numBeforeGrained = dimensions[1]*dimensions[2] + 2 * (dimensions[1]+dimensions[2]);
 					
 					//TODO: bring back in some capacity: (ring 1 to n-1)
-					if( nextGounded.j % 2 == ROTATION_AGAINST_GRAIN && indexToRing[nextGounded.i] >= 1 && indexToRing[nextGounded.i] < dimensions[0] - 1) {
+					if( nextGounded.j % 2 == ROTATION_AGAINST_GRAIN && isWithinGrainedRing(nextGounded.i)) {
 						
 						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
 						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
-						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;						
+						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;		
+						//System.out.println("REJECT " + index + ", " + rotation + "," +sideBump);				
+						continue;
+					
+					} else if( ! isWithinGrainedRing(nextGounded.i)
+							&& ! isAcceptableLayerOnTopOrBottomGrainedCuboid(nextGounded.i, nextGounded.j)) {
+						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
+						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
+						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;
+						//System.out.println("TEST " + index + ", " + rotation + "," +sideBump);
 						continue;
 					}
 					
@@ -536,8 +544,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				}
 			}
 		}
-		
-		
+		//System.exit(1);
 		
 		
 		LayerIndexForRingDecided = new int[dimensions[0]];
@@ -568,55 +575,22 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	
 	//Pre: it's not the first 1x1 cell or the last 1x1 cell
 	//pre: getRingMod4(indexCell, rotation) returns -1:
-	public boolean isAcceptableTopOrBottomIndexForInbetweenLayer(int indexCell, int rotation) {
-		
+	public boolean isAcceptableLayerOnTopOrBottomGrainedCuboid(int indexCell, int rotation) {
 		
 		Coord2D neighbour = this.tryAttachCellInDir(indexCell, rotation, RIGHT);
-		if(indexToRing[neighbour.i] >=0) {
-			return false;
-		}
-		neighbour = this.tryAttachCellInDir(neighbour.i, neighbour.j, RIGHT);
-		if(indexToRing[neighbour.i] >=0) {
-			return false;
-		}
-		neighbour = this.tryAttachCellInDir(neighbour.i, neighbour.j, RIGHT);
-		if(indexToRing[neighbour.i] >=0) {
-			return false;
-		}
 		
-		
-		if(rotation % 2 == 1) {
-			return false;
-		}
-		
-		
-		int placementMod4 = -1;
-		
-		int addOneToPlacement = 0;
-		if(rotation == 2) {
-			addOneToPlacement =1;
-		}
-		
-		if(indexCell < dimensions[1]) {
-			placementMod4 = (indexCell + addOneToPlacement) % 4;
-			
-			if(placementMod4 ==0 && indexCell < this.bottomIndex) {
-				return true;
-			} else if(placementMod4 ==1 && indexCell > this.bottomIndex) {
-				return true;
+		for(int i=0; i<4 - 1; i++) {
+			if(isWithinGrainedRing(neighbour.i)) {
+				return false;
 			}
-			
-		} else {
-			placementMod4 = (indexCell+ addOneToPlacement - (this.getNumCellsToFill() - dimensions[1])) % 4;
-			
-			if(placementMod4 ==0 && indexCell < this.maxTopIndex) {
-				return true;
-			} else if(placementMod4 ==1 && indexCell > this.minTopIndex) {
-				return true;
-			}
+			neighbour = this.tryAttachCellInDir(indexCell, rotation, RIGHT);
 		}
 		
-		return false;
+		return true;
+	}
+	
+	private boolean isWithinGrainedRing(int indexCell) {
+		return indexToRing[indexCell] >0 && indexToRing[indexCell] < dimensions[0] - 1;
 	}
 	
 	

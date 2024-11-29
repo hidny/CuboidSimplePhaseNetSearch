@@ -42,7 +42,6 @@ public class CheckForNetDifference {
 			
 			String tmpSolution = "";
 			boolean recordNet = false;
-			boolean getReadyToStop = false;
 			
 			while(in.hasNextLine()) {
 				String tmp = in.nextLine();
@@ -50,23 +49,10 @@ public class CheckForNetDifference {
 				if(tmp.startsWith("Num unique solutions found:")) {
 					tmpSolution = "";
 					recordNet = true;
-					getReadyToStop = false;
 				}
 				
 				if(recordNet) {
 					tmpSolution += tmp + "\n";
-				}
-				
-				if(recordNet && tmp.toLowerCase().contains("map:")) {
-					getReadyToStop = true;
-				}
-				
-				if(getReadyToStop && tmp.toLowerCase().contains("----")) {
-					System.out.println("Found missing net:");
-					System.out.println(tmpSolution);
-					tmpSolution = "";
-					recordNet = false;
-					getReadyToStop = false;
 				}
 				
 				if(tmp.toLowerCase().contains("solution code:")) {
@@ -74,9 +60,8 @@ public class CheckForNetDifference {
 					if(file2Solutions.contains(getSolutionCode(tmp))) {
 						numNormalMatches++;
 					} else {
-						recordNet = true;
-						//System.out.println("Found missing net:");
-						//System.out.println(tmpSolution);
+						System.out.println("Found missing net:");
+						System.out.println(tmpSolution);
 						numNewNets++;
 						
 					}
