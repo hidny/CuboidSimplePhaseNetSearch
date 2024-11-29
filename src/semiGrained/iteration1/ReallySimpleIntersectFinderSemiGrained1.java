@@ -55,7 +55,7 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 		
 		//Found 2870223 unique solution.
 		//Done for 8x3x3
-		//Took 16 minutes with verbose off.
+		//Took 8 minutes with verbose off.
 		//(Expected about 2,870,327)
 		
 	}
