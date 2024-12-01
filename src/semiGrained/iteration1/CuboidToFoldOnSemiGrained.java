@@ -758,9 +758,11 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		
 	}
 
+	//TODO: Why did you hard-code this?
 	public static int[] getOtherWidthsToConsider() {
 		//TODO: make this malleable:
-		return new int[] {3};
+		return new int[] {};
+		//return new int[] {3};
 	}
 	
 	private void initializeForcedRepetition() {
@@ -804,7 +806,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 					System.out.println("nextRingIndexAlt, prevRingIndexAlt: (" + nextRingIndexAlt + ", "+ prevRingIndexAlt + ")");
 
 					if (transitionIndex > 0
-							&& transitionIndex < dimensions[0] - 2
+							&& transitionIndex < altHeight - 2
 							&& forcedRepetition[j] != forcedRepetition[transitionIndex + 1]
 					) {
 
@@ -997,7 +999,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		char label = (char)( (layerIndex % 26) + 'A');
 		
 		String labelToUse = label + "" + label;
-		if(layerIndex > 26 ) {
+		if(layerIndex >= 26 ) {
 			labelToUse = label + "" + (layerIndex/26);
 		}
 		

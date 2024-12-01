@@ -19,7 +19,7 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 	public static void main(String[] args) {
 		
 		
-		reallySimpleSearch(8, 3, 3);
+		reallySimpleSearch(4, 7, 3);
 		
 		//Found 0 unique solution.
 		//Done for 1x3x3
@@ -58,6 +58,15 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 		//Took 8 minutes with verbose off.
 		//(Expected about 2,870,327)
 		
+		
+		/*
+		 * Found 2988 different solutions if we ignore symmetric solutions
+
+Done using the 2nd iteration (using pre-computed long arrays)
+Found 1113 unique solution.
+Done for 4x7x3
+25 minutes
+		 */
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
@@ -136,7 +145,7 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 		
 		debugIt++;
 		
-		if(debugIt % 10000000L == 0) {
+		if(debugIt % 100000000L == 0) {
 			System.out.println("Debug print current state of search:");
 			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
 		}
