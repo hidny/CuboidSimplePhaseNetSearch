@@ -534,6 +534,13 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;
 						//System.out.println("TEST " + index + ", " + rotation + "," +sideBump);
 						continue;
+					} else if ( ! isIndexRotationLegalSemiGrained(nextGounded.i, nextGounded.j)) {
+						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
+						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
+						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;
+						System.out.println("TEST " + index + ", " + rotation + "," +sideBump);
+						continue;
+						
 					}
 					
 					
@@ -896,6 +903,41 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		rotationRelativeFlatMap = (rotationRelativeFlatMap + neighbours[neighbourIndex].getRot() + NUM_NEIGHBOURS) % NUM_NEIGHBOURS;
 		
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
+	}
+	
+	private boolean isIndexRotationLegalSemiGrained(int index, int rotation) {
+		
+		boolean hasGrainedRing = false;
+		boolean hasNonGrainedRingCell = false;
+		
+		Coord2D c = new Coord2D(index, rotation);
+		
+		for(int i=0; i<4; i++) {
+			if(isWithinGrainedRing(c.i)) {
+				hasGrainedRing = true;
+			} else {
+				hasNonGrainedRingCell = true;
+				if(indexToRing[c.i] == -1 && c.j % 2 == 1 && dimensions[1] > dimensions[2]) {
+					//System.out.println(index + ", " + rotation + ": " + i);
+					//System.out.println(c.i + ", " + c.j + ": " + i);
+					//System.out.println("---");
+
+					//TODO: also filter out layers that aren't allowed on top...
+					//TODO only allow max transition of (sidebump - 6) <=2...
+					return false;
+				}
+			}
+			c = tryAttachCellInDir(c.i, c.j, RIGHT);
+		}
+		
+		if(hasGrainedRing && hasNonGrainedRingCell) {
+			return false;
+		}
+		
+		
+		
+		return true;
+		
 	}
 
 	//DEBUG PRINT STATE ON OTHER CUBOID:
