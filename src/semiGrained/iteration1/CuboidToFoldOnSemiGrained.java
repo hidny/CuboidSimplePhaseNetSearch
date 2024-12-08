@@ -541,6 +541,13 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 						System.out.println("TEST " + index + ", " + rotation + "," +sideBump);
 						continue;
 						
+					} else if(isSideBumpTooBigBothTopBottom(index, rotation, sideBump, nextGounded)) {
+						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
+						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
+						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;
+						System.out.println("TEST " + index + ", " + rotation + "," +sideBump);
+						System.out.println("Side bump too big");
+						continue;
 					}
 					
 					
@@ -768,8 +775,8 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	//TODO: Why did you hard-code this?
 	public static int[] getOtherWidthsToConsider() {
 		//TODO: make this malleable:
-		return new int[] {};
-		//return new int[] {3};
+		//return new int[] {};
+		return new int[] {3};
 	}
 	
 	private void initializeForcedRepetition() {
@@ -905,6 +912,37 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
 	}
 	
+	private boolean isSideBumpTooBigBothTopBottom(int index, int rotation, int sideBump, Coord2D landingSpot) {
+		
+		Coord2D c = new Coord2D(index, rotation);
+		
+		boolean isBottomOrTop1 = false;
+		
+		for(int i=0; i<4; i++) {
+			if(indexToRing[c.i] < 0) {
+				isBottomOrTop1 = true;
+			}
+			c = tryAttachCellInDir(c.i, c.j, RIGHT);
+		}
+
+		boolean isBottomOrTop2 = false;
+		c = new Coord2D(landingSpot.i, landingSpot.j);
+
+		for(int i=0; i<4; i++) {
+			if(indexToRing[c.i] < 0) {
+				isBottomOrTop2 = true;
+			}
+			c = tryAttachCellInDir(c.i, c.j, RIGHT);
+		}
+		
+		if(isBottomOrTop1 && isBottomOrTop2 && Math.abs(sideBump - 6) >= 2) {
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+	
 	private boolean isIndexRotationLegalSemiGrained(int index, int rotation) {
 		
 		boolean hasGrainedRing = false;
@@ -933,7 +971,6 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		if(hasGrainedRing && hasNonGrainedRingCell) {
 			return false;
 		}
-		
 		
 		
 		return true;

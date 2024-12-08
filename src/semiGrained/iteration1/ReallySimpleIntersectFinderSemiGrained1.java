@@ -19,7 +19,8 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 	public static void main(String[] args) {
 		
 		
-		reallySimpleSearch(7, 3, 3);
+		//reallySimpleSearch(8, 3, 3);
+		reallySimpleSearch(2, 15, 3);
 		
 		//Found 0 unique solution.
 		//Done for 1x3x3
@@ -52,11 +53,13 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 		//Found 410031 unique solution.
 		//Done for 7x3x3
 		//Took 13 minutes
+		//Now takes 6 minutes
 		//(Expected about 410,329)
 		
 		//Found 2870223 unique solution.
 		//Done for 8x3x3
 		//Took 8 minutes with verbose off.
+		//Took 30 minuts after optimizations... Maybe close chrome next time?
 		//(Expected about 2,870,327)
 		
 		
@@ -67,6 +70,9 @@ Done using the 2nd iteration (using pre-computed long arrays)
 Found 1113 unique solution.
 Done for 4x7x3
 25 minutes
+
+Update: only 18 solutions... doh
+and 3.5 minutes
 		 */
 	}
 	
