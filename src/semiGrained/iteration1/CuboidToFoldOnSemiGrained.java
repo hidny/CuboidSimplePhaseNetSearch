@@ -585,11 +585,83 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		
 		System.out.println("???");
 		
-		
-		labelDebugTopBottomShift();
+		System.out.println("locations:");
+		labelDebugTopBottomShiftLocation();
+		labelDebugTopBottomShift(0);
+		System.out.println();
+		System.out.println();
+		labelDebugTopBottomShift(2);
+		System.out.println("Done");
 		System.exit(1);
 		
 		
+	}
+	
+	public int getTopBottomShiftMod4(int index, int rot) {
+		
+		Coord2D curCoord = new Coord2D(index, rot);
+		
+		int curLocation = getIndexRotToTopBottomShiftLocation(index, rot);
+		
+		if(curLocation == UNINTERESTING) {
+			return -1;
+		}
+		
+		//Copy/paste code because it's clearer:
+		if(curLocation == LEFT_TOP_LOCATION || curLocation == TOP_LOCATION || curLocation == RIGHT_TOP_LOCATION) {
+			
+			if(curLocation == LEFT_TOP_LOCATION) {
+				return 0;
+			}
+			
+			if(curLocation == RIGHT_TOP_LOCATION) {
+				for(int i=0; i<4; i++) {
+					curCoord = tryAttachCellInDir(curCoord.i, curCoord.j, RIGHT);
+				}
+			}
+				
+			if(curCoord.j == 2) {
+				//Go around function...
+				curCoord = topLeftIndexRotAfter180Flip1x4layer(curCoord.i, curCoord.j);
+			}
+			
+			int ret = 0;
+			while(getIndexRotToTopBottomShiftLocation(curCoord.i, curCoord.j) != LEFT_TOP_LOCATION) {
+				curCoord = tryAttachCellInDir(curCoord.i, curCoord.j, LEFT);
+				ret++;
+			}
+			
+			return ret % 4;
+			
+		} else if(curLocation == LEFT_BOTTOM_LOCATION || curLocation == BOTTOM_LOCATION || curLocation == RIGHT_BOTTOM_LOCATION) {
+			
+			if(curLocation == LEFT_BOTTOM_LOCATION) {
+				return 0;
+			}
+			
+			if(curLocation == RIGHT_BOTTOM_LOCATION) {
+				for(int i=0; i<4; i++) {
+					curCoord = tryAttachCellInDir(curCoord.i, curCoord.j, RIGHT);
+				}
+			}
+				
+			if(curCoord.j == 2) {
+				//Go around function...
+				curCoord = topLeftIndexRotAfter180Flip1x4layer(curCoord.i, curCoord.j);
+			}
+			
+			int ret = 0;
+			while(getIndexRotToTopBottomShiftLocation(curCoord.i, curCoord.j) != LEFT_BOTTOM_LOCATION) {
+				curCoord = tryAttachCellInDir(curCoord.i, curCoord.j, LEFT);
+				ret++;
+			}
+			
+			return ret % 4;
+		}
+			
+		
+		
+		return -1;
 	}
 	
 	public static int UNINTERESTING = -1;
@@ -598,9 +670,9 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	public static int TOP_LOCATION = 2;
 	public static int RIGHT_TOP_LOCATION = 3;
 	
-	public static int LEFT_BOTTOM_LOCATION = 4;
-	public static int BOTTOM_LOCATION = 5;
-	public static int RIGHT_BOTTOM_LOCATION = 6;
+	public static int LEFT_BOTTOM_LOCATION = 5;
+	public static int BOTTOM_LOCATION = 6;
+	public static int RIGHT_BOTTOM_LOCATION = 7;
 	
 	//pre: indexToRing is defined
 	public int getIndexRotToTopBottomShiftLocation(int index, int rot) {
@@ -611,7 +683,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		
 		Coord2D tmp = new Coord2D(index, rot);
 		
-		if(indexToRing[index] == -1) {
+		if(indexToRing[index] == -1 && rot % 2 == 0) {
 			if(index < dimensions[1] * dimensions[2]) {
 				return TOP_LOCATION;
 
@@ -646,7 +718,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			}
 		}
 		
-		System.out.println("indexToRing[" + index + "]: " + indexToRing[index]);
+		//System.out.println("indexToRing[" + index + "]: " + indexToRing[index]);
 		
 		return -1;
 	}
@@ -979,6 +1051,18 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
 	}
 	
+	private Coord2D topLeftIndexRotAfter180Flip1x4layer(int index, int rotation) {
+		Coord2D flippedIndexAndRotation = new Coord2D(index, rotation);
+		
+		for(int j=0; j<4 - 1; j++) {
+			flippedIndexAndRotation = tryAttachCellInDir(flippedIndexAndRotation.i, flippedIndexAndRotation.j, RIGHT);
+		}
+		
+		int flipRotation = (flippedIndexAndRotation.j + NUM_ROTATIONS/2) % NUM_ROTATIONS;
+		
+		return new Coord2D(flippedIndexAndRotation.i, flipRotation);
+	}
+	
 	private boolean isSideBumpTooBigBothTopBottom(int index, int rotation, int sideBump, Coord2D landingSpot) {
 		
 		Coord2D c = new Coord2D(index, rotation);
@@ -1172,7 +1256,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		return labelToUse;
 	}
 
-	private void labelDebugTopBottomShift() {
+	private void labelDebugTopBottomShiftLocation() {
 		
 		
 		String labels[] = new String[getNumCellsToFill()];
@@ -1195,6 +1279,51 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				}
 			}
 			
+			labels[i] = labelSoFar;
+			
+			
+		}
+		
+		System.out.println(DataModelViews.getFlatNumberingView(this.dimensions[0],
+				this.dimensions[1],
+				this.dimensions[2],
+				labels));
+		
+	}
+	
+	private void labelDebugTopBottomShift(int rotation) {
+		
+		
+		System.out.println("Debug rotation: " + rotation);
+		
+		String labels[] = new String[getNumCellsToFill()];
+		for(int i=0; i<labels.length; i++) {
+			String labelSoFar = "00";
+			
+			for(int rot=0; rot<4; rot++) {
+				
+				if(rot != rotation && (getIndexRotToTopBottomShiftLocation(i, rot) == TOP_LOCATION 
+								|| getIndexRotToTopBottomShiftLocation(i, rot) == BOTTOM_LOCATION )) {
+					continue;
+				}
+				if(getTopBottomShiftMod4(i, rot) >=0) {
+					
+					boolean repeat = false;
+					if(labelSoFar.equals("00") == false) {
+						repeat = true;
+					}
+					String tmp = "" + getTopBottomShiftMod4(i, rot) + "" + getTopBottomShiftMod4(i, rot);
+					
+					if(repeat && tmp.equals(labelSoFar) == false) {
+						System.out.println("Ooops!");
+						System.exit(1);
+					}
+					
+					labelSoFar = tmp;
+				}
+				
+
+			}
 			labels[i] = labelSoFar;
 			
 			
