@@ -584,6 +584,71 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		}
 		
 		System.out.println("???");
+		
+		
+		labelDebugTopBottomShift();
+		System.exit(1);
+		
+		
+	}
+	
+	public static int UNINTERESTING = -1;
+	
+	public static int LEFT_TOP_LOCATION = 1;
+	public static int TOP_LOCATION = 2;
+	public static int RIGHT_TOP_LOCATION = 3;
+	
+	public static int LEFT_BOTTOM_LOCATION = 4;
+	public static int BOTTOM_LOCATION = 5;
+	public static int RIGHT_BOTTOM_LOCATION = 6;
+	
+	//pre: indexToRing is defined
+	public int getIndexRotToTopBottomShiftLocation(int index, int rot) {
+		
+		if(indexToRing[index] > 0 && indexToRing[index] < dimensions[0] - 1) {
+			return -1;
+		}
+		
+		Coord2D tmp = new Coord2D(index, rot);
+		
+		if(indexToRing[index] == -1) {
+			if(index < dimensions[1] * dimensions[2]) {
+				return TOP_LOCATION;
+
+			} else {
+				return BOTTOM_LOCATION;
+			}
+		}
+		
+		if(indexToRing[index] == 0) {
+			
+			Coord2D afterRight = tryAttachCellInDir(tmp.i, tmp.j, RIGHT);
+			if(indexToRing[afterRight.i] == -1 && afterRight.j == 0) {
+				return LEFT_TOP_LOCATION;
+			}
+			
+			
+			if(indexToRing[afterRight.i] == -1 && afterRight.j == 2) {
+				return RIGHT_TOP_LOCATION;
+			}
+		}
+		
+		if(indexToRing[index] == dimensions[0] - 1) {
+			
+			Coord2D afterRight = tryAttachCellInDir(tmp.i, tmp.j, RIGHT);
+			if(indexToRing[afterRight.i] == -1 && afterRight.j == 0) {
+				return LEFT_BOTTOM_LOCATION;
+			}
+			
+			
+			if(indexToRing[afterRight.i] == -1 && afterRight.j == 2) {
+				return RIGHT_BOTTOM_LOCATION;
+			}
+		}
+		
+		System.out.println("indexToRing[" + index + "]: " + indexToRing[index]);
+		
+		return -1;
 	}
 	
 	
@@ -1093,6 +1158,55 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	}
 
 	private String getLabel(int layerIndex) {
+
+		char label = (char)( (layerIndex % 26) + 'A');
+		
+		String labelToUse = label + "" + label;
+		if(layerIndex >= 26 ) {
+			labelToUse = label + "" + (layerIndex/26);
+		}
+		
+		if(layerIndex >= 26* 10) {
+			labelToUse = label + "" + (char)( ((layerIndex-10) / 26) + 'a');
+		}
+		return labelToUse;
+	}
+
+	private void labelDebugTopBottomShift() {
+		
+		
+		String labels[] = new String[getNumCellsToFill()];
+		for(int i=0; i<labels.length; i++) {
+			String labelSoFar = "00";
+			for(int j=0; j<4; j++) {
+				if(getIndexRotToTopBottomShiftLocation(i, j) != UNINTERESTING) {
+					
+					boolean repeat = false;
+					if(labelSoFar.equals("00") == false) {
+						repeat = true;
+					}
+					String tmp = "" + getIndexRotToTopBottomShiftLocation(i, j) + "" + getIndexRotToTopBottomShiftLocation(i, j);
+					if(repeat && tmp.equals(labelSoFar) == false) {
+						System.out.println("Ooops!");
+						System.exit(1);
+					}
+					
+					labelSoFar = tmp;
+				}
+			}
+			
+			labels[i] = labelSoFar;
+			
+			
+		}
+		
+		System.out.println(DataModelViews.getFlatNumberingView(this.dimensions[0],
+				this.dimensions[1],
+				this.dimensions[2],
+				labels));
+		
+	}
+	private String getLabelDebug(int layerIndex) {
 
 		char label = (char)( (layerIndex % 26) + 'A');
 		
