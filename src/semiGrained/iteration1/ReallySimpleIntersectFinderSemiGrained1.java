@@ -20,7 +20,7 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 		
 		
 		//reallySimpleSearch(8, 3, 3);
-		reallySimpleSearch(5, 15, 3);
+		reallySimpleSearch(4, 15, 3);
 		//reallySimpleSearch(4, 7, 3);
 		
 		//Found 0 unique solution.

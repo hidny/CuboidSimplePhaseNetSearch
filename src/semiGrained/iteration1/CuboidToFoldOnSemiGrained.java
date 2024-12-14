@@ -320,6 +320,35 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		//TODO: elsewhere...
 		//TODO:  Nov 28:Add region check on the between layers on top and top, top + 1st ring.
 		//TODO:  Nov 28:Make any layer touching the 2nd ring or 2nd last ring illegal.
+		
+		
+
+		/*int topBottomShiftIndexLeftMost[][];
+		int topBottomShiftMod4[][];
+		
+		int topBottomShiftSetDepth[];
+		int topBottomShiftMod4FromPrevRound[];*/
+		//nextIndex
+		//nextRot
+		
+		//Check topBottomShiftMod4:
+		if(topBottomShiftMod4[nextIndex][nextRot] >= 0) {
+			
+			int indexTopBottomShiftToUse = topBottomShiftIndexLeftMost[nextIndex][nextRot];
+			
+			if(//It's worth matching:
+					topBottomShiftSetDepth[indexTopBottomShiftToUse] != -1
+					&& topBottomShiftSetDepth[indexTopBottomShiftToUse] < currentLayerIndex
+				
+				//It doesn't matches:
+					&& topBottomShiftMod4FromPrevRound[indexTopBottomShiftToUse] != topBottomShiftMod4[nextIndex][nextRot]
+				) {
+				
+				return false;
+			}
+		}
+		//End check topBottomShiftMod4:
+		
 		return true;
 		
 	}
@@ -360,6 +389,21 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			}
 		}
 		
+		//Set topBottomShiftMod4:
+		if(topBottomShiftMod4[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap] >= 0) {
+			
+			int indexTopBottomShiftToUse = topBottomShiftIndexLeftMost[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap];
+			
+			if(//It's worth matching:
+					topBottomShiftSetDepth[indexTopBottomShiftToUse] == -1
+					|| topBottomShiftSetDepth[indexTopBottomShiftToUse] == currentLayerIndex
+				) {
+				
+				topBottomShiftSetDepth[indexTopBottomShiftToUse] = currentLayerIndex;
+				topBottomShiftMod4FromPrevRound[indexTopBottomShiftToUse] = topBottomShiftMod4[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap];
+			}
+		}
+		//End set topBottomShiftMod4
 		
 		
 		if(this.minTopIndex > this.maxTopIndex) {
@@ -380,6 +424,19 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		} else if(this.maxTopIndex == this.topLeftGroundedIndex) {
 			this.maxTopIndex = this.oldTopMax[currentLayerIndex];
 		}
+		
+		//Erase topBottomShiftMod4:
+		if(topBottomShiftMod4[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap] >= 0) {
+			
+			int indexTopBottomShiftToUse = topBottomShiftIndexLeftMost[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap];
+			
+			if(topBottomShiftSetDepth[indexTopBottomShiftToUse] == currentLayerIndex
+				) {
+				topBottomShiftSetDepth[indexTopBottomShiftToUse] = -1;
+				topBottomShiftMod4FromPrevRound[indexTopBottomShiftToUse] = -1;
+			}
+		}
+		//End erase topBottomShiftMod4
 		
 		currentLayerIndex--;
 		this.topLeftGroundedIndex = prevGroundedIndexes[currentLayerIndex]; 
@@ -586,6 +643,30 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		System.out.println("???");
 		
 		System.out.println("locations:");
+		
+		
+		topBottomShiftIndexLeftMost = new int[this.getNumCellsToFill()][4];
+		for(int i=0; i<topBottomShiftIndexLeftMost.length; i++) {
+			for(int j=0; j<topBottomShiftIndexLeftMost[0].length; j++) {
+				topBottomShiftIndexLeftMost[i][j] = getTopBottomShiftLeftMostIndex(i, j);
+			}
+		}//getTopBottomShiftMod4
+		
+		topBottomShiftMod4 = new int[this.getNumCellsToFill()][4];
+		for(int i=0; i<topBottomShiftMod4.length; i++) {
+			for(int j=0; j<topBottomShiftMod4[0].length; j++) {
+				topBottomShiftMod4[i][j] = getTopBottomShiftMod4(i, j);
+			}
+		}
+		
+		topBottomShiftSetDepth = new int[this.getNumCellsToFill()];
+		topBottomShiftMod4FromPrevRound = new int[this.getNumCellsToFill()];
+		
+		for(int i=0; i<topBottomShiftSetDepth.length; i++) {
+			topBottomShiftSetDepth[i] = -1;
+			topBottomShiftMod4FromPrevRound[i] = -1;
+		}
+		/*
 		labelDebugTopBottomShiftLocation();
 		labelDebugTopBottomShift(0);
 		System.out.println();
@@ -598,9 +679,16 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		labelDebugTopBottomShiftLeftMostIndex(2);
 		System.out.println("Done");
 		System.exit(1);
-		
+		*/
 		
 	}
+	int topBottomShiftIndexLeftMost[][];
+	int topBottomShiftMod4[][];
+	
+	int topBottomShiftSetDepth[];
+	int topBottomShiftMod4FromPrevRound[];
+	
+	
 	// copy/paste of getTopBottomShiftMod4, except we return the index of the left_location...
 	public int getTopBottomShiftLeftMostIndex(int index, int rot) {
 
@@ -1377,13 +1465,13 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 								|| getIndexRotToTopBottomShiftLocation(i, rot) == BOTTOM_LOCATION )) {
 					continue;
 				}
-				if(getTopBottomShiftMod4(i, rot) >=0) {
+				if(topBottomShiftMod4[i][rot] >=0) {
 					
 					boolean repeat = false;
 					if(labelSoFar.equals("00") == false) {
 						repeat = true;
 					}
-					String tmp = "" + getTopBottomShiftMod4(i, rot) + "" + getTopBottomShiftMod4(i, rot);
+					String tmp = "" + topBottomShiftMod4[i][rot] + "" + topBottomShiftMod4[i][rot];
 					
 					if(repeat && tmp.equals(labelSoFar) == false) {
 						System.out.println("Ooops!");
@@ -1422,9 +1510,9 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 					continue;
 				}
 				
-				if(getTopBottomShiftLeftMostIndex(i, rot) >=0) {
+				if(topBottomShiftIndexLeftMost[i][rot] >=0) {
 					
-					String tmp = "" + getTopBottomShiftLeftMostIndex(i, rot);
+					String tmp = "" + topBottomShiftIndexLeftMost[i][rot];
 					while(tmp.length() < 3) {
 						tmp = "0" + tmp;
 					}
