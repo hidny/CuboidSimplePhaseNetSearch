@@ -14,13 +14,14 @@ import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
 public class ReallySimpleIntersectFinderSemiGrained1 {
 
-	public static boolean VERBOSE = false;
+	public static boolean VERBOSE = true;
 	
 	public static void main(String[] args) {
 		
 		
 		//reallySimpleSearch(8, 3, 3);
-		reallySimpleSearch(2, 15, 3);
+		reallySimpleSearch(5, 15, 3);
+		//reallySimpleSearch(4, 7, 3);
 		
 		//Found 0 unique solution.
 		//Done for 1x3x3
@@ -70,9 +71,22 @@ Done using the 2nd iteration (using pre-computed long arrays)
 Found 1113 unique solution.
 Done for 4x7x3
 25 minutes
+Update: less than 30 seconds
 
 Update: only 18 solutions... doh
 and 3.5 minutes
+		 */
+		
+		/*
+		 * Done using the 2nd iteration (using pre-computed long arrays)
+Found 231 unique solution.
+Done for 4x15x3
+
+Took: 23.5 hours!
+
+231 means there might be 3-way solutions, but I haven't confirmed...
+
+TODO: faster
 		 */
 	}
 	

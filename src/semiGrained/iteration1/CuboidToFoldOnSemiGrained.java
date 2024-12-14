@@ -538,15 +538,15 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
 						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
 						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;
-						System.out.println("TEST " + index + ", " + rotation + "," +sideBump);
+						//System.out.println("TEST " + index + ", " + rotation + "," +sideBump);
 						continue;
 						
 					} else if(isSideBumpTooBigBothTopBottom(index, rotation, sideBump, nextGounded)) {
 						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
 						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
 						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;
-						System.out.println("TEST " + index + ", " + rotation + "," +sideBump);
-						System.out.println("Side bump too big");
+						//System.out.println("TEST " + index + ", " + rotation + "," +sideBump);
+						//System.out.println("Side bump too big");
 						continue;
 					}
 					
@@ -776,6 +776,8 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	public static int[] getOtherWidthsToConsider() {
 		//TODO: make this malleable:
 		//return new int[] {};
+		
+		//if((dimensions[1] + 3))
 		return new int[] {3};
 	}
 	
@@ -970,6 +972,23 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		
 		if(hasGrainedRing && hasNonGrainedRingCell) {
 			return false;
+		}
+		
+		if(hasNonGrainedRingCell && indexToRing[index] == -1) {
+			//By inspection, the layers on top and bottom have to be 0 or 1 mod 4 to the right of the side of the cuboid:
+			int numAwayFromSide = 1;
+			
+			c = new Coord2D(index, rotation);
+			//System.out.println("Trying top/bottom filter: " + c.i + ", " + c.j);
+			while(indexToRing[tryAttachCellInDir(c.i, c.j, LEFT).i] == -1) {
+				c = tryAttachCellInDir(c.i, c.j, LEFT);
+				numAwayFromSide++;
+			}
+			
+			if(numAwayFromSide % 4 >= 2) {
+				//System.out.println("Dec 8th: False for " + index + ", " + rotation);
+				return false;
+			}
 		}
 		
 		
