@@ -79,7 +79,13 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			
 			//String file1 = "D:\\test_new_optimization_7_17_1.txt";
 			
-			String file1 = "D:\\searchFor4cuboids.txt";
+			//String file1 = "D:\\searchFor4cuboids.txt";
+			
+			String file1 = "D:\\output_semi_grained_2.txt";
+			//Good sign:
+			//Number of 3-way solutions so far: 156 (only 156 because the run isn't done yet...)
+			//Number of solutions in file: 156
+			//Final number of 3+-way solutions found: 156
 			
 			int dimensionsToCheck[][] = null;
 			int areaToCheck = -1;

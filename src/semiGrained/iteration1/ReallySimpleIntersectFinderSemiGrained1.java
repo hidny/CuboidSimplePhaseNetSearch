@@ -20,7 +20,8 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 		
 		
 		//reallySimpleSearch(8, 3, 3);
-		reallySimpleSearch(4, 15, 3);
+		//reallySimpleSearch(4, 15, 3);
+		reallySimpleSearch(5, 15, 3);
 		//reallySimpleSearch(4, 7, 3);
 		
 		//Found 0 unique solution.
@@ -87,6 +88,15 @@ Took: 23.5 hours!
 231 means there might be 3-way solutions, but I haven't confirmed...
 
 TODO: faster
+		 */
+		
+		/*
+		 * Done using the 2nd iteration (using pre-computed long arrays)
+Found 231 unique solution.
+Done for 4x15x3
+Done in 3 hours and 16 minutes
+
+All are valid 3-way solutions
 		 */
 	}
 	
