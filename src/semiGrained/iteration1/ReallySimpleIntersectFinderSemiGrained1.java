@@ -98,6 +98,17 @@ Done in 3 hours and 16 minutes
 
 All are valid 3-way solutions
 		 */
+		
+		/*
+		 * 
+		reallySimpleSearch(5, 15, 3);
+		After 3 days and 7 hours
+		 * Num unique solutions found: 2092
+		 * Done using the 2nd iteration (using pre-computed long arrays)
+Found 2092 unique solution.
+Done for 5x15x3
+
+		 */
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
