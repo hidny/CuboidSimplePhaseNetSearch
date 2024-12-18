@@ -91,13 +91,6 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		tmpArray[bottomIndex] = true;
 		this.curState = convertBoolArrayToLongs(tmpArray);
 		
-
-		this.minTopIndex = -1;
-		this.maxTopIndex = Utils.getTotalArea(this.dimensions);
-
-		this.oldTopMin = new int[Utils.getTotalArea(this.dimensions)];
-		this.oldTopMax = new int[Utils.getTotalArea(this.dimensions)];
-		
 		//Specify 1st ring:
 		if(getIndexToRingIndex(this.bottomIndex) != 0) {
 			this.curState = setImpossibleForAnswerSheet();
@@ -129,11 +122,9 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	private int newGroundedIndexAbove[][][];
 	private int newGroundedRotationAbove[][][];
 	
-	
 	private long answerSheetForTopCell[][][][];
 	private long answerSheetForTopCellAnySideBump[][][];
 
-	
 
 	//State variables:
 	private static int numLongsToUse;
@@ -152,8 +143,6 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	private long debugStop = 0L;
 	private long debugBugFix = 0L;
 	
-
-	//
 	//input: index
 	private int indexToRing[];
 	
@@ -166,16 +155,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	//input: index and then rotation
 	private int ringMod4Lookup[][];
 	
-	
-	//TODO:
 	private int bottomIndex;
-	
-	private int minTopIndex;
-	private int maxTopIndex;
-	
-	private int oldTopMin[];
-	private int oldTopMax[];
-	
 
 	public boolean isCellIoccupied(int i) {
 		int indexArray = i / NUM_BYTES_IN_LONG;
@@ -349,8 +329,193 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		}
 		//End check topBottomShiftMod4:
 		
+		if(areTopShiftIndexesAllSet()) {
+			printCurrentStateOnOtherCuboidsFlatMap();
+			
+			System.out.println("Debug Top");
+			
+			//TODO: build: allowedFirstRingIndexRotations1x1Counter
+			//TODO: build allowedFirstRingIndexRotations1x1Clock
+			System.out.println("getTopShiftType: " + getTopShiftType());
+			System.exit(1);
+		}
+		
+		if(areBottomShiftIndexesAllSet()) {
+			printCurrentStateOnOtherCuboidsFlatMap();
+			System.out.println("Debug bottom");
+			System.out.println("getBottomShiftType: " + getBottomShiftType());
+		}
+		
 		return true;
 		
+	}
+	
+	public int getTopShiftType() {
+		
+		int ret = 0;
+		for(int i=0; i<topLeftMostShiftIndex.length; i++) {
+			if(topBottomShiftMod4FromPrevRound[topLeftMostShiftIndex[i]] == 0) {
+				ret = 2 * ret;
+			} else {
+				ret = 2*ret + 1;
+			}
+		}
+		return ret;
+	}
+
+	public int getBottomShiftType() {
+		
+		int ret = 0;
+		for(int i=0; i<bottomLeftMostShiftIndex.length; i++) {
+			if(topBottomShiftMod4FromPrevRound[bottomLeftMostShiftIndex[i]] == 0) {
+				ret = 2 * ret;
+			} else {
+				ret = 2*ret + 1;
+			}
+		}
+		return ret;
+	}
+	
+	// Top/Bottom shift type, index, rotation
+	public static boolean allowedFirstRingIndexRotations1x1Counter[][][];
+	public static boolean allowedLastRingIndexRotations1x1Counter[][][];
+	
+	public static boolean allowedFirstRingIndexRotations1x1Clock[][][];
+	public static boolean allowedLastRingIndexRotations1x1Clock[][][];
+	
+	public void setupAllowedFirstRingIndexRotations1x1() {
+		
+		allowedFirstRingIndexRotations1x1Counter = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()][NUM_ROTATIONS];
+		allowedFirstRingIndexRotations1x1Clock = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()][NUM_ROTATIONS];
+		
+		for(int i=0; i<allowedFirstRingIndexRotations1x1Counter.length; i++) {
+			for(int j=0; j<allowedFirstRingIndexRotations1x1Counter[0].length; j++) {
+				for(int k=0; k<allowedFirstRingIndexRotations1x1Counter[0][0].length; k++) {
+					allowedFirstRingIndexRotations1x1Counter[i][j][k] = true;
+					allowedFirstRingIndexRotations1x1Clock[i][j][k] = true;
+				}
+			}
+		}
+		
+		for(int i=0; i<allowedFirstRingIndexRotations1x1Counter.length; i++) {
+			for(int j=0; j<allowedFirstRingIndexRotations1x1Counter[0].length; j++) {
+				for(int k=0; k<allowedFirstRingIndexRotations1x1Counter[0][0].length; k++) {
+					
+					if(indexToRing[j] == 0 && k%2 == 0) {
+						allowedFirstRingIndexRotations1x1Counter[i][j][k] = false;
+						allowedFirstRingIndexRotations1x1Clock[i][j][k] = false;
+					}
+				}
+			}
+		}
+		//TODO 1: all 0
+		
+		Coord2D beforeCounter = new Coord2D(topLeftMostShiftIndex[0], 0);
+		Coord2D cur = beforeCounter;
+		
+		int index_type = 0;
+		boolean isTop = true;
+		
+		//TODO: this is really messy...
+		//Make it clean!
+		
+		//TODO: use hitBarrier and the flip function
+		//TODO: do clock and counter separately too!
+		while(cur.i != topLeftMostShiftIndex[2]) {
+			
+			cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+			
+			if(hitBarrier(index_type, cur, isTop)) {
+				break;
+			}
+			allowedFirstRingIndexRotations1x1Clock[index_type][cur.i][2] = true;
+
+			allowedFirstRingIndexRotations1x1Counter[index_type][cur.i][0] = true;
+			
+			cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+
+			if(hitBarrier(index_type, cur, isTop)) {
+				break;
+			}
+			allowedFirstRingIndexRotations1x1Counter[index_type][cur.i][2] = true;
+			
+			cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+
+			if(hitBarrier(index_type, cur, isTop)) {
+				break;
+			}
+			cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+
+			if(hitBarrier(index_type, cur, isTop)) {
+				break;
+			}
+			allowedFirstRingIndexRotations1x1Clock[index_type][cur.i][0] = true;
+			
+			
+		}
+		
+		System.out.println("TODO");
+		
+		System.out.println("Clock 0:");
+		labelDebugIfTrueAllowedRingIndex(allowedFirstRingIndexRotations1x1Clock[0]);
+		System.out.println("Counter 0:");
+		labelDebugIfTrueAllowedRingIndex(allowedFirstRingIndexRotations1x1Counter[0]);
+		System.exit(1);
+		//
+	}
+
+	public boolean hitBarrier(int index_type, Coord2D coord, boolean top) {
+		return hitBarrier(index_type, coord.i, top);
+	}
+	
+	public boolean hitBarrier(int index_type, int index, boolean top) {
+		
+		//TODO
+		if(top) {
+			for(int i=0; i<topLeftMostShiftIndex.length; i++) {
+				if(index == topLeftMostShiftIndex[i] && ((~index_type) & (1 << i)) != 0) {
+					return true;
+				}
+			}
+			
+			//TODO: define topRightMostShiftIndex
+			for(int i=0; i<topRightMostShiftIndex.length; i++) {
+				if(index == topRightMostShiftIndex[i] && (index_type & (1 << i)) != 0) {
+					return true;
+				}
+			}
+		} else {
+			
+			for(int i=0; i<bottomLeftMostShiftIndex.length; i++) {
+				if(index == bottomLeftMostShiftIndex[i] && ((~index_type) & (1 << i)) != 0) {
+					return true;
+				}
+			}
+
+			//TODO: define bottomRightMostShiftIndex
+			for(int i=0; i<bottomRightMostShiftIndex.length; i++) {
+				if(index == bottomRightMostShiftIndex[i] && (index_type & (1 << i)) != 0) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+
+	public void setupAllowedFirstLastIndexRotations1x1() {
+		//TODO
+		allowedLastRingIndexRotations1x1Counter = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()][NUM_ROTATIONS];
+		allowedLastRingIndexRotations1x1Clock = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()][NUM_ROTATIONS];
+		
+		for(int i=0; i<allowedLastRingIndexRotations1x1Counter.length; i++) {
+			for(int j=0; j<allowedLastRingIndexRotations1x1Counter[0].length; j++) {
+				for(int k=0; k<allowedLastRingIndexRotations1x1Counter[0][0].length; k++) {
+					allowedLastRingIndexRotations1x1Counter[i][j][k] = true;
+					allowedLastRingIndexRotations1x1Clock[i][j][k] = true;
+				}
+			}
+		}
 	}
 	
 	public void addNewLayerFast(int sideBump) {
@@ -406,10 +571,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		//End set topBottomShiftMod4
 		
 		
-		if(this.minTopIndex > this.maxTopIndex) {
-			System.out.println("ERROR: DOH! this.minTopIndex > this.maxTopIndex");
-			System.exit(1);
-		}
+		
 
 	}
 	
@@ -419,11 +581,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				&& LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] == this.currentLayerIndex) {
 			LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] = -1;
 		}
-		if(this.minTopIndex == this.topLeftGroundedIndex) {
-			this.minTopIndex = this.oldTopMin[currentLayerIndex];
-		} else if(this.maxTopIndex == this.topLeftGroundedIndex) {
-			this.maxTopIndex = this.oldTopMax[currentLayerIndex];
-		}
+		
 		
 		//Erase topBottomShiftMod4:
 		if(topBottomShiftMod4[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap] >= 0) {
@@ -666,6 +824,44 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			topBottomShiftSetDepth[i] = -1;
 			topBottomShiftMod4FromPrevRound[i] = -1;
 		}
+		
+		//Dec 18th:
+
+		this.topLeftMostShiftIndex = new int[3];
+		this.topRightMostShiftIndex = new int[3];
+		int curTopi = 0;
+		
+		this.bottomLeftMostShiftIndex = new int[3];
+		this.bottomRightMostShiftIndex = new int[3];
+		int curTopj = 0;
+		
+		for(int index=0; index<Utils.getTotalArea(this.dimensions); index++) {
+			for(int rotation=0; rotation<4; rotation++) {
+				
+				int indexType = getIndexRotToTopBottomShiftLocation(index, rotation);
+				
+				if(indexType == LEFT_TOP_LOCATION) {
+					topLeftMostShiftIndex[curTopi] = index;
+					curTopi++;
+					
+				} else if(indexType == LEFT_BOTTOM_LOCATION) {
+					bottomLeftMostShiftIndex[curTopj] = index;
+					curTopj++;
+					
+				}
+			}
+		}
+		
+		for(int i=0; i<3; i++) {
+			System.out.println(topLeftMostShiftIndex[i]);
+			System.out.println(bottomLeftMostShiftIndex[i]);
+			System.out.println();
+		}
+		
+		//TODO
+		setupAllowedFirstRingIndexRotations1x1();
+		setupAllowedFirstLastIndexRotations1x1();
+		
 		/*
 		labelDebugTopBottomShiftLocation();
 		labelDebugTopBottomShift(0);
@@ -688,6 +884,31 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	int topBottomShiftSetDepth[];
 	int topBottomShiftMod4FromPrevRound[];
 	
+	int topLeftMostShiftIndex[];
+	int bottomLeftMostShiftIndex[];
+
+	int topRightMostShiftIndex[];
+	int bottomRightMostShiftIndex[];
+	
+	public boolean areTopShiftIndexesAllSet() {
+		for(int i=0; i<topLeftMostShiftIndex.length; i++) {
+			if(topBottomShiftSetDepth[topLeftMostShiftIndex[i]] > this.currentLayerIndex || topBottomShiftSetDepth[topLeftMostShiftIndex[i]] < 0) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
+	public boolean areBottomShiftIndexesAllSet() {
+		for(int i=0; i<topLeftMostShiftIndex.length; i++) {
+			if(topBottomShiftSetDepth[bottomLeftMostShiftIndex[i]] > this.currentLayerIndex || topBottomShiftSetDepth[bottomLeftMostShiftIndex[i]] < 0) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
 	
 	// copy/paste of getTopBottomShiftMod4, except we return the index of the left_location...
 	public int getTopBottomShiftLeftMostIndex(int index, int rot) {
@@ -718,10 +939,8 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				curCoord = topLeftIndexRotAfter180Flip1x4layer(curCoord.i, curCoord.j);
 			}
 			
-			int ret = 0;
 			while(getIndexRotToTopBottomShiftLocation(curCoord.i, curCoord.j) != LEFT_TOP_LOCATION) {
 				curCoord = tryAttachCellInDir(curCoord.i, curCoord.j, LEFT);
-				ret++;
 			}
 			
 			return curCoord.i;
@@ -743,16 +962,12 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				curCoord = topLeftIndexRotAfter180Flip1x4layer(curCoord.i, curCoord.j);
 			}
 			
-			int ret = 0;
 			while(getIndexRotToTopBottomShiftLocation(curCoord.i, curCoord.j) != LEFT_BOTTOM_LOCATION) {
 				curCoord = tryAttachCellInDir(curCoord.i, curCoord.j, LEFT);
-				ret++;
 			}
 
 			return curCoord.i;
 		}
-			
-		
 		
 		return -1;
 	}
@@ -1523,6 +1738,35 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				
 
 			}
+			labels[i] = labelSoFar;
+			
+			
+		}
+		
+		System.out.println(DataModelViews.getFlatNumberingView(this.dimensions[0],
+				this.dimensions[1],
+				this.dimensions[2],
+				labels));
+		
+	}
+	
+	private void labelDebugIfTrueAllowedRingIndex(boolean indexRot[][]) {
+		
+		
+		String labels[] = new String[getNumCellsToFill()];
+		for(int i=0; i<labels.length; i++) {
+			String labelSoFar = "11";
+			
+			int num = 0;
+			for(int j=0; j<4; j++) {
+				if(indexRot[i][j]) {
+					num++;
+				}
+			}
+			if(num == 2) {
+				labelSoFar = "00";
+			}
+			
 			labels[i] = labelSoFar;
 			
 			
