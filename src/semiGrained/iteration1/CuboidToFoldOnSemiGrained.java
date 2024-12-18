@@ -411,48 +411,62 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		//TODO 1: all 0
 		
 		Coord2D beforeCounter = new Coord2D(topLeftMostShiftIndex[0], 0);
-		Coord2D cur = beforeCounter;
 		
 		int index_type = 0;
 		boolean isTop = true;
+
+		//TODO: generalize for all types.
+		//TODO: if # above is 0 mod 4, there's no 1x1 above
+
+		//TODO: if # below is 0 mod 4, there's no 1x1 above
 		
-		//TODO: this is really messy...
-		//Make it clean!
 		
-		//TODO: use hitBarrier and the flip function
-		//TODO: do clock and counter separately too!
-		while(cur.i != topLeftMostShiftIndex[2]) {
+		Coord2D cur = tryAttachCellInDir(beforeCounter.i, beforeCounter.j, LEFT);
+		while( ! hitBarrier(index_type, cur, isTop)) {
 			
-			cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
-			
-			if(hitBarrier(index_type, cur, isTop)) {
-				break;
-			}
+			//TODO: function to check if 1x4 doesn't hit barrier!
 			allowedFirstRingIndexRotations1x1Clock[index_type][cur.i][2] = true;
-
-			allowedFirstRingIndexRotations1x1Counter[index_type][cur.i][0] = true;
+			Coord2D flippedCoord = topLeftIndexRotAfter180Flip1x4layer(cur.i, 2);
 			
-			cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+			allowedFirstRingIndexRotations1x1Clock[index_type][flippedCoord.i][flippedCoord.j] = true;
+			
 
-			if(hitBarrier(index_type, cur, isTop)) {
+			boolean hitBarrier = false;
+			for(int j=0; j<4; j++) {
+				cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+				if(hitBarrier(index_type, cur, isTop)) {
+					hitBarrier = true;
+				}
+			}
+			if(hitBarrier) {
 				break;
 			}
-			allowedFirstRingIndexRotations1x1Counter[index_type][cur.i][2] = true;
-			
-			cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
-
-			if(hitBarrier(index_type, cur, isTop)) {
-				break;
-			}
-			cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
-
-			if(hitBarrier(index_type, cur, isTop)) {
-				break;
-			}
-			allowedFirstRingIndexRotations1x1Clock[index_type][cur.i][0] = true;
-			
-			
+			System.out.println(cur.i);
 		}
+		
+
+		cur = tryAttachCellInDir(beforeCounter.i, beforeCounter.j, LEFT);
+		cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+		
+		while( ! hitBarrier(index_type, cur, isTop)) {
+			allowedFirstRingIndexRotations1x1Counter[index_type][cur.i][2] = true;
+			Coord2D flippedCoord = topLeftIndexRotAfter180Flip1x4layer(cur.i, 2);
+			
+			allowedFirstRingIndexRotations1x1Counter[index_type][flippedCoord.i][flippedCoord.j] = true;
+			
+			boolean hitBarrier = false;
+			for(int j=0; j<4; j++) {
+				cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+				if(hitBarrier(index_type, cur, isTop)) {
+					hitBarrier = true;
+				}
+			}
+			if(hitBarrier) {
+				break;
+			}
+			System.out.println("2: " +  cur.i);
+		}
+		
 		
 		System.out.println("TODO");
 		
