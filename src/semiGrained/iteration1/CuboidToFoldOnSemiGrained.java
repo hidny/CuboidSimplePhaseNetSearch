@@ -480,10 +480,6 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	
 	private void setupAnswerSheetInBetweenLayers() {
 		
-		//TODO: complete this
-		//System.out.println("Grain dimension is just the second one: " + dimensions[grainDim]);
-		
-		//int numTubes
 		
 		indexToRing = new int[getNumCellsToFill()];
 		
@@ -571,7 +567,6 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 					}
 					
 					
-					//TODO: bring back in some capacity: (ring 1 to n-1)
 					if( nextGounded.j % 2 == ROTATION_AGAINST_GRAIN && isWithinGrainedRing(nextGounded.i)) {
 						
 						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
@@ -1152,8 +1147,6 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			System.out.println("forcedRepetion[" + i + "] = " + forcedRepetition[i]);
 		}
 
-		//TODO: keep testing...
-		//System.exit(1);
 	}
 	
 	
@@ -1273,12 +1266,6 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			} else {
 				hasNonGrainedRingCell = true;
 				if(indexToRing[c.i] == -1 && c.j % 2 == 1 && dimensions[1] > dimensions[2]) {
-					//System.out.println(index + ", " + rotation + ": " + i);
-					//System.out.println(c.i + ", " + c.j + ": " + i);
-					//System.out.println("---");
-
-					//TODO: also filter out layers that aren't allowed on top...
-					//TODO only allow max transition of (sidebump - 6) <=2...
 					return false;
 				}
 			}

@@ -7,11 +7,6 @@ import Model.Utils;
 
 public class SetupAllowed1stAndLastRing {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-	
 	private CoordWithRotationAndIndex neighbours[][];
 	private int indexToRing[];
 	
@@ -42,14 +37,16 @@ public class SetupAllowed1stAndLastRing {
 
 		this.topLeftMostShiftIndex = new int[3];
 		this.topRightMostShiftIndex = new int[3];
-		int curTopi = 0;
+		int curTopLefti = 0;
+		int curBottomLeftj = 0;
 		
 		this.bottomLeftMostShiftIndex = new int[3];
 		this.bottomRightMostShiftIndex = new int[3];
+		int curTopRighti = 0;
+		int curBottomRightj = 0;
+		//int cur
 		
-		//TODO: define bottomLeftMostShiftIndex and bottomRightMostShiftIndex
-		
-		int curTopj = 0;
+		int SIZE = 3;
 		
 		for(int index=0; index<Utils.getTotalArea(this.dimensions); index++) {
 			for(int rotation=0; rotation<4; rotation++) {
@@ -57,23 +54,36 @@ public class SetupAllowed1stAndLastRing {
 				int indexType = sg.getIndexRotToTopBottomShiftLocation(index, rotation);
 				
 				if(indexType == CuboidToFoldOnSemiGrained.LEFT_TOP_LOCATION) {
-					topLeftMostShiftIndex[curTopi] = index;
-					curTopi++;
+					topLeftMostShiftIndex[curTopLefti] = index;
+					curTopLefti++;
 					
 				} else if(indexType == CuboidToFoldOnSemiGrained.LEFT_BOTTOM_LOCATION) {
-					bottomLeftMostShiftIndex[curTopj] = index;
-					curTopj++;
+					bottomLeftMostShiftIndex[SIZE - 1 - curBottomLeftj] = index;
+					curBottomLeftj++;
+					
+				} else if(indexType == CuboidToFoldOnSemiGrained.RIGHT_TOP_LOCATION) {
+					topRightMostShiftIndex[SIZE - 1 - curTopRighti] = index;
+					curTopRighti++;
+					
+				} else if(indexType == CuboidToFoldOnSemiGrained.RIGHT_BOTTOM_LOCATION) {
+					bottomRightMostShiftIndex[curBottomRightj] = index;
+					curBottomRightj++;
 					
 				}
 			}
 		}
 		
-		for(int i=0; i<3; i++) {
+		for(int i=0; i<SIZE; i++) {
 			System.out.println(topLeftMostShiftIndex[i]);
 			System.out.println(bottomLeftMostShiftIndex[i]);
 			System.out.println();
 		}
-		
+
+		for(int i=0; i<SIZE; i++) {
+			System.out.println(topRightMostShiftIndex[i]);
+			System.out.println(bottomRightMostShiftIndex[i]);
+			System.out.println();
+		}
 	}
 	
 	
@@ -120,93 +130,215 @@ public class SetupAllowed1stAndLastRing {
 				}
 			}
 		}
-		//TODO 1: all 0
-		
-		Coord2D beforeCounter = new Coord2D(topLeftMostShiftIndex[0], 0);
-		
-		int index_type = 0;
+		//TODO: do bottom later...
 		boolean isTop = true;
 
-		//TODO: generalize for all types.
-		//TODO: if # above is 0 mod 4, there's no 1x1 above
-
-		//TODO: if # below is 0 mod 4, there's no 1x1 above
 		
 		
-		Coord2D cur = tryAttachCellInDir(beforeCounter.i, beforeCounter.j, LEFT);
-		while( ! hitBarrier(index_type, cur, isTop)) {
-			
-			//TODO: function to check if 1x4 doesn't hit barrier!
-			allowedFirstRingIndexRotations1x1Clock[index_type][cur.i][2] = isLayer1x4Option(index_type, cur.i, 2, isTop);
-			Coord2D flippedCoord = topLeftIndexRotAfter180Flip1x4layer(cur.i, 2);
-			
-			allowedFirstRingIndexRotations1x1Clock[index_type][flippedCoord.i][flippedCoord.j] = isLayer1x4Option(index_type, flippedCoord.i, flippedCoord.j, isTop);
+		for(int index_type=0; index_type<Math.pow(2, 3); index_type++) {
+
+
+			boolean aboveRing = true;
 			
 
-			boolean hitBarrier = false;
-			for(int j=0; j<4; j++) {
-				cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
-				if(hitBarrier(index_type, cur, isTop)) {
-					hitBarrier = true;
+			Coord2D barrier1 = getBarrier1(index_type, isTop, aboveRing);
+			
+			Coord2D cur = tryAttachCellInDir(barrier1.i, barrier1.j, LEFT);
+			while( ! hitBarrier(index_type, cur, isTop)) {
+				
+				//TODO: function to check if 1x4 doesn't hit barrier!
+				allowedFirstRingIndexRotations1x1Clock[index_type][cur.i][2] = isLayer1x4Option(index_type, cur.i, 2, isTop);
+				Coord2D flippedCoord = topLeftIndexRotAfter180Flip1x4layer(cur.i, 2);
+				
+				allowedFirstRingIndexRotations1x1Clock[index_type][flippedCoord.i][flippedCoord.j] = isLayer1x4Option(index_type, flippedCoord.i, flippedCoord.j, isTop);
+				
+	
+				boolean hitBarrier = false;
+				for(int j=0; j<4; j++) {
+					cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+					if(hitBarrier(index_type, cur, isTop)) {
+						hitBarrier = true;
+					}
+				}
+				if(hitBarrier) {
+					break;
 				}
 			}
-			if(hitBarrier) {
-				break;
-			}
-			System.out.println(cur.i);
-		}
-		
-
-		cur = tryAttachCellInDir(beforeCounter.i, beforeCounter.j, LEFT);
-		cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
-		
-		while( ! hitBarrier(index_type, cur, isTop)) {
 			
-			
-			allowedFirstRingIndexRotations1x1Counter[index_type][cur.i][2] = isLayer1x4Option(index_type, cur.i, 2, isTop);
-			Coord2D flippedCoord = topLeftIndexRotAfter180Flip1x4layer(cur.i, 2);
-			
-			allowedFirstRingIndexRotations1x1Counter[index_type][flippedCoord.i][flippedCoord.j] = isLayer1x4Option(index_type, flippedCoord.i, flippedCoord.j, isTop);
-			
-			boolean hitBarrier = false;
-			for(int j=0; j<4; j++) {
+	
+			if(getNumCellsBetweenBarrier(index_type, isTop, aboveRing) % 4 == 1) {
+				//TODO: only activate if there's 1mod4 spaces available:
+				cur = tryAttachCellInDir(barrier1.i, barrier1.j, LEFT);
 				cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
-				if(hitBarrier(index_type, cur, isTop)) {
-					hitBarrier = true;
+				
+				while( ! hitBarrier(index_type, cur, isTop)) {
+					
+					
+					allowedFirstRingIndexRotations1x1Counter[index_type][cur.i][2] = isLayer1x4Option(index_type, cur.i, 2, isTop);
+					Coord2D flippedCoord = topLeftIndexRotAfter180Flip1x4layer(cur.i, 2);
+					
+					allowedFirstRingIndexRotations1x1Counter[index_type][flippedCoord.i][flippedCoord.j] = isLayer1x4Option(index_type, flippedCoord.i, flippedCoord.j, isTop);
+					
+					boolean hitBarrier = false;
+					for(int j=0; j<4; j++) {
+						cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+						if(hitBarrier(index_type, cur, isTop)) {
+							hitBarrier = true;
+						}
+					}
+					if(hitBarrier) {
+						break;
+					}
+					System.out.println("2: " +  cur.i);
 				}
 			}
-			if(hitBarrier) {
-				break;
+		
+
+			//TODO: Try to remove copy/paste code.
+
+			
+			aboveRing = false;
+			barrier1 = getBarrier1(index_type, isTop, aboveRing);
+			
+			cur = tryAttachCellInDir(barrier1.i, barrier1.j, LEFT);
+			
+			while( ! hitBarrier(index_type, cur, isTop)) {
+				
+				//TODO: function to check if 1x4 doesn't hit barrier!
+				allowedFirstRingIndexRotations1x1Clock[index_type][cur.i][2] = isLayer1x4Option(index_type, cur.i, 2, isTop);
+				Coord2D flippedCoord = topLeftIndexRotAfter180Flip1x4layer(cur.i, 2);
+				
+				allowedFirstRingIndexRotations1x1Clock[index_type][flippedCoord.i][flippedCoord.j] = isLayer1x4Option(index_type, flippedCoord.i, flippedCoord.j, isTop);
+				
+	
+				boolean hitBarrier = false;
+				for(int j=0; j<4; j++) {
+					cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+					if(hitBarrier(index_type, cur, isTop)) {
+						hitBarrier = true;
+					}
+				}
+				if(hitBarrier) {
+					break;
+				}
+				System.out.println(cur.i);
 			}
-			System.out.println("2: " +  cur.i);
+			
+	
+			if(getNumCellsBetweenBarrier(index_type, isTop, aboveRing) % 4 == 1) {
+				//TODO: only activate if there's 1mod4 spaces available:
+				cur = tryAttachCellInDir(barrier1.i, barrier1.j, LEFT);
+				cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+				
+				while( ! hitBarrier(index_type, cur, isTop)) {
+					
+					
+					allowedFirstRingIndexRotations1x1Counter[index_type][cur.i][2] = isLayer1x4Option(index_type, cur.i, 2, isTop);
+					Coord2D flippedCoord = topLeftIndexRotAfter180Flip1x4layer(cur.i, 2);
+					
+					allowedFirstRingIndexRotations1x1Counter[index_type][flippedCoord.i][flippedCoord.j] = isLayer1x4Option(index_type, flippedCoord.i, flippedCoord.j, isTop);
+					
+					boolean hitBarrier = false;
+					for(int j=0; j<4; j++) {
+						cur = tryAttachCellInDir(cur.i, cur.j, LEFT);
+						if(hitBarrier(index_type, cur, isTop)) {
+							hitBarrier = true;
+						}
+					}
+					if(hitBarrier) {
+						break;
+					}
+					System.out.println("2: " +  cur.i);
+				}
+				
+
+				//END TODO: Try to remove copy/paste code.
+			}
+			
+		
+			//TODO: index_type 1 is wrong once you scroll right...
+			//TODO: debug
+			//TODO: clean code
+		
+			System.out.println("index_type: " + index_type);
+			
+			System.out.println("Clockwise 1x1 with rotation 0");
+			labelDebugIfTrueAllowedRingIndex(allowedFirstRingIndexRotations1x1Clock[0], 0, index_type);
+	
+			System.out.println("Clockwise 1x1 with rotation 2");
+			labelDebugIfTrueAllowedRingIndex(allowedFirstRingIndexRotations1x1Clock[0], 2, index_type);
+			System.out.println("CounterClockwise 1x1 with rotation 0");
+			labelDebugIfTrueAllowedRingIndex(allowedFirstRingIndexRotations1x1Counter[0], 0, index_type);
+			
+			System.out.println("Counter Clockwise 1x1 with rotation 2:");
+			labelDebugIfTrueAllowedRingIndex(allowedFirstRingIndexRotations1x1Counter[0], 2, index_type);
 		}
 		
-		
-		System.out.println("TODO");
-		
-		System.out.println("Clock 0:");
-		labelDebugIfTrueAllowedRingIndex(allowedFirstRingIndexRotations1x1Clock[0], 0);
-
-		System.out.println("Clock 0: rotation 2");
-		labelDebugIfTrueAllowedRingIndex(allowedFirstRingIndexRotations1x1Clock[0], 2);
-		System.out.println("Counter 0:");
-		labelDebugIfTrueAllowedRingIndex(allowedFirstRingIndexRotations1x1Counter[0], 0);
-		
-		System.out.println("Counter 0: rotation 2:");
-		labelDebugIfTrueAllowedRingIndex(allowedFirstRingIndexRotations1x1Counter[0], 2);
 		System.exit(1);
 		
 	}
 
+	public Coord2D getBarrier1(int indexType, boolean top, boolean aboveRing) {
+		Coord2D barrier1 = new Coord2D(-1, -1);
+		
+		if(top) {
+			if(aboveRing) {
+	
+				for(int i=0; i<topLeftMostShiftIndex.length; i++) {
+					if(hitBarrier(indexType, topLeftMostShiftIndex[i],  top)) {
+						barrier1 = new Coord2D(topLeftMostShiftIndex[i], 0);
+						break;
+					}
+				}
+				
+				if(barrier1.i == -1) {
+					
+					for(int i=0; i<topRightMostShiftIndex.length; i++) {
+						int newI = topRightMostShiftIndex.length - 1 - i;
+						if(hitBarrier(indexType, topRightMostShiftIndex[newI],  top)) {
+							barrier1 = new Coord2D(topRightMostShiftIndex[newI], 0);
+							break;
+						}
+					}
+				}
+			} else {
+				
+				for(int i=0; i<topRightMostShiftIndex.length; i++) {
+					int newI = topRightMostShiftIndex.length - 1 - i;
+					if(hitBarrier(indexType, topLeftMostShiftIndex[i],  top)) {
+						barrier1 = new Coord2D(topLeftMostShiftIndex[i], 0);
+						break;
+					}
+				}
+				
+				
+				if(barrier1.i == -1) {
+					for(int i=0; i<3; i++) {
+						if(hitBarrier(indexType, topRightMostShiftIndex[i],  top)) {
+							barrier1 = new Coord2D(topRightMostShiftIndex[i], 0);
+							break;
+						}
+					}
+				}
+			}
+		} else {
+			//TODO: handle bottom case.
+			return new Coord2D(-2, -2);
+		}
+		
+		return barrier1;
+	}
+	
 	//TODO: test it!
 	public int getNumCellsBetweenBarrier(int indexType, boolean top, boolean Ring0orLastabove) {
 		if(indexType == 0 || indexType == 7) {
 			int tmp = 2*this.dimensions[1] + 3;
 			
 			if(tmp % 4 != 1) {
-				System.out.println("DOH in getNumCellsBetweenBarrier!");
+				System.out.println("DOH in getNumCellsBetweenBarrier! " + this.dimensions[1]);
 				System.exit(1);
 			}
+			return tmp;
 		}
 
 		Coord2D barrier1 = new Coord2D(-1, -1);
@@ -214,21 +346,19 @@ public class SetupAllowed1stAndLastRing {
 		
 		if(Ring0orLastabove) {
 
-			for(int i=0; i<topRightMostShiftIndex.length; i++) {
-				if(hitBarrier(indexType, topRightMostShiftIndex[i],  top)) {
-					barrier1 = new Coord2D(topRightMostShiftIndex[i], 0);
-					break;
-				}
-			}
-			
 			for(int i=0; i<topLeftMostShiftIndex.length; i++) {
 				if(hitBarrier(indexType, topLeftMostShiftIndex[i],  top)) {
-					barrier2 = new Coord2D(topLeftMostShiftIndex[i], 0);
+					barrier1 = new Coord2D(topLeftMostShiftIndex[i], 0);
 					break;
 				}
 			}
 			
-			
+			for(int i=0; i<topRightMostShiftIndex.length; i++) {
+				if(hitBarrier(indexType, topRightMostShiftIndex[i],  top)) {
+					barrier2 = new Coord2D(topRightMostShiftIndex[i], 0);
+					break;
+				}
+			}
 			
 			if(barrier1.i == -1 || barrier2.i == -1) {
 				System.out.println("Doh in getNumCellsBetweenBarrier");
@@ -291,7 +421,6 @@ public class SetupAllowed1stAndLastRing {
 	
 	public boolean hitBarrier(int index_type, int index, boolean top) {
 		
-		//TODO
 		if(top) {
 			for(int i=0; i<topLeftMostShiftIndex.length; i++) {
 				if(index == topLeftMostShiftIndex[i] && ((~index_type) & (1 << i)) != 0) {
@@ -299,7 +428,6 @@ public class SetupAllowed1stAndLastRing {
 				}
 			}
 			
-			//TODO: define topRightMostShiftIndex
 			for(int i=0; i<topRightMostShiftIndex.length; i++) {
 				if(index == topRightMostShiftIndex[i] && (index_type & (1 << i)) != 0) {
 					return true;
@@ -313,7 +441,6 @@ public class SetupAllowed1stAndLastRing {
 				}
 			}
 
-			//TODO: define bottomRightMostShiftIndex
 			for(int i=0; i<bottomRightMostShiftIndex.length; i++) {
 				if(index == bottomRightMostShiftIndex[i] && (index_type & (1 << i)) != 0) {
 					return true;
@@ -325,7 +452,7 @@ public class SetupAllowed1stAndLastRing {
 	
 
 	public void setupAllowedFirstLastIndexRotations1x1() {
-		//TODO
+		//TODO: do first Ring first though....
 		allowedLastRingIndexRotations1x1Counter = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()][NUM_ROTATIONS];
 		allowedLastRingIndexRotations1x1Clock = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()][NUM_ROTATIONS];
 		
@@ -370,7 +497,7 @@ public class SetupAllowed1stAndLastRing {
 	
 	
 	
-	private void labelDebugIfTrueAllowedRingIndex(boolean indexRot[][], int rotation) {
+	private void labelDebugIfTrueAllowedRingIndex(boolean indexRot[][], int rotation, int index_type) {
 		
 		
 		String labels[] = new String[getNumCellsToFill()];
@@ -380,6 +507,9 @@ public class SetupAllowed1stAndLastRing {
 			
 			if(indexRot[i][rotation] == false) {
 				labelSoFar = "00";
+			}
+			if(hitBarrier(index_type, i, true)) {
+				labelSoFar = "XX";
 			}
 			
 			labels[i] = labelSoFar;
@@ -442,5 +572,6 @@ public class SetupAllowed1stAndLastRing {
 		}
 		return ret;
 	}
+	
 	
 }
