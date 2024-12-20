@@ -105,7 +105,7 @@ public class SetupAllowed1stAndLastRing {
 	
 	
 	
-	public void setupAllowedFirstRingIndexRotations1x4() {
+	public void setupAllowedFirstAndLastRingIndexRotations1x4() {
 		
 		allowedFirstRingIndexRotations1x1Counter = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()][NUM_ROTATIONS];
 		allowedFirstRingIndexRotations1x1Clock = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()][NUM_ROTATIONS];
@@ -135,7 +135,6 @@ public class SetupAllowed1stAndLastRing {
 		
 		boolean isTop = true;
 
-		
 		for(int index_type=0; index_type<Math.pow(2, 3); index_type++) {
 			for(int aboveRingFlag=0; aboveRingFlag<=1; aboveRingFlag++) {
 				
@@ -193,9 +192,7 @@ public class SetupAllowed1stAndLastRing {
 			}
 			
 			
-			//TODO: index_type 1 is wrong once you scroll right...
 			//TODO: debug
-			//TODO: clean code
 		
 			System.out.println("index_type: " + index_type);
 			
@@ -211,7 +208,6 @@ public class SetupAllowed1stAndLastRing {
 			labelDebugIfTrueAllowedRingIndex(allowedFirstRingIndexRotations1x1Counter[index_type], 2, index_type);
 		}
 		
-		System.exit(1);
 		
 	}
 
@@ -335,22 +331,6 @@ public class SetupAllowed1stAndLastRing {
 			}
 		}
 		return false;
-	}
-	
-
-	public void setupAllowedFirstLastIndexRotations1x1() {
-		//TODO: do first Ring first though....
-		allowedLastRingIndexRotations1x1Counter = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()][NUM_ROTATIONS];
-		allowedLastRingIndexRotations1x1Clock = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()][NUM_ROTATIONS];
-		
-		for(int i=0; i<allowedLastRingIndexRotations1x1Counter.length; i++) {
-			for(int j=0; j<allowedLastRingIndexRotations1x1Counter[0].length; j++) {
-				for(int k=0; k<allowedLastRingIndexRotations1x1Counter[0][0].length; k++) {
-					allowedLastRingIndexRotations1x1Counter[i][j][k] = true;
-					allowedLastRingIndexRotations1x1Clock[i][j][k] = true;
-				}
-			}
-		}
 	}
 	
 	

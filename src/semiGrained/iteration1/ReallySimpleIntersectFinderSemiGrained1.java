@@ -20,8 +20,8 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 		
 		
 		//reallySimpleSearch(8, 3, 3);
-		//reallySimpleSearch(4, 15, 3);
-		reallySimpleSearch(5, 15, 3);
+		reallySimpleSearch(4, 15, 3);
+		//reallySimpleSearch(5, 15, 3);
 		//reallySimpleSearch(4, 7, 3);
 		
 		//Found 0 unique solution.
@@ -108,6 +108,15 @@ All are valid 3-way solutions
 Found 2092 unique solution.
 Done for 5x15x3
 
+		 */
+		
+		/*
+		 * After optimization:
+		 * Done using the 2nd iteration (using pre-computed long arrays)
+Found 172 unique solution.
+Done for 4x15x3
+
+It's wrong!!!
 		 */
 	}
 	

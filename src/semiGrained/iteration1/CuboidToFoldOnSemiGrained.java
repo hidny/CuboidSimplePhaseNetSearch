@@ -333,22 +333,38 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		}
 		//End check topBottomShiftMod4:
 		
-		if(setup1stAndLastRing.areTopShiftIndexesAllSet(this)) {
-			printCurrentStateOnOtherCuboidsFlatMap();
+
+		//TODO: Make a last Ring index version of this...
+		if(nextRingIndex == 0 && setup1stAndLastRing.areTopShiftIndexesAllSet(this)) {
+			//printCurrentStateOnOtherCuboidsFlatMap();
 			
-			System.out.println("Debug Top");
+			//System.out.println("Debug Top");
 			
-			//TODO: build: allowedFirstRingIndexRotations1x1Counter
-			//TODO: build allowedFirstRingIndexRotations1x1Clock
-			System.out.println("getTopShiftType: " + setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound));
-			System.exit(1);
+			//System.out.println("getTopShiftType: " + setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound));
+			//System.exit(1);
+			
+			if(setup1stAndLastRing.allowedFirstRingIndexRotations1x1Clock
+					[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)]
+					[nextIndex]
+					[nextRot] == false
+				&&
+				setup1stAndLastRing.allowedFirstRingIndexRotations1x1Counter
+				[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)]
+				[nextIndex]
+				[nextRot] == false
+					) {
+				
+				//System.out.println("Debug Dec 19th false!");
+				return false;
+			}
 		}
 		
-		if(setup1stAndLastRing.areBottomShiftIndexesAllSet(this)) {
+		//TODO: (again) Make a last Ring index version of this...
+		/*if(setup1stAndLastRing.areBottomShiftIndexesAllSet(this)) {
 			printCurrentStateOnOtherCuboidsFlatMap();
 			System.out.println("Debug bottom");
 			System.out.println("getBottomShiftType: " + setup1stAndLastRing.getBottomShiftType(topBottomShiftMod4FromPrevRound));
-		}
+		}*/
 		
 		return true;
 		
@@ -669,8 +685,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				this
 		);
 		//TODO
-		setup1stAndLastRing.setupAllowedFirstRingIndexRotations1x4();
-		setup1stAndLastRing.setupAllowedFirstLastIndexRotations1x1();
+		setup1stAndLastRing.setupAllowedFirstAndLastRingIndexRotations1x4();
 		
 		/*
 		labelDebugTopBottomShiftLocation();
