@@ -669,7 +669,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				this
 		);
 		//TODO
-		setup1stAndLastRing.setupAllowedFirstRingIndexRotations1x1();
+		setup1stAndLastRing.setupAllowedFirstRingIndexRotations1x4();
 		setup1stAndLastRing.setupAllowedFirstLastIndexRotations1x1();
 		
 		/*
