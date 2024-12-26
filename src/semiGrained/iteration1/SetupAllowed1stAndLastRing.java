@@ -212,6 +212,13 @@ public class SetupAllowed1stAndLastRing {
 							cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
 						}
 					}
+					
+					if( ! hitBarrier(index_type, possible1x1IndexRotation.i, isTop)) {
+						addPossible1x1(index_type, possible1x1IndexRotation);
+					} else {
+						System.out.println("ERROR in setupAllowedFirstAndLastRingIndexRotations1x4: unexpected branching.");
+						System.exit(1);
+					}
 				}
 			
 			}
