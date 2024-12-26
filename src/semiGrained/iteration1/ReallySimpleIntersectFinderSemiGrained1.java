@@ -113,10 +113,9 @@ Done for 5x15x3
 		/*
 		 * After optimization:
 		 * Done using the 2nd iteration (using pre-computed long arrays)
-Found 172 unique solution.
+Found 231 unique solution.
 Done for 4x15x3
-
-It's wrong!!!
+Took 80 minutes
 		 */
 		
 		/*

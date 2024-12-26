@@ -323,6 +323,7 @@ public class SetupAllowed1stAndLastRing {
 			}
 		} else {
 			
+			//TODO: I don't think I tested this at all:
 			for(int i=0; i<bottomLeftMostShiftIndex.length; i++) {
 				
 				int newi = topLeftMostShiftIndex.length - 1 - i;
