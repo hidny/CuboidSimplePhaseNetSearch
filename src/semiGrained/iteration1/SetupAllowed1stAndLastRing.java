@@ -306,26 +306,35 @@ public class SetupAllowed1stAndLastRing {
 		
 		if(top) {
 			for(int i=0; i<topLeftMostShiftIndex.length; i++) {
-				if(index == topLeftMostShiftIndex[i] && ((~index_type) & (1 << i)) != 0) {
+				
+				int newi = topLeftMostShiftIndex.length - 1 - i;
+				
+				if(index == topLeftMostShiftIndex[i] && ((~index_type) & (1 << newi)) != 0) {
 					return true;
 				}
 			}
 			
 			for(int i=0; i<topRightMostShiftIndex.length; i++) {
-				if(index == topRightMostShiftIndex[i] && (index_type & (1 << i)) != 0) {
+				
+				int newi = topLeftMostShiftIndex.length - 1 - i;
+				if(index == topRightMostShiftIndex[i] && (index_type & (1 << newi)) != 0) {
 					return true;
 				}
 			}
 		} else {
 			
 			for(int i=0; i<bottomLeftMostShiftIndex.length; i++) {
-				if(index == bottomLeftMostShiftIndex[i] && ((~index_type) & (1 << i)) != 0) {
+				
+				int newi = topLeftMostShiftIndex.length - 1 - i;
+				if(index == bottomLeftMostShiftIndex[i] && ((~index_type) & (1 << newi)) != 0) {
 					return true;
 				}
 			}
 
 			for(int i=0; i<bottomRightMostShiftIndex.length; i++) {
-				if(index == bottomRightMostShiftIndex[i] && (index_type & (1 << i)) != 0) {
+				
+				int newi = topLeftMostShiftIndex.length - 1 - i;
+				if(index == bottomRightMostShiftIndex[i] && (index_type & (1 << newi)) != 0) {
 					return true;
 				}
 			}

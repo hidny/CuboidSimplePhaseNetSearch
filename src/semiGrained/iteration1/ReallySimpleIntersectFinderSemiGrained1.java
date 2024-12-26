@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import Coord.Coord2D;
 import DupRemover.BasicUniqueCheckImproved;
 import GraphUtils.PivotCellDescription;
-import GraphUtils.PivotCellDescriptionForGrained;
+import GraphUtils.PivotCellDescriptionForSemiGrainedDepth3;
 import GraphUtils.PivotCellDescriptionForSimplePhase;
 import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
@@ -118,6 +118,12 @@ Done for 4x15x3
 
 It's wrong!!!
 		 */
+		
+		/*
+		 * Found 12 unique solution.
+Done for 3x15x3
+almost 8 minutes
+		 */
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
@@ -140,9 +146,7 @@ It's wrong!!!
 
 		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(NofNx1x1Cuboid);
 
-		//TODO: For efficiency, maybe filter for the 1st ring index?
-		//Also, this doesn't work for 3x3x3 because of the symmetries.
-		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForSimplePhase.getUniqueRotationListsWithCellInfo(cuboidToBuild);
+		ArrayList<PivotCellDescription> startingPointsAndRotationsToCheck = PivotCellDescriptionForSemiGrainedDepth3.getUniqueRotationListsWithCellInfo(cuboidToBuild, cuboidToBuild.getIndexToRing());
 		
 		long ret = 0;
 		
@@ -214,6 +218,16 @@ It's wrong!!!
 						
 						reference.addNextLevel(new Coord2D(0, sideBump), null);
 						if(BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
+							
+							if(cuboidToBuild.debugFalseIndex >= 0) {
+								System.out.println("ERROR: DEBUG false index: " + cuboidToBuild.debugFalseIndex);
+								System.out.println("ERROR: DEBUG cuboid index that broke: " + cuboidToBuild.debugFalseCuboidIndex);
+								System.out.println("ERROR: DEBUG cuboid rotation that broke: " + cuboidToBuild.debugFalseCuboidRot);
+								
+								for(int i=0; i<cuboidToBuild.debugTopShiftIndex.length; i++) {
+									System.out.println("topShiftIndex at layer " + i + ": " + cuboidToBuild.debugTopShiftIndex[i]);
+								}
+							}
 							
 							if(VERBOSE) {
 								

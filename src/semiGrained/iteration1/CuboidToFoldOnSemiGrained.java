@@ -55,6 +55,8 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			forcedRepetition = new int[DIM_N_OF_Nx1x1 + 2];
 			initializeForcedRepetition();
 		}
+		
+		debugTopShiftIndex = new int[DIM_N_OF_Nx1x1 + 1];
 	}
 	
 	private TopAndBottomTransitionHandler topAndBottomHandler = new TopAndBottomTransitionHandler();
@@ -148,6 +150,16 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	//input: index
 	private int indexToRing[];
 	
+	public int[] getIndexToRing() {
+		
+		//Hardcode just in case someone want to change it outside of the class:
+		int ret[] = new int[indexToRing.length];
+		for(int i=0; i<ret.length; i++) {
+			ret[i] = indexToRing[i];
+		}
+		return ret;
+	}
+
 	//check if ring is decided: (depth)
 	private int LayerIndexForRingDecided[];
 	private int transitionBetweenRings[];
@@ -354,10 +366,19 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				[nextRot] == false
 					) {
 				
-				//System.out.println("Debug Dec 19th false!");
+				//System.out.println("false");
 				return false;
+				
+				/*if(debugFalseIndex == -1) {
+					debugFalseIndex = this.currentLayerIndex + 1;
+					debugFalseCuboidIndex = nextIndex;
+					debugFalseCuboidRot = nextRot;
+					
+				}*/
 			}
 		}
+		
+		debugTopShiftIndex[this.currentLayerIndex] = setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound);
 		
 		//TODO: (again) Make a last Ring index version of this...
 		/*if(setup1stAndLastRing.areBottomShiftIndexesAllSet(this)) {
@@ -370,6 +391,12 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		
 	}
 	
+	public static int debugFalseIndex = -1;
+	public static int debugFalseCuboidIndex = -1; //TODO
+	public static int debugFalseCuboidRot = -1; //TODO
+	public static int debugShiftType = -1; //TODO
+	
+	public static int debugTopShiftIndex[];
 	
 	
 	public void addNewLayerFast(int sideBump) {
@@ -431,6 +458,11 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	
 	public void removePrevLayerFast() {
 
+		
+		if(debugFalseIndex == currentLayerIndex) {
+			debugFalseIndex = -1;
+		}
+		
 		if(indexToRing[this.topLeftGroundedIndex] >= 0
 				&& LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] == this.currentLayerIndex) {
 			LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] = -1;
@@ -461,6 +493,8 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		for(int i=0; i<curState.length; i++) {
 			curState[i] = curState[i] ^ tmp[i];
 		}
+		
+		
 		
 		
 	}
