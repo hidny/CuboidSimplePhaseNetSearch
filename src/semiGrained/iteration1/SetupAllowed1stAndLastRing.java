@@ -142,7 +142,7 @@ public class SetupAllowed1stAndLastRing {
 		
 		boolean isTop = true;
 		
-		
+		//TODO: 1x1 is wrong when upside down maybe?
 
 		for(int index_type=0; index_type<Math.pow(2, 3); index_type++) {
 			
@@ -186,14 +186,17 @@ public class SetupAllowed1stAndLastRing {
 				if(getNumCellsBetweenBarrier(index_type, isTop, aboveRing) % 4 == 1) {
 					
 					cur = tryAttachCellInDir(barrier1.i, barrier1.j, RIGHT);
-					Coord2D prev1x1Location = cur;
+					
+					Coord2D possible1x1IndexRotation = new Coord2D(cur.i, (cur.j + 2) % NUM_ROTATIONS);
 					cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
 					
 					while( ! hitBarrier(index_type, cur, isTop)) {
 						
 						boolean is1x4SpaceAvailable = isLayer1x4Option(index_type, cur.i, cur.j, isTop);
 
-						allowedFirstRingIndexRotations1x1Locations[index_type][prev1x1Location.i] = true;
+						addPossible1x1(index_type, possible1x1IndexRotation);
+						
+						//allowedFirstRingIndexRotations1x1Locations[index_type][possible1x1index.i] = true;
 						
 						if(is1x4SpaceAvailable == false) {
 							break;
@@ -205,7 +208,7 @@ public class SetupAllowed1stAndLastRing {
 						
 						
 						for(int j=0; j<4; j++) {
-							prev1x1Location = tryAttachCellInDir(cur.i, cur.j, RIGHT);
+							possible1x1IndexRotation = tryAttachCellInDir(possible1x1IndexRotation.i, possible1x1IndexRotation.j, LEFT);
 							cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
 						}
 					}
@@ -228,8 +231,22 @@ public class SetupAllowed1stAndLastRing {
 			
 			System.out.println("1x1 at counterclockwise extreme with rotation 2:");
 			labelDebugIfTrueAllowedRingIndex(allowedFirstRingIndexRotations1x1Counter[index_type], 2, index_type);
+			
+			System.out.println("Debug possible 1x1 bottom locations:");
+			labelDebugIfTrueAllowedBottom1x1Index(allowedFirstRingIndexRotations1x1Locations[index_type], index_type);
 		}
 		
+		
+	}
+	
+	private void addPossible1x1(int index_type, Coord2D indexRotatation) {
+		
+		if(indexRotatation.j == 2) {
+			allowedFirstRingIndexRotations1x1Locations[index_type][indexRotatation.i] = true;
+		} else {
+			Coord2D flippedCoord = topLeftIndexRotAfter180Flip1x4layer(indexRotatation.i, indexRotatation.j);
+			allowedFirstRingIndexRotations1x1Locations[index_type][flippedCoord.i] = true;
+		}
 		
 	}
 	
@@ -470,6 +487,33 @@ public class SetupAllowed1stAndLastRing {
 			
 			
 			if(indexRot[i][rotation] == false) {
+				labelSoFar = "00";
+			}
+			if(hitBarrier(index_type, i, true)) {
+				labelSoFar = "XX";
+			}
+			
+			labels[i] = labelSoFar;
+			
+			
+		}
+		
+		System.out.println(DataModelViews.getFlatNumberingView(this.dimensions[0],
+				this.dimensions[1],
+				this.dimensions[2],
+				labels));
+		
+	}
+	
+	private void labelDebugIfTrueAllowedBottom1x1Index(boolean index[], int index_type) {
+		
+		
+		String labels[] = new String[getNumCellsToFill()];
+		for(int i=0; i<labels.length; i++) {
+			String labelSoFar = "11";
+			
+			
+			if(index[i] == false) {
 				labelSoFar = "00";
 			}
 			if(hitBarrier(index_type, i, true)) {
