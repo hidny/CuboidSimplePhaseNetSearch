@@ -103,12 +103,15 @@ public class SetupAllowed1stAndLastRing {
 	public boolean allowedFirstRingIndexRotations1x1Clock[][][];
 	public boolean allowedLastRingIndexRotations1x1Clock[][][];
 	
-	
+
+	public boolean allowedFirstRingIndexRotations1x1Locations[][];
 	
 	public void setupAllowedFirstAndLastRingIndexRotations1x4() {
 		
 		allowedFirstRingIndexRotations1x1Counter = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()][NUM_ROTATIONS];
 		allowedFirstRingIndexRotations1x1Clock = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()][NUM_ROTATIONS];
+		
+		allowedFirstRingIndexRotations1x1Locations = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()];
 		
 		for(int i=0; i<allowedFirstRingIndexRotations1x1Counter.length; i++) {
 			for(int j=0; j<allowedFirstRingIndexRotations1x1Counter[0].length; j++) {
@@ -121,6 +124,9 @@ public class SetupAllowed1stAndLastRing {
 		
 		for(int i=0; i<allowedFirstRingIndexRotations1x1Counter.length; i++) {
 			for(int j=0; j<allowedFirstRingIndexRotations1x1Counter[0].length; j++) {
+
+				allowedFirstRingIndexRotations1x1Locations[i][j] = false;
+				
 				for(int k=0; k<allowedFirstRingIndexRotations1x1Counter[0][0].length; k++) {
 					
 					if(indexToRing[j] == 0 && k%2 == 0) {
@@ -130,12 +136,23 @@ public class SetupAllowed1stAndLastRing {
 				}
 			}
 		}
+
 		//TODO: do bottom later...
 		//TODO: bottom should be a flag in this function
 		
 		boolean isTop = true;
+		
+		
 
 		for(int index_type=0; index_type<Math.pow(2, 3); index_type++) {
+			
+
+			Coord2D Cell1x1BetweenBarriers = get1x1BetweenBarriersIfExists(index_type, isTop);
+			
+			if(Cell1x1BetweenBarriers.i >= 0) {
+				allowedFirstRingIndexRotations1x1Locations[index_type][Cell1x1BetweenBarriers.i] = true;
+			}
+			
 			for(int aboveRingFlag=0; aboveRingFlag<=1; aboveRingFlag++) {
 				
 				boolean aboveRing = (aboveRingFlag == 1);
@@ -169,11 +186,14 @@ public class SetupAllowed1stAndLastRing {
 				if(getNumCellsBetweenBarrier(index_type, isTop, aboveRing) % 4 == 1) {
 					
 					cur = tryAttachCellInDir(barrier1.i, barrier1.j, RIGHT);
+					Coord2D prev1x1Location = cur;
 					cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
 					
 					while( ! hitBarrier(index_type, cur, isTop)) {
 						
 						boolean is1x4SpaceAvailable = isLayer1x4Option(index_type, cur.i, cur.j, isTop);
+
+						allowedFirstRingIndexRotations1x1Locations[index_type][prev1x1Location.i] = true;
 						
 						if(is1x4SpaceAvailable == false) {
 							break;
@@ -183,7 +203,9 @@ public class SetupAllowed1stAndLastRing {
 						
 						allowedFirstRingIndexRotations1x1Clock[index_type][flippedCoord.i][flippedCoord.j] = true;
 						
+						
 						for(int j=0; j<4; j++) {
+							prev1x1Location = tryAttachCellInDir(cur.i, cur.j, RIGHT);
 							cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
 						}
 					}
@@ -209,6 +231,71 @@ public class SetupAllowed1stAndLastRing {
 		}
 		
 		
+	}
+	
+	public Coord2D get1x1BetweenBarriersIfExists(int indexType, boolean top) {
+		
+		if(top) {
+			
+			boolean rightMostWorks = true;
+			for(int i=0; i<topRightMostShiftIndex.length; i++) {
+				if(    (i == 1 && hitBarrier(indexType, topRightMostShiftIndex[i],  top))
+				    || (i != 1 && ! hitBarrier(indexType, topRightMostShiftIndex[i],  top))
+				){
+					rightMostWorks = false;
+					break;
+				}
+			}
+			
+			if(rightMostWorks) {
+				return new Coord2D(topRightMostShiftIndex[1], 2);
+			}
+			
+			boolean leftMostWorks = true;
+			for(int i=0; i<topLeftMostShiftIndex.length; i++) {
+				if(    (i == 1 && hitBarrier(indexType, topLeftMostShiftIndex[i],  top))
+				    || (i != 1 && ! hitBarrier(indexType, topLeftMostShiftIndex[i],  top))
+				){
+					leftMostWorks = false;
+					break;
+				}
+			}
+			
+			if(leftMostWorks) {
+				return new Coord2D(topLeftMostShiftIndex[1], 2);
+			}
+		} else {
+			
+			boolean rightMostWorks = true;
+			for(int i=0; i<bottomRightMostShiftIndex.length; i++) {
+				if(    (i == 1 && hitBarrier(indexType, bottomRightMostShiftIndex[i],  top))
+				    || (i != 1 && ! hitBarrier(indexType, bottomRightMostShiftIndex[i],  top))
+				){
+					rightMostWorks = false;
+					break;
+				}
+			}
+			
+			if(rightMostWorks) {
+				return new Coord2D(bottomRightMostShiftIndex[1], 2);
+			}
+			
+			boolean leftMostWorks = true;
+			for(int i=0; i<bottomLeftMostShiftIndex.length; i++) {
+				if(    (i == 1 && hitBarrier(indexType, bottomLeftMostShiftIndex[i],  top))
+				    || (i != 1 && ! hitBarrier(indexType, bottomLeftMostShiftIndex[i],  top))
+				){
+					leftMostWorks = false;
+					break;
+				}
+			}
+			
+			if(leftMostWorks) {
+				return new Coord2D(bottomLeftMostShiftIndex[1], 2);
+			}
+		}
+		
+		return new Coord2D(-1, -1);
 	}
 
 	public Coord2D getBarrier1(int indexType, boolean top, boolean aboveRing) {

@@ -376,6 +376,22 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 					
 				}*/
 			}
+			
+			if(setup1stAndLastRing.allowedFirstRingIndexRotations1x1Locations
+					[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)]
+					[bottomIndex]
+					== false) {
+
+				return false;
+				/*
+				//DEBUG option: 
+				if(debugFalseIndex == -1) {
+					debugFalseIndex = this.currentLayerIndex + 1;
+					debugFalseCuboidIndex = nextIndex;
+					debugFalseCuboidRot = nextRot;
+					
+				}*/
+			}
 		}
 		
 		debugTopShiftIndex[this.currentLayerIndex] = setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound);
