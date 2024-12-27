@@ -14,6 +14,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	private CoordWithRotationAndIndex[][] neighbours;
 	
 	public int dimensions[] = new int[3];
+	private boolean setup;
 
 	public CuboidToFoldOnSemiGrained(int a, int b, int c) {
 		this(a, b, c, true, true);
@@ -24,6 +25,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 
 		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c, verbose);
 		
+		this.setup = setup;
 		
 		dimensions[0] = a;
 		dimensions[1] = b;
@@ -98,6 +100,24 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			this.curState = setImpossibleForAnswerSheet();
 		}
 		
+		if(this.setup) {
+			setup1stAndLastRing.setupAllowedFirstAndLastRingIndexRotations1x4(bottomIndex);
+			
+			/*
+			labelDebugTopBottomShiftLocation();
+			labelDebugTopBottomShift(0);
+			System.out.println();
+			System.out.println();
+			labelDebugTopBottomShift(2);
+			
+			
+			labelDebugTopBottomShiftLeftMostIndex(0);
+			System.out.println("Next");
+			labelDebugTopBottomShiftLeftMostIndex(2);
+			System.out.println("Done");
+			System.exit(1);
+			*/
+		}
 	}
 	
 	//Constants:
@@ -305,6 +325,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				),
 				indexToRing
 			)) {
+			
 			return false;
 		}
 		*/
@@ -392,6 +413,9 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 					
 				}*/
 			}
+			
+			//returns false for testing purposes:
+			//return false;
 		}
 		
 		debugTopShiftIndex[this.currentLayerIndex] = setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound);
@@ -734,23 +758,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				topBottomShiftIndexLeftMost,
 				this
 		);
-		//TODO
-		setup1stAndLastRing.setupAllowedFirstAndLastRingIndexRotations1x4();
 		
-		/*
-		labelDebugTopBottomShiftLocation();
-		labelDebugTopBottomShift(0);
-		System.out.println();
-		System.out.println();
-		labelDebugTopBottomShift(2);
-		
-		
-		labelDebugTopBottomShiftLeftMostIndex(0);
-		System.out.println("Next");
-		labelDebugTopBottomShiftLeftMostIndex(2);
-		System.out.println("Done");
-		System.exit(1);
-		*/
 		
 	}
 	int topBottomShiftIndexLeftMost[][];

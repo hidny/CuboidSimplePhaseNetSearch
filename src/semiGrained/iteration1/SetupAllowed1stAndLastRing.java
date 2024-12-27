@@ -106,7 +106,7 @@ public class SetupAllowed1stAndLastRing {
 
 	public boolean allowedFirstRingIndexRotations1x1Locations[][];
 	
-	public void setupAllowedFirstAndLastRingIndexRotations1x4() {
+	public void setupAllowedFirstAndLastRingIndexRotations1x4(int bottom1x1Index) {
 		
 		allowedFirstRingIndexRotations1x1Counter = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()][NUM_ROTATIONS];
 		allowedFirstRingIndexRotations1x1Clock = new boolean[(int)Math.pow(2, 3)][this.getNumCellsToFill()][NUM_ROTATIONS];
@@ -116,8 +116,10 @@ public class SetupAllowed1stAndLastRing {
 		for(int i=0; i<allowedFirstRingIndexRotations1x1Counter.length; i++) {
 			for(int j=0; j<allowedFirstRingIndexRotations1x1Counter[0].length; j++) {
 				for(int k=0; k<allowedFirstRingIndexRotations1x1Counter[0][0].length; k++) {
-					allowedFirstRingIndexRotations1x1Counter[i][j][k] = true;
-					allowedFirstRingIndexRotations1x1Clock[i][j][k] = true;
+					if(indexToRing[j] == 0) {
+						allowedFirstRingIndexRotations1x1Counter[i][j][k] = true;
+						allowedFirstRingIndexRotations1x1Clock[i][j][k] = true;
+					}
 				}
 			}
 		}
@@ -224,6 +226,9 @@ public class SetupAllowed1stAndLastRing {
 			}
 			
 			
+			if(isTop) {
+				adjustAllowed1stRingBasedOnBottom1x1Location(index_type, isTop, bottom1x1Index);
+			}
 			//TODO: debug
 		
 			System.out.println("index_type: " + index_type);
@@ -246,13 +251,54 @@ public class SetupAllowed1stAndLastRing {
 		
 	}
 	
+	private void adjustAllowed1stRingBasedOnBottom1x1Location(int index_type, boolean isTop, int bottom1x1Index) {
+		
+		
+		if(allowedFirstRingIndexRotations1x1Locations[index_type][bottom1x1Index]
+			&& isTop) {
+			
+			//clockwise:
+			Coord2D start1x1 = new Coord2D(bottom1x1Index, 0);
+			
+			int rotations[] = new int[] {0, 2};
+			
+			for(int i=0; i<rotations.length; i++) {
+				
+				int numMovements = 0;
+				Coord2D cur1x1 = new Coord2D(start1x1.i, rotations[i]);
+				
+				while( ! hitBarrier(index_type, cur1x1, isTop)) {
+					
+					cur1x1 = tryAttachCellInDir(cur1x1.i, cur1x1.j, LEFT);
+					numMovements++;
+					
+					if(numMovements % 4 != 0) {
+	
+						Coord2D flippedCoord = topLeftIndexRotAfter180Flip1x4layer(cur1x1.i, cur1x1.j);
+						
+						allowedFirstRingIndexRotations1x1Clock[index_type][cur1x1.i][cur1x1.j] = false;
+						allowedFirstRingIndexRotations1x1Clock[index_type][flippedCoord.i][flippedCoord.j] = false;
+						
+						allowedFirstRingIndexRotations1x1Counter[index_type][cur1x1.i][cur1x1.j] = false;
+						allowedFirstRingIndexRotations1x1Counter[index_type][flippedCoord.i][flippedCoord.j] = false;
+						
+					}
+				}
+			}
+			
+		}
+		
+	}
+	
 	private void addPossible1x1(int index_type, Coord2D indexRotatation) {
 		
-		if(indexRotatation.j == 2) {
-			allowedFirstRingIndexRotations1x1Locations[index_type][indexRotatation.i] = true;
-		} else {
-			Coord2D flippedCoord = topLeftIndexRotAfter180Flip1x4layer(indexRotatation.i, indexRotatation.j);
-			allowedFirstRingIndexRotations1x1Locations[index_type][flippedCoord.i] = true;
+		if(indexToRing[indexRotatation.i] == 0) {
+			if(indexRotatation.j == 2) {
+				allowedFirstRingIndexRotations1x1Locations[index_type][indexRotatation.i] = true;
+			} else {
+				Coord2D flippedCoord = topLeftIndexRotAfter180Flip1x4layer(indexRotatation.i, indexRotatation.j);
+				allowedFirstRingIndexRotations1x1Locations[index_type][flippedCoord.i] = true;
+			}
 		}
 		
 	}
