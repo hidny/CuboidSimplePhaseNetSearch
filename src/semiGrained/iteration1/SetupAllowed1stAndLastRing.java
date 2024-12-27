@@ -455,6 +455,79 @@ public class SetupAllowed1stAndLastRing {
 		return true;
 	}
 	
+	public int ring0ToRing1Transitions[][];
+	
+	public void getRing1AndRing0Transitions(Coord2D bottom1x1Index, Coord2D firstRing2Coord) {
+		
+		ring0ToRing1Transitions = new int[((int)Math.pow(2, 3))][getNumCellsToFill()];
+		for(int i=0; i<ring0ToRing1Transitions.length; i++) {
+			for(int j=0; j<ring0ToRing1Transitions[0].length; j++) {
+				ring0ToRing1Transitions[i][j] = -1;
+			}
+		}
+		
+		
+		boolean IS_TOP = true;
+		
+		for(int index_type=0; index_type<(int)Math.pow(2, 3); index_type++) {
+			
+
+			
+			Coord2D curIndexRing2 = firstRing2Coord;
+
+			Coord2D curIndexRing1 = bottom1x1Index;
+			
+			
+			if(hitBarrier(index_type, bottom1x1Index, IS_TOP)) {
+				continue;
+			}
+			
+			boolean firstMoveToRight = true;
+					
+			do {
+				
+				for(int i=0; i<4; i++) {
+					curIndexRing2 = tryAttachCellInDir(curIndexRing2.i, curIndexRing2.j, RIGHT);
+				}
+				
+				if(firstMoveToRight) {
+
+					//Move from 1x1 square to 1x4 rectangle in the first iteration:
+					firstMoveToRight = false;
+					
+					do {
+						
+						curIndexRing1 = tryAttachCellInDir(curIndexRing1.i, curIndexRing1.j, RIGHT);
+						
+					} while(hitBarrier(index_type, curIndexRing1, IS_TOP));
+					
+				} else {
+					
+					for(int i=0; i<4; i++) {
+						curIndexRing1 = tryAttachCellInDir(curIndexRing1.i, curIndexRing1.j, RIGHT);
+						
+						while(hitBarrier(index_type, curIndexRing1, IS_TOP)) {
+							curIndexRing1 = tryAttachCellInDir(curIndexRing1.i, curIndexRing1.j, RIGHT);
+						}
+					}
+				}
+				
+				setRing1ToRing2Transition(index_type, curIndexRing1, curIndexRing2);
+				
+			} while(curIndexRing2.i != firstRing2Coord.i);
+		}
+	}
+	
+	private void setRing1ToRing2Transition(int index_type, Coord2D from, Coord2D to) {
+		
+		ring0ToRing1Transitions[index_type][from.i] = to.i;
+		
+		Coord2D toReversed = topLeftIndexRotAfter180Flip1x4layer(to.i, to.j);
+		Coord2D fromReversed = topLeftIndexRotAfter180Flip1x4layer(from.i, from.j);
+		
+		ring0ToRing1Transitions[index_type][toReversed.i] = fromReversed.i;
+	}
+	
 	public boolean hitBarrier(int index_type, Coord2D coord, boolean top) {
 		return hitBarrier(index_type, coord.i, top);
 	}

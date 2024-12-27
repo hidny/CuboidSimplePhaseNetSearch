@@ -123,6 +123,14 @@ Took 80 minutes
 Done for 3x15x3
 almost 8 minutes
 		 */
+		
+		/* After optimizations:
+		 * Done using the 2nd iteration (using pre-computed long arrays)
+Found 231 unique solution.
+Done for 4x15x3
+
+Took 8 minutes...
+		 */
 	}
 	
 	public static SolutionResolverInterface solutionResolver;

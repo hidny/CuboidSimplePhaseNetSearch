@@ -102,7 +102,6 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		
 		if(this.setup) {
 			setup1stAndLastRing.setupAllowedFirstAndLastRingIndexRotations1x4(bottomIndex);
-			
 			/*
 			labelDebugTopBottomShiftLocation();
 			labelDebugTopBottomShift(0);
@@ -266,7 +265,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	
 	public boolean isNewLayerValidSimpleFast(int sideBump) {
 	
-		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
+		long tmp[] = answerSheet[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
 		
 		if(newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump] < 0) {
 			return false;
@@ -367,9 +366,11 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		//End check topBottomShiftMod4:
 		
 
+		
 		//TODO: Make a last Ring index version of this...
 		if(nextRingIndex == 0 && setup1stAndLastRing.areTopShiftIndexesAllSet(this)) {
 			//printCurrentStateOnOtherCuboidsFlatMap();
+			
 			
 			//System.out.println("Debug Top");
 			
@@ -418,6 +419,16 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			//return false;
 		}
 		
+
+		if(setup1stAndLastRing.areTopShiftIndexesAllSet(this)
+				&& ((nextRingIndex == 0 && prevRingIndex ==1) || (nextRingIndex == 1 && prevRingIndex == 0))
+			) {
+			if(setup1stAndLastRing.ring0ToRing1Transitions[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)][this.topLeftGroundedIndex] != nextIndex) {
+				//System.out.println("Quick rejection!");
+				return false;
+			}
+		}
+		
 		debugTopShiftIndex[this.currentLayerIndex] = setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound);
 		
 		//TODO: (again) Make a last Ring index version of this...
@@ -453,6 +464,10 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		prevGroundedRotations[currentLayerIndex] = this.topLeftGroundRotationRelativeFlatMap;
 		prevSideBumps[currentLayerIndex] = sideBump;
 		currentLayerIndex++;
+		
+		if(currentLayerIndex == 1) {
+			setup1stAndLastRing.getRing1AndRing0Transitions(new Coord2D(bottomIndex, 2), new Coord2D(tmp1, tmp2));
+		}
 		
 
 		int transitionIndex = Math.min(indexToRing[tmp1], indexToRing[this.topLeftGroundedIndex]);
