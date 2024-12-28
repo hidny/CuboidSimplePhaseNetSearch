@@ -491,21 +491,8 @@ public class SetupAllowed1stAndLastRing {
 				continue;
 			}
 			
-			int debugIt = 0;
-			
-			//TODO: stop infinite loop by breaking as soon as index goes through start...
-			//System.out.println("index_type: " + index_type);
 			do {
-				debugIt++;
-				//System.out.println("index_type: " + index_type);
-				//System.out.println("curIndexTop: " + curIndexTop.i + ", " + curIndexTop.j);
-				//System.out.println("firstTopCoord: " + firstTopCoord.i + ", " + firstTopCoord.j);
 				
-				//if(index_type == 6 && curIndexTop.i == 2) {
-					//System.exit(1);
-					//System.out.println("Debug");
-				//}
-				//System.out.println();
 				Coord2D trialCoord = new Coord2D(curIndexTop.i, curIndexTop.j);
 				
 				if(DEBUG) {
@@ -569,12 +556,9 @@ public class SetupAllowed1stAndLastRing {
 						
 					}
 					
-					//get top left index[0]
-					
 				} else {
 					curIndexTop = trialCoord;
 				}
-				
 			
 				for(int i=0; i<4; i++) {
 					curIndexRing0 = tryAttachCellInDir(curIndexRing0.i, curIndexRing0.j, RIGHT);
@@ -584,26 +568,12 @@ public class SetupAllowed1stAndLastRing {
 						curIndexRing0 = tryAttachCellInDir(curIndexRing0.i, curIndexRing0.j, RIGHT);
 					}
 					
-					if(i == 0 && curIndexRing0.i == bottom1x1Index.i) {
-						//Move to 1x1 square from 1x4 rectangle if we land on the 1x1 cell iteration:
-						break;
-					}
 				}
-				
-				
 				
 				setForcedTransition(ring0ToTopTransitions, index_type, curIndexRing0, curIndexTop);
 				
-				if(debugIt == 1000) {
-					System.out.println("DEBUG!");
-				}
-				
-			} while(curIndexTop.i != firstTopCoord.i && debugIt < 10000);
+			} while(curIndexTop.i != firstTopCoord.i);
 			
-			if(debugIt == 1000) {
-				System.out.println("DOH!");
-				System.exit(1);
-			}
 		}
 	}
 	
