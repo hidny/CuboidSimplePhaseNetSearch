@@ -383,7 +383,8 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 						new Coord2D(nextIndex, nextRot),
 						this,
 						topBottomShiftIndexLeftMost);
-			
+			debugRing0ToMinus1_1 = new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap);
+			debugRing0ToMinus1_2 = new Coord2D(nextIndex, nextRot);
 		}
 		
 		//TODO: Make a last Ring index version of this...
@@ -460,9 +461,33 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 
 				return false;
 				/*
-				//Debug tool:
+					//Debug tool:
 				//System.out.println("New False");
 				if(debugFalseIndex == -1) {
+					debugFalseIndex = this.currentLayerIndex + 1;
+					debugFalseCuboidIndex = nextIndex;
+					debugFalseCuboidRot = nextRot;
+					
+				}*/
+			}
+		}
+		
+		if(this.currentLayerIndex == 2*dimensions[0] + 2*dimensions[2] - 1) {
+			
+			//TODO
+			//Check if the first time we go from ring 0 to top is good:
+			int beforeTop = prevGroundedIndexes[currentLayerIndex - 3];
+			int onTop = prevGroundedIndexes[currentLayerIndex - 2];
+			
+			if(setup1stAndLastRing.ring0ToTopTransitions[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)][beforeTop] != onTop) {
+				System.out.println("Quick rejection! " + beforeTop + " to " + onTop);
+				
+				//Because of the way it's implemented, this doesn't actually do anything. Oh well.
+				System.exit(1);
+				
+				return false;
+				
+				/*if(debugFalseIndex == -1) {
 					debugFalseIndex = this.currentLayerIndex + 1;
 					debugFalseCuboidIndex = nextIndex;
 					debugFalseCuboidRot = nextRot;
@@ -507,6 +532,8 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	public static int debugFalseCuboidIndex = -1; //TODO
 	public static int debugFalseCuboidRot = -1; //TODO
 	public static int debugShiftType = -1; //TODO
+    public static Coord2D debugRing0ToMinus1_1 = null;
+    public static Coord2D debugRing0ToMinus1_2 = null;
 	
 	public static int debugTopShiftIndex[];
 	
