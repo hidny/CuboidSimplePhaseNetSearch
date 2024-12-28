@@ -20,8 +20,8 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 		
 		
 		//reallySimpleSearch(8, 3, 3);
+		//reallySimpleSearch(4, 15, 3);
 		reallySimpleSearch(4, 15, 3);
-		//reallySimpleSearch(5, 15, 3);
 		//reallySimpleSearch(4, 7, 3);
 		
 		//Found 0 unique solution.
@@ -131,6 +131,12 @@ Done for 4x15x3
 
 Took 8 minutes...
 		 */
+		/*
+		 * Done using the 2nd iteration (using pre-computed long arrays)
+Found 2092 unique solution.
+Done for 5x15x3
+3 hours and 12 minutes
+		 */
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
@@ -226,15 +232,6 @@ Took 8 minutes...
 						reference.addNextLevel(new Coord2D(0, sideBump), null);
 						if(BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
 							
-							if(cuboidToBuild.debugFalseIndex >= 0) {
-								System.out.println("ERROR: DEBUG false index: " + cuboidToBuild.debugFalseIndex);
-								System.out.println("ERROR: DEBUG cuboid index that broke: " + cuboidToBuild.debugFalseCuboidIndex);
-								System.out.println("ERROR: DEBUG cuboid rotation that broke: " + cuboidToBuild.debugFalseCuboidRot);
-								
-								for(int i=0; i<cuboidToBuild.debugTopShiftIndex.length; i++) {
-									System.out.println("topShiftIndex at layer " + i + ": " + cuboidToBuild.debugTopShiftIndex[i]);
-								}
-							}
 							
 							if(VERBOSE) {
 								
@@ -256,7 +253,27 @@ Took 8 minutes...
 									
 								}
 							}
-							
+
+							if(cuboidToBuild.debugFalseIndex >= 0) {
+								System.out.println("ERROR: DEBUG false index: " + cuboidToBuild.debugFalseIndex);
+								System.out.println("ERROR: DEBUG cuboid index that broke: " + cuboidToBuild.debugFalseCuboidIndex);
+								System.out.println("ERROR: DEBUG cuboid rotation that broke: " + cuboidToBuild.debugFalseCuboidRot);
+								
+								//for(int i=0; i<cuboidToBuild.debugTopShiftIndex.length; i++) {
+								//	System.out.println("topShiftIndex at layer " + i + ": " + cuboidToBuild.debugTopShiftIndex[i]);
+								//}
+								
+								System.out.println("Debug allowed transitions ring 0 to top:");
+								for(int i=0; i<cuboidToBuild.getNumCellsToFill(); i++) {
+									
+									if(cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i] != -1) {
+										System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i]);
+										
+									}
+								}
+								System.exit(1);
+								
+							}
 						}
 						reference.removeCurrentTopLevel();
 					}

@@ -190,7 +190,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	
 	private int bottomIndex;
 	
-	private SetupAllowed1stAndLastRing setup1stAndLastRing;
+	public SetupAllowed1stAndLastRing setup1stAndLastRing;
 
 	public boolean isCellIoccupied(int i) {
 		int indexArray = i / NUM_BYTES_IN_LONG;
@@ -365,7 +365,17 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		}
 		//End check topBottomShiftMod4:
 		
+		if(prevRingIndex == 0 && nextRingIndex == -1 && ! setup1stAndLastRing.areTopShiftIndexesAllSet(this)) {
 
+			//System.out.println("before setup...");
+			setup1stAndLastRing.getRing0AndTopTransitions(
+					 	new Coord2D(bottomIndex, 2),
+						new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap),
+						new Coord2D(nextIndex, nextRot),
+						this,
+						topBottomShiftIndexLeftMost);
+			//System.out.println("after setup...");
+		}
 		
 		//TODO: Make a last Ring index version of this...
 		if(nextRingIndex == 0 && setup1stAndLastRing.areTopShiftIndexesAllSet(this)) {
@@ -426,6 +436,26 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			if(setup1stAndLastRing.ring0ToRing1Transitions[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)][this.topLeftGroundedIndex] != nextIndex) {
 				//System.out.println("Quick rejection!");
 				return false;
+				
+			}
+		}
+		
+
+		if(setup1stAndLastRing.areTopShiftIndexesAllSet(this)
+				&& ((prevRingIndex == -1 && nextRingIndex == 0) ||  (prevRingIndex == 0 && nextRingIndex == -1))) {
+			
+			//System.out.println("New check");
+			if(setup1stAndLastRing.ring0ToTopTransitions[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)][this.topLeftGroundedIndex] != nextIndex) {
+
+				//System.out.println("New False");
+				//return false;
+				if(debugFalseIndex == -1) {
+					debugFalseIndex = this.currentLayerIndex + 1;
+					debugFalseCuboidIndex = nextIndex;
+					debugFalseCuboidRot = nextRot;
+					
+					//TODO: debug here...
+				}
 			}
 		}
 		
