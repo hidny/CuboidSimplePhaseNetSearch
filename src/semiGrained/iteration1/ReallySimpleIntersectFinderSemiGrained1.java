@@ -270,7 +270,31 @@ Done for 5x15x3
 										System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i]);
 										
 									}
+									
 								}
+								
+								//TODO: maybe cache this result if possible... nah...
+								System.out.println("top/bottom type: " + cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound));
+								
+								cuboidToBuild.setup1stAndLastRing.DEBUG = true;
+								cuboidToBuild.setup1stAndLastRing.setupRing0AndTopTransitions(
+										new Coord2D(cuboidToBuild.getBottomIndex(), 2),
+										cuboidToBuild.debugRing0ToMinus1_1,
+										cuboidToBuild.debugRing0ToMinus1_2,
+										cuboidToBuild,
+										cuboidToBuild.topBottomShiftIndexLeftMost);
+								//TODO TEST
+								
+								System.out.println("Debug allowed transitions ring 0 to top again:");
+								for(int i=0; i<cuboidToBuild.getNumCellsToFill(); i++) {
+									
+									if(cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i] != -1) {
+										System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i]);
+										
+									}
+									
+								}
+								
 								System.exit(1);
 								
 							}

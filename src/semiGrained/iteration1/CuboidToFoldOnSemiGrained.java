@@ -96,7 +96,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		this.curState = convertBoolArrayToLongs(tmpArray);
 		
 		//Specify 1st ring:
-		if(getIndexToRingIndex(this.bottomIndex) != 0) {
+		if(getIndexToRingIndex(this.getBottomIndex()) != 0) {
 			this.curState = setImpossibleForAnswerSheet();
 		}
 		
@@ -365,16 +365,29 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		}
 		//End check topBottomShiftMod4:
 		
-		if(prevRingIndex == 0 && nextRingIndex == -1 && ! setup1stAndLastRing.areTopShiftIndexesAllSet(this)) {
+		int prev2RingIndex = -1;
+		if(currentLayerIndex > 1) {
+			prev2RingIndex = indexToRing[prevGroundedIndexes[currentLayerIndex - 1]];
+		}
+		//System.out.println(prev2RingIndex + " -> " + prevRingIndex);
+		
+		if(prev2RingIndex == 1 && prevRingIndex == 0 && ! setup1stAndLastRing.areTopShiftIndexesAllSet(this)) {
 
-			//System.out.println("before setup...");
-			setup1stAndLastRing.getRing0AndTopTransitions(
-					 	new Coord2D(bottomIndex, 2),
+			if(this.currentLayerIndex != 2*dimensions[0] + dimensions[2] - 1) {
+				System.out.println("OOPS in areTopShiftIndexesAllSet.");
+				System.exit(1);
+			}
+			//System.out.println("before setup... at layer: " + this.currentLayerIndex);
+			setup1stAndLastRing.setupRing0AndTopTransitions(
+					 	new Coord2D(getBottomIndex(), 2),
 						new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap),
 						new Coord2D(nextIndex, nextRot),
 						this,
 						topBottomShiftIndexLeftMost);
-			//System.out.println("after setup...");
+			//System.out.println("after setup... at layer: " + this.currentLayerIndex);
+			
+			debugRing0ToMinus1_1 = new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap);
+			debugRing0ToMinus1_2 = new Coord2D(nextIndex, nextRot);
 		}
 		
 		//TODO: Make a last Ring index version of this...
@@ -411,7 +424,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			
 			if(setup1stAndLastRing.allowedFirstRingIndexRotations1x1Locations
 					[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)]
-					[bottomIndex]
+					[getBottomIndex()]
 					== false) {
 
 				return false;
@@ -440,9 +453,12 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 			}
 		}
 		
-
+		
 		if(setup1stAndLastRing.areTopShiftIndexesAllSet(this)
-				&& ((prevRingIndex == -1 && nextRingIndex == 0) ||  (prevRingIndex == 0 && nextRingIndex == -1))) {
+				&&((isLayerCompletetelyOnRing0(this.topLeftGroundedIndex) && isLayerMostlyOnTop(nextIndex)) 
+						||  (isLayerMostlyOnTop(this.topLeftGroundedIndex) && isLayerCompletetelyOnRing0(nextIndex))
+					)
+				) {
 			
 			//System.out.println("New check");
 			if(setup1stAndLastRing.ring0ToTopTransitions[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)][this.topLeftGroundedIndex] != nextIndex) {
@@ -472,10 +488,31 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		
 	}
 	
+	public boolean isLayerCompletetelyOnRing0(int index) {
+		return indexToRing[index] == 0 && !partOf1x4onTop(index);
+	}
+
+	public boolean isLayerMostlyOnTop(int index) {
+		return indexToRing[index] == -1 || partOf1x4onTop(index);
+	}
+	
+	public boolean partOf1x4onTop(int index) {
+		if(setup1stAndLastRing.hitLastorRing0Barrier(
+						setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound),
+						index,
+						true)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public static int debugFalseIndex = -1;
 	public static int debugFalseCuboidIndex = -1; //TODO
 	public static int debugFalseCuboidRot = -1; //TODO
 	public static int debugShiftType = -1; //TODO
+	public static Coord2D debugRing0ToMinus1_1 = null;
+	public static Coord2D debugRing0ToMinus1_2 = null;
 	
 	public static int debugTopShiftIndex[];
 	
@@ -496,7 +533,7 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 		currentLayerIndex++;
 		
 		if(currentLayerIndex == 1) {
-			setup1stAndLastRing.getRing1AndRing0Transitions(new Coord2D(bottomIndex, 2), new Coord2D(tmp1, tmp2));
+			setup1stAndLastRing.setupRing1AndRing0Transitions(new Coord2D(getBottomIndex(), 2), new Coord2D(tmp1, tmp2));
 		}
 		
 
@@ -1644,6 +1681,11 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 				this.dimensions[2],
 				labels));
 		
+	}
+
+
+	public int getBottomIndex() {
+		return bottomIndex;
 	}
 	
 	

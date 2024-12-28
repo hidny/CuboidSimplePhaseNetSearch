@@ -163,7 +163,7 @@ public class SetupAllowed1stAndLastRing {
 				
 				Coord2D cur = tryAttachCellInDir(barrier1.i, barrier1.j, RIGHT);
 				
-				while( ! hitBarrier(index_type, cur, isTop)) {
+				while( ! hitLastorRing0Barrier(index_type, cur, isTop)) {
 
 					
 					boolean is1x4SpaceAvailable = isLayer1x4Option(index_type, cur, isTop);
@@ -192,7 +192,7 @@ public class SetupAllowed1stAndLastRing {
 					Coord2D possible1x1IndexRotation = new Coord2D(cur.i, (cur.j + 2) % NUM_ROTATIONS);
 					cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
 					
-					while( ! hitBarrier(index_type, cur, isTop)) {
+					while( ! hitLastorRing0Barrier(index_type, cur, isTop)) {
 						
 						boolean is1x4SpaceAvailable = isLayer1x4Option(index_type, cur.i, cur.j, isTop);
 
@@ -215,7 +215,7 @@ public class SetupAllowed1stAndLastRing {
 						}
 					}
 					
-					if( ! hitBarrier(index_type, possible1x1IndexRotation.i, isTop)) {
+					if( ! hitLastorRing0Barrier(index_type, possible1x1IndexRotation.i, isTop)) {
 						addPossible1x1(index_type, possible1x1IndexRotation);
 					} else {
 						System.out.println("ERROR in setupAllowedFirstAndLastRingIndexRotations1x4: unexpected branching.");
@@ -267,7 +267,7 @@ public class SetupAllowed1stAndLastRing {
 				int numMovements = 0;
 				Coord2D cur1x1 = new Coord2D(start1x1.i, rotations[i]);
 				
-				while( ! hitBarrier(index_type, cur1x1, isTop)) {
+				while( ! hitLastorRing0Barrier(index_type, cur1x1, isTop)) {
 					
 					cur1x1 = tryAttachCellInDir(cur1x1.i, cur1x1.j, LEFT);
 					numMovements++;
@@ -309,8 +309,8 @@ public class SetupAllowed1stAndLastRing {
 			
 			boolean rightMostWorks = true;
 			for(int i=0; i<topRightMostShiftIndex.length; i++) {
-				if(    (i == 1 && hitBarrier(indexType, topRightMostShiftIndex[i],  top))
-				    || (i != 1 && ! hitBarrier(indexType, topRightMostShiftIndex[i],  top))
+				if(    (i == 1 && hitLastorRing0Barrier(indexType, topRightMostShiftIndex[i],  top))
+				    || (i != 1 && ! hitLastorRing0Barrier(indexType, topRightMostShiftIndex[i],  top))
 				){
 					rightMostWorks = false;
 					break;
@@ -323,8 +323,8 @@ public class SetupAllowed1stAndLastRing {
 			
 			boolean leftMostWorks = true;
 			for(int i=0; i<topLeftMostShiftIndex.length; i++) {
-				if(    (i == 1 && hitBarrier(indexType, topLeftMostShiftIndex[i],  top))
-				    || (i != 1 && ! hitBarrier(indexType, topLeftMostShiftIndex[i],  top))
+				if(    (i == 1 && hitLastorRing0Barrier(indexType, topLeftMostShiftIndex[i],  top))
+				    || (i != 1 && ! hitLastorRing0Barrier(indexType, topLeftMostShiftIndex[i],  top))
 				){
 					leftMostWorks = false;
 					break;
@@ -338,8 +338,8 @@ public class SetupAllowed1stAndLastRing {
 			
 			boolean rightMostWorks = true;
 			for(int i=0; i<bottomRightMostShiftIndex.length; i++) {
-				if(    (i == 1 && hitBarrier(indexType, bottomRightMostShiftIndex[i],  top))
-				    || (i != 1 && ! hitBarrier(indexType, bottomRightMostShiftIndex[i],  top))
+				if(    (i == 1 && hitLastorRing0Barrier(indexType, bottomRightMostShiftIndex[i],  top))
+				    || (i != 1 && ! hitLastorRing0Barrier(indexType, bottomRightMostShiftIndex[i],  top))
 				){
 					rightMostWorks = false;
 					break;
@@ -352,8 +352,8 @@ public class SetupAllowed1stAndLastRing {
 			
 			boolean leftMostWorks = true;
 			for(int i=0; i<bottomLeftMostShiftIndex.length; i++) {
-				if(    (i == 1 && hitBarrier(indexType, bottomLeftMostShiftIndex[i],  top))
-				    || (i != 1 && ! hitBarrier(indexType, bottomLeftMostShiftIndex[i],  top))
+				if(    (i == 1 && hitLastorRing0Barrier(indexType, bottomLeftMostShiftIndex[i],  top))
+				    || (i != 1 && ! hitLastorRing0Barrier(indexType, bottomLeftMostShiftIndex[i],  top))
 				){
 					leftMostWorks = false;
 					break;
@@ -375,7 +375,7 @@ public class SetupAllowed1stAndLastRing {
 			if(aboveRing) {
 	
 				for(int i=0; i<topRightMostShiftIndex.length; i++) {
-					if(hitBarrier(indexType, topRightMostShiftIndex[i],  top)) {
+					if(hitLastorRing0Barrier(indexType, topRightMostShiftIndex[i],  top)) {
 						barrier1 = new Coord2D(topRightMostShiftIndex[i], 0);
 						break;
 					}
@@ -385,7 +385,7 @@ public class SetupAllowed1stAndLastRing {
 					
 					for(int i=0; i<topLeftMostShiftIndex.length; i++) {
 						int newI = topLeftMostShiftIndex.length - 1 - i;
-						if(hitBarrier(indexType, topLeftMostShiftIndex[newI],  top)) {
+						if(hitLastorRing0Barrier(indexType, topLeftMostShiftIndex[newI],  top)) {
 							barrier1 = new Coord2D(topLeftMostShiftIndex[newI], 0);
 							break;
 						}
@@ -396,7 +396,7 @@ public class SetupAllowed1stAndLastRing {
 				
 				for(int i=0; i<topLeftMostShiftIndex.length; i++) {
 					int newI = topLeftMostShiftIndex.length - 1 - i;
-					if(hitBarrier(indexType, topLeftMostShiftIndex[newI],  top)) {
+					if(hitLastorRing0Barrier(indexType, topLeftMostShiftIndex[newI],  top)) {
 						barrier1 = new Coord2D(topLeftMostShiftIndex[newI], 0);
 						break;
 					}
@@ -405,7 +405,7 @@ public class SetupAllowed1stAndLastRing {
 				
 				if(barrier1.i == -1) {
 					for(int i=0; i<topRightMostShiftIndex.length; i++) {
-						if(hitBarrier(indexType, topRightMostShiftIndex[i],  top)) {
+						if(hitLastorRing0Barrier(indexType, topRightMostShiftIndex[i],  top)) {
 							barrier1 = new Coord2D(topRightMostShiftIndex[i], 0);
 							break;
 						}
@@ -430,7 +430,7 @@ public class SetupAllowed1stAndLastRing {
 		do {
 			cur = tryAttachCellInDir(cur.i, cur.j, RIGHT);
 			ret++;
-		} while( ! hitBarrier(indexType, cur, top));
+		} while( ! hitLastorRing0Barrier(indexType, cur, top));
 		
 		
 		return ret;
@@ -445,7 +445,7 @@ public class SetupAllowed1stAndLastRing {
 		
 		Coord2D curCoord = leftMostCoord;
 		for(int i=0; i<4; i++) {
-			if(hitBarrier(indexType, curCoord, top)) {
+			if(hitLastorRing0Barrier(indexType, curCoord, top)) {
 				return false;
 			}
 			
@@ -457,8 +457,10 @@ public class SetupAllowed1stAndLastRing {
 	
 	public int ring0ToTopTransitions[][];
 	
+	public static boolean DEBUG = false;
+	
 	//pre: areTopShiftIndexesAllSet is true
-	public void getRing0AndTopTransitions(
+	public void setupRing0AndTopTransitions(
 			Coord2D bottom1x1Index,
 			Coord2D firstRing0Coord,
 			Coord2D firstTopCoord,
@@ -478,18 +480,23 @@ public class SetupAllowed1stAndLastRing {
 		NEXT_INDEX_TYPE:
 		for(int index_type=0; index_type<(int)Math.pow(2, 3); index_type++) {
 			
-
-			Coord2D curIndexRing1 = firstRing0Coord;
+			if(DEBUG) {
+				System.out.println("index_type: " + index_type);
+			}
+			Coord2D curIndexRing0 = firstRing0Coord;
 			Coord2D curIndexTop = firstTopCoord;
 			
 			
-			if(hitBarrier(index_type, bottom1x1Index, IS_TOP)) {
+			if(hitLastorRing0Barrier(index_type, bottom1x1Index, IS_TOP)) {
 				continue;
 			}
+			
+			int debugIt = 0;
 			
 			//TODO: stop infinite loop by breaking as soon as index goes through start...
 			//System.out.println("index_type: " + index_type);
 			do {
+				debugIt++;
 				//System.out.println("index_type: " + index_type);
 				//System.out.println("curIndexTop: " + curIndexTop.i + ", " + curIndexTop.j);
 				//System.out.println("firstTopCoord: " + firstTopCoord.i + ", " + firstTopCoord.j);
@@ -501,13 +508,16 @@ public class SetupAllowed1stAndLastRing {
 				//System.out.println();
 				Coord2D trialCoord = new Coord2D(curIndexTop.i, curIndexTop.j);
 				
+				if(DEBUG) {
+					System.out.println(curIndexTop.i + "," + curIndexTop.j);
+				}
 				boolean goAround = false;
 				boolean cancelItForIndexType = false;
 				for(int i=0; i<4; i++) {
 					
 					trialCoord = tryAttachCellInDir(trialCoord.i, trialCoord.j, RIGHT);
 					
-					if(hitBarrier(index_type, trialCoord, IS_TOP) || this.indexToRing[trialCoord.i] == 1) {
+					if(hitTopBottomBarrier(index_type, trialCoord, IS_TOP) || this.indexToRing[trialCoord.i] >= 1) {
 						goAround = true;
 						
 						if(i != 4 - 1) {
@@ -517,6 +527,9 @@ public class SetupAllowed1stAndLastRing {
 					}
 				}
 				if(cancelItForIndexType) {
+					if(DEBUG) {
+						System.out.println();
+					}
 					for(int j=0; j<ring0ToTopTransitions[0].length; j++) {
 						ring0ToTopTransitions[index_type][j] = -1;
 					}
@@ -528,24 +541,32 @@ public class SetupAllowed1stAndLastRing {
 					
 					if(leftMostIndex == topLeftMostShiftIndex[0]) {
 						if(curIndexTop.j == 2) {
-							curIndexTop = new Coord2D(topLeftMostShiftIndex[2], 1);
+							curIndexTop = new Coord2D(topLeftMostShiftIndex[2], 3);
 						} else {
-							
+							//1 - > 3...
 							curIndexTop = new Coord2D(topRightMostShiftIndex[2], 1);
 							
 						}
 					} else {
 						if(curIndexTop.j == 2) {
-							curIndexTop = new Coord2D(topLeftMostShiftIndex[0], 1);
+							curIndexTop = new Coord2D(topLeftMostShiftIndex[0], 3);
 						} else {
 							
-							curIndexTop = new Coord2D(topRightMostShiftIndex[0], 1);
+							curIndexTop = new Coord2D(topRightMostShiftIndex[0], 3);
 							
 						}
 					}
 					
-					if(hitBarrier(index_type, curIndexTop, IS_TOP)) {
+					if(hitTopBottomBarrier(index_type, curIndexTop, IS_TOP)) {
+						
 						curIndexTop = tryAttachCellInDir(curIndexTop.i, curIndexTop.j, RIGHT);
+						
+					}
+					
+					if(indexToRing[tryAttachCellInDir(curIndexTop.i, curIndexTop.j, RIGHT).i] == 1) {
+						System.out.println("Doh! Messed up the algo...");
+						System.exit(1);
+						
 					}
 					
 					//get top left index[0]
@@ -554,37 +575,41 @@ public class SetupAllowed1stAndLastRing {
 					curIndexTop = trialCoord;
 				}
 				
-				
-				if(curIndexRing1.i == bottom1x1Index.i) {
-
-					//Move from 1x1 square to 1x4 rectangle if we land on the 1x1 cell iteration:
-					
-					do {
-						
-						curIndexRing1 = tryAttachCellInDir(curIndexRing1.i, curIndexRing1.j, RIGHT);
-						
-					} while(hitBarrier(index_type, curIndexRing1, IS_TOP));
-					
-				}
-				
+			
 				for(int i=0; i<4; i++) {
-					curIndexRing1 = tryAttachCellInDir(curIndexRing1.i, curIndexRing1.j, RIGHT);
+					curIndexRing0 = tryAttachCellInDir(curIndexRing0.i, curIndexRing0.j, RIGHT);
 					
-					while(hitBarrier(index_type, curIndexRing1, IS_TOP)) {
-						curIndexRing1 = tryAttachCellInDir(curIndexRing1.i, curIndexRing1.j, RIGHT);
+					
+					while(hitLastorRing0Barrier(index_type, curIndexRing0, IS_TOP) || curIndexRing0.i == bottom1x1Index.i) {
+						curIndexRing0 = tryAttachCellInDir(curIndexRing0.i, curIndexRing0.j, RIGHT);
+					}
+					
+					if(i == 0 && curIndexRing0.i == bottom1x1Index.i) {
+						//Move to 1x1 square from 1x4 rectangle if we land on the 1x1 cell iteration:
+						break;
 					}
 				}
 				
 				
-				setForcedTransition(ring0ToTopTransitions, index_type, curIndexRing1, curIndexTop);
 				
-			} while(curIndexTop.i != firstTopCoord.i);
+				setForcedTransition(ring0ToTopTransitions, index_type, curIndexRing0, curIndexTop);
+				
+				if(debugIt == 1000) {
+					System.out.println("DEBUG!");
+				}
+				
+			} while(curIndexTop.i != firstTopCoord.i && debugIt < 10000);
+			
+			if(debugIt == 1000) {
+				System.out.println("DOH!");
+				System.exit(1);
+			}
 		}
 	}
 	
 	public int ring0ToRing1Transitions[][];
 	
-	public void getRing1AndRing0Transitions(Coord2D bottom1x1Index, Coord2D firstRing1Coord) {
+	public void setupRing1AndRing0Transitions(Coord2D bottom1x1Index, Coord2D firstRing1Coord) {
 		
 		ring0ToRing1Transitions = new int[((int)Math.pow(2, 3))][getNumCellsToFill()];
 		for(int i=0; i<ring0ToRing1Transitions.length; i++) {
@@ -605,7 +630,7 @@ public class SetupAllowed1stAndLastRing {
 			Coord2D curIndexRing0 = bottom1x1Index;
 			
 			
-			if(hitBarrier(index_type, bottom1x1Index, IS_TOP)) {
+			if(hitLastorRing0Barrier(index_type, bottom1x1Index, IS_TOP)) {
 				continue;
 			}
 			
@@ -626,14 +651,14 @@ public class SetupAllowed1stAndLastRing {
 						
 						curIndexRing0 = tryAttachCellInDir(curIndexRing0.i, curIndexRing0.j, RIGHT);
 						
-					} while(hitBarrier(index_type, curIndexRing0, IS_TOP));
+					} while(hitLastorRing0Barrier(index_type, curIndexRing0, IS_TOP));
 					
 				} else {
 					
 					for(int i=0; i<4; i++) {
 						curIndexRing0 = tryAttachCellInDir(curIndexRing0.i, curIndexRing0.j, RIGHT);
 						
-						while(hitBarrier(index_type, curIndexRing0, IS_TOP)) {
+						while(hitLastorRing0Barrier(index_type, curIndexRing0, IS_TOP)) {
 							curIndexRing0 = tryAttachCellInDir(curIndexRing0.i, curIndexRing0.j, RIGHT);
 						}
 					}
@@ -655,11 +680,55 @@ public class SetupAllowed1stAndLastRing {
 		transitionArray[index_type][toReversed.i] = fromReversed.i;
 	}
 	
-	public boolean hitBarrier(int index_type, Coord2D coord, boolean top) {
-		return hitBarrier(index_type, coord.i, top);
+	public boolean hitTopBottomBarrier(int index_type, Coord2D coord, boolean top) {
+		return hitTopBottomBarrier(index_type, coord.i, top);
+	}
+	public boolean hitTopBottomBarrier(int index_type, int index, boolean top) {
+
+		if(top) {
+			for(int i=0; i<topLeftMostShiftIndex.length; i++) {
+				
+				int newi = topLeftMostShiftIndex.length - 1 - i;
+				
+				if(index == topLeftMostShiftIndex[i] && ((~index_type) & (1 << newi)) == 0) {
+					return true;
+				}
+			}
+			
+			for(int i=0; i<topRightMostShiftIndex.length; i++) {
+				
+				int newi = topLeftMostShiftIndex.length - 1 - i;
+				if(index == topRightMostShiftIndex[i] && (index_type & (1 << newi)) == 0) {
+					return true;
+				}
+			}
+		} else {
+			
+			//TODO: I don't think I tested this at all:
+			for(int i=0; i<bottomLeftMostShiftIndex.length; i++) {
+				
+				int newi = topLeftMostShiftIndex.length - 1 - i;
+				if(index == bottomLeftMostShiftIndex[i] && ((~index_type) & (1 << newi)) == 0) {
+					return true;
+				}
+			}
+
+			for(int i=0; i<bottomRightMostShiftIndex.length; i++) {
+				
+				int newi = topLeftMostShiftIndex.length - 1 - i;
+				if(index == bottomRightMostShiftIndex[i] && (index_type & (1 << newi)) == 0) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
-	public boolean hitBarrier(int index_type, int index, boolean top) {
+	public boolean hitLastorRing0Barrier(int index_type, Coord2D coord, boolean top) {
+		return hitLastorRing0Barrier(index_type, coord.i, top);
+	}
+	
+	public boolean hitLastorRing0Barrier(int index_type, int index, boolean top) {
 		
 		if(top) {
 			for(int i=0; i<topLeftMostShiftIndex.length; i++) {
@@ -742,7 +811,7 @@ public class SetupAllowed1stAndLastRing {
 			if(indexRot[i][rotation] == false) {
 				labelSoFar = "00";
 			}
-			if(hitBarrier(index_type, i, true)) {
+			if(hitLastorRing0Barrier(index_type, i, true)) {
 				labelSoFar = "XX";
 			}
 			
@@ -769,7 +838,7 @@ public class SetupAllowed1stAndLastRing {
 			if(index[i] == false) {
 				labelSoFar = "00";
 			}
-			if(hitBarrier(index_type, i, true)) {
+			if(hitLastorRing0Barrier(index_type, i, true)) {
 				labelSoFar = "XX";
 			}
 			
