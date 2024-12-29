@@ -79,8 +79,10 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 		return dimensions;
 	}
 
-	public void initializeNewBottomIndexAndRotation(int bottomIndex, int bottomRotationRelativeFlatMap) {
+	public void initializeNewBottomAndTopIndexAndRotation(int bottomIndex, int bottomRotationRelativeFlatMap, int topIndex) {
 		
+		
+		this.topIndex = topIndex;
 		
 		this.bottomIndex = bottomIndex;
 		this.topLeftGroundedIndex = bottomIndex;
@@ -190,6 +192,7 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 	private int ringMod4Lookup[][];
 	
 	private int bottomIndex;
+	private int topIndex;
 	
 	public SetupAllowed1stAndLastRing2 setup1stAndLastRing;
 
@@ -1247,6 +1250,20 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 		
 	}
 
+	public int[] getListOfPotentialTops() {
+		int ret[] = new int[2*(dimensions[1] + dimensions[2])];
+		
+		int curIndex = 0;
+		for(int i=0; i<this.getNumCellsToFill(); i++) {
+			if(indexToRing[i] == dimensions[0] - 1) {
+				ret[curIndex] = i;
+				curIndex++;
+			}
+		}
+		
+		return ret;
+	}
+	
 	//TODO: Why did you hard-code this?
 	public static int[] getOtherWidthsToConsider() {
 		//TODO: make this malleable:
@@ -1486,9 +1503,10 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 				false
 				);
 		
-		toPrint.initializeNewBottomIndexAndRotation(
+		toPrint.initializeNewBottomAndTopIndexAndRotation(
 				this.prevGroundedIndexes[0],
-				this.prevGroundedRotations[0]
+				this.prevGroundedRotations[0],
+				-1
 				);
 		
 		String labels[] = new String[Utils.getTotalArea(toPrint.dimensions)];

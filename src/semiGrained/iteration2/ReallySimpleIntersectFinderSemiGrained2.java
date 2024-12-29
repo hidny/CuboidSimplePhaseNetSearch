@@ -170,6 +170,8 @@ Done for 5x15x3
 			return;
 		}
 		
+		int listOfPotentialTops[] = cuboidToBuild.getListOfPotentialTops();
+		
 		int NofNx1x1Cuboid = getNumLayers(cuboidToBuild);
 
 		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(NofNx1x1Cuboid);
@@ -196,8 +198,11 @@ Done for 5x15x3
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
-			cuboidToBuild = new CuboidToFoldOnSemiGrained2(a, b, c);
-			cuboidToBuild.initializeNewBottomIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation);
+			for(int j=0; j<listOfPotentialTops.length; j++) {
+				cuboidToBuild = new CuboidToFoldOnSemiGrained2(a, b, c);
+				cuboidToBuild.initializeNewBottomAndTopIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation, listOfPotentialTops[j]);
+			}
+			
 			
 			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
 			
@@ -225,13 +230,13 @@ Done for 5x15x3
 	public static long debugIt = 0;
 	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnSemiGrained2 cuboidToBuild, int layerIndex, int numLayers) {
 
-		
 		debugIt++;
-		
+
 		if(debugIt % 100000000L == 0) {
 			System.out.println("Debug print current state of search:");
 			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
 		}
+
 		long ret = 0;
 		
 		//cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
