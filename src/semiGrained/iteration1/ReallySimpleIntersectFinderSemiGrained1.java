@@ -20,8 +20,8 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 		
 		
 		//reallySimpleSearch(8, 3, 3);
-		reallySimpleSearch(4, 15, 3);
-		//reallySimpleSearch(5, 15, 3);
+		//reallySimpleSearch(4, 15, 3);
+		reallySimpleSearch(6, 15, 3);
 		//reallySimpleSearch(4, 7, 3);
 		
 		//Found 0 unique solution.
@@ -144,6 +144,12 @@ Found 231 unique solution.
 Done for 4x15x3
 
 3 minutes and 5 seconds
+		 */
+		/*
+		 * Done using the 2nd iteration (using pre-computed long arrays)
+Found 2092 unique solution.
+Done for 5x15x3
+53 minutes.
 		 */
 	}
 	
