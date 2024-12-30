@@ -640,6 +640,65 @@ public class SetupAllowed1stAndLastRing2 {
 		}
 	}
 	
+
+	public int ringSecondLastToLastRingTransitions[][];
+	
+	//pre: secondLastRingIndex goes to lastRingIndex
+	public void setupRingSecondLastAndRingLastTransitions(Coord2D secondLastRingIndex, Coord2D lastRingIndex, int topIndex) {
+		
+		ringSecondLastToLastRingTransitions = new int[((int)Math.pow(2, 3))][getNumCellsToFill()];
+		for(int i=0; i<ringSecondLastToLastRingTransitions.length; i++) {
+			for(int j=0; j<ringSecondLastToLastRingTransitions[0].length; j++) {
+				ringSecondLastToLastRingTransitions[i][j] = -1;
+			}
+		}
+		
+		
+		boolean IS_TOP = false;
+		
+		for(int index_type=0; index_type<(int)Math.pow(2, 3); index_type++) {
+			
+
+			Coord2D curIndexRingSecondLast = secondLastRingIndex;
+			Coord2D curIndexRingLast = lastRingIndex;
+
+			setForcedTransition(ringSecondLastToLastRingTransitions, index_type, curIndexRingSecondLast, curIndexRingLast);
+					
+			do {
+				
+				for(int i=0; i<4; i++) {
+					curIndexRingSecondLast = tryAttachCellInDir(curIndexRingSecondLast.i, curIndexRingSecondLast.j, RIGHT);
+				}
+				
+				if(lastRingIndex.i == topIndex) {
+
+					//Move from 1x1 square to 1x4 rectangle in the first iteration:
+					
+					do {
+						
+						curIndexRingLast = tryAttachCellInDir(curIndexRingLast.i, curIndexRingLast.j, RIGHT);
+						
+					} while(hitLastorRing0Barrier(index_type, curIndexRingLast, IS_TOP));
+					
+				} else {
+					
+					for(int i=0; i<4; i++) {
+						curIndexRingLast = tryAttachCellInDir(curIndexRingLast.i, curIndexRingLast.j, RIGHT);
+						
+						while(hitLastorRing0Barrier(index_type, curIndexRingLast, IS_TOP)) {
+							curIndexRingLast = tryAttachCellInDir(curIndexRingLast.i, curIndexRingLast.j, RIGHT);
+						}
+					}
+				}
+				
+				setForcedTransition(ringSecondLastToLastRingTransitions, index_type, curIndexRingSecondLast, curIndexRingLast);
+				
+				
+			} while(curIndexRingSecondLast.i != secondLastRingIndex.i);
+		}
+	}
+	
+	
 	private void setForcedTransition(int transitionArray[][], int index_type, Coord2D from, Coord2D to) {
 		
 		transitionArray[index_type][from.i] = to.i;

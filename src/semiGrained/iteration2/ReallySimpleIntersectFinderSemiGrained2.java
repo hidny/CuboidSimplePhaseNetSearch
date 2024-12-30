@@ -22,7 +22,7 @@ public class ReallySimpleIntersectFinderSemiGrained2 {
 		
 		//reallySimpleSearch(8, 3, 3);
 		//reallySimpleSearch(4, 15, 3);
-		reallySimpleSearch(6, 15, 3);
+		reallySimpleSearch(3, 15, 3);
 		//reallySimpleSearch(4, 7, 3);
 		
 		//Found 0 unique solution.
@@ -171,7 +171,13 @@ Done for 5x15x3
 		}
 		
 		int listOfPotentialTops[] = cuboidToBuild.getListOfPotentialTops();
-		
+		System.out.println("potential tops:");
+		for(int j=0; j<listOfPotentialTops.length; j++) {
+			System.out.println(listOfPotentialTops[j]);
+			
+		}
+		//System.exit(1);
+
 		int NofNx1x1Cuboid = getNumLayers(cuboidToBuild);
 
 		Nx1x1CuboidToFold reference = new Nx1x1CuboidToFold(NofNx1x1Cuboid);
@@ -199,12 +205,15 @@ Done for 5x15x3
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
 			for(int j=0; j<listOfPotentialTops.length; j++) {
+				
 				cuboidToBuild = new CuboidToFoldOnSemiGrained2(a, b, c);
+				System.out.println("top index set todo: " + listOfPotentialTops[j]);
 				cuboidToBuild.initializeNewBottomAndTopIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation, listOfPotentialTops[j]);
+
+				ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
 			}
 			
 			
-			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
 			
 			System.out.println("Done with trying to intersect 2nd cuboid that has a start index of " + otherCuboidStartIndex + " and a rotation index of " + otherCuboidStartRotation +".");
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
@@ -274,14 +283,29 @@ Done for 5x15x3
 								}
 							}
 
-							if(cuboidToBuild.debugFalseIndex >= 0) {
+							int topIndexCell = -1;
+							for(int j=0; j<cuboidToBuild.getNumCellsToFill(); j++) {
+								if ( ! cuboidToBuild.isCellIndexoccupied(j)) {
+									System.out.println("Top index/cell unoccupied: " + j);
+									topIndexCell = j;
+								}
+							}
+							
+							if(cuboidToBuild.debugFalseIndex >= 0 && topIndexCell == cuboidToBuild.getTopIndexAssumed()) {
+								
+								
 								System.out.println("ERROR: DEBUG false index: " + cuboidToBuild.debugFalseIndex);
 								System.out.println("ERROR: DEBUG cuboid index that broke: " + cuboidToBuild.debugFalseCuboidIndex);
 								System.out.println("ERROR: DEBUG cuboid rotation that broke: " + cuboidToBuild.debugFalseCuboidRot);
 								
+								System.out.println("top index set: " + cuboidToBuild.getTopIndexAssumed());
+								
 								//for(int i=0; i<cuboidToBuild.debugTopShiftIndex.length; i++) {
 								//	System.out.println("topShiftIndex at layer " + i + ": " + cuboidToBuild.debugTopShiftIndex[i]);
 								//}
+								for(int i=0; i<cuboidToBuild.debugBottomShiftIndex.length; i++) {
+									System.out.println("BottomShiftIndex at layer " + i + ": " + cuboidToBuild.debugTopShiftIndex[i]);
+								}
 								
 								System.out.println("Debug allowed transitions ring 0 to top:");
 								for(int i=0; i<cuboidToBuild.getNumCellsToFill(); i++) {

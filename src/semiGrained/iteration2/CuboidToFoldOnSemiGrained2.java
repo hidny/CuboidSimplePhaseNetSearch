@@ -60,6 +60,7 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 		}
 		
 		debugTopShiftIndex = new int[DIM_N_OF_Nx1x1 + 1];
+		debugBottomShiftIndex = new int[DIM_N_OF_Nx1x1 + 1];
 	}
 	
 	private TopAndBottomTransitionHandler topAndBottomHandler = new TopAndBottomTransitionHandler();
@@ -194,15 +195,12 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 	private int bottomIndex;
 	private int topIndex;
 	
+	public int getTopIndexAssumed() {
+		return topIndex;
+	}
+
 	public SetupAllowed1stAndLastRing2 setup1stAndLastRing;
 
-	public boolean isCellIoccupied(int i) {
-		int indexArray = i / NUM_BYTES_IN_LONG;
-		int bitShift = (NUM_BYTES_IN_LONG - 1) - i - indexArray * NUM_BYTES_IN_LONG;
-		
-		return ((1L << bitShift) & this.curState[indexArray]) != 0L;
-	}
-	
 	
 	public static int getAltNextRingIndexForHeight(int currentLayerIndex, int height) {
 		
@@ -389,6 +387,15 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 						topBottomShiftIndexLeftMost);
 			debugRing0ToMinus1_1 = new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap);
 			debugRing0ToMinus1_2 = new Coord2D(nextIndex, nextRot);
+		
+		}
+		
+		 if(prev2RingIndex == dimensions[0] - 2 && prevRingIndex == dimensions[0] - 1 && ! setup1stAndLastRing.areBottomShiftIndexesAllSet(this)) {
+			
+			setup1stAndLastRing.setupRingSecondLastAndRingLastTransitions(
+					new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap),
+					new Coord2D(nextIndex, nextRot),
+					this.topIndex);
 		}
 		
 		//TODO: Make a last Ring index version of this...
@@ -452,6 +459,23 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 				return false;
 				
 			}
+		} else if(setup1stAndLastRing.areBottomShiftIndexesAllSet(this)
+				&& ((nextRingIndex == this.dimensions[0]-1 && prevRingIndex == this.dimensions[0]-2) || (nextRingIndex == this.dimensions[0]-2 && prevRingIndex == this.dimensions[0]-1))
+			) {
+			if(setup1stAndLastRing.ringSecondLastToLastRingTransitions[setup1stAndLastRing.getBottomShiftType(topBottomShiftMod4FromPrevRound)][this.topLeftGroundedIndex] != nextIndex) {
+				//System.out.println("Quick rejection!");
+				//return false;
+				
+				//System.out.println("New False");
+				if(debugFalseIndex == -1) {
+					debugFalseIndex = this.currentLayerIndex + 1;
+					debugFalseCuboidIndex = nextIndex;
+					debugFalseCuboidRot = nextRot;
+					debugShiftType = setup1stAndLastRing.getBottomShiftType(topBottomShiftMod4FromPrevRound);
+					
+				}
+				
+			}
 		}
 		
 		
@@ -501,6 +525,7 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 		}
 		
 		debugTopShiftIndex[this.currentLayerIndex] = setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound);
+		debugBottomShiftIndex[this.currentLayerIndex] = setup1stAndLastRing.getBottomShiftType(topBottomShiftMod4FromPrevRound);
 		
 		//TODO: (again) Make a last Ring index version of this...
 		/*if(setup1stAndLastRing.areBottomShiftIndexesAllSet(this)) {
@@ -540,6 +565,7 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
     public static Coord2D debugRing0ToMinus1_2 = null;
 	
 	public static int debugTopShiftIndex[];
+	public static int debugBottomShiftIndex[];
 	
 	
 	public void addNewLayerFast(int sideBump) {
@@ -672,6 +698,7 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 		
 		return collisionNumber != 0;
 	}
+	
 	
 	int ROTATION_AGAINST_GRAIN = 1;
 	
@@ -1366,6 +1393,14 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 		
 		return ret;
 	}
+	
+	public boolean isCellIndexoccupied(int i) {
+		int indexArray = i / NUM_BYTES_IN_LONG;
+		int bitShift = (NUM_BYTES_IN_LONG - 1) - i - indexArray * NUM_BYTES_IN_LONG;
+		
+		return ((1L << bitShift) & this.curState[indexArray]) != 0L;
+	}
+	
 	
 	private static long[] setImpossibleForAnswerSheet() {
 		
