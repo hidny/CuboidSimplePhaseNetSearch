@@ -465,16 +465,16 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 			) {
 			if(setup1stAndLastRing.ringSecondLastToLastRingTransitions[setup1stAndLastRing.getBottomShiftType(topBottomShiftMod4FromPrevRound)][this.topLeftGroundedIndex] != nextIndex) {
 				//System.out.println("Quick rejection!");
-				//return false;
+				return false;
 				
 				//System.out.println("New False");
-				if(debugFalseIndex == -1) {
+				/*if(debugFalseIndex == -1) {
 					debugFalseIndex = this.currentLayerIndex + 1;
 					debugFalseCuboidIndex = nextIndex;
 					debugFalseCuboidRot = nextRot;
 					debugShiftType = setup1stAndLastRing.getBottomShiftType(topBottomShiftMod4FromPrevRound);
 					
-				}
+				}*/
 				
 			}
 		}
