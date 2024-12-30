@@ -283,66 +283,99 @@ Done for 5x15x3
 								}
 							}
 
-							int topIndexCell = -1;
-							for(int j=0; j<cuboidToBuild.getNumCellsToFill(); j++) {
-								if ( ! cuboidToBuild.isCellIndexoccupied(j)) {
-									System.out.println("Top index/cell unoccupied: " + j);
-									topIndexCell = j;
-								}
-							}
-							
-							if(cuboidToBuild.debugFalseIndex >= 0 && topIndexCell == cuboidToBuild.getTopIndexAssumed()) {
-								
-								
-								System.out.println("ERROR: DEBUG false index: " + cuboidToBuild.debugFalseIndex);
-								System.out.println("ERROR: DEBUG cuboid index that broke: " + cuboidToBuild.debugFalseCuboidIndex);
-								System.out.println("ERROR: DEBUG cuboid rotation that broke: " + cuboidToBuild.debugFalseCuboidRot);
-								
-								System.out.println("top index set: " + cuboidToBuild.getTopIndexAssumed());
-								
-								//for(int i=0; i<cuboidToBuild.debugTopShiftIndex.length; i++) {
-								//	System.out.println("topShiftIndex at layer " + i + ": " + cuboidToBuild.debugTopShiftIndex[i]);
-								//}
-								for(int i=0; i<cuboidToBuild.debugBottomShiftIndex.length; i++) {
-									System.out.println("BottomShiftIndex at layer " + i + ": " + cuboidToBuild.debugTopShiftIndex[i]);
-								}
-								
-								System.out.println("Debug allowed transitions ring 0 to top:");
-								for(int i=0; i<cuboidToBuild.getNumCellsToFill(); i++) {
-									
-									if(cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i] != -1) {
-										System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i]);
-										
-									}
-									
-								}
-								
-								//TODO: maybe cache this result if possible... nah...
-								System.out.println("top/bottom type: " + cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound));
-								
-								cuboidToBuild.setup1stAndLastRing.DEBUG = true;
-								cuboidToBuild.setup1stAndLastRing.setupRing0AndTopTransitions(
-										new Coord2D(cuboidToBuild.getBottomIndex(), 2),
-										cuboidToBuild.debugRing0ToMinus1_1,
-										cuboidToBuild.debugRing0ToMinus1_2,
-										cuboidToBuild,
-										cuboidToBuild.topBottomShiftIndexLeftMost);
-								//TODO TEST
-								
-								System.out.println("Debug allowed transitions ring 0 to top again:");
-								for(int i=0; i<cuboidToBuild.getNumCellsToFill(); i++) {
-									
-									if(cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i] != -1) {
-										System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i]);
-										
-									}
-									
-								}
-								
-								System.exit(1);
-								
+						}
+						
+
+						int topIndexCell = -1;
+						for(int j=0; j<cuboidToBuild.getNumCellsToFill(); j++) {
+							if ( ! cuboidToBuild.isCellIndexoccupied(j)) {
+								System.out.println("Top index/cell unoccupied: " + j);
+								topIndexCell = j;
 							}
 						}
+
+						//SANITY TEST
+						if(cuboidToBuild.debugFalseIndex >= 0 && topIndexCell == cuboidToBuild.getTopIndexAssumed()) {
+							
+							System.out.println("Net in question:");
+							cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+
+							System.out.println(reference.toString());
+							
+							System.out.println("ERROR: DEBUG false index: " + cuboidToBuild.debugFalseIndex);
+							System.out.println("ERROR: DEBUG cuboid index that broke: " + cuboidToBuild.debugFalseCuboidIndex);
+							System.out.println("ERROR: DEBUG cuboid rotation that broke: " + cuboidToBuild.debugFalseCuboidRot);
+							
+							System.out.println("top index set: " + cuboidToBuild.getTopIndexAssumed());
+							
+							//for(int i=0; i<cuboidToBuild.debugTopShiftIndex.length; i++) {
+							//	System.out.println("topShiftIndex at layer " + i + ": " + cuboidToBuild.debugTopShiftIndex[i]);
+							//}
+							for(int i=0; i<cuboidToBuild.debugBottomShiftIndex.length; i++) {
+								System.out.println("BottomShiftIndex at layer " + i + ": " + cuboidToBuild.debugTopShiftIndex[i]);
+							}
+							
+							/*System.out.println("Debug allowed transitions ring 0 to top:");
+							for(int i=0; i<cuboidToBuild.getNumCellsToFill(); i++) {
+								
+								if(cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i] != -1) {
+									System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i]);
+									
+								}
+								
+							}*/
+							
+							//TODO: maybe cache this result if possible... nah...
+							//System.out.println("top/bottom type: " + cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound));
+							
+							cuboidToBuild.setup1stAndLastRing.DEBUG = true;
+							/*cuboidToBuild.setup1stAndLastRing.setupRing0AndTopTransitions(
+									new Coord2D(cuboidToBuild.getBottomIndex(), 2),
+									cuboidToBuild.debugRing0ToMinus1_1,
+									cuboidToBuild.debugRing0ToMinus1_2,
+									cuboidToBuild,
+									cuboidToBuild.topBottomShiftIndexLeftMost);
+							*/
+							//TODO TEST
+							
+							/*System.out.println("Debug allowed transitions ring 0 to top again:");
+							for(int i=0; i<cuboidToBuild.getNumCellsToFill(); i++) {
+								
+								if(cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i] != -1) {
+									System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i]);
+									
+								}
+								
+							}*/
+							System.out.println("Debug allowed transitions ring second last to last:");
+							for(int i=0; i<cuboidToBuild.getNumCellsToFill(); i++) {
+								
+								if( cuboidToBuild.getIndexToRing()[i] ==   cuboidToBuild.getDimensions()[0] - 2
+                                                                  && cuboidToBuild.setup1stAndLastRing.ringSecondLastToLastRingTransitions[cuboidToBuild.setup1stAndLastRing.getBottomShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i] != -1) {
+									System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ringSecondLastToLastRingTransitions[cuboidToBuild.setup1stAndLastRing.getBottomShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i]);
+									
+								}
+								
+							}
+							
+							System.out.println("");
+							System.out.println("Transition list 2:");
+							for(int i=0; i<cuboidToBuild.getNumCellsToFill(); i++) {
+								
+								if( cuboidToBuild.getIndexToRing()[i] ==   cuboidToBuild.getDimensions()[0] - 1
+                                                                  && cuboidToBuild.setup1stAndLastRing.ringSecondLastToLastRingTransitions[cuboidToBuild.setup1stAndLastRing.getBottomShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i] != -1) {
+									System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ringSecondLastToLastRingTransitions[cuboidToBuild.setup1stAndLastRing.getBottomShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i]);
+									
+								}
+								
+							}
+							
+							System.exit(1);
+							
+						}
+
+						//END SANITY TEST
+						
 						reference.removeCurrentTopLevel();
 					}
 				}

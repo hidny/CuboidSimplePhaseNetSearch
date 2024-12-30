@@ -389,8 +389,9 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 			debugRing0ToMinus1_2 = new Coord2D(nextIndex, nextRot);
 		
 		}
+
 		
-		 if(prev2RingIndex == dimensions[0] - 2 && prevRingIndex == dimensions[0] - 1 && ! setup1stAndLastRing.areBottomShiftIndexesAllSet(this)) {
+		if(prevRingIndex == dimensions[0] - 2 && nextRingIndex == dimensions[0] - 1 && ! setup1stAndLastRing.areBottomShiftIndexesAllSet(this)) {
 			
 			setup1stAndLastRing.setupRingSecondLastAndRingLastTransitions(
 					new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap),
