@@ -22,8 +22,9 @@ public class ReallySimpleIntersectFinderSemiGrained2 {
 		
 		//reallySimpleSearch(8, 3, 3);
 		//reallySimpleSearch(4, 15, 3);
-		reallySimpleSearch(5, 15, 3);
+		//reallySimpleSearch(5, 15, 3);
 		//reallySimpleSearch(4, 7, 3);
+		reallySimpleSearch(7, 51, 3);
 		
 		//Found 0 unique solution.
 		//Done for 1x3x3
@@ -152,6 +153,22 @@ Found 2092 unique solution.
 Done for 5x15x3
 53 minutes.
 		 */
+		
+		/*
+		 * Done using the 2nd iteration (using pre-computed long arrays)
+Found 2092 unique solution.
+Done for 5x15x3
+
+under 9 minutes...
+		 */
+		
+		/*
+		 * Done using the 2nd iteration (using pre-computed long arrays)
+Found 231 unique solution.
+Done for 4x51x3
+
+After 8 hours and 15 minutes. (I think I could do better!)
+		 */
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
@@ -206,8 +223,8 @@ Done for 5x15x3
 			
 			for(int j=0; j<listOfPotentialTops.length; j++) {
 				
-				cuboidToBuild = new CuboidToFoldOnSemiGrained2(a, b, c);
-				System.out.println("top index set todo: " + listOfPotentialTops[j]);
+				cuboidToBuild = new CuboidToFoldOnSemiGrained2(a, b, c, false, true);
+				//System.out.println("top index set todo: " + listOfPotentialTops[j]);
 				cuboidToBuild.initializeNewBottomAndTopIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation, listOfPotentialTops[j]);
 
 				ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);

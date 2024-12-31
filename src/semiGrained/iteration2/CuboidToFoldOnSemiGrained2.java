@@ -56,7 +56,7 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 			this.topAndBottomHandler = new TopAndBottomTransitionHandler();
 		
 			forcedRepetition = new int[DIM_N_OF_Nx1x1 + 2];
-			initializeForcedRepetition();
+			initializeForcedRepetition(verbose);
 		}
 		
 		debugTopShiftIndex = new int[DIM_N_OF_Nx1x1 + 1];
@@ -711,7 +711,7 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 		for(int i=0; i<indexToRing.length; i++) {
 			indexToRing[i] = getIndexToRingIndex(i);
 			
-			System.out.println("Cell " + i + ": " + indexToRing[i]);
+			//System.out.println("Cell " + i + ": " + indexToRing[i]);
 		}
 
 		answerSheet = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][numLongsToUse];
@@ -856,9 +856,9 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 			//System.out.println();
 		}
 		
-		System.out.println("???");
+		//System.out.println("???");
 		
-		System.out.println("locations:");
+		//System.out.println("locations:");
 		
 		
 		topBottomShiftIndexLeftMost = new int[this.getNumCellsToFill()][4];
@@ -1301,7 +1301,7 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 		return new int[] {3};
 	}
 	
-	private void initializeForcedRepetition() {
+	private void initializeForcedRepetition(boolean verbose) {
 
 		for (int i = 0; i < forcedRepetition.length; i++) {
 			forcedRepetition[i] = i;
@@ -1329,7 +1329,7 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 					System.exit(1);
 				}
 				int altHeight = ((dimensions[1] + 3) * (dimensions[0] + 3)) / (otherWidthsToConsider[i] + 3) - 3;
-				System.out.println("Alt height: " + altHeight);
+				//System.out.println("Alt height: " + altHeight);
 
 				for (int j = 0; j < forcedRepetition.length; j++) {
 
@@ -1338,9 +1338,11 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 
 					int transitionIndex = Math.min(nextRingIndexAlt, prevRingIndexAlt);
 					
-					System.out.println("j, transitionIndex: (" + j + ", "+ transitionIndex + ")");
-					System.out.println("nextRingIndexAlt, prevRingIndexAlt: (" + nextRingIndexAlt + ", "+ prevRingIndexAlt + ")");
-
+					if(verbose) {
+						System.out.println("j, transitionIndex: (" + j + ", "+ transitionIndex + ")");
+						System.out.println("nextRingIndexAlt, prevRingIndexAlt: (" + nextRingIndexAlt + ", "+ prevRingIndexAlt + ")");
+					}
+					
 					if (transitionIndex > 0
 							&& transitionIndex < altHeight - 2
 							&& forcedRepetition[j] != forcedRepetition[transitionIndex + 1]
@@ -1365,8 +1367,10 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 			// getAltCurRingIndexForHeight(int currentLayerIndex, int height)
 		}
 
-		for (int i = 0; i < forcedRepetition.length; i++) {
-			System.out.println("forcedRepetion[" + i + "] = " + forcedRepetition[i]);
+		if(verbose) {
+			for (int i = 0; i < forcedRepetition.length; i++) {
+				System.out.println("forcedRepetion[" + i + "] = " + forcedRepetition[i]);
+			}
 		}
 
 	}

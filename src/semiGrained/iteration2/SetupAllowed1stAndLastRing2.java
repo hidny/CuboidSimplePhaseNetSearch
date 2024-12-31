@@ -73,17 +73,6 @@ public class SetupAllowed1stAndLastRing2 {
 			}
 		}
 		
-		for(int i=0; i<SIZE; i++) {
-			System.out.println(topLeftMostShiftIndex[i]);
-			System.out.println(bottomLeftMostShiftIndex[i]);
-			System.out.println();
-		}
-
-		for(int i=0; i<SIZE; i++) {
-			System.out.println(topRightMostShiftIndex[i]);
-			System.out.println(bottomRightMostShiftIndex[i]);
-			System.out.println();
-		}
 	}
 	
 	
@@ -182,9 +171,6 @@ public class SetupAllowed1stAndLastRing2 {
 					}
 				}
 				
-				if(index_type == 1 && aboveRing == true) {
-					System.out.println("Debug");
-				}
 				if(getNumCellsBetweenBarrier(index_type, isTop, aboveRing) % 4 == 1) {
 					
 					cur = tryAttachCellInDir(barrier1.i, barrier1.j, RIGHT);
@@ -231,7 +217,7 @@ public class SetupAllowed1stAndLastRing2 {
 			}
 			//TODO: debug
 		
-			System.out.println("index_type: " + index_type);
+			/*System.out.println("index_type: " + index_type);
 			
 			System.out.println("1x1 at clockwise extreme with rotation 0");
 			labelDebugIfTrueAllowedRingIndex(allowedFirstRingIndexRotations1x1Clock[index_type], 0, index_type);
@@ -246,6 +232,7 @@ public class SetupAllowed1stAndLastRing2 {
 			
 			System.out.println("Debug possible 1x1 bottom locations:");
 			labelDebugIfTrueAllowedBottom1x1Index(allowedFirstRingIndexRotations1x1Locations[index_type], index_type);
+			*/
 		}
 		
 		
@@ -729,10 +716,10 @@ public class SetupAllowed1stAndLastRing2 {
 				}
 			}
 			
-			if(debugCount != 9) {
-				System.out.println("DOH " + debugCount);
-				System.exit(1);
-			}
+			//if(debugCount != 9) {
+			//	System.out.println("DOH " + debugCount);
+			//	System.exit(1);
+			//}
 		}
 	}
 	

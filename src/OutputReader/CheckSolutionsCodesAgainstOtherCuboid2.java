@@ -83,7 +83,9 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			
 			//String file1 = "D:\\output_semi_grained_2.txt";
 			
-			String file1 = "D:\\output_semi_grained_9_4x15x3.txt";
+			//String file1 = "D:\\output_semi_grained_9_4x15x3.txt";
+			String file1 = "D:\\output_semi_it2_1.txt";
+			
 			//Good sign:
 			//Number of 3-way solutions so far: 156 (only 156 because the run isn't done yet...)
 			//Number of solutions in file: 156
