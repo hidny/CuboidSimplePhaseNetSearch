@@ -442,6 +442,130 @@ public class SetupAllowed1stAndLastRing2 {
 		return true;
 	}
 	
+	public int ringLastToBottomTransitions[][];
+	
+	//pre: areTopShiftIndexesAllSet is true
+	public void setupLastRingAndBottomTransitions(
+			Coord2D top1x1Index,
+			Coord2D lastRingCoord,
+			Coord2D bottomTopCoord,
+			CuboidToFoldOnSemiGrained2 sg,
+			int topBottomShiftIndexLeftMost[][]) {
+		
+		ringLastToBottomTransitions = new int[((int)Math.pow(2, 3))][getNumCellsToFill()];
+		for(int i=0; i<ringLastToBottomTransitions.length; i++) {
+			for(int j=0; j<ringLastToBottomTransitions[0].length; j++) {
+				ringLastToBottomTransitions[i][j] = -1;
+			}
+		}
+		
+
+		boolean IS_TOP = false;
+		
+		NEXT_INDEX_TYPE:
+		for(int index_type=0; index_type<(int)Math.pow(2, 3); index_type++) {
+			
+			//if(DEBUG) {
+			//	System.out.println("index_type bottom: " + index_type);
+			//}
+			Coord2D curIndexLastRing = lastRingCoord;
+			Coord2D curIndexBottom = bottomTopCoord;
+			
+			
+			if(hitLastorRing0Barrier(index_type, top1x1Index, IS_TOP)) {
+				continue;
+			}
+			
+			do {
+				
+				Coord2D trialCoord = new Coord2D(curIndexBottom.i, curIndexBottom.j);
+				
+				//if(DEBUG) {
+				//	System.out.println(curIndexBottom.i + "," + curIndexBottom.j);
+				//}
+				boolean goAround = false;
+				boolean cancelItForIndexType = false;
+				for(int i=0; i<4; i++) {
+					
+					trialCoord = tryAttachCellInDir(trialCoord.i, trialCoord.j, RIGHT);
+					
+					//TODO: this.indexToRing[trialCoord.i] <= sg.getDimensions()[0] - 2 will be hard to refactor
+					if(hitTopBottomBarrier(index_type, trialCoord, IS_TOP) || (this.indexToRing[trialCoord.i] >=0 && this.indexToRing[trialCoord.i] <= sg.getDimensions()[0] - 2)) {
+						goAround = true;
+						
+						if(i != 4 - 1) {
+							cancelItForIndexType= true;
+						}
+						break;
+					}
+				}
+				if(cancelItForIndexType) {
+					//if(DEBUG) {
+					//	System.out.println();
+					//}
+					for(int j=0; j<ringLastToBottomTransitions[0].length; j++) {
+						ringLastToBottomTransitions[index_type][j] = -1;
+					}
+					continue NEXT_INDEX_TYPE;
+				}
+				
+				if(goAround) {
+					int leftMostIndex = topBottomShiftIndexLeftMost[curIndexBottom.i][curIndexBottom.j];
+					
+					if(leftMostIndex == bottomLeftMostShiftIndex[0]) {
+						if(curIndexBottom.j == 2) {
+							curIndexBottom = new Coord2D(bottomLeftMostShiftIndex[2], 1);
+						} else {
+							//TODO: 1 - > 3...
+							curIndexBottom = new Coord2D(bottomRightMostShiftIndex[2], 1);
+							
+						}
+					} else {
+						if(curIndexBottom.j == 2) {
+							curIndexBottom = new Coord2D(bottomLeftMostShiftIndex[0], 1);
+						} else {
+							
+							curIndexBottom = new Coord2D(bottomRightMostShiftIndex[0], 1);
+							
+						}
+					}
+					
+					if(hitTopBottomBarrier(index_type, curIndexBottom, IS_TOP)) {
+						
+						curIndexBottom = tryAttachCellInDir(curIndexBottom.i, curIndexBottom.j, RIGHT);
+						
+					}
+					
+					if(indexToRing[tryAttachCellInDir(curIndexBottom.i, curIndexBottom.j, RIGHT).i] == sg.getDimensions()[0] - 2) {
+						System.out.println("Doh! Messed up the algo...");
+						System.exit(1);
+						
+					}
+					
+				} else {
+					curIndexBottom = trialCoord;
+				}
+			
+				for(int i=0; i<4; i++) {
+					curIndexLastRing = tryAttachCellInDir(curIndexLastRing.i, curIndexLastRing.j, RIGHT);
+					
+					
+					while(hitLastorRing0Barrier(index_type, curIndexLastRing, IS_TOP) || curIndexLastRing.i == top1x1Index.i) {
+						curIndexLastRing = tryAttachCellInDir(curIndexLastRing.i, curIndexLastRing.j, RIGHT);
+					}
+					
+				}
+				
+				//System.exit(1);
+				setForcedTransition(ringLastToBottomTransitions, index_type, curIndexLastRing, curIndexBottom);
+				
+			} while(curIndexBottom.i != bottomTopCoord.i);
+			
+		}
+	}
+	
+	//start:
+
 	public int ring0ToTopTransitions[][];
 	
 	public static boolean DEBUG = false;
@@ -467,9 +591,9 @@ public class SetupAllowed1stAndLastRing2 {
 		NEXT_INDEX_TYPE:
 		for(int index_type=0; index_type<(int)Math.pow(2, 3); index_type++) {
 			
-			if(DEBUG) {
-				System.out.println("index_type: " + index_type);
-			}
+			//if(DEBUG) {
+			//	System.out.println("index_type: " + index_type);
+			//}
 			Coord2D curIndexRing0 = firstRing0Coord;
 			Coord2D curIndexTop = firstTopCoord;
 			
@@ -482,9 +606,9 @@ public class SetupAllowed1stAndLastRing2 {
 				
 				Coord2D trialCoord = new Coord2D(curIndexTop.i, curIndexTop.j);
 				
-				if(DEBUG) {
-					System.out.println(curIndexTop.i + "," + curIndexTop.j);
-				}
+				//if(DEBUG) {
+				//	System.out.println(curIndexTop.i + "," + curIndexTop.j);
+				//}
 				boolean goAround = false;
 				boolean cancelItForIndexType = false;
 				for(int i=0; i<4; i++) {
@@ -501,9 +625,9 @@ public class SetupAllowed1stAndLastRing2 {
 					}
 				}
 				if(cancelItForIndexType) {
-					if(DEBUG) {
-						System.out.println();
-					}
+					//if(DEBUG) {
+					//	System.out.println();
+					//}
 					for(int j=0; j<ring0ToTopTransitions[0].length; j++) {
 						ring0ToTopTransitions[index_type][j] = -1;
 					}
@@ -518,7 +642,7 @@ public class SetupAllowed1stAndLastRing2 {
 							curIndexTop = new Coord2D(topLeftMostShiftIndex[2], 3);
 						} else {
 							//1 - > 3...
-							curIndexTop = new Coord2D(topRightMostShiftIndex[2], 1);
+							curIndexTop = new Coord2D(topRightMostShiftIndex[2], 3);
 							
 						}
 					} else {
@@ -563,7 +687,7 @@ public class SetupAllowed1stAndLastRing2 {
 			
 		}
 	}
-	
+	//end
 	public int ring0ToRing1Transitions[][];
 	
 	public void setupRing1AndRing0Transitions(Coord2D bottom1x1Index, Coord2D firstRing1Coord) {
@@ -768,7 +892,7 @@ public class SetupAllowed1stAndLastRing2 {
 			//TODO: I don't think I tested this at all:
 			for(int i=0; i<bottomLeftMostShiftIndex.length; i++) {
 				
-				int newi = topLeftMostShiftIndex.length - 1 - i;
+				int newi = bottomLeftMostShiftIndex.length - 1 - i;
 				if(index == bottomLeftMostShiftIndex[i] && ((~index_type) & (1 << newi)) == 0) {
 					return true;
 				}
@@ -776,7 +900,7 @@ public class SetupAllowed1stAndLastRing2 {
 
 			for(int i=0; i<bottomRightMostShiftIndex.length; i++) {
 				
-				int newi = topLeftMostShiftIndex.length - 1 - i;
+				int newi = bottomRightMostShiftIndex.length - 1 - i;
 				if(index == bottomRightMostShiftIndex[i] && (index_type & (1 << newi)) == 0) {
 					return true;
 				}

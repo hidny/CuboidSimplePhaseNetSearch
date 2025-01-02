@@ -22,9 +22,10 @@ public class ReallySimpleIntersectFinderSemiGrained2 {
 		
 		//reallySimpleSearch(8, 3, 3);
 		//reallySimpleSearch(4, 15, 3);
-		//reallySimpleSearch(5, 15, 3);
+		
+		reallySimpleSearch(5, 15, 3);
 		//reallySimpleSearch(4, 7, 3);
-		reallySimpleSearch(7, 51, 3);
+		//reallySimpleSearch(7, 51, 3);
 		
 		//Found 0 unique solution.
 		//Done for 1x3x3
@@ -364,6 +365,8 @@ After 8 hours and 15 minutes. (I think I could do better!)
 								}
 								
 							}*/
+							
+							/*
 							System.out.println("Debug allowed transitions ring second last to last:");
 							for(int i=0; i<cuboidToBuild.getNumCellsToFill(); i++) {
 								
@@ -386,8 +389,53 @@ After 8 hours and 15 minutes. (I think I could do better!)
 								}
 								
 							}
+							*/
 							
-							System.exit(1);
+							
+							System.out.println("Bottom transition used: " + cuboidToBuild.setup1stAndLastRing.getBottomShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound));
+							
+							System.out.println("Debug allowed transitions ring last to bottom:");
+							for(int k=0; k<8; k++) {
+								System.out.println("Index k: " + k);
+								for(int i=0; i<cuboidToBuild.getNumCellsToFill(); i++) {
+									
+									/*if( cuboidToBuild.getIndexToRing()[i] ==   cuboidToBuild.getDimensions()[0] - 1
+	                                                                  && cuboidToBuild.setup1stAndLastRing.ringLastToBottomTransitions[cuboidToBuild.setup1stAndLastRing.getBottomShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i] != -1) {
+										System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ringLastToBottomTransitions[cuboidToBuild.setup1stAndLastRing.getBottomShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i]);
+										
+									}*/
+									if( cuboidToBuild.getIndexToRing()[i] ==   cuboidToBuild.getDimensions()[0] - 1
+                                            && cuboidToBuild.setup1stAndLastRing.ringLastToBottomTransitions[k][i] != -1) {
+										System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ringLastToBottomTransitions[k][i]);
+										
+									}
+									
+								}
+							}
+							
+							System.out.println("");
+							System.out.println("Transition list bottom and ring last:");
+
+							for(int k=0; k<8; k++) {
+								System.out.println("Index k: " + k);
+								for(int i=0; i<cuboidToBuild.getNumCellsToFill(); i++) {
+									
+									/*if( cuboidToBuild.getIndexToRing()[i] ==  -1
+	                                                                  && cuboidToBuild.setup1stAndLastRing.ringLastToBottomTransitions[cuboidToBuild.setup1stAndLastRing.getBottomShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i] != -1) {
+										System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ringLastToBottomTransitions[cuboidToBuild.setup1stAndLastRing.getBottomShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i]);
+										
+									}*/
+									if( cuboidToBuild.getIndexToRing()[i] ==  -1
+                                            && cuboidToBuild.setup1stAndLastRing.ringLastToBottomTransitions[k][i] != -1) {
+										System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ringLastToBottomTransitions[k][i]);
+										
+									}
+															
+								}
+							}
+							
+							System.out.println("debug");
+							//System.exit(1);
 							
 						}
 
