@@ -524,19 +524,19 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 					)
 				) {
 			
-			if(setup1stAndLastRing.ringLastToBottomTransitions[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)][this.topLeftGroundedIndex] != nextIndex) {
+			if(setup1stAndLastRing.ringLastToBottomTransitions[setup1stAndLastRing.getBottomShiftType(topBottomShiftMod4FromPrevRound)][this.topLeftGroundedIndex] != nextIndex) {
 
 				
-				//return false;
+				return false;
 				
 					//Debug tool:
 				//System.out.println("New False");
-				if(debugFalseIndex == -1) {
+				/*if(debugFalseIndex == -1) {
 					debugFalseIndex = this.currentLayerIndex + 1;
 					debugFalseCuboidIndex = nextIndex;
 					debugFalseCuboidRot = nextRot;
 					
-				}
+				}*/
 			}
 		}
 		
@@ -609,7 +609,7 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 	
 	public boolean partOf1x4onBottom(int index) {
 		if(setup1stAndLastRing.hitLastorRing0Barrier(
-						setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound),
+						setup1stAndLastRing.getBottomShiftType(topBottomShiftMod4FromPrevRound),
 						index,
 						false)) {
 			return true;
