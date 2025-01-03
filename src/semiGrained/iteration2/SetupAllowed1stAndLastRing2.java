@@ -825,7 +825,8 @@ public class SetupAllowed1stAndLastRing2 {
 					setForcedTransition(ringSecondLastToLastRingTransitions, index_type, curIndexRingSecondLast, curIndexRingLast);
 					
 				} else {
-					setForcedTransitionSingleSide(ringSecondLastToLastRingTransitions, index_type, curIndexRingSecondLast, curIndexRingLast);
+					//TODO: my guess is that it's not needed and delays everything:
+					//setForcedTransitionSingleSide(ringSecondLastToLastRingTransitions, index_type, curIndexRingSecondLast, curIndexRingLast);
 					
 				}
 				

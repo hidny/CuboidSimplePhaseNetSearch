@@ -24,7 +24,7 @@ public class ReallySimpleIntersectFinderSemiGrained2 {
 		//reallySimpleSearch(4, 15, 3);
 		
 		//reallySimpleSearch(5, 15, 3);
-		//reallySimpleSearch(4, 7, 3);
+		//reallySimpleSearch(3, 7, 3);
 		reallySimpleSearch(5, 51, 3);
 		
 		//Found 0 unique solution.
@@ -224,8 +224,10 @@ After 8 hours and 15 minutes. (I think I could do better!)
 			
 			for(int j=0; j<listOfPotentialTops.length; j++) {
 				
-				cuboidToBuild = new CuboidToFoldOnSemiGrained2(a, b, c, false, true);
+				//I'm starting to think I don't need to reinit every time:
+					//cuboidToBuild = new CuboidToFoldOnSemiGrained2(a, b, c, false, true);
 				//System.out.println("top index set todo: " + listOfPotentialTops[j]);
+				
 				cuboidToBuild.initializeNewBottomAndTopIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation, listOfPotentialTops[j]);
 
 				ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
@@ -259,7 +261,7 @@ After 8 hours and 15 minutes. (I think I could do better!)
 
 		debugIt++;
 
-		if(debugIt % 100000000L == 0) {
+		if(debugIt % 1000000000L == 0) {
 			System.out.println("Debug print current state of search:");
 			cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
 		}
@@ -460,7 +462,7 @@ After 8 hours and 15 minutes. (I think I could do better!)
 			
 			return ret;
 		}
-		
+		int debugNumBranches = 0;
 		for(int sideBump=3; sideBump <10; sideBump++) {
 			if(layerIndex == 0 && sideBump > 6) {
 				//TODO: make it faster by only starting recursion on the next layer...
@@ -469,6 +471,7 @@ After 8 hours and 15 minutes. (I think I could do better!)
 			}
 			
 			if(cuboidToBuild.isNewLayerValidSimpleFast(sideBump)) {
+				debugNumBranches++;
 				cuboidToBuild.addNewLayerFast(sideBump);
 				reference.addNextLevel(new Coord2D(0, sideBump), null);
 
@@ -479,6 +482,16 @@ After 8 hours and 15 minutes. (I think I could do better!)
 			}
 		}
 		
+		//TODO DEBUG
+		if(debugNumBranches > 1 && layerIndex > 2 * (cuboidToBuild.dimensions[0] + cuboidToBuild.dimensions[2])) {
+			System.out.println("Layer index: " + layerIndex + " has " + debugNumBranches + " branches.");
+			System.out.println(cuboidToBuild.topLeftGroundedIndex + ", " + cuboidToBuild.topLeftGroundRotationRelativeFlatMap);
+			System.out.println("Index to ring: " + cuboidToBuild.getIndexToRing()[cuboidToBuild.topLeftGroundedIndex]);
+			System.out.println();
+			//DOH!
+			//System.out.println(cuboidToBuild.)
+		}
+		//DEBUG
 		return ret;
 	}
 }

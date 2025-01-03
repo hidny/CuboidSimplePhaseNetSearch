@@ -35,13 +35,15 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 		DIM_N_OF_Nx1x1 = (Utils.getTotalArea(this.dimensions)-2) / 4;
 		
 		numLongsToUse = (int) Math.floor(Utils.getTotalArea(this.dimensions) / 64) + 1;
-		System.out.println("Total area of CuboidToFoldOnSemiGrained: " + Utils.getTotalArea(this.dimensions));
-		System.out.println("Num longs to use: " + numLongsToUse);
 		
 		curState = new long[numLongsToUse];
 		
 				
 		if(setup) {
+			if(verbose) {
+				System.out.println("Total area of CuboidToFoldOnSemiGrained: " + Utils.getTotalArea(this.dimensions));
+				System.out.println("Num longs to use: " + numLongsToUse);
+			}
 			setupAnswerSheetInBetweenLayers();
 			setupAnswerSheetForTopCell();
 		}
@@ -155,8 +157,8 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 	private static int numLongsToUse;
 	private long curState[];
 
-	private int topLeftGroundedIndex = 0;
-	private int topLeftGroundRotationRelativeFlatMap = 0;
+	public int topLeftGroundedIndex = 0;
+	public int topLeftGroundRotationRelativeFlatMap = 0;
 	
 	public int prevSideBumps[];
 	public int prevGroundedIndexes[];
@@ -265,6 +267,7 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 		topAndBottomHandler.debugPrintTransitionLists();
 	}
 	
+	//TODO: USE TRANSITION BETWEEN RINGS TABLE. OMG! I can't believe I forgot about it
 	public boolean isNewLayerValidSimpleFast(int sideBump) {
 	
 		long tmp[] = answerSheet[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
@@ -1352,7 +1355,7 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 		return ret;
 	}
 	
-	//TODO: Why did you hard-code this?
+	//TODO: Why did you hard-code this? Whatever!
 	public static int[] getOtherWidthsToConsider() {
 		//TODO: make this malleable:
 		//return new int[] {};
@@ -1370,13 +1373,14 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 		boolean progress = true;
 
 		int otherWidthsToConsider[] = getOtherWidthsToConsider();
-		
-		System.out.println("Other widths to consider:");
-		for(int i=0; i<otherWidthsToConsider.length; i++) {
-			System.out.println(otherWidthsToConsider[i]);
-		}
 
-		System.out.println("Starting initializeForcedRepetition()");
+		if(verbose) {
+			System.out.println("Other widths to consider:");
+			for(int i=0; i<otherWidthsToConsider.length; i++) {
+				System.out.println(otherWidthsToConsider[i]);
+			}
+			System.out.println("Starting initializeForcedRepetition()");
+		}
 		while (progress == true) {
 
 			progress = false;
