@@ -303,6 +303,32 @@ public class CuboidToFoldOnSemiGrained2  implements CuboidToFoldOnInterface {
 			
 			return false;
 		}
+		
+		if(prevRingIndex >= 0
+				&& nextRingIndex >= 0
+				&& this.currentLayerIndex > dimensions[0] + dimensions[2]) {
+			
+			//LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] = currentLayerIndex;
+			//ringMod4AlreadySet[indexToRing[this.topLeftGroundedIndex]] = ringMod4Lookup[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap];
+			
+			int transitionIndex = Math.min(prevRingIndex, nextRingIndex);
+			
+			if(transitionIndex >= 1 
+					&& transitionIndex < dimensions[0] - 2
+					&& LayerIndexForRingDecided[prevRingIndex] >= 0
+					&& LayerIndexForRingDecided[nextRingIndex] >= 0
+				) {
+				
+				if(transitionBetweenRings[transitionIndex] != sideBump) {
+					if(transitionBetweenRings[transitionIndex] < 0) {
+						System.out.println("DOH " + transitionBetweenRings[transitionIndex]);
+					}
+					//System.out.println("FALSE asfd");
+					return false;
+				}
+			}
+		}
+		
 
 		/*
 		// TODO: what does this even do?

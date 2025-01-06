@@ -170,6 +170,12 @@ Done for 4x51x3
 
 After 8 hours and 15 minutes. (I think I could do better!)
 		 */
+		/*
+		 * Done using the 2nd iteration (using pre-computed long arrays)
+Found 3716 unique solution.
+Done for 5x51x3
+50 minutes
+		 */
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
