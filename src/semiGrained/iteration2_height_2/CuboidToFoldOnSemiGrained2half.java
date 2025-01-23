@@ -1,4 +1,4 @@
-package semiGrained.iteration3;
+package semiGrained.iteration2_height_2;
 
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;
@@ -8,21 +8,20 @@ import Model.NeighbourGraphCreator;
 import Model.Utils;
 import NewModelWithIntersection.topAndBottomTransitionList.TopAndBottomTransitionHandler;
 
-public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
+public class CuboidToFoldOnSemiGrained2half  implements CuboidToFoldOnInterface {
 
 	
 	private CoordWithRotationAndIndex[][] neighbours;
 	
 	public int dimensions[] = new int[3];
 	private boolean setup;
-	
 
-	public CuboidToFoldOnSemiGrained3(int a, int b, int c) {
+	public CuboidToFoldOnSemiGrained2half(int a, int b, int c) {
 		this(a, b, c, true, true);
 	}
 
 
-	public CuboidToFoldOnSemiGrained3(int a, int b, int c, boolean verbose, boolean setup) {
+	public CuboidToFoldOnSemiGrained2half(int a, int b, int c, boolean verbose, boolean setup) {
 
 		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c, verbose);
 		
@@ -82,15 +81,9 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 		return dimensions;
 	}
 
-	
 	public void initializeNewBottomAndTopIndexAndRotation(int bottomIndex, int bottomRotationRelativeFlatMap, int topIndex) {
-		initializeNewBottomAndTopIndexAndRotation(bottomIndex, bottomRotationRelativeFlatMap, topIndex, -1);
-	}
-	
-	public int globalShift = -1;
-	public void initializeNewBottomAndTopIndexAndRotation(int bottomIndex, int bottomRotationRelativeFlatMap, int topIndex, int globalShift) {
 		
-		this.globalShift = globalShift;
+		
 		this.topIndex = topIndex;
 		
 		this.bottomIndex = bottomIndex;
@@ -100,11 +93,6 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 		prevSideBumps = new int[DIM_N_OF_Nx1x1];
 		prevGroundedIndexes = new int[DIM_N_OF_Nx1x1];
 		prevGroundedRotations = new int[DIM_N_OF_Nx1x1];
-		
-		globalShiftsSetup = new int[dimensions[0]];
-		for(int i=0; i<globalShiftsSetup.length; i++) {
-			globalShiftsSetup[i] = -1;
-		}
 		
 		currentLayerIndex = 0;
 		
@@ -118,41 +106,7 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 		}
 		
 		if(this.setup) {
-			setup1stAndLastRing.setupAllowedFirstAndLastRingIndexRotations1x4(bottomIndex);
-			
-			int curShiftLeft = globalShift;
-			int numOff9 = 0;
-			for(int i=1; i<globalShiftsSetup.length - 2; i++) {
-				
-				if(curShiftLeft >=3) {
-					globalShiftsSetup[i] = 9;
-				} else if(curShiftLeft == 0) {
-					globalShiftsSetup[i] = 6;
-					
-				} else {
-					globalShiftsSetup[i] = curShiftLeft + 6;
-					numOff9++;
-				}
-				
-				curShiftLeft -= (globalShiftsSetup[i] - 6);
-				//System.out.println(curShiftLeft);
-			}
-			
-			if(numOff9 > 1) {
-				System.out.println("numOff9 > 0: " + numOff9);
-				System.exit(1);
-				
-			}
-			if(curShiftLeft > 0) {
-				System.out.println("Cur Shift left > 0");
-				System.exit(1);
-			}
-			
-			/*System.out.println("Set transitions:");
-			for(int i=0; i<globalShiftsSetup.length; i++) {
-				System.out.println(globalShiftsSetup[i]);
-			}*/
-			
+			setup1stAndLastRinghalf.setupAllowedFirstAndLastRingIndexRotations1x4(bottomIndex);
 			/*
 			labelDebugTopBottomShiftLocation();
 			labelDebugTopBottomShift(0);
@@ -169,8 +123,6 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 			*/
 		}
 	}
-	
-	public int globalShiftsSetup[];
 	
 	//Constants:
 
@@ -242,13 +194,13 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 	private int ringMod4Lookup[][];
 	
 	private int bottomIndex;
-	int topIndex;
+	private int topIndex;
 	
 	public int getTopIndexAssumed() {
 		return topIndex;
 	}
 
-	public SetupAllowed1stAndLastRing3 setup1stAndLastRing;
+	public SetupAllowed1stAndLastRing2half setup1stAndLastRinghalf;
 
 	
 	public static int getAltNextRingIndexForHeight(int currentLayerIndex, int height) {
@@ -322,10 +274,6 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 		if(newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump] < 0) {
 			return false;
 		}
-
-		int nextIndex = newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
-		int nextRot = newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
-		
 		
 		long collisionNumber = 0;
 		for(int i=0; i<curState.length; i++) {
@@ -338,330 +286,6 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 			return false;
 		}
 
-		int prevRingIndex = indexToRing[this.topLeftGroundedIndex];
-		int nextRingIndex = indexToRing[nextIndex];
-
-		int minRingIndex = Math.min(prevRingIndex, nextRingIndex);
-
-		if(minRingIndex >= 0 
-				&& globalShiftsSetup[minRingIndex] >= 0
-				&& globalShiftsSetup[minRingIndex] != sideBump
-			) {
-			return false;
-		} else if(minRingIndex >= 0 
-				&& globalShiftsSetup[minRingIndex] >= 0
-				&& globalShiftsSetup[minRingIndex] == sideBump){
-			//System.out.println("TRUE: " + this.currentLayerIndex + ", " + minRingIndex + ", " + sideBump);
-		}
-		
-		// Make sure the bottom index is on the right location of the grained ring (mod 4)
-		if(nextRingIndex >=1 && nextRingIndex < dimensions[0] - 1
-				&& LayerIndexForRingDecided[nextRingIndex] >= 0
-				&& LayerIndexForRingDecided[nextRingIndex] < currentLayerIndex
-				&& ringMod4AlreadySet[nextRingIndex] >=0
-				&& ringMod4Lookup[nextIndex][nextRot] != ringMod4AlreadySet[nextRingIndex]) {
-			
-			return false;
-		}
-		
-		if(prevRingIndex >= 0
-				&& nextRingIndex >= 0
-				&& this.currentLayerIndex > dimensions[0] + dimensions[2]) {
-			
-			//LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] = currentLayerIndex;
-			//ringMod4AlreadySet[indexToRing[this.topLeftGroundedIndex]] = ringMod4Lookup[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap];
-			
-			int transitionIndex = Math.min(prevRingIndex, nextRingIndex);
-			
-			if(transitionIndex >= 1 
-					&& transitionIndex < dimensions[0] - 2
-					&& LayerIndexForRingDecided[prevRingIndex] >= 0
-					&& LayerIndexForRingDecided[nextRingIndex] >= 0
-				) {
-				
-				if(transitionBetweenRings[transitionIndex] != sideBump) {
-					if(transitionBetweenRings[transitionIndex] < 0) {
-						System.out.println("DOH " + transitionBetweenRings[transitionIndex]);
-					}
-					//System.out.println("FALSE asfd");
-					return false;
-				}
-			}
-		}
-		
-
-		/*
-		// TODO: what does this even do?
-		//if(getRingMod4(nextIndex, nextRot) == -1 
-		//		&& ! isAcceptableTopOrBottomIndexForInbetweenLayer(nextIndex, nextRot)) {
-		//	return false;
-		//}
-		*/
-		
-		if(forcedRepetition[this.currentLayerIndex] < this.currentLayerIndex
-				&& sideBump != prevSideBumps[forcedRepetition[this.currentLayerIndex]]) {
-			return false;
-		}
-
-		//TODO: Nov 28: change this to isGrainedRingToNonGrainedRingPossiblyFine
-		/*
-		if( ! topAndBottomHandler.isTopBottomTranstionsPossiblyFine(
-				currentLayerIndex,
-				dimensions,
-				neighbours,
-				new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap),
-				new Coord2D(newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump],
-						    newGroundedRotationAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump]
-				),
-				indexToRing
-			)) {
-			
-			return false;
-		}
-		*/
-		
-		//TODO: Nov 28: Add: is layer onTopOrBottom Possibly fine (Only works for (4M+3) where M> 0 for the bottom part...
-		//Condition: rotation 0 or 2, and correct placement mod 4 depending on where bottom 1x1 and top 1x1 cell is.
-		// For Top: leave 2 possibilities until it's been 'decided'
-		
-		//TODO: elsewhere...
-		//TODO:  Nov 28:Add region check on the between layers on top and top, top + 1st ring.
-		//TODO:  Nov 28:Make any layer touching the 2nd ring or 2nd last ring illegal.
-		
-		
-
-		/*int topBottomShiftIndexLeftMost[][];
-		int topBottomShiftMod4[][];
-		
-		int topBottomShiftSetDepth[];
-		int topBottomShiftMod4FromPrevRound[];*/
-		//nextIndex
-		//nextRot
-		
-		//Check topBottomShiftMod4:
-		if(topBottomShiftMod4[nextIndex][nextRot] >= 0) {
-			
-			int indexTopBottomShiftToUse = topBottomShiftIndexLeftMost[nextIndex][nextRot];
-			
-			if(//It's worth matching:
-					topBottomShiftSetDepth[indexTopBottomShiftToUse] != -1
-					&& topBottomShiftSetDepth[indexTopBottomShiftToUse] < currentLayerIndex
-				
-				//It doesn't matches:
-					&& topBottomShiftMod4FromPrevRound[indexTopBottomShiftToUse] != topBottomShiftMod4[nextIndex][nextRot]
-				) {
-				
-				return false;
-			}
-		}
-		//End check topBottomShiftMod4:
-		
-		int prev2RingIndex = -1;
-		if(currentLayerIndex > 1) {
-			prev2RingIndex = indexToRing[prevGroundedIndexes[currentLayerIndex - 1]];
-		}
-		//System.out.println(prev2RingIndex + " -> " + prevRingIndex);
-		
-		if(prev2RingIndex == dimensions[0] - 2 && prevRingIndex == dimensions[0] - 1 && ! setup1stAndLastRing.areBottomShiftIndexesAllSet(this)) {
-
-			if(this.currentLayerIndex != dimensions[0] - 1) {
-				System.out.println("OOPS in areTopShiftIndexesAllSet.");
-				System.exit(1);
-			}
-			setup1stAndLastRing.setupLastRingAndBottomTransitions(
-					 	new Coord2D(topIndex, 0),
-						new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap),
-						new Coord2D(nextIndex, nextRot),
-						this,
-						topBottomShiftIndexLeftMost);
-			debugRing0ToMinus1_1 = new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap);
-			debugRing0ToMinus1_2 = new Coord2D(nextIndex, nextRot);
-		
-		}
-		
-		if(prev2RingIndex == 1 && prevRingIndex == 0 && ! setup1stAndLastRing.areTopShiftIndexesAllSet(this)) {
-
-			if(this.currentLayerIndex != 2*dimensions[0] + dimensions[2] - 1) {
-				System.out.println("OOPS in areTopShiftIndexesAllSet.");
-				System.exit(1);
-			}
-			setup1stAndLastRing.setupRing0AndTopTransitions(
-					 	new Coord2D(getBottomIndex(), 2),
-						new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap),
-						new Coord2D(nextIndex, nextRot),
-						this,
-						topBottomShiftIndexLeftMost);
-			//debugRing0ToMinus1_1 = new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap);
-			//debugRing0ToMinus1_2 = new Coord2D(nextIndex, nextRot);
-		
-		}
-
-		
-		if(prevRingIndex == dimensions[0] - 2 && nextRingIndex == dimensions[0] - 1 && ! setup1stAndLastRing.areBottomShiftIndexesAllSet(this)) {
-			
-			setup1stAndLastRing.setupRingSecondLastAndRingLastTransitions(
-					new Coord2D(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap),
-					new Coord2D(nextIndex, nextRot),
-					this.topIndex);
-		}
-		
-		//TODO: Make a last Ring index version of this...
-		if(nextRingIndex == 0 && setup1stAndLastRing.areTopShiftIndexesAllSet(this)) {
-			//printCurrentStateOnOtherCuboidsFlatMap();
-			
-			
-			//System.out.println("Debug Top");
-			
-			//System.out.println("getTopShiftType: " + setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound));
-			//System.exit(1);
-			
-			if(setup1stAndLastRing.allowedFirstRingIndexRotations1x1Clock
-					[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)]
-					[nextIndex]
-					[nextRot] == false
-				&&
-				setup1stAndLastRing.allowedFirstRingIndexRotations1x1Counter
-				[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)]
-				[nextIndex]
-				[nextRot] == false
-					) {
-				
-				//System.out.println("false");
-				return false;
-				
-				/*if(debugFalseIndex == -1) {
-					debugFalseIndex = this.currentLayerIndex + 1;
-					debugFalseCuboidIndex = nextIndex;
-					debugFalseCuboidRot = nextRot;
-					
-				}*/
-			}
-			
-			if(setup1stAndLastRing.allowedFirstRingIndexRotations1x1Locations
-					[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)]
-					[getBottomIndex()]
-					== false) {
-
-				return false;
-				/*
-				//DEBUG option: 
-				if(debugFalseIndex == -1) {
-					debugFalseIndex = this.currentLayerIndex + 1;
-					debugFalseCuboidIndex = nextIndex;
-					debugFalseCuboidRot = nextRot;
-					
-				}*/
-			}
-			
-			//returns false for testing purposes:
-			//return false;
-		}
-		
-
-		if(setup1stAndLastRing.areTopShiftIndexesAllSet(this)
-				&& ((nextRingIndex == 0 && prevRingIndex ==1) || (nextRingIndex == 1 && prevRingIndex == 0))
-			) {
-			if(setup1stAndLastRing.ring0ToRing1Transitions[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)][this.topLeftGroundedIndex] != nextIndex) {
-				//System.out.println("Quick rejection!");
-				return false;
-				
-			}
-		} else if(setup1stAndLastRing.areBottomShiftIndexesAllSet(this)
-				&& ((nextRingIndex == this.dimensions[0]-1 && prevRingIndex == this.dimensions[0]-2) || (nextRingIndex == this.dimensions[0]-2 && prevRingIndex == this.dimensions[0]-1))
-			) {
-			if(setup1stAndLastRing.ringSecondLastToLastRingTransitions[setup1stAndLastRing.getBottomShiftType(topBottomShiftMod4FromPrevRound)][this.topLeftGroundedIndex] != nextIndex) {
-				//System.out.println("Quick rejection!");
-				return false;
-				
-				//System.out.println("New False");
-				/*if(debugFalseIndex == -1) {
-					debugFalseIndex = this.currentLayerIndex + 1;
-					debugFalseCuboidIndex = nextIndex;
-					debugFalseCuboidRot = nextRot;
-					debugShiftType = setup1stAndLastRing.getBottomShiftType(topBottomShiftMod4FromPrevRound);
-					
-				}*/
-				
-			}
-		}
-		
-		
-		if(setup1stAndLastRing.areTopShiftIndexesAllSet(this)
-				&&((isLayerCompletetelyOnRing0(this.topLeftGroundedIndex) && isLayerMostlyOnTop(nextIndex)) 
-						||  (isLayerMostlyOnTop(this.topLeftGroundedIndex) && isLayerCompletetelyOnRing0(nextIndex))
-					)
-				) {
-			
-			if(setup1stAndLastRing.ring0ToTopTransitions[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)][this.topLeftGroundedIndex] != nextIndex) {
-
-				return false;
-				/*
-					//Debug tool:
-				//System.out.println("New False");
-				if(debugFalseIndex == -1) {
-					debugFalseIndex = this.currentLayerIndex + 1;
-					debugFalseCuboidIndex = nextIndex;
-					debugFalseCuboidRot = nextRot;
-					
-				}*/
-			}
-		}
-		
-		if(setup1stAndLastRing.areBottomShiftIndexesAllSet(this)
-				&&((isLayerCompletetelyOnLastRing(this.topLeftGroundedIndex) && isLayerMostlyOnBottom(nextIndex)) 
-						||  (isLayerMostlyOnBottom(this.topLeftGroundedIndex) && isLayerCompletetelyOnLastRing(nextIndex))
-					)
-				) {
-			
-			if(setup1stAndLastRing.ringLastToBottomTransitions[setup1stAndLastRing.getBottomShiftType(topBottomShiftMod4FromPrevRound)][this.topLeftGroundedIndex] != nextIndex) {
-
-				
-				return false;
-				
-					//Debug tool:
-				//System.out.println("New False");
-				/*if(debugFalseIndex == -1) {
-					debugFalseIndex = this.currentLayerIndex + 1;
-					debugFalseCuboidIndex = nextIndex;
-					debugFalseCuboidRot = nextRot;
-					
-				}*/
-			}
-		}
-		
-		if(this.currentLayerIndex == 2*dimensions[0] + 2*dimensions[2] - 1) {
-			
-			//TODO
-			//Check if the first time we go from ring 0 to top is good:
-			int beforeTop = prevGroundedIndexes[currentLayerIndex - 3];
-			int onTop = prevGroundedIndexes[currentLayerIndex - 2];
-			
-			if(setup1stAndLastRing.ring0ToTopTransitions[setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound)][beforeTop] != onTop) {
-				System.out.println("Quick rejection! " + beforeTop + " to " + onTop);
-				
-				//Because of the way it's implemented, this doesn't actually do anything. Oh well.
-				System.exit(1);
-				
-				return false;
-				
-				/*if(debugFalseIndex == -1) {
-					debugFalseIndex = this.currentLayerIndex + 1;
-					debugFalseCuboidIndex = nextIndex;
-					debugFalseCuboidRot = nextRot;
-					
-				}*/
-			}
-		}
-		
-		debugTopShiftIndex[this.currentLayerIndex] = setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound);
-		debugBottomShiftIndex[this.currentLayerIndex] = setup1stAndLastRing.getBottomShiftType(topBottomShiftMod4FromPrevRound);
-		
-		//TODO: (again) Make a last Ring index version of this...
-		/*if(setup1stAndLastRing.areBottomShiftIndexesAllSet(this)) {
-			printCurrentStateOnOtherCuboidsFlatMap();
-			System.out.println("Debug bottom");
-			System.out.println("getBottomShiftType: " + setup1stAndLastRing.getBottomShiftType(topBottomShiftMod4FromPrevRound));
-		}*/
 		
 		return true;
 		
@@ -677,8 +301,8 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 	
 
 	public boolean partOf1x4onTop(int index) {
-		if(setup1stAndLastRing.hitLastorRing0Barrier(
-						setup1stAndLastRing.getTopShiftType(topBottomShiftMod4FromPrevRound),
+		if(setup1stAndLastRinghalf.hitLastorRing0Barrier(
+						setup1stAndLastRinghalf.getTopShiftType(topBottomShiftMod4FromPrevRound),
 						index,
 						true)) {
 			return true;
@@ -697,8 +321,8 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 	}
 	
 	public boolean partOf1x4onBottom(int index) {
-		if(setup1stAndLastRing.hitLastorRing0Barrier(
-						setup1stAndLastRing.getBottomShiftType(topBottomShiftMod4FromPrevRound),
+		if(setup1stAndLastRinghalf.hitLastorRing0Barrier(
+						setup1stAndLastRinghalf.getBottomShiftType(topBottomShiftMod4FromPrevRound),
 						index,
 						false)) {
 			return true;
@@ -734,7 +358,7 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 		currentLayerIndex++;
 		
 		if(currentLayerIndex == 1) {
-			setup1stAndLastRing.setupRing1AndRing0Transitions(new Coord2D(getBottomIndex(), 2), new Coord2D(tmp1, tmp2));
+			setup1stAndLastRinghalf.setupRing1AndRing0Transitions(new Coord2D(getBottomIndex(), 2), new Coord2D(tmp1, tmp2));
 		}
 		
 
@@ -1035,7 +659,7 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 		//Dec 18th:
 
 		
-		setup1stAndLastRing = new SetupAllowed1stAndLastRing3(
+		setup1stAndLastRinghalf = new SetupAllowed1stAndLastRing2half(
 				neighbours,
 				indexToRing,
 				dimensions,
@@ -1447,7 +1071,6 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 		//return new int[] {};
 		
 		//if((dimensions[1] + 3))
-		//return new int[] {3, 27};
 		return new int[] {3};
 	}
 	
@@ -1686,7 +1309,7 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 	//DEBUG PRINT STATE ON OTHER CUBOID:
 	public void printCurrentStateOnOtherCuboidsFlatMap() {
 		
-		CuboidToFoldOnSemiGrained3 toPrint = new CuboidToFoldOnSemiGrained3(
+		CuboidToFoldOnSemiGrained2half toPrint = new CuboidToFoldOnSemiGrained2half(
 				this.dimensions[0],
 				this.dimensions[1],
 				this.dimensions[2],

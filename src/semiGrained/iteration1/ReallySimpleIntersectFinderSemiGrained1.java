@@ -19,9 +19,9 @@ public class ReallySimpleIntersectFinderSemiGrained1 {
 	public static void main(String[] args) {
 		
 		
-		//reallySimpleSearch(8, 3, 3);
+		reallySimpleSearch(4, 3, 3);
 		//reallySimpleSearch(4, 15, 3);
-		reallySimpleSearch(6, 15, 3);
+		//reallySimpleSearch(2, 15, 3);
 		//reallySimpleSearch(4, 7, 3);
 		
 		//Found 0 unique solution.

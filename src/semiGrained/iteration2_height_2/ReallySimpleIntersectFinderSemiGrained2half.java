@@ -1,4 +1,4 @@
-package semiGrained.iteration2;
+package semiGrained.iteration2_height_2;
 
 import java.util.ArrayList;
 
@@ -11,16 +11,16 @@ import Model.Utils;
 import NewModel.firstIteration.Nx1x1CuboidToFold;
 import SolutionResolver.SolutionResolverInterface;
 import SolutionResolver.StandardResolverForSmallIntersectSolutions;
-import semiGrained.iteration1.CuboidToFoldOnSemiGrained;
 
-public class ReallySimpleIntersectFinderSemiGrained2 {
+public class ReallySimpleIntersectFinderSemiGrained2half {
 
 	public static boolean VERBOSE = true;
 	
 	public static void main(String[] args) {
 		
+		
 		//reallySimpleSearch(8, 3, 3);
-		//reallySimpleSearch(7, 15, 3);
+		reallySimpleSearch(2, 15, 3);
 		
 		//reallySimpleSearch(5, 15, 3);
 		//reallySimpleSearch(3, 7, 3);
@@ -34,7 +34,6 @@ public class ReallySimpleIntersectFinderSemiGrained2 {
 		
 		//Found N/A unique solution.
 		//Done for 3x3x3
-		reallySimpleSearch(4, 15, 3);
 		
 		//Found 1231 unique solution.
 		//Done for 4x3x3
@@ -176,14 +175,6 @@ Found 3716 unique solution.
 Done for 5x51x3
 50 minutes
 		 */
-		
-
-		/*
-		 * Done using the 2nd iteration (using pre-computed long arrays)
-Found 980727 unique solution.
-Done for 8x15x3
-(3 way(12 hours)
-		 */
 	}
 	
 	public static SolutionResolverInterface solutionResolver;
@@ -194,7 +185,7 @@ Done for 8x15x3
 		solutionResolver = new StandardResolverForSmallIntersectSolutions();
 		
 		
-		CuboidToFoldOnSemiGrained2 cuboidToBuild = new CuboidToFoldOnSemiGrained2(a, b, c);
+		CuboidToFoldOnSemiGrained2half cuboidToBuild = new CuboidToFoldOnSemiGrained2half(a, b, c);
 		
 		
 		if(cuboidToBuild.getNumCellsToFill() % 4 != 2) {
@@ -262,16 +253,16 @@ Done for 8x15x3
 		System.out.println("Done for " + a + "x" + b + "x" + c);
 	}
 	
-	public static int getNumLayers(CuboidToFoldOnSemiGrained2 cuboidToBuild) {
+	public static int getNumLayers(CuboidToFoldOnSemiGrained2half cuboidToBuild) {
 		return (cuboidToBuild.getNumCellsToFill() - 2) / 4;
 	}
 	
-	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnSemiGrained2 cuboidToBuild) {
+	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnSemiGrained2half cuboidToBuild) {
 		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild));
 	}
 
 	public static long debugIt = 0;
-	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnSemiGrained2 cuboidToBuild, int layerIndex, int numLayers) {
+	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnSemiGrained2half cuboidToBuild, int layerIndex, int numLayers) {
 
 		debugIt++;
 
@@ -361,7 +352,7 @@ Done for 8x15x3
 								//TODO: maybe cache this result if possible... nah...
 								//System.out.println("top/bottom type: " + cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound));
 								
-								cuboidToBuild.setup1stAndLastRing.DEBUG = true;
+								cuboidToBuild.setup1stAndLastRinghalf.DEBUG = true;
 								/*cuboidToBuild.setup1stAndLastRing.setupRing0AndTopTransitions(
 										new Coord2D(cuboidToBuild.getBottomIndex(), 2),
 										cuboidToBuild.debugRing0ToMinus1_1,
@@ -407,7 +398,7 @@ Done for 8x15x3
 								*/
 								
 								
-								System.out.println("Bottom transition used: " + cuboidToBuild.setup1stAndLastRing.getBottomShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound));
+								System.out.println("Bottom transition used: " + cuboidToBuild.setup1stAndLastRinghalf.getBottomShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound));
 								
 								System.out.println("Debug allowed transitions ring last to bottom:");
 								for(int k=0; k<8; k++) {
@@ -420,8 +411,8 @@ Done for 8x15x3
 											
 										}*/
 										if( cuboidToBuild.getIndexToRing()[i] ==   cuboidToBuild.getDimensions()[0] - 1
-	                                            && cuboidToBuild.setup1stAndLastRing.ringLastToBottomTransitions[k][i] != -1) {
-											System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ringLastToBottomTransitions[k][i]);
+	                                            && cuboidToBuild.setup1stAndLastRinghalf.ringLastToBottomTransitions[k][i] != -1) {
+											System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRinghalf.ringLastToBottomTransitions[k][i]);
 											
 										}
 										
@@ -441,8 +432,8 @@ Done for 8x15x3
 											
 										}*/
 										if( cuboidToBuild.getIndexToRing()[i] ==  -1
-	                                            && cuboidToBuild.setup1stAndLastRing.ringLastToBottomTransitions[k][i] != -1) {
-											System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ringLastToBottomTransitions[k][i]);
+	                                            && cuboidToBuild.setup1stAndLastRinghalf.ringLastToBottomTransitions[k][i] != -1) {
+											System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRinghalf.ringLastToBottomTransitions[k][i]);
 											
 										}
 																
@@ -497,14 +488,14 @@ Done for 8x15x3
 		}
 		
 		//TODO DEBUG
-		if(debugNumBranches > 1 && layerIndex > 2 * (cuboidToBuild.dimensions[0] + cuboidToBuild.dimensions[2])) {
+		/*if(debugNumBranches > 1 && layerIndex > 2 * (cuboidToBuild.dimensions[0] + cuboidToBuild.dimensions[2])) {
 			System.out.println("Layer index: " + layerIndex + " has " + debugNumBranches + " branches.");
 			System.out.println(cuboidToBuild.topLeftGroundedIndex + ", " + cuboidToBuild.topLeftGroundRotationRelativeFlatMap);
 			System.out.println("Index to ring: " + cuboidToBuild.getIndexToRing()[cuboidToBuild.topLeftGroundedIndex]);
 			System.out.println();
 			//DOH!
 			//System.out.println(cuboidToBuild.)
-		}
+		}*/
 		//DEBUG
 		return ret;
 	}

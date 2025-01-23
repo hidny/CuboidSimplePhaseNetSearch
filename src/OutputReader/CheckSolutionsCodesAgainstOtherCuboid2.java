@@ -185,7 +185,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 						//System.out.println("Printing just the fold without indexes:");
 						//Utils.printFold(table);
 						
-						boolean VERBOSE = false;
+						boolean VERBOSE = true;
 						
 						for(int i=0; i<dimensionsToCheck.length; i++) {
 							if(solutionFound[i]) {

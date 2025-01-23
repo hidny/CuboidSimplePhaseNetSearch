@@ -21,7 +21,7 @@ public class ReallySimpleIntersectFinder5 {
 		//reallySimpleSearch(5, 1, 1);
 		
 		//26 solutions: (7 unique solutions)
-		reallySimpleSearch(3, 2, 1);
+		//reallySimpleSearch(3, 2, 1);
 
 		//N: 7
 		//6 solutions: (2 unique solutions)
@@ -113,7 +113,7 @@ Found 133 unique solution."
 		// 296 unique solutions
 		//reallySimpleSearch(7, 3, 2);
 		//Found 798 non-unique solutions and 211 unique solution.
-		//reallySimpleSearch(13, 2, 1);
+		reallySimpleSearch(13, 2, 1);
 		//
 		
 		//N = 21
