@@ -25,7 +25,7 @@ public class IntersectFinderWithMx5x1 {
 		// 1387
 		// N/A (5)
 		// 82794
-		//reallySimpleSearchWithMby5by1(6, 17, 1);
+		reallySimpleSearchWithMby5by1(2, 17, 1);
 		
 		// N = 27
 		

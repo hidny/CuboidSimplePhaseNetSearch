@@ -1249,10 +1249,10 @@ public class CuboidToFoldOnSemiGrained  implements CuboidToFoldOnInterface {
 	//TODO: Why did you hard-code this?
 	public static int[] getOtherWidthsToConsider() {
 		//TODO: make this malleable:
-		//return new int[] {};
+		return new int[] {};
 		
 		//if((dimensions[1] + 3))
-		return new int[] {3};
+		//return new int[] {3};
 	}
 	
 	private void initializeForcedRepetition() {

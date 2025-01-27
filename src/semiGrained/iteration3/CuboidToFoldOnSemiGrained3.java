@@ -43,8 +43,10 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 			if(verbose) {
 				System.out.println("Total area of CuboidToFoldOnSemiGrained: " + Utils.getTotalArea(this.dimensions));
 				System.out.println("Num longs to use: " + numLongsToUse);
+				System.out.println("hello?3");
 			}
 			setupAnswerSheetInBetweenLayers();
+			System.out.println("hello?4");
 			setupAnswerSheetForTopCell();
 		}
 		
@@ -55,12 +57,14 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 		
 
 		if(setup) {
+			System.out.println("hello?2");
 			this.topAndBottomHandler = new TopAndBottomTransitionHandler();
 		
 			forcedRepetition = new int[DIM_N_OF_Nx1x1 + 2];
 			initializeForcedRepetition(verbose);
 		}
 		
+		System.out.println("hello?");
 		debugTopShiftIndex = new int[DIM_N_OF_Nx1x1 + 1];
 		debugBottomShiftIndex = new int[DIM_N_OF_Nx1x1 + 1];
 	}
@@ -866,10 +870,13 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 		answerSheet = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][numLongsToUse];
 		newGroundedRotationAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 		newGroundedIndexAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
-		
+
+		System.out.println("Hello6 MT: ");
 		
 		for(int index=0; index<Utils.getTotalArea(this.dimensions); index++) {
 			for(int rotation=0; rotation<NUM_ROTATIONS; rotation++) {
+
+				System.out.println("Hello5 MT: " + index + ", " + rotation);
 				
 				for(int sideBump=0; sideBump<NUM_POSSIBLE_SIDE_BUMPS; sideBump++) {
 				
@@ -993,6 +1000,7 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 			ringMod4AlreadySet[i] = 0;
 		}
 
+		System.out.println("Hello7 MT: ");
 		ringMod4Lookup = new int[getNumCellsToFill()][NUM_ROTATIONS];
 		for(int indexCell=0; indexCell<ringMod4Lookup.length; indexCell++) {
 			for(int rotation=0; rotation<ringMod4Lookup[0].length; rotation++) {
@@ -1008,7 +1016,8 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 		//System.out.println("???");
 		
 		//System.out.println("locations:");
-		
+
+		System.out.println("Hello7.5 MT: ");
 		
 		topBottomShiftIndexLeftMost = new int[this.getNumCellsToFill()][4];
 		for(int i=0; i<topBottomShiftIndexLeftMost.length; i++) {
@@ -1016,6 +1025,8 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 				topBottomShiftIndexLeftMost[i][j] = getTopBottomShiftLeftMostIndex(i, j);
 			}
 		}//getTopBottomShiftMod4
+		System.out.println("Hello7.55 MT: ");
+		
 		
 		topBottomShiftMod4 = new int[this.getNumCellsToFill()][4];
 		for(int i=0; i<topBottomShiftMod4.length; i++) {
@@ -1023,6 +1034,7 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 				topBottomShiftMod4[i][j] = getTopBottomShiftMod4(i, j);
 			}
 		}
+		System.out.println("Hello7.6 MT: ");
 		
 		topBottomShiftSetDepth = new int[this.getNumCellsToFill()];
 		topBottomShiftMod4FromPrevRound = new int[this.getNumCellsToFill()];
@@ -1034,7 +1046,8 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 		
 		//Dec 18th:
 
-		
+
+		System.out.println("Hello8 MT: ");
 		setup1stAndLastRing = new SetupAllowed1stAndLastRing3(
 				neighbours,
 				indexToRing,
@@ -1084,6 +1097,7 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 			
 			while(getIndexRotToTopBottomShiftLocation(curCoord.i, curCoord.j) != LEFT_TOP_LOCATION) {
 				curCoord = tryAttachCellInDir(curCoord.i, curCoord.j, LEFT);
+				System.out.println("LEFT1");
 			}
 			
 			return curCoord.i;
@@ -1107,6 +1121,7 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 			
 			while(getIndexRotToTopBottomShiftLocation(curCoord.i, curCoord.j) != LEFT_BOTTOM_LOCATION) {
 				curCoord = tryAttachCellInDir(curCoord.i, curCoord.j, LEFT);
+				System.out.println("LEFT2");
 			}
 
 			return curCoord.i;
@@ -1444,11 +1459,11 @@ public class CuboidToFoldOnSemiGrained3  implements CuboidToFoldOnInterface {
 	//TODO: Why did you hard-code this? Whatever!
 	public static int[] getOtherWidthsToConsider() {
 		//TODO: make this malleable:
-		//return new int[] {};
+		return new int[] {};
 		
 		//if((dimensions[1] + 3))
 		//return new int[] {3, 27};
-		return new int[] {3};
+		//return new int[] {3};
 	}
 	
 	private void initializeForcedRepetition(boolean verbose) {

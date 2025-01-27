@@ -1,4 +1,4 @@
-package semiGrained.iteration1;
+package semiGrained.iteration3x3;
 
 import java.util.ArrayList;
 
@@ -12,14 +12,14 @@ import NewModel.firstIteration.Nx1x1CuboidToFold;
 import SolutionResolver.SolutionResolverInterface;
 import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
-public class ReallySimpleIntersectFinderSemiGrained1 {
+public class ReallySimpleIntersectFinderSemiGrained3x3 {
 
 	public static boolean VERBOSE = true;
 	
 	public static void main(String[] args) {
 		
 		
-		reallySimpleSearch(4, 7, 3);
+		reallySimpleSearch(7, 3, 3);
 		//reallySimpleSearch(4, 15, 3);
 		//reallySimpleSearch(2, 15, 3);
 		//reallySimpleSearch(4, 7, 3);
@@ -161,7 +161,7 @@ Done for 5x15x3
 		solutionResolver = new StandardResolverForSmallIntersectSolutions();
 		
 		
-		CuboidToFoldOnSemiGrained cuboidToBuild = new CuboidToFoldOnSemiGrained(a, b, c);
+		CuboidToFoldOnSemiGrained3x3 cuboidToBuild = new CuboidToFoldOnSemiGrained3x3(a, b, c);
 		
 		
 		if(cuboidToBuild.getNumCellsToFill() % 4 != 2) {
@@ -195,7 +195,7 @@ Done for 5x15x3
 			
 			System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
 			
-			cuboidToBuild = new CuboidToFoldOnSemiGrained(a, b, c);
+			cuboidToBuild = new CuboidToFoldOnSemiGrained3x3(a, b, c);
 			cuboidToBuild.initializeNewBottomIndexAndRotation(otherCuboidStartIndex, otherCuboidStartRotation);
 			
 			ret += findReallySimpleSolutionsRecursion(reference, cuboidToBuild);
@@ -213,16 +213,16 @@ Done for 5x15x3
 		System.out.println("Done for " + a + "x" + b + "x" + c);
 	}
 	
-	public static int getNumLayers(CuboidToFoldOnSemiGrained cuboidToBuild) {
+	public static int getNumLayers(CuboidToFoldOnSemiGrained3x3 cuboidToBuild) {
 		return (cuboidToBuild.getNumCellsToFill() - 2) / 4;
 	}
 	
-	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnSemiGrained cuboidToBuild) {
+	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnSemiGrained3x3 cuboidToBuild) {
 		return findReallySimpleSolutionsRecursion(reference, cuboidToBuild, 0, getNumLayers(cuboidToBuild));
 	}
 
 	public static long debugIt = 0;
-	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnSemiGrained cuboidToBuild, int layerIndex, int numLayers) {
+	public static long findReallySimpleSolutionsRecursion(Nx1x1CuboidToFold reference, CuboidToFoldOnSemiGrained3x3 cuboidToBuild, int layerIndex, int numLayers) {
 
 		
 		debugIt++;
@@ -277,37 +277,7 @@ Done for 5x15x3
 								//	System.out.println("topShiftIndex at layer " + i + ": " + cuboidToBuild.debugTopShiftIndex[i]);
 								//}
 								
-								System.out.println("Debug allowed transitions ring 0 to top:");
-								for(int i=0; i<cuboidToBuild.getNumCellsToFill(); i++) {
-									
-									if(cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i] != -1) {
-										System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i]);
-										
-									}
-									
-								}
 								
-								//TODO: maybe cache this result if possible... nah...
-								System.out.println("top/bottom type: " + cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound));
-								
-								cuboidToBuild.setup1stAndLastRing.DEBUG = true;
-								cuboidToBuild.setup1stAndLastRing.setupRing0AndTopTransitions(
-										new Coord2D(cuboidToBuild.getBottomIndex(), 2),
-										cuboidToBuild.debugRing0ToMinus1_1,
-										cuboidToBuild.debugRing0ToMinus1_2,
-										cuboidToBuild,
-										cuboidToBuild.topBottomShiftIndexLeftMost);
-								//TODO TEST
-								
-								System.out.println("Debug allowed transitions ring 0 to top again:");
-								for(int i=0; i<cuboidToBuild.getNumCellsToFill(); i++) {
-									
-									if(cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i] != -1) {
-										System.out.println(i + " --> " + cuboidToBuild.setup1stAndLastRing.ring0ToTopTransitions[cuboidToBuild.setup1stAndLastRing.getTopShiftType(cuboidToBuild.topBottomShiftMod4FromPrevRound)][i]);
-										
-									}
-									
-								}
 								
 								System.exit(1);
 								
