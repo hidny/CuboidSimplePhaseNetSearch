@@ -81,7 +81,7 @@ public class ReallySimpleIntersectFinder6Grained {
 		
 		//reallySimpleSearch(4, 17, 1);
 		
-		reallySimpleSearch(8, 17, 1);
+		reallySimpleSearch(4, 17, 1);
 		//15 (2)
 		//161 (3)
 		//1387 (4)
@@ -131,9 +131,6 @@ public class ReallySimpleIntersectFinder6Grained {
 			}
 			//Only start from top:
 			if(otherCuboidStartIndex >= b) {
-				continue;
-			}
-			if(otherCuboidStartIndex != 0) {
 				continue;
 			}
 			
