@@ -81,13 +81,16 @@ public class ReallySimpleIntersectFinder6Grained {
 		
 		//reallySimpleSearch(4, 17, 1);
 		
-		reallySimpleSearch(4, 17, 1);
+		reallySimpleSearch(3, 17, 1);
 		//15 (2)
 		//161 (3)
 		//1387 (4)
 		//10884 (5)
 		//82794 (6)
 		//613862 (7)
+		
+		
+		//reallySimpleSearch(4, 9, 1);
 		
 		
 	}

@@ -1,6 +1,4 @@
-package NewModelWithIntersection.grainIteration;
-import java.util.LinkedList;
-import java.util.Queue;
+package semiGrained.iteration3x3;
 
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;
@@ -10,22 +8,24 @@ import Model.NeighbourGraphCreator;
 import Model.Utils;
 import NewModelWithIntersection.topAndBottomTransitionList.TopAndBottomTransitionHandler;
 
-public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
+public class CuboidToFoldOnSemiGrained3x3  implements CuboidToFoldOnInterface {
 
 	
 	private CoordWithRotationAndIndex[][] neighbours;
 	
 	public int dimensions[] = new int[3];
+	private boolean setup;
 
-	public CuboidToFoldOnGrained(int a, int b, int c) {
+	public CuboidToFoldOnSemiGrained3x3(int a, int b, int c) {
 		this(a, b, c, true, true);
 	}
 
 
-	public CuboidToFoldOnGrained(int a, int b, int c, boolean verbose, boolean setup) {
+	public CuboidToFoldOnSemiGrained3x3(int a, int b, int c, boolean verbose, boolean setup) {
 
 		neighbours = NeighbourGraphCreator.initNeighbourhood(a, b, c, verbose);
 		
+		this.setup = setup;
 		
 		dimensions[0] = a;
 		dimensions[1] = b;
@@ -34,7 +34,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		DIM_N_OF_Nx1x1 = (Utils.getTotalArea(this.dimensions)-2) / 4;
 		
 		numLongsToUse = (int) Math.floor(Utils.getTotalArea(this.dimensions) / 64) + 1;
-		System.out.println(Utils.getTotalArea(this.dimensions));
+		System.out.println("Total area of CuboidToFoldOnSemiGrained: " + Utils.getTotalArea(this.dimensions));
 		System.out.println("Num longs to use: " + numLongsToUse);
 		
 		curState = new long[numLongsToUse];
@@ -45,17 +45,20 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 			setupAnswerSheetForTopCell();
 		}
 		
-		if(dimensions[1] % 4 != 1 || dimensions[2] != 1) {
-			System.out.println("ERROR: For now, the grained cuboids must be the form: mx(4m+1)x1");
+		if(dimensions[1] % 4 != 3 || dimensions[2] != 3) {
+			System.out.println("ERROR: For now, the semi-grained cuboids must be the form: hx(3+4m)x3");
 			System.exit(1);
 		}
 		
 
-		this.topAndBottomHandler = new TopAndBottomTransitionHandler();
+		if(setup) {
+			this.topAndBottomHandler = new TopAndBottomTransitionHandler();
 		
-
-		forcedRepetition = new int[DIM_N_OF_Nx1x1 + 2];
-		initializeForcedRepetition();
+			forcedRepetition = new int[DIM_N_OF_Nx1x1 + 2];
+			initializeForcedRepetition();
+		}
+		
+		debugTopShiftIndex = new int[DIM_N_OF_Nx1x1 + 1];
 	}
 	
 	private TopAndBottomTransitionHandler topAndBottomHandler = new TopAndBottomTransitionHandler();
@@ -74,8 +77,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	public int[] getDimensions() {
 		return dimensions;
 	}
-	
-	
 
 	public void initializeNewBottomIndexAndRotation(int bottomIndex, int bottomRotationRelativeFlatMap) {
 		
@@ -94,95 +95,14 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		tmpArray[bottomIndex] = true;
 		this.curState = convertBoolArrayToLongs(tmpArray);
 		
-
-		this.minTopIndex = -1;
-		this.maxTopIndex = Utils.getTotalArea(this.dimensions);
-
-		this.oldTopMin = new int[Utils.getTotalArea(this.dimensions)];
-		this.oldTopMax = new int[Utils.getTotalArea(this.dimensions)];
-		
-		//TODO: Specific to cuboids of the form Mx(4N+1)x1: (Make this not be used when dealing with Nx3x3)
-		if(bottomIndex % 4 != 0 || bottomIndex >= this.dimensions[1]) {
+		//Specify 1st ring:
+		if(getIndexToRingIndex(this.getBottomIndex()) != 0) {
 			this.curState = setImpossibleForAnswerSheet();
 		}
 		
-	}
-	
-	
-	private void initializeForcedRepetition() {
-		
-		for(int i=0; i<forcedRepetition.length; i++) {
-			forcedRepetition[i] = i;
-		}
-		
-		boolean progress = true;
-
-		//TODO: make this a param?
-		
-		//Test 53
-		//int otherWidthsToConsider[] = new int[] {5, 41, 209};
-		//int otherWidthsToConsider[] = new int[] {41, 209};
-		
-		//Ryuhei's idea:
-		//int otherWidthsToConsider[] = new int[] {5, 9, 13};
-		
-		//TODO:So dumb... but too lazy to change it.
-		//Test standard:
-		//int otherWidthsToConsider[] = new int[] {5, 17};
-		int otherWidthsToConsider[] = new int[] {5};
-		//int otherWidthsToConsider[] = new int[] {5, 29};
-		//int otherWidthsToConsider[] = new int[] {9};
-
-		System.out.println("Starting initializeForcedRepetition()");
-		while(progress == true) {
-			
-			progress = false;
-		
-			for(int i=0; i<otherWidthsToConsider.length; i++) {
-				
-				if( ((dimensions[1] + 1) * (dimensions[0] + 1)) % (otherWidthsToConsider[i] + 1) != 0) {
-					System.out.println("ERROR in initializeForcedRepetition: unexpected forced width of "+ otherWidthsToConsider[i]);
-					System.exit(1);
-				}
-				int altHeight = ((dimensions[1] + 1) * (dimensions[0] + 1)) / (otherWidthsToConsider[i] + 1) - 1;
-				
-				for(int j=0; j<forcedRepetition.length; j++) {
-					
-					int nextRingIndexAlt = getAltNextRingIndexForHeight(j, altHeight);
-					int prevRingIndexAlt = getAltCurRingIndexForHeight(j, altHeight);
-					
-					int transitionIndex = Math.min(nextRingIndexAlt, prevRingIndexAlt);
-					
-					if(transitionIndex != -1
-							&& forcedRepetition[j] != forcedRepetition[transitionIndex + 1]
-						) {
-						
-						if(Math.abs(prevRingIndexAlt - nextRingIndexAlt) != 1) {
-							System.out.println("ERROR in initializeForcedRepetition!");
-							System.exit(1);
-						}
-						
-						int loweredIndex = Math.min(forcedRepetition[transitionIndex + 1], forcedRepetition[j]);
-						forcedRepetition[j] = loweredIndex;
-						forcedRepetition[transitionIndex + 1] = loweredIndex;
-						
-						progress = true;
-					}
-				}
-				
-			}
-			
-		//Get alt heights...
-		//getAltCurRingIndexForHeight(int currentLayerIndex, int height)
-		}
-		
-		for(int i=0; i<forcedRepetition.length; i++) {
-			System.out.println("forcedRepetion[" + i + "] = " + forcedRepetition[i]);
-		}
 		
 	}
-
-
+	
 	//Constants:
 
 	//7 *2 -1
@@ -207,11 +127,9 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	private int newGroundedIndexAbove[][][];
 	private int newGroundedRotationAbove[][][];
 	
-	
 	private long answerSheetForTopCell[][][][];
 	private long answerSheetForTopCellAnySideBump[][][];
 
-	
 
 	//State variables:
 	private static int numLongsToUse;
@@ -223,18 +141,28 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	public int prevSideBumps[];
 	public int prevGroundedIndexes[];
 	private int prevGroundedRotations[];
-	private int currentLayerIndex;
+	
+	//TODO: I made an exception, but I better not mess it up (Ideally, it should be a getter function0
+	public int currentLayerIndex;
 	private int forcedRepetition[];
 	
 	private long debugThru = 0L;
 	private long debugStop = 0L;
 	private long debugBugFix = 0L;
 	
-
-	//
 	//input: index
 	private int indexToRing[];
 	
+	public int[] getIndexToRing() {
+		
+		//Hardcode just in case someone want to change it outside of the class:
+		int ret[] = new int[indexToRing.length];
+		for(int i=0; i<ret.length; i++) {
+			ret[i] = indexToRing[i];
+		}
+		return ret;
+	}
+
 	//check if ring is decided: (depth)
 	private int LayerIndexForRingDecided[];
 	private int transitionBetweenRings[];
@@ -244,15 +172,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	//input: index and then rotation
 	private int ringMod4Lookup[][];
 	
-	
-	//TODO:
 	private int bottomIndex;
-	
-	private int minTopIndex;
-	private int maxTopIndex;
-	
-	private int oldTopMin[];
-	private int oldTopMax[];
 	
 
 	public boolean isCellIoccupied(int i) {
@@ -270,17 +190,25 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 
 	public static int getAltCurRingIndexForHeight(int currentLayerIndex, int height) {
 		
-		int prevRingIndexAlt = (currentLayerIndex % (2*(height + 1))) - 1;
+		int layeringPerim = 2*(height + 3);
 		
-		if(prevRingIndexAlt > height) {
-			prevRingIndexAlt = 2*height - prevRingIndexAlt;
+		int prevRingIndexAlt = ((currentLayerIndex-1 + layeringPerim) % (layeringPerim));
 		
-		} else if(prevRingIndexAlt == height) {
+		if(prevRingIndexAlt > height + 2) {
+			prevRingIndexAlt = layeringPerim - 6 - prevRingIndexAlt;
+			
+			if(prevRingIndexAlt < 0) {
+				prevRingIndexAlt = -1;
+			}
+		
+		} else if(prevRingIndexAlt >= height && prevRingIndexAlt <= height + 2) {
 			prevRingIndexAlt = -1;
 		}
 		return prevRingIndexAlt;
 	}
 	
+	//TODO Nov 28: try to avoid using this function while dealing with multiple semi-grained cuboids
+	//
 	public boolean isNewLayerValidForOtherMinNxMx1(int m, int sideBump) {
 		
 		//TODO: also add the 17 transition:
@@ -289,7 +217,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		//int altHeight = ratio * (dimensions[0] + 1) - 1; 
 		
 		//General formula based on last 2 lines:
-		int altHeight = ((dimensions[1] + 1) * (dimensions[0] + 1)) / (m + 1) - 1;
+		int altHeight = ((dimensions[1] + 3) * (dimensions[0] + 3)) / (m + 3) - 3;
 		
 		int nextRingIndexAlt = getAltNextRingIndexForHeight(this.currentLayerIndex, altHeight);
 		int prevRingIndexAlt = getAltCurRingIndexForHeight(this.currentLayerIndex, altHeight);
@@ -302,19 +230,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				&& transitionIndex != -1) {
 			//I'm confused...
 			
-			/*
-			if((this.currentLayerIndex / this.dimensions[0]) % 2 == 1) {
-				transitionIndex = transitionBetweenRings.length - 1 - (transitionIndex % this.dimensions[0]);
-				System.out.println("Case 1");
-			} else {
-				System.out.println("Case 2: " + transitionIndex);
-				transitionIndex = transitionIndex % this.dimensions[0];
-			}
-			
-			if(transitionIndex == 1) {
-				System.out.println("Debug");
-			}
-			*/
+			//TODO: Nov 28:
+			// There should be a condition involving the other constraint (even if it's not really used)
 			
 			//System.out.println(this.currentLayerIndex + " vs " + (1 + transitionIndex));
 			if(this.prevSideBumps[ 1 + transitionIndex] != sideBump) {
@@ -331,7 +248,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	
 	public boolean isNewLayerValidSimpleFast(int sideBump) {
 	
-		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
+		long tmp[] = answerSheet[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump];
 		
 		if(newGroundedIndexAbove[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap][sideBump] < 0) {
 			return false;
@@ -351,33 +268,35 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		} else {
 			return false;
 		}
-		
+
 		int prevRingIndex = indexToRing[this.topLeftGroundedIndex];
 		int nextRingIndex = indexToRing[nextIndex];
 		
-
-		
-		if(nextRingIndex >=0
-				&& LayerIndexForRingDecided[nextRingIndex] >= 0 
+		// Make sure the bottom index is on the right location of the grained ring (mod 4)
+		if(nextRingIndex >=1 && nextRingIndex < dimensions[0] - 1
+				&& LayerIndexForRingDecided[nextRingIndex] >= 0
 				&& LayerIndexForRingDecided[nextRingIndex] < currentLayerIndex
 				&& ringMod4AlreadySet[nextRingIndex] >=0
 				&& ringMod4Lookup[nextIndex][nextRot] != ringMod4AlreadySet[nextRingIndex]) {
 			
 			return false;
 		}
-		
-		if(getRingMod4(nextIndex, nextRot) == -1 
-				&& ! isAcceptableTopOrBottomIndexForInbetweenLayer(nextIndex, nextRot)) {
-			return false;
-		}
-		
+
+		/*
+		// TODO: what does this even do?
+		//if(getRingMod4(nextIndex, nextRot) == -1 
+		//		&& ! isAcceptableTopOrBottomIndexForInbetweenLayer(nextIndex, nextRot)) {
+		//	return false;
+		//}
+		*/
 		
 		if(forcedRepetition[this.currentLayerIndex] < this.currentLayerIndex
 				&& sideBump != prevSideBumps[forcedRepetition[this.currentLayerIndex]]) {
 			return false;
 		}
 
-		
+		//TODO: Nov 28: change this to isGrainedRingToNonGrainedRingPossiblyFine
+		/*
 		if( ! topAndBottomHandler.isTopBottomTranstionsPossiblyFine(
 				currentLayerIndex,
 				dimensions,
@@ -388,12 +307,49 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				),
 				indexToRing
 			)) {
+			
 			return false;
 		}
+		*/
 		
+		//TODO: Nov 28: Add: is layer onTopOrBottom Possibly fine (Only works for (4M+3) where M> 0 for the bottom part...
+		//Condition: rotation 0 or 2, and correct placement mod 4 depending on where bottom 1x1 and top 1x1 cell is.
+		// For Top: leave 2 possibilities until it's been 'decided'
+		
+		//TODO: elsewhere...
+		//TODO:  Nov 28:Add region check on the between layers on top and top, top + 1st ring.
+		//TODO:  Nov 28:Make any layer touching the 2nd ring or 2nd last ring illegal.
+		
+		
+
+		/*int topBottomShiftIndexLeftMost[][];
+		int topBottomShiftMod4[][];
+		
+		int topBottomShiftSetDepth[];
+		int topBottomShiftMod4FromPrevRound[];*/
+		//nextIndex
+		//nextRot
+		
+		int prev2RingIndex = -1;
+		if(currentLayerIndex > 1) {
+			prev2RingIndex = indexToRing[prevGroundedIndexes[currentLayerIndex - 1]];
+		}
+		//System.out.println(prev2RingIndex + " -> " + prevRingIndex);
+		
+	
 		return true;
 		
 	}
+	
+	public static int debugFalseIndex = -1;
+	public static int debugFalseCuboidIndex = -1; //TODO
+	public static int debugFalseCuboidRot = -1; //TODO
+	public static int debugShiftType = -1; //TODO
+    public static Coord2D debugRing0ToMinus1_1 = null;
+    public static Coord2D debugRing0ToMinus1_2 = null;
+	
+	public static int debugTopShiftIndex[];
+	
 	
 	public void addNewLayerFast(int sideBump) {
 		long tmp[] = answerSheet[topLeftGroundedIndex][topLeftGroundRotationRelativeFlatMap][sideBump];
@@ -410,7 +366,6 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		prevSideBumps[currentLayerIndex] = sideBump;
 		currentLayerIndex++;
 		
-
 		int transitionIndex = Math.min(indexToRing[tmp1], indexToRing[this.topLeftGroundedIndex]);
 		
 		this.topLeftGroundedIndex = tmp1;
@@ -423,32 +378,33 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 			ringMod4AlreadySet[indexToRing[this.topLeftGroundedIndex]] = ringMod4Lookup[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap];
 			
 			if(transitionIndex != -1) {
-				
-				transitionBetweenRings[transitionIndex] = sideBump;
+				if(transitionBetweenRings.length <= transitionIndex) {
+					System.out.println("WARNING: something weird with the transition index.");
+				} else {
+					transitionBetweenRings[transitionIndex] = sideBump;
+				}
 			}
 		}
 		
 		
-		this.updateMinMaxTopIndexIfApplicable(this.topLeftGroundedIndex, this.topLeftGroundRotationRelativeFlatMap, this.currentLayerIndex);
 		
-		if(this.minTopIndex > this.maxTopIndex) {
-			System.out.println("ERROR: DOH! this.minTopIndex > this.maxTopIndex");
-			System.exit(1);
-		}
+		
 
 	}
 	
 	public void removePrevLayerFast() {
 
+		
+		if(debugFalseIndex == currentLayerIndex) {
+			debugFalseIndex = -1;
+		}
+		
 		if(indexToRing[this.topLeftGroundedIndex] >= 0
 				&& LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] == this.currentLayerIndex) {
 			LayerIndexForRingDecided[indexToRing[this.topLeftGroundedIndex]] = -1;
 		}
-		if(this.minTopIndex == this.topLeftGroundedIndex) {
-			this.minTopIndex = this.oldTopMin[currentLayerIndex];
-		} else if(this.maxTopIndex == this.topLeftGroundedIndex) {
-			this.maxTopIndex = this.oldTopMax[currentLayerIndex];
-		}
+		
+		
 		
 		currentLayerIndex--;
 		this.topLeftGroundedIndex = prevGroundedIndexes[currentLayerIndex]; 
@@ -461,6 +417,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		for(int i=0; i<curState.length; i++) {
 			curState[i] = curState[i] ^ tmp[i];
 		}
+		
+		
 		
 		
 	}
@@ -496,6 +454,15 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	
 	private void setupAnswerSheetInBetweenLayers() {
 		
+		
+		indexToRing = new int[getNumCellsToFill()];
+		
+		for(int i=0; i<indexToRing.length; i++) {
+			indexToRing[i] = getIndexToRingIndex(i);
+			
+			System.out.println("Cell " + i + ": " + indexToRing[i]);
+		}
+
 		answerSheet = new long[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS][numLongsToUse];
 		newGroundedRotationAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
 		newGroundedIndexAbove = new int[Utils.getTotalArea(this.dimensions)][NUM_NEIGHBOURS][NUM_SIDE_BUMP_OPTIONS];
@@ -573,11 +540,35 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 						
 					}
 					
-					if( nextGounded.j % 2 == ROTATION_AGAINST_GRAIN) {
+					
+					if( nextGounded.j % 2 == ROTATION_AGAINST_GRAIN && isWithinGrainedRing(nextGounded.i)) {
 						
 						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
 						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
-						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;						
+						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;		
+						//System.out.println("REJECT " + index + ", " + rotation + "," +sideBump);				
+						continue;
+					
+					} else if( ! isWithinGrainedRing(nextGounded.i)
+							&& ! isAcceptableLayerOnTopOrBottomGrainedCuboid(nextGounded.i, nextGounded.j)) {
+						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
+						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
+						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;
+						//System.out.println("TEST " + index + ", " + rotation + "," +sideBump);
+						continue;
+					} else if ( ! isIndexRotationLegalSemiGrained(nextGounded.i, nextGounded.j)) {
+						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
+						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
+						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;
+						//System.out.println("TEST " + index + ", " + rotation + "," +sideBump);
+						continue;
+						
+					} else if(isSideBumpTooBigBothTopBottom(index, rotation, sideBump, nextGounded)) {
+						answerSheet[index][rotation][sideBump] = setImpossibleForAnswerSheet();
+						newGroundedIndexAbove[index][rotation][sideBump] = BAD_INDEX;
+						newGroundedRotationAbove[index][rotation][sideBump] = BAD_ROTATION;
+						//System.out.println("TEST " + index + ", " + rotation + "," +sideBump);
+						//System.out.println("Side bump too big");
 						continue;
 					}
 					
@@ -589,19 +580,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				}
 			}
 		}
+		//System.exit(1);
 		
-		
-		//TODO: complete this
-		//System.out.println("Grain dimension is just the second one: " + dimensions[grainDim]);
-		
-		//int numTubes
-		
-		indexToRing = new int[getNumCellsToFill()];
-		
-		for(int i=0; i<indexToRing.length; i++) {
-			indexToRing[i] = getIndexToRingIndex(i);
-			//System.out.println("Cell " + i + ": " + indexToRing[i]);
-		}
 		
 		LayerIndexForRingDecided = new int[dimensions[0]];
 
@@ -624,91 +604,59 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 			}
 			//System.out.println();
 		}
-	}
-	
-	public boolean isTopOrBottomOfCuboid(int indexCell) {
-		return indexCell < dimensions[1] || indexCell >= this.getNumCellsToFill() - dimensions[1];
-	}
-	
-	public void updateMinMaxTopIndexIfApplicable(int indexCell, int rotation, int layerIndex) {
 		
-		if(indexCell >= this.getNumCellsToFill() - dimensions[1]) {
-			
-			int addOneToPlacement = 0;
-			if(rotation == 2) {
-				addOneToPlacement =1;
-			}
-			int placementMod4 = (indexCell+ addOneToPlacement - (this.getNumCellsToFill() - dimensions[1])) % 4;
-			
-			if(placementMod4 == 0) {
-				this.oldTopMin[layerIndex] = this.minTopIndex;
-				this.minTopIndex = indexCell;
-			} else if(placementMod4 == 1) {
-				this.oldTopMax[layerIndex] = this.maxTopIndex;
-				this.maxTopIndex = indexCell;
-				
-			}
-			
+		System.out.println("???");
+		
+		System.out.println("locations:");
+		
+		
+		
+		topBottomShiftSetDepth = new int[this.getNumCellsToFill()];
+		topBottomShiftMod4FromPrevRound = new int[this.getNumCellsToFill()];
+		
+		for(int i=0; i<topBottomShiftSetDepth.length; i++) {
+			topBottomShiftSetDepth[i] = -1;
+			topBottomShiftMod4FromPrevRound[i] = -1;
 		}
+		
+		
+		
 	}
+	int topBottomShiftIndexLeftMost[][];
+	int topBottomShiftMod4[][];
+	
+	int topBottomShiftSetDepth[];
+	int topBottomShiftMod4FromPrevRound[];
+	
+	
+	
 	
 	//Pre: it's not the first 1x1 cell or the last 1x1 cell
 	//pre: getRingMod4(indexCell, rotation) returns -1:
-	public boolean isAcceptableTopOrBottomIndexForInbetweenLayer(int indexCell, int rotation) {
-		
+	public boolean isAcceptableLayerOnTopOrBottomGrainedCuboid(int indexCell, int rotation) {
 		
 		Coord2D neighbour = this.tryAttachCellInDir(indexCell, rotation, RIGHT);
-		if(indexToRing[neighbour.i] >=0) {
-			return false;
-		}
-		neighbour = this.tryAttachCellInDir(neighbour.i, neighbour.j, RIGHT);
-		if(indexToRing[neighbour.i] >=0) {
-			return false;
-		}
-		neighbour = this.tryAttachCellInDir(neighbour.i, neighbour.j, RIGHT);
-		if(indexToRing[neighbour.i] >=0) {
-			return false;
-		}
 		
-		
-		if(rotation % 2 == 1) {
-			return false;
-		}
-		
-		
-		int placementMod4 = -1;
-		
-		int addOneToPlacement = 0;
-		if(rotation == 2) {
-			addOneToPlacement =1;
-		}
-		
-		if(indexCell < dimensions[1]) {
-			placementMod4 = (indexCell + addOneToPlacement) % 4;
-			
-			if(placementMod4 ==0 && indexCell < this.bottomIndex) {
-				return true;
-			} else if(placementMod4 ==1 && indexCell > this.bottomIndex) {
-				return true;
+		for(int i=0; i<4 - 1; i++) {
+			if(isWithinGrainedRing(neighbour.i)) {
+				return false;
 			}
-			
-		} else {
-			placementMod4 = (indexCell+ addOneToPlacement - (this.getNumCellsToFill() - dimensions[1])) % 4;
-			
-			if(placementMod4 ==0 && indexCell < this.maxTopIndex) {
-				return true;
-			} else if(placementMod4 ==1 && indexCell > this.minTopIndex) {
-				return true;
-			}
+			neighbour = this.tryAttachCellInDir(neighbour.i, neighbour.j, RIGHT);
 		}
 		
-		return false;
+		return true;
+	}
+	
+	private boolean isWithinGrainedRing(int indexCell) {
+		return indexToRing[indexCell] >0 && indexToRing[indexCell] < dimensions[0] - 1;
 	}
 	
 	
 	private int getRingMod4(int indexCell, int rotation) {
 		
-		if(indexCell < dimensions[1] || indexCell >= this.getNumCellsToFill() - dimensions[1]) {
+		int numCellsTop = dimensions[1]*dimensions[2];
+		
+		if(indexCell < numCellsTop || indexCell >= this.getNumCellsToFill() - numCellsTop) {
 			return -1;
 		}
 		
@@ -720,7 +668,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		int ret = 0;
 		while(tryAttachCellInDir(indexCell, 0, LEFT).i < indexCell) {
 			if(tryAttachCellInDir(indexCell, 0, LEFT).j != 0) {
-				System.out.println(indexCell);
+				System.out.println("ERROR in getRingMod4: " + indexCell);
 				System.exit(1);
 			}
 			indexCell = tryAttachCellInDir(indexCell, 0, LEFT).i;
@@ -744,7 +692,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 	public int getIndexToRingIndex(int indexCell) {
 		int ret = -1;
 		
-		while(indexCell >= dimensions[1]) {
+		while(indexCell >= dimensions[1]*dimensions[2]) {
 			ret++;
 			
 			indexCell = tryAttachCellInDir(indexCell, 0, ABOVE).i;
@@ -868,6 +816,85 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		
 	}
 
+	//TODO: Why did you hard-code this?
+	public static int[] getOtherWidthsToConsider() {
+		//TODO: make this malleable:
+		return new int[] {};
+		
+		//if((dimensions[1] + 3))
+		//return new int[] {3};
+	}
+	
+	private void initializeForcedRepetition() {
+
+		for (int i = 0; i < forcedRepetition.length; i++) {
+			forcedRepetition[i] = i;
+		}
+
+		boolean progress = true;
+
+		int otherWidthsToConsider[] = getOtherWidthsToConsider();
+		
+		System.out.println("Other widths to consider:");
+		for(int i=0; i<otherWidthsToConsider.length; i++) {
+			System.out.println(otherWidthsToConsider[i]);
+		}
+
+		System.out.println("Starting initializeForcedRepetition()");
+		while (progress == true) {
+
+			progress = false;
+
+			for (int i = 0; i < otherWidthsToConsider.length; i++) {
+
+				if (((dimensions[1] + 3) * (dimensions[0] + 3)) % (otherWidthsToConsider[i] + 3) != 0) {
+					System.out.println("ERROR in initializeForcedRepetition: unexpected forced width of "
+							+ otherWidthsToConsider[i]);
+					System.exit(1);
+				}
+				int altHeight = ((dimensions[1] + 3) * (dimensions[0] + 3)) / (otherWidthsToConsider[i] + 3) - 3;
+				System.out.println("Alt height: " + altHeight);
+
+				for (int j = 0; j < forcedRepetition.length; j++) {
+
+					int nextRingIndexAlt = getAltNextRingIndexForHeight(j, altHeight);
+					int prevRingIndexAlt = getAltCurRingIndexForHeight(j, altHeight);
+
+					int transitionIndex = Math.min(nextRingIndexAlt, prevRingIndexAlt);
+					
+					System.out.println("j, transitionIndex: (" + j + ", "+ transitionIndex + ")");
+					System.out.println("nextRingIndexAlt, prevRingIndexAlt: (" + nextRingIndexAlt + ", "+ prevRingIndexAlt + ")");
+
+					if (transitionIndex > 0
+							&& transitionIndex < altHeight - 2
+							&& forcedRepetition[j] != forcedRepetition[transitionIndex + 1]
+					) {
+
+						if (Math.abs(prevRingIndexAlt - nextRingIndexAlt) != 1) {
+							System.out.println("ERROR in initializeForcedRepetition! 22");
+							System.exit(1);
+						}
+
+						int loweredIndex = Math.min(forcedRepetition[transitionIndex + 1], forcedRepetition[j]);
+						forcedRepetition[j] = loweredIndex;
+						forcedRepetition[transitionIndex + 1] = loweredIndex;
+
+						progress = true;
+					}
+				}
+
+			}
+
+			// Get alt heights...
+			// getAltCurRingIndexForHeight(int currentLayerIndex, int height)
+		}
+
+		for (int i = 0; i < forcedRepetition.length; i++) {
+			System.out.println("forcedRepetion[" + i + "] = " + forcedRepetition[i]);
+		}
+
+	}
+	
 	
 	private long[] convertBoolArrayToLongs(boolean tmpArray[]) {
 		
@@ -928,11 +955,99 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		
 		return new Coord2D(curIndex, rotationRelativeFlatMap);
 	}
+	
+	private Coord2D topLeftIndexRotAfter180Flip1x4layer(int index, int rotation) {
+		Coord2D flippedIndexAndRotation = new Coord2D(index, rotation);
+		
+		for(int j=0; j<4 - 1; j++) {
+			flippedIndexAndRotation = tryAttachCellInDir(flippedIndexAndRotation.i, flippedIndexAndRotation.j, RIGHT);
+		}
+		
+		int flipRotation = (flippedIndexAndRotation.j + NUM_ROTATIONS/2) % NUM_ROTATIONS;
+		
+		return new Coord2D(flippedIndexAndRotation.i, flipRotation);
+	}
+	
+	private boolean isSideBumpTooBigBothTopBottom(int index, int rotation, int sideBump, Coord2D landingSpot) {
+		
+		Coord2D c = new Coord2D(index, rotation);
+		
+		boolean isBottomOrTop1 = false;
+		
+		for(int i=0; i<4; i++) {
+			if(indexToRing[c.i] < 0) {
+				isBottomOrTop1 = true;
+			}
+			c = tryAttachCellInDir(c.i, c.j, RIGHT);
+		}
+
+		boolean isBottomOrTop2 = false;
+		c = new Coord2D(landingSpot.i, landingSpot.j);
+
+		for(int i=0; i<4; i++) {
+			if(indexToRing[c.i] < 0) {
+				isBottomOrTop2 = true;
+			}
+			c = tryAttachCellInDir(c.i, c.j, RIGHT);
+		}
+		
+		if(isBottomOrTop1 && isBottomOrTop2 && Math.abs(sideBump - 6) >= 2) {
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+	
+	private boolean isIndexRotationLegalSemiGrained(int index, int rotation) {
+		
+		boolean hasGrainedRing = false;
+		boolean hasNonGrainedRingCell = false;
+		
+		Coord2D c = new Coord2D(index, rotation);
+		
+		for(int i=0; i<4; i++) {
+			if(isWithinGrainedRing(c.i)) {
+				hasGrainedRing = true;
+			} else {
+				hasNonGrainedRingCell = true;
+				if(indexToRing[c.i] == -1 && c.j % 2 == 1 && dimensions[1] > dimensions[2]) {
+					return false;
+				}
+			}
+			c = tryAttachCellInDir(c.i, c.j, RIGHT);
+		}
+		
+		if(hasGrainedRing && hasNonGrainedRingCell) {
+			return false;
+		}
+		
+		if(hasNonGrainedRingCell && indexToRing[index] == -1) {
+			//By inspection, the layers on top and bottom have to be 0 or 1 mod 4 to the right of the side of the cuboid:
+			int numAwayFromSide = 1;
+			
+			c = new Coord2D(index, rotation);
+			//System.out.println("Trying top/bottom filter: " + c.i + ", " + c.j);
+			while(indexToRing[tryAttachCellInDir(c.i, c.j, LEFT).i] == -1) {
+				c = tryAttachCellInDir(c.i, c.j, LEFT);
+				numAwayFromSide++;
+			}
+			
+			if(numAwayFromSide % 4 >= 2) {
+				//System.out.println("Dec 8th: False for " + index + ", " + rotation);
+				return false;
+			}
+		}
+		
+		
+		return true;
+		
+	}
 
 	//DEBUG PRINT STATE ON OTHER CUBOID:
 	public void printCurrentStateOnOtherCuboidsFlatMap() {
 		
-		CuboidToFoldOnGrained toPrint = new CuboidToFoldOnGrained(
+		CuboidToFoldOnSemiGrained3x3 toPrint = new CuboidToFoldOnSemiGrained3x3(
 				this.dimensions[0],
 				this.dimensions[1],
 				this.dimensions[2],
@@ -1008,8 +1123,8 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				this.dimensions[2],
 				labels));
 		
-		
-		System.out.println("Location in ring mod 4:");
+
+		/*System.out.println("Location in ring mod 4:");
 		for(int i=0; i<this.currentLayerIndex; i++) {
 
 			
@@ -1022,7 +1137,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 				System.out.println(labelToUse + ": " + (this.ringMod4Lookup[this.topLeftGroundedIndex][this.topLeftGroundRotationRelativeFlatMap]) + " (" + this.topLeftGroundedIndex + ", " + this.topLeftGroundRotationRelativeFlatMap + ")");
 
 			}
-		}
+		}*/
 	}
 
 	private String getLabel(int layerIndex) {
@@ -1030,7 +1145,7 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		char label = (char)( (layerIndex % 26) + 'A');
 		
 		String labelToUse = label + "" + label;
-		if(layerIndex > 26 ) {
+		if(layerIndex >= 26 ) {
 			labelToUse = label + "" + (layerIndex/26);
 		}
 		
@@ -1039,6 +1154,14 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		}
 		return labelToUse;
 	}
+
+
+
+	public int getBottomIndex() {
+		return bottomIndex;
+	}
+	
+	
 
 	//END DEBUG PRINT STATE ON OTHER CUBOID:
 }

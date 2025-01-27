@@ -1,11 +1,11 @@
-package semiGrained.iteration1;
+package semiGrained.iteration2;
 
 import Coord.Coord2D;
 import Coord.CoordWithRotationAndIndex;
 import Model.DataModelViews;
 import Model.Utils;
 
-public class SetupAllowed1stAndLastRing {
+public class SetupAllowed1stAndLastRing2 {
 
 	private CoordWithRotationAndIndex neighbours[][];
 	private int indexToRing[];
@@ -19,13 +19,13 @@ public class SetupAllowed1stAndLastRing {
 	int topBottomShiftIndexLeftMost[][];
 	int dimensions[];
 	
-	public SetupAllowed1stAndLastRing(
+	public SetupAllowed1stAndLastRing2(
 			CoordWithRotationAndIndex neighbours[][],
 			int indexToRing[],
 			int dimensions[],
 			int topBottomShiftIndexLeftMost[][],
 			//Passing CuboidToFoldOnSemiGrained object is not ideal, but whatever. 
-			CuboidToFoldOnSemiGrained sg
+			CuboidToFoldOnSemiGrained2 sg
 		) {
 		
 		this.neighbours = neighbours;
@@ -53,19 +53,19 @@ public class SetupAllowed1stAndLastRing {
 				
 				int indexType = sg.getIndexRotToTopBottomShiftLocation(index, rotation);
 				
-				if(indexType == CuboidToFoldOnSemiGrained.LEFT_TOP_LOCATION) {
+				if(indexType == CuboidToFoldOnSemiGrained2.LEFT_TOP_LOCATION) {
 					topLeftMostShiftIndex[curTopLefti] = index;
 					curTopLefti++;
 					
-				} else if(indexType == CuboidToFoldOnSemiGrained.LEFT_BOTTOM_LOCATION) {
+				} else if(indexType == CuboidToFoldOnSemiGrained2.LEFT_BOTTOM_LOCATION) {
 					bottomLeftMostShiftIndex[SIZE - 1 - curBottomLeftj] = index;
 					curBottomLeftj++;
 					
-				} else if(indexType == CuboidToFoldOnSemiGrained.RIGHT_TOP_LOCATION) {
+				} else if(indexType == CuboidToFoldOnSemiGrained2.RIGHT_TOP_LOCATION) {
 					topRightMostShiftIndex[SIZE - 1 - curTopRighti] = index;
 					curTopRighti++;
 					
-				} else if(indexType == CuboidToFoldOnSemiGrained.RIGHT_BOTTOM_LOCATION) {
+				} else if(indexType == CuboidToFoldOnSemiGrained2.RIGHT_BOTTOM_LOCATION) {
 					bottomRightMostShiftIndex[curBottomRightj] = index;
 					curBottomRightj++;
 					
@@ -73,17 +73,6 @@ public class SetupAllowed1stAndLastRing {
 			}
 		}
 		
-		for(int i=0; i<SIZE; i++) {
-			System.out.println(topLeftMostShiftIndex[i]);
-			System.out.println(bottomLeftMostShiftIndex[i]);
-			System.out.println();
-		}
-
-		for(int i=0; i<SIZE; i++) {
-			System.out.println(topRightMostShiftIndex[i]);
-			System.out.println(bottomRightMostShiftIndex[i]);
-			System.out.println();
-		}
 	}
 	
 	
@@ -182,9 +171,6 @@ public class SetupAllowed1stAndLastRing {
 					}
 				}
 				
-				if(index_type == 1 && aboveRing == true) {
-					System.out.println("Debug");
-				}
 				if(getNumCellsBetweenBarrier(index_type, isTop, aboveRing) % 4 == 1) {
 					
 					cur = tryAttachCellInDir(barrier1.i, barrier1.j, RIGHT);
@@ -231,7 +217,7 @@ public class SetupAllowed1stAndLastRing {
 			}
 			//TODO: debug
 		
-			System.out.println("index_type: " + index_type);
+			/*System.out.println("index_type: " + index_type);
 			
 			System.out.println("1x1 at clockwise extreme with rotation 0");
 			labelDebugIfTrueAllowedRingIndex(allowedFirstRingIndexRotations1x1Clock[index_type], 0, index_type);
@@ -246,6 +232,7 @@ public class SetupAllowed1stAndLastRing {
 			
 			System.out.println("Debug possible 1x1 bottom locations:");
 			labelDebugIfTrueAllowedBottom1x1Index(allowedFirstRingIndexRotations1x1Locations[index_type], index_type);
+			*/
 		}
 		
 		
@@ -455,6 +442,130 @@ public class SetupAllowed1stAndLastRing {
 		return true;
 	}
 	
+	public int ringLastToBottomTransitions[][];
+	
+	//pre: areTopShiftIndexesAllSet is true
+	public void setupLastRingAndBottomTransitions(
+			Coord2D top1x1Index,
+			Coord2D lastRingCoord,
+			Coord2D bottomTopCoord,
+			CuboidToFoldOnSemiGrained2 sg,
+			int topBottomShiftIndexLeftMost[][]) {
+		
+		ringLastToBottomTransitions = new int[((int)Math.pow(2, 3))][getNumCellsToFill()];
+		for(int i=0; i<ringLastToBottomTransitions.length; i++) {
+			for(int j=0; j<ringLastToBottomTransitions[0].length; j++) {
+				ringLastToBottomTransitions[i][j] = -1;
+			}
+		}
+		
+
+		boolean IS_TOP = false;
+		
+		NEXT_INDEX_TYPE:
+		for(int index_type=0; index_type<(int)Math.pow(2, 3); index_type++) {
+			
+			//if(DEBUG) {
+			//	System.out.println("index_type bottom: " + index_type);
+			//}
+			Coord2D curIndexLastRing = lastRingCoord;
+			Coord2D curIndexBottom = bottomTopCoord;
+			
+			
+			if(hitLastorRing0Barrier(index_type, top1x1Index, IS_TOP)) {
+				continue;
+			}
+			
+			do {
+				
+				Coord2D trialCoord = new Coord2D(curIndexBottom.i, curIndexBottom.j);
+				
+				//if(DEBUG) {
+				//	System.out.println(curIndexBottom.i + "," + curIndexBottom.j);
+				//}
+				boolean goAround = false;
+				boolean cancelItForIndexType = false;
+				for(int i=0; i<4; i++) {
+					
+					trialCoord = tryAttachCellInDir(trialCoord.i, trialCoord.j, RIGHT);
+					
+					//TODO: this.indexToRing[trialCoord.i] <= sg.getDimensions()[0] - 2 will be hard to refactor
+					if(hitTopBottomBarrier(index_type, trialCoord, IS_TOP) || (this.indexToRing[trialCoord.i] >=0 && this.indexToRing[trialCoord.i] <= sg.getDimensions()[0] - 2)) {
+						goAround = true;
+						
+						if(i != 4 - 1) {
+							cancelItForIndexType= true;
+						}
+						break;
+					}
+				}
+				if(cancelItForIndexType) {
+					//if(DEBUG) {
+					//	System.out.println();
+					//}
+					for(int j=0; j<ringLastToBottomTransitions[0].length; j++) {
+						ringLastToBottomTransitions[index_type][j] = -1;
+					}
+					continue NEXT_INDEX_TYPE;
+				}
+				
+				if(goAround) {
+					int leftMostIndex = topBottomShiftIndexLeftMost[curIndexBottom.i][curIndexBottom.j];
+					
+					if(leftMostIndex == bottomLeftMostShiftIndex[0]) {
+						if(curIndexBottom.j == 2) {
+							curIndexBottom = new Coord2D(bottomLeftMostShiftIndex[2], 1);
+						} else {
+							//TODO: 1 - > 3...
+							curIndexBottom = new Coord2D(bottomRightMostShiftIndex[2], 1);
+							
+						}
+					} else {
+						if(curIndexBottom.j == 2) {
+							curIndexBottom = new Coord2D(bottomLeftMostShiftIndex[0], 1);
+						} else {
+							
+							curIndexBottom = new Coord2D(bottomRightMostShiftIndex[0], 1);
+							
+						}
+					}
+					
+					if(hitTopBottomBarrier(index_type, curIndexBottom, IS_TOP)) {
+						
+						curIndexBottom = tryAttachCellInDir(curIndexBottom.i, curIndexBottom.j, RIGHT);
+						
+					}
+					
+					if(indexToRing[tryAttachCellInDir(curIndexBottom.i, curIndexBottom.j, RIGHT).i] == sg.getDimensions()[0] - 2) {
+						System.out.println("Doh! Messed up the algo...");
+						System.exit(1);
+						
+					}
+					
+				} else {
+					curIndexBottom = trialCoord;
+				}
+			
+				for(int i=0; i<4; i++) {
+					curIndexLastRing = tryAttachCellInDir(curIndexLastRing.i, curIndexLastRing.j, RIGHT);
+					
+					
+					while(hitLastorRing0Barrier(index_type, curIndexLastRing, IS_TOP) || curIndexLastRing.i == top1x1Index.i) {
+						curIndexLastRing = tryAttachCellInDir(curIndexLastRing.i, curIndexLastRing.j, RIGHT);
+					}
+					
+				}
+				
+				//System.exit(1);
+				setForcedTransition(ringLastToBottomTransitions, index_type, curIndexLastRing, curIndexBottom);
+				
+			} while(curIndexBottom.i != bottomTopCoord.i);
+			
+		}
+	}
+	
+	//start:
+
 	public int ring0ToTopTransitions[][];
 	
 	public static boolean DEBUG = false;
@@ -464,7 +575,7 @@ public class SetupAllowed1stAndLastRing {
 			Coord2D bottom1x1Index,
 			Coord2D firstRing0Coord,
 			Coord2D firstTopCoord,
-			CuboidToFoldOnSemiGrained sg,
+			CuboidToFoldOnSemiGrained2 sg,
 			int topBottomShiftIndexLeftMost[][]) {
 		
 		ring0ToTopTransitions = new int[((int)Math.pow(2, 3))][getNumCellsToFill()];
@@ -480,9 +591,9 @@ public class SetupAllowed1stAndLastRing {
 		NEXT_INDEX_TYPE:
 		for(int index_type=0; index_type<(int)Math.pow(2, 3); index_type++) {
 			
-			if(DEBUG) {
-				System.out.println("index_type: " + index_type);
-			}
+			//if(DEBUG) {
+			//	System.out.println("index_type: " + index_type);
+			//}
 			Coord2D curIndexRing0 = firstRing0Coord;
 			Coord2D curIndexTop = firstTopCoord;
 			
@@ -495,9 +606,9 @@ public class SetupAllowed1stAndLastRing {
 				
 				Coord2D trialCoord = new Coord2D(curIndexTop.i, curIndexTop.j);
 				
-				if(DEBUG) {
-					System.out.println(curIndexTop.i + "," + curIndexTop.j);
-				}
+				//if(DEBUG) {
+				//	System.out.println(curIndexTop.i + "," + curIndexTop.j);
+				//}
 				boolean goAround = false;
 				boolean cancelItForIndexType = false;
 				for(int i=0; i<4; i++) {
@@ -514,9 +625,9 @@ public class SetupAllowed1stAndLastRing {
 					}
 				}
 				if(cancelItForIndexType) {
-					if(DEBUG) {
-						System.out.println();
-					}
+					//if(DEBUG) {
+					//	System.out.println();
+					//}
 					for(int j=0; j<ring0ToTopTransitions[0].length; j++) {
 						ring0ToTopTransitions[index_type][j] = -1;
 					}
@@ -531,7 +642,7 @@ public class SetupAllowed1stAndLastRing {
 							curIndexTop = new Coord2D(topLeftMostShiftIndex[2], 3);
 						} else {
 							//1 - > 3...
-							curIndexTop = new Coord2D(topRightMostShiftIndex[2], 1);
+							curIndexTop = new Coord2D(topRightMostShiftIndex[2], 3);
 							
 						}
 					} else {
@@ -576,7 +687,7 @@ public class SetupAllowed1stAndLastRing {
 			
 		}
 	}
-	
+	//end
 	public int ring0ToRing1Transitions[][];
 	
 	public void setupRing1AndRing0Transitions(Coord2D bottom1x1Index, Coord2D firstRing1Coord) {
@@ -640,6 +751,110 @@ public class SetupAllowed1stAndLastRing {
 		}
 	}
 	
+
+	public int ringSecondLastToLastRingTransitions[][];
+	
+	//pre: secondLastRingIndex goes to lastRingIndex
+	public void setupRingSecondLastAndRingLastTransitions(Coord2D secondLastRingIndex, Coord2D lastRingIndex, int topIndex) {
+		
+		ringSecondLastToLastRingTransitions = new int[((int)Math.pow(2, 3))][getNumCellsToFill()];
+		for(int i=0; i<ringSecondLastToLastRingTransitions.length; i++) {
+			for(int j=0; j<ringSecondLastToLastRingTransitions[0].length; j++) {
+				ringSecondLastToLastRingTransitions[i][j] = -1;
+			}
+		}
+		
+		
+		boolean IS_TOP = false;
+		
+		NEXT_INDEX_TYPE:
+		for(int index_type=0; index_type<(int)Math.pow(2, 3); index_type++) {
+			
+
+			Coord2D curIndexRingSecondLast = secondLastRingIndex;
+			Coord2D curIndexRingLast = lastRingIndex;
+
+			setForcedTransition(ringSecondLastToLastRingTransitions, index_type, curIndexRingSecondLast, curIndexRingLast);
+			
+			int debugCount = 0;
+			boolean topIndexTouched = false;
+			do {
+				
+				for(int i=0; i<4; i++) {
+					curIndexRingSecondLast = tryAttachCellInDir(curIndexRingSecondLast.i, curIndexRingSecondLast.j, RIGHT);
+				}
+				
+				if(curIndexRingLast.i == topIndex) {
+
+					topIndexTouched = true;
+					//Move from 1x1 square to 1x4 rectangle in the first iteration:
+					//System.exit(1);
+					
+					do {
+						
+						curIndexRingLast = tryAttachCellInDir(curIndexRingLast.i, curIndexRingLast.j, RIGHT);
+						
+					} while(hitLastorRing0Barrier(index_type, curIndexRingLast, IS_TOP));
+					
+				} else {
+					
+					while(hitLastorRing0Barrier(index_type, curIndexRingLast, IS_TOP)) {
+						curIndexRingLast = tryAttachCellInDir(curIndexRingLast.i, curIndexRingLast.j, RIGHT);
+					}
+					
+					for(int i=0; i<4; i++) {
+						
+						if(hitLastorRing0Barrier(index_type, curIndexRingLast, IS_TOP)) {
+							
+							for(int j=0; j<ringSecondLastToLastRingTransitions[0].length; j++) {
+								ringSecondLastToLastRingTransitions[index_type][j] = -1;
+							}
+							continue NEXT_INDEX_TYPE;
+							
+						}
+						curIndexRingLast = tryAttachCellInDir(curIndexRingLast.i, curIndexRingLast.j, RIGHT);
+						
+					}
+					while(hitLastorRing0Barrier(index_type, curIndexRingLast, IS_TOP)) {
+						curIndexRingLast = tryAttachCellInDir(curIndexRingLast.i, curIndexRingLast.j, RIGHT);
+					}
+				}
+				
+				if(curIndexRingLast.i != topIndex) {
+					//System.out.println("lastRingIndex: " + lastRingIndex.i);
+					setForcedTransition(ringSecondLastToLastRingTransitions, index_type, curIndexRingSecondLast, curIndexRingLast);
+					
+				} else {
+					//TODO: my guess is that it's not needed and delays everything:
+					//setForcedTransitionSingleSide(ringSecondLastToLastRingTransitions, index_type, curIndexRingSecondLast, curIndexRingLast);
+					
+				}
+				
+				
+				debugCount++;
+			} while(curIndexRingSecondLast.i != secondLastRingIndex.i);
+			
+			if(topIndexTouched == false) {
+				//System.out.println("Top index missed for topIndex = " + topIndex + " and index_type = " + index_type);
+				for(int j=0; j<ringSecondLastToLastRingTransitions[0].length; j++) {
+					ringSecondLastToLastRingTransitions[index_type][j] = -1;
+				}
+			}
+			
+			//if(debugCount != 9) {
+			//	System.out.println("DOH " + debugCount);
+			//	System.exit(1);
+			//}
+		}
+	}
+	
+	
+	private void setForcedTransitionSingleSide(int transitionArray[][], int index_type, Coord2D from, Coord2D to) {
+		
+		transitionArray[index_type][from.i] = to.i;
+		
+	}
+	
 	private void setForcedTransition(int transitionArray[][], int index_type, Coord2D from, Coord2D to) {
 		
 		transitionArray[index_type][from.i] = to.i;
@@ -648,6 +863,7 @@ public class SetupAllowed1stAndLastRing {
 		Coord2D fromReversed = topLeftIndexRotAfter180Flip1x4layer(from.i, from.j);
 		
 		transitionArray[index_type][toReversed.i] = fromReversed.i;
+		
 	}
 	
 	public boolean hitTopBottomBarrier(int index_type, Coord2D coord, boolean top) {
@@ -677,7 +893,7 @@ public class SetupAllowed1stAndLastRing {
 			//TODO: I don't think I tested this at all:
 			for(int i=0; i<bottomLeftMostShiftIndex.length; i++) {
 				
-				int newi = topLeftMostShiftIndex.length - 1 - i;
+				int newi = bottomLeftMostShiftIndex.length - 1 - i;
 				if(index == bottomLeftMostShiftIndex[i] && ((~index_type) & (1 << newi)) == 0) {
 					return true;
 				}
@@ -685,7 +901,7 @@ public class SetupAllowed1stAndLastRing {
 
 			for(int i=0; i<bottomRightMostShiftIndex.length; i++) {
 				
-				int newi = topLeftMostShiftIndex.length - 1 - i;
+				int newi = bottomRightMostShiftIndex.length - 1 - i;
 				if(index == bottomRightMostShiftIndex[i] && (index_type & (1 << newi)) == 0) {
 					return true;
 				}
@@ -826,7 +1042,7 @@ public class SetupAllowed1stAndLastRing {
 	
 	
 
-	public boolean areTopShiftIndexesAllSet(CuboidToFoldOnSemiGrained sg) {
+	public boolean areTopShiftIndexesAllSet(CuboidToFoldOnSemiGrained2 sg) {
 		for(int i=0; i<topLeftMostShiftIndex.length; i++) {
 			if(sg.topBottomShiftSetDepth[topLeftMostShiftIndex[i]] > sg.currentLayerIndex || sg.topBottomShiftSetDepth[topLeftMostShiftIndex[i]] < 0) {
 				return false;
@@ -836,7 +1052,7 @@ public class SetupAllowed1stAndLastRing {
 		return true;
 	}
 
-	public boolean areBottomShiftIndexesAllSet(CuboidToFoldOnSemiGrained sg) {
+	public boolean areBottomShiftIndexesAllSet(CuboidToFoldOnSemiGrained2 sg) {
 		for(int i=0; i<topLeftMostShiftIndex.length; i++) {
 			if(sg.topBottomShiftSetDepth[bottomLeftMostShiftIndex[i]] > sg.currentLayerIndex || sg.topBottomShiftSetDepth[bottomLeftMostShiftIndex[i]] < 0) {
 				return false;

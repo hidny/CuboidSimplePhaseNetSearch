@@ -60,8 +60,10 @@ public class CheckForDeviousNets {
 			int numMatches = 0;
 			in = new Scanner(new File(file3));
 			
+			String solution = "";
 			while(in.hasNextLine()) {
 				String tmp = in.nextLine();
+				solution += tmp + "\n";
 				
 				if(tmp.toLowerCase().contains("solution code:")) {
 					if(file1Solutions.contains(getSolutionCode(tmp))) {
@@ -70,7 +72,15 @@ public class CheckForDeviousNets {
 						numMatches++;
 						
 						Utils.printFold(CheckSolutionsCodesAgainstOtherCuboid.convertSolutionCodeToTable(getSolutionCode(tmp)));
+						
+						System.out.println();
+						System.out.println();
+						System.out.println("Solution in 3x2x1 file:");
+						System.out.println(solution);
+						System.out.println();
+						System.out.println();
 					}
+					solution = "";
 				}
 			}
 			

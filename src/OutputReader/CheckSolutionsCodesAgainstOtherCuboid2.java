@@ -81,7 +81,13 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			
 			//String file1 = "D:\\searchFor4cuboids.txt";
 			
-			String file1 = "D:\\output_semi_grained_2.txt";
+			//String file1 = "D:\\output_semi_grained_2.txt";
+			
+			//String file1 = "D:\\output_semi_grained_9_4x15x3.txt";
+			//String file1 = "D:\\output_semi_it2_1.txt";
+			
+			//String file1 = "D:\\output_semi_it2_3_test_opt.txt";
+			String file1 = "D:\\output_semi_it2_3_test_opt.txt";
 			//Good sign:
 			//Number of 3-way solutions so far: 156 (only 156 because the run isn't done yet...)
 			//Number of solutions in file: 156
@@ -179,7 +185,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 						//System.out.println("Printing just the fold without indexes:");
 						//Utils.printFold(table);
 						
-						boolean VERBOSE = false;
+						boolean VERBOSE = true;
 						
 						for(int i=0; i<dimensionsToCheck.length; i++) {
 							if(solutionFound[i]) {
