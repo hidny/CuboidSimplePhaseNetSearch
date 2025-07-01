@@ -14,8 +14,27 @@ import SolutionResolver.StandardResolverForSmallIntersectSolutions;
 
 public class ReallySimpleIntersectFinderSemiGrained3x3 {
 
-	public static boolean VERBOSE = true;
+	public static boolean VERBOSE = false;
 	
+	//Nx5x1:
+	//N/A
+	//109
+	//591
+	//4,182
+	//28,817
+	//202,106
+	//1,411,798
+	//9,885,286
+	
+	//All stacked:
+	//2,870,327
+	//410,329
+	//58,891
+	//8,418
+	//1,285
+	//175
+	//133
+	//2
 	public static void main(String[] args) {
 		
 		

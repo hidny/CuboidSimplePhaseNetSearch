@@ -86,8 +86,8 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 			//String file1 = "D:\\output_semi_grained_9_4x15x3.txt";
 			//String file1 = "D:\\output_semi_it2_1.txt";
 			
-			//String file1 = "D:\\output_semi_it2_3_test_opt.txt";
 			String file1 = "D:\\output_semi_it2_3_test_opt.txt";
+			//String file1 = "D:\\test_final_step_2.txt";
 			//Good sign:
 			//Number of 3-way solutions so far: 156 (only 156 because the run isn't done yet...)
 			//Number of solutions in file: 156
@@ -206,7 +206,7 @@ public class CheckSolutionsCodesAgainstOtherCuboid2 {
 						}
 					} else {
 						System.out.println("WARNING: found non-solution");
-						System.exit(1);
+						//System.exit(1);
 					}
 					
 				}

@@ -20,7 +20,7 @@ public class ReallySimpleIntersectFinderSemiGrained2 {
 	public static void main(String[] args) {
 		
 		//reallySimpleSearch(4, 3, 3);
-		reallySimpleSearch(5, 11, 3);
+		//reallySimpleSearch(5, 11, 3);
 		
 		//reallySimpleSearch(5, 15, 3);
 		//reallySimpleSearch(3, 7, 3);
@@ -34,7 +34,24 @@ public class ReallySimpleIntersectFinderSemiGrained2 {
 		
 		//Found N/A unique solution.
 		//Done for 3x3x3
-		reallySimpleSearch(4, 15, 3);
+		//reallySimpleSearch(4, 15, 3);
+		
+
+		reallySimpleSearch(5, 27, 3);
+		
+		//4, 27, 3: 3-way with Mx7x3
+		//8 unique solutions
+		//5, 27, 3 with Mx7x3
+		//264 unique solution.
+		//Confirmed
+		
+		//4,27,3: 231 with 3x3
+		//5,27,3: 2092 with 3x3 (checked)
+		
+		//4, 47, 3
+		//8 solutions
+		//5, 47, 3: 392 with width 7. Strange (confirmed)
+		//
 		
 		//Found 1231 unique solution.
 		//Done for 4x3x3

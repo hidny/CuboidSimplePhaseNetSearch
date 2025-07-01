@@ -129,10 +129,10 @@ public class CuboidToFoldOnGrained  implements CuboidToFoldOnInterface {
 		//TODO:So dumb... but too lazy to change it.
 		//Test standard:
 		//int otherWidthsToConsider[] = new int[] {5, 17};
-		int otherWidthsToConsider[] = new int[] {5};
+		//int otherWidthsToConsider[] = new int[] {5};
 		//int otherWidthsToConsider[] = new int[] {5, 29};
-		//int otherWidthsToConsider[] = new int[] {9};
-
+		int otherWidthsToConsider[] = new int[] {9};
+		
 		System.out.println("Starting initializeForcedRepetition()");
 		while(progress == true) {
 			

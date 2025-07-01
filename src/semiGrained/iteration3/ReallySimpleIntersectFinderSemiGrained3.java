@@ -20,7 +20,7 @@ public class ReallySimpleIntersectFinderSemiGrained3 {
 	public static void main(String[] args) {
 		
 		
-		reallySimpleSearch(4, 3, 3);
+		reallySimpleSearch(1, 3, 3);
 		//reallySimpleSearch(4, 15, 3);
 		
 		//reallySimpleSearch(5, 15, 3);

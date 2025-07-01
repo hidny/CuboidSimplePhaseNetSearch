@@ -81,7 +81,9 @@ public class ReallySimpleIntersectFinder6Grained {
 		
 		//reallySimpleSearch(4, 17, 1);
 		
-		reallySimpleSearch(3, 17, 1);
+		//reallySimpleSearch(3, 41, 1);
+		
+		//17xNx1
 		//15 (2)
 		//161 (3)
 		//1387 (4)
@@ -89,9 +91,33 @@ public class ReallySimpleIntersectFinder6Grained {
 		//82794 (6)
 		//613862 (7)
 		
+
+		reallySimpleSearch(5, 29, 1);
+		//width 9:
+		//TODO: check:
+		//2x29x1: 0
+		//3x29x1: 11
+		//4x29x1: 246
+		//5x29x1: 2854
 		
-		//reallySimpleSearch(4, 9, 1);
+		//For paper:
+		//TODO1: width 5: 5, 29, 1
 		
+		//TODO2: width 9:, x,29,1
+		
+		//TODO3: try breaking the odd height factor rule with fraction.
+		
+		//width 9:
+		//reallySimpleSearch(4, 49, 1);
+		//2x49x1: 0
+		//3x49x1: 11
+		
+		//width 5:
+		//reallySimpleSearch(8, 5, 1);
+		/*
+		 * Found 161 unique solution.
+Done for 3x41x1
+		 */
 		
 	}
 	
@@ -220,35 +246,39 @@ public class ReallySimpleIntersectFinder6Grained {
 						reference.addNextLevel(new Coord2D(0, sideBump), null);
 						if(BasicUniqueCheckImproved.isUnique(Utils.getOppositeCornersOfNet(reference.setupBoolArrayNet()), reference.setupBoolArrayNet()) ){
 							
-							System.out.println("Prev ground indexes:");
-							for(int j=0; j<layerIndex; j++) {
-								System.out.println(cuboidToBuild.prevGroundedIndexes[j]);
-							}
-							System.out.println("------------");
-							System.out.println("------------");
-							System.out.println("------------");
-							
-							System.out.println("Unique solution found");
-							System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
-							
-							System.out.println(reference.toString());
-							System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
-							
-							cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
-							
-							System.out.println("Debugging transition handler for top and bottom:");
-							cuboidToBuild.printTopAndBottomHandlerDebug();
+							//if(BasicUniqueCheckImproved.uniqList.size() % 10000 == 0) {
+								System.out.println("Prev ground indexes:");
+								for(int j=0; j<layerIndex; j++) {
+									System.out.println(cuboidToBuild.prevGroundedIndexes[j]);
+								}
+								System.out.println("------------");
+								System.out.println("------------");
+								System.out.println("------------");
+								
+								System.out.println("Unique solution found");
+								System.out.println("Num unique solutions found: " + BasicUniqueCheckImproved.uniqList.size());
+								
+								System.out.println(reference.toString());
+								System.out.println("Solution code: " + BasicUniqueCheckImproved.debugLastScore);
+								
+								cuboidToBuild.printCurrentStateOnOtherCuboidsFlatMap();
+								
+								System.out.println("Debugging transition handler for top and bottom:");
+								cuboidToBuild.printTopAndBottomHandlerDebug();
+							//}
 						}
 						reference.removeCurrentTopLevel();
 					}
 				}
-				
-				if(ret > 0) {
-					System.out.println("Found " + ret + " places for top from this net:");
-					
-					//TODO: Make a debug function:
-					//cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference);
-					System.out.println("----");
+
+				if(BasicUniqueCheckImproved.uniqList.size() % 10000 == 0) {
+					if(ret > 0) {
+						System.out.println("Found " + ret + " places for top from this net:");
+						
+						//TODO: Make a debug function:
+						//cuboidToBuild.debugPrintCuboidOnFlatPaperAndValidateIt(reference);
+						System.out.println("----");
+					}
 				}
 			}
 			
