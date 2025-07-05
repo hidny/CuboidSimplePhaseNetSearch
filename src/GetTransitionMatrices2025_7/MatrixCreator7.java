@@ -314,7 +314,7 @@ public class MatrixCreator7 {
 			for(int i=0; i<listLayerStates.size(); i++) {
 				LayerState7 current = listLayerStates.get(i);
 				
-				System.out.println(current);
+				//System.out.println(current);
 				
 				if(validLayerStatesHash.contains(current.toString())) {
 					continue;
@@ -325,6 +325,8 @@ public class MatrixCreator7 {
 					validLayerStates.add(current);
 					validLayerStatesHash.add(current.toString());
 					progress = true;
+					System.out.println("Add to valid layer states");
+					System.out.println(current);
 				}
 				
 			}
