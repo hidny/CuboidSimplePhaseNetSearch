@@ -31,7 +31,7 @@ public class MatrixCreator7 {
 	//https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html
 	
 	//Perimeter 8 takes over an hour without a few optimizations...
-	public static final int PERIMETER = 9;
+	public static final int PERIMETER = 10;
 	public static final int LEFT_EXTREME = 0 - PERIMETER + 1;
 	//public static final int RIGHT_EXTREME = PERIMETER * PERIMETER + PERIMETER;
 	
@@ -54,6 +54,9 @@ public class MatrixCreator7 {
 		//For now, I just want to debug:
 		printNumbers(validLayerStates);
 	}
+	
+	//TODO: this algo is slow!
+	// I could eliminate a whole loop if I needed to!
 	
 	public static void printNumbers(ArrayList <LayerState7> validLayerStates) {
 		int numNonZeroCells = 0;
