@@ -29,7 +29,7 @@ public class MatrixCreator6 {
 	//https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html
 	
 	//Perimeter 8 takes over an hour without a few optimizations...
-	public static final int PERIMETER = 9;
+	public static final int PERIMETER = 11;
 	public static final int LEFT_EXTREME = 0 - PERIMETER + 1;
 	//public static final int RIGHT_EXTREME = PERIMETER * PERIMETER + PERIMETER;
 	
@@ -47,9 +47,65 @@ public class MatrixCreator6 {
 			System.out.println("Matrix to be used by python:");
 			System.out.println(convertMatrixToPythonFormat(matrix));
 		}
-		printSparsePythonMatrix(validLayerStates);
+		//printSparsePythonMatrix(validLayerStates);
+		
+		//For now, I just want to debug:
+		printNumbers(validLayerStates);
 	}
 	
+	public static void printNumbers(ArrayList <LayerState6> validLayerStates) {
+		int numNonZeroCells = 0;
+		int sumOfAllEntries = 0;
+		int maxWidth = 0;
+
+		System.out.println("Number of states: " + validLayerStates.size());
+		System.out.println("debugNumCouldReachLayer0_calls: " + debugNumCouldReachLayer0_calls);
+		System.out.println("debugNumCouldReachLayer0_yes: " + debugNumCouldReachLayer0_yes);
+		System.out.println("debugNumCouldReachLayer0_no: " + debugNumCouldReachLayer0_no);
+		
+		for(int i=0; i<validLayerStates.size(); i++) {
+			
+			if(validLayerStates.get(i).getWidthLayer() > maxWidth) {
+				maxWidth = validLayerStates.get(i).getWidthLayer();
+			}
+			
+			for(int j=0; j<validLayerStates.size(); j++) {
+				
+				LayerState6 bottom = validLayerStates.get(j);
+				LayerState6 top = validLayerStates.get(i);
+				
+
+				//TODO: copy/paste code
+				int currentBottomLayerWidth = bottom.getWidthLayer();
+				int currentTopLayerWidth = top.getWidthLayer();
+				
+				int curCellValue = 0;
+				
+				for(int sideBump=LEFT_EXTREME; currentTopLayerWidth + sideBump < currentBottomLayerWidth + PERIMETER; sideBump++) {
+					LayerState6 result = LayerState6.addLayerStateOnTopOfLayerState(bottom, top, sideBump);
+					
+					if(result != null && top.equals(result)) {
+						curCellValue++;
+					}
+					
+				}
+				
+				
+				if(curCellValue > 0) {
+					
+					numNonZeroCells++;
+					
+					sumOfAllEntries+= curCellValue;
+				}
+			}
+			
+		}
+		
+		System.out.println("Number of non-zero cells: " + numNonZeroCells);
+		System.out.println("Sum of all cell in matrix: " + sumOfAllEntries);
+		System.out.println("Max width layer for perimeter: " + maxWidth);
+		
+	}
 	public static void printSparsePythonMatrix(ArrayList <LayerState6> validLayerStates) {
 		
 		
@@ -234,6 +290,11 @@ public class MatrixCreator6 {
 								layerStateQueue.add(layerAbove);
 								
 								debugNumCouldReachLayer0_yes++;
+								
+								if( debugNumCouldReachLayer0_yes % 100 == 0) {
+									System.out.println("debugNumCouldReachLayer0_yes so far: " + debugNumCouldReachLayer0_yes);
+									System.out.println();
+								}
 							} else {
 								System.out.println("Could NOT reach layer 0: (Number of states that reach layer 0: " + (validLayerStates.size() + 1) + ")");
 								
