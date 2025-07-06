@@ -31,7 +31,7 @@ public class MatrixCreator7 {
 	//https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html
 	
 	//Perimeter 8 takes over an hour without a few optimizations...
-	public static final int PERIMETER = 10;
+	public static final int PERIMETER = 9;
 	public static final int LEFT_EXTREME = 0 - PERIMETER + 1;
 	//public static final int RIGHT_EXTREME = PERIMETER * PERIMETER + PERIMETER;
 	
@@ -306,10 +306,20 @@ public class MatrixCreator7 {
 		validLayerStates.add(currentBottomLayer);
 		validLayerStatesHash.add(currentBottomLayer.toString());
 		
+		//TODO: Maybe make this a hash set, so dups can be avoided? 
+		ArrayList<Long> curRelevantLayerStateHoriNumbers = new ArrayList<Long>();
+		ArrayList<Long> nextRelevantLayerStateHoriNumbers = new ArrayList<Long>();
+		
+		nextRelevantLayerStateHoriNumbers.add(currentBottomLayer.horiNumber);
+		
 		int debugNumLoops = 0;
 		
 		boolean progress = true;
 		while(progress) {
+			
+			curRelevantLayerStateHoriNumbers = nextRelevantLayerStateHoriNumbers;
+			nextRelevantLayerStateHoriNumbers = new ArrayList<Long>();
+			
 			progress = false;
 			
 			System.out.println("Start loop:");
@@ -323,13 +333,16 @@ public class MatrixCreator7 {
 					continue;
 				}
 				
-				if(curLayerStateCouldReachLegalLayerInSingleStep(current, validLayerStatesHash)) {
+				if(curLayerStateCouldReachLegalLayerInSingleStep(current, validLayerStatesHash, curRelevantLayerStateHoriNumbers)) {
 
 					validLayerStates.add(current);
 					validLayerStatesHash.add(current.toString());
 					progress = true;
 					System.out.println("Add to valid layer states");
 					System.out.println(current);
+					System.out.println("horiNumber: " + current.horiNumber);
+					
+					nextRelevantLayerStateHoriNumbers.add(current.horiNumber);
 				}
 				
 			}
@@ -346,15 +359,13 @@ public class MatrixCreator7 {
 		
 	}
 	
-	public static boolean curLayerStateCouldReachLegalLayerInSingleStep(LayerState7 bottomLayer, HashSet<String> validLayerStatesHash) {
-		
-		long numLayers = LayerState7.getUpperBoundPossibleLayers(PERIMETER);
+	public static boolean curLayerStateCouldReachLegalLayerInSingleStep(LayerState7 bottomLayer, HashSet<String> validLayerStatesHash, ArrayList<Long> curRelevantLayerStateHoriNumbers) {
 		
 		boolean foundSomething = false;
-		
-		for(int i=0; i<numLayers; i++) {
+			
+		for(int i=0; i<curRelevantLayerStateHoriNumbers.size(); i++) {
 
-			LayerState7 stateWithoutConnections = new LayerState7(PERIMETER, i);
+			LayerState7 stateWithoutConnections = new LayerState7(PERIMETER, curRelevantLayerStateHoriNumbers.get(i));
 			
 			foundSomething = tryToAddLayerOnTopOfBottomLayerState(
 					bottomLayer,

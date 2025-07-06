@@ -10,6 +10,8 @@ public class LayerState7 {
 	
 	int perimeter;
 	
+	long horiNumber;
+	
 	public LayerState7() {
 		
 	}
@@ -17,6 +19,8 @@ public class LayerState7 {
 	public static final int BUFFER = 5;
 	//Leave connections blank until you put it on another one.
 	public LayerState7(int perimeter, long horiNumber) {
+		
+		this.horiNumber = horiNumber;
 		
 		cellTable = new boolean[perimeter * perimeter + BUFFER];
 		
@@ -90,6 +94,8 @@ public class LayerState7 {
 		copy.hasHoleTooBig = this.hasHoleTooBig;
 		
 		copy.perimeter = this.perimeter;
+		
+		copy.horiNumber = this.horiNumber;
 		
 		return copy;
 	}
